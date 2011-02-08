@@ -45,15 +45,9 @@
 - (void)setRequiredFlags:(NSUInteger)flags;
 
 - (KeyCombo)keyCombo;
-- (void)setKeyCombo:(KeyCombo)aKeyCombo;
-
 - (NSString *)keyChars;
 - (NSString *)keyCharsIgnoringModifiers;
-
-#pragma mark *** Autosave Control ***
-
-- (NSString *)autosaveName;
-- (void)setAutosaveName:(NSString *)aName;
+- (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers;
 
 #pragma mark -
 

@@ -147,14 +147,6 @@
 	[super setFrame: correctedFrarme];
 }
 
-- (NSString *)keyChars {
-	return [SRCell keyChars];
-}
-
-- (NSString *)keyCharsIgnoringModifiers {
-	return [SRCell keyCharsIgnoringModifiers];	
-}
-
 #pragma mark *** Key Interception ***
 
 // Like most NSControls, pass things on to the cell
@@ -231,9 +223,16 @@
 	return [SRCell keyCombo];
 }
 
-- (void)setKeyCombo:(KeyCombo)aKeyCombo
-{
-	[SRCell setKeyCombo: aKeyCombo];
+- (NSString *)keyChars {
+	return [SRCell keyChars];
+}
+
+- (NSString *)keyCharsIgnoringModifiers {
+	return [SRCell keyCharsIgnoringModifiers];	
+}
+
+- (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers {
+    [SRCell setKeyCombo:newKeyCombo keyChars:newKeyChars keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
 }
 
 #pragma mark *** Binding Methods ***
@@ -243,17 +242,19 @@
     KeyCombo keyCombo = [self keyCombo];
     if (keyCombo.code == ShortcutRecorderEmptyCode || keyCombo.flags == ShortcutRecorderEmptyFlags)
         return nil;
-
     return [NSDictionary dictionaryWithObjectsAndKeys:
-            [self keyCharsIgnoringModifiers], @"characters",
+            [self keyCharsIgnoringModifiers], @"charactersIgnoringModifiers",
+            [self keyChars], @"characters",
             [NSNumber numberWithInteger:keyCombo.code], @"keyCode",
             [NSNumber numberWithUnsignedInteger:keyCombo.flags], @"modifierFlags",
-            nil];
+            nil];;
 }
 
 - (void)setObjectValue:(NSDictionary *)shortcut
 {
     KeyCombo keyCombo = SRMakeKeyCombo(ShortcutRecorderEmptyCode, ShortcutRecorderEmptyFlags);
+    NSString *keyChars = nil;
+    NSString *keyCharsIgnoringModifiers = nil;
     if (shortcut != nil && [shortcut isKindOfClass:[NSDictionary class]]) {
         NSNumber *keyCode = [shortcut objectForKey:@"keyCode"];
         NSNumber *modifierFlags = [shortcut objectForKey:@"modifierFlags"];
@@ -261,9 +262,11 @@
             keyCombo.code = [keyCode integerValue];
             keyCombo.flags = [modifierFlags unsignedIntegerValue];
         }
+        keyChars = [shortcut objectForKey:@"characters"];
+        keyCharsIgnoringModifiers = [shortcut objectForKey:@"charactersIgnoringModifiers"];
     }
 
-	[self setKeyCombo: keyCombo];
+    [self setKeyCombo:keyCombo keyChars:keyChars keyCharsIgnoringModifiers:keyCharsIgnoringModifiers];
 }
 
 - (Class)valueClassForBinding:(NSString *)binding
@@ -272,18 +275,6 @@
 		return [NSDictionary class];
 
 	return [super valueClassForBinding:binding];
-}
-
-#pragma mark *** Autosave Control ***
-
-- (NSString *)autosaveName
-{
-	return [SRCell autosaveName];
-}
-
-- (void)setAutosaveName:(NSString *)aName
-{
-	[SRCell setAutosaveName: aName];
 }
 
 #pragma mark -

@@ -29,10 +29,6 @@
 - (BOOL)_effectiveIsAnimating;
 - (BOOL)_supportsAnimation;
 
-- (NSString *)_defaultsKeyForAutosaveName:(NSString *)name;
-- (void)_saveKeyCombo;
-- (void)_loadKeyCombo;
-
 - (NSRect)_removeButtonRectForFrame:(NSRect)cellFrame;
 - (NSRect)_snapbackRectForFrame:(NSRect)cellFrame;
 
@@ -111,8 +107,6 @@
 	
 	allowedFlags |= NSFunctionKeyMask;
 
-	[self _loadKeyCombo];
-
 	return self;
 }
 
@@ -121,7 +115,6 @@
 	[super encodeWithCoder: aCoder];
 	
 	if ([aCoder allowsKeyedCoding]) {
-		[aCoder encodeObject:[self autosaveName] forKey:@"autosaveName"];
 		[aCoder encodeObject:[NSNumber numberWithShort: keyCombo.code] forKey:@"keyComboCode"];
 		[aCoder encodeObject:[NSNumber numberWithUnsignedInteger:keyCombo.flags] forKey:@"keyComboFlags"];
 	
@@ -140,7 +133,6 @@
 		[aCoder encodeObject:[NSNumber numberWithShort:style] forKey:@"style"];
 	} else {
 		// Unkeyed archiving and encoding is deprecated and unsupported. Use keyed archiving and encoding.
-		[aCoder encodeObject: [self autosaveName]];
 		[aCoder encodeObject: [NSNumber numberWithShort: keyCombo.code]];
 		[aCoder encodeObject: [NSNumber numberWithUnsignedInteger: keyCombo.flags]];
 		
@@ -705,7 +697,7 @@
 					else
 					{
 						// Mouse was over the remove image, reset all
-						[self setKeyCombo: SRMakeKeyCombo(ShortcutRecorderEmptyCode, ShortcutRecorderEmptyFlags)];
+						[self setKeyCombo:SRMakeKeyCombo(ShortcutRecorderEmptyCode, ShortcutRecorderEmptyFlags) keyChars:nil keyCharsIgnoringModifiers:nil];
 					}
 				}
 				else if ([controlView mouse:mouseLocation inRect:leftRect] && !isRecording)
@@ -843,8 +835,6 @@
 						if (delegate != nil && [delegate respondsToSelector: @selector(shortcutRecorderCell:keyComboDidChange:)])
 							[delegate shortcutRecorderCell:self keyComboDidChange:keyCombo];
 						
-					// Save if needed
-						[self _saveKeyCombo];
 						
 						[self _setJustChanged];
 					}
@@ -912,9 +902,6 @@
 			// Notify delegate if keyCombo changed
 			if (delegate != nil && [delegate respondsToSelector: @selector(shortcutRecorderCell:keyComboDidChange:)])
 				[delegate shortcutRecorderCell:self keyComboDidChange:keyCombo];
-			
-			// Save if needed
-			[self _saveKeyCombo];
 		}
 	}
 	
@@ -958,9 +945,6 @@
 			// Notify delegate if keyCombo changed
 			if (delegate != nil && [delegate respondsToSelector: @selector(shortcutRecorderCell:keyComboDidChange:)])
 				[delegate shortcutRecorderCell:self keyComboDidChange:keyCombo];
-			
-			// Save if needed
-			[self _saveKeyCombo];
 		}
 	}
 	
@@ -972,19 +956,42 @@
 	return keyCombo;
 }
 
-- (void)setKeyCombo:(KeyCombo)aKeyCombo
+- (NSString *)keyComboString
 {
-	keyCombo = aKeyCombo;
-	keyCombo.flags = [self _filteredCocoaFlags: aKeyCombo.flags];
+	if ([self _isEmpty]) return nil;
 	
-	hasKeyChars = NO;
+	return [NSString stringWithFormat: @"%@%@",
+            SRStringForCocoaModifierFlags( keyCombo.flags ),
+            SRStringForKeyCode( keyCombo.code )];
+}
 
+- (NSString *)keyChars {
+	if (!hasKeyChars) return SRStringForKeyCode(keyCombo.code);
+	return keyChars;
+}
+
+- (NSString *)keyCharsIgnoringModifiers {
+	if (!hasKeyChars) return SRCharacterForKeyCodeAndCocoaFlags(keyCombo.code,keyCombo.flags);
+	return keyCharsIgnoringModifiers;
+}
+
+- (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers {
+    [newKeyChars retain];
+    [keyChars release];
+    keyChars = newKeyChars;
+    
+    [newKeyCharsIgnoringModifiers retain];
+    [keyCharsIgnoringModifiers release];
+    keyCharsIgnoringModifiers = newKeyCharsIgnoringModifiers;
+    
+    hasKeyChars = (keyChars != nil) || (keyCharsIgnoringModifiers != nil);
+    
+    keyCombo = newKeyCombo;
+	keyCombo.flags = [self _filteredCocoaFlags: newKeyCombo.flags];
+    
 	// Notify delegate
 	if (delegate != nil && [delegate respondsToSelector: @selector(shortcutRecorderCell:keyComboDidChange:)])
 		[delegate shortcutRecorderCell:self keyComboDidChange:keyCombo];
-	
-	// Save if needed
-	[self _saveKeyCombo];
 	
 	[[self controlView] display];
 }
@@ -997,43 +1004,6 @@
 - (void)setCanCaptureGlobalHotKeys:(BOOL)inState
 {
 	globalHotKeys = inState;
-}
-
-#pragma mark *** Autosave Control ***
-
-- (NSString *)autosaveName
-{
-	return autosaveName;
-}
-
-- (void)setAutosaveName:(NSString *)aName
-{
-	if (aName != autosaveName)
-	{
-		[autosaveName release];
-		autosaveName = [aName copy];
-	}
-}
-
-#pragma mark -
-
-- (NSString *)keyComboString
-{
-	if ([self _isEmpty]) return nil;
-	
-	return [NSString stringWithFormat: @"%@%@",
-        SRStringForCocoaModifierFlags( keyCombo.flags ),
-        SRStringForKeyCode( keyCombo.code )];
-}
-
-- (NSString *)keyChars {
-	if (!hasKeyChars) return SRStringForKeyCode(keyCombo.code);
-	return keyChars;
-}
-
-- (NSString *)keyCharsIgnoringModifiers {
-	if (!hasKeyChars) return SRCharacterForKeyCodeAndCocoaFlags(keyCombo.code,keyCombo.flags);
-	return keyCharsIgnoringModifiers;
 }
 
 @end
@@ -1067,8 +1037,6 @@
 	NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 	[notificationCenter addObserver:self selector:@selector(_createGradient) name:NSSystemColorsDidChangeNotification object:nil]; // recreate gradient if needed
 	[self _createGradient];
-
-	[self _loadKeyCombo];
 }
 
 - (void)_createGradient
@@ -1170,75 +1138,6 @@
     [controlView setKeyboardFocusRingNeedsDisplayInRect:[controlView bounds]];
 	
 	if (globalHotKeys) PopSymbolicHotKeyMode(hotKeyModeToken);
-}
-
-#pragma mark *** Autosave ***
-
-- (NSString *)_defaultsKeyForAutosaveName:(NSString *)name
-{
-	return [NSString stringWithFormat: @"ShortcutRecorder %@", name];
-}
-
-- (void)_saveKeyCombo
-{
-	NSString *defaultsKey = [self autosaveName];
-
-	if (defaultsKey != nil && [defaultsKey length])
-	{
-		id values = [[NSUserDefaultsController sharedUserDefaultsController] values];
-		
-		NSDictionary *defaultsValue = [NSDictionary dictionaryWithObjectsAndKeys:
-			[NSNumber numberWithShort: keyCombo.code], @"keyCode",
-			[NSNumber numberWithUnsignedInteger: keyCombo.flags], @"modifierFlags", // cocoa
-			[NSNumber numberWithUnsignedInteger:SRCocoaToCarbonFlags(keyCombo.flags)], @"modifiers", // carbon, for compatibility with PTKeyCombo
-			nil];
-		
-		if (hasKeyChars) {
-			
-			NSMutableDictionary *mutableDefaultsValue = [[defaultsValue mutableCopy] autorelease];
-			[mutableDefaultsValue setObject:keyChars forKey:@"keyChars"];
-			[mutableDefaultsValue setObject:keyCharsIgnoringModifiers forKey:@"keyCharsIgnoringModifiers"];
-			
-			defaultsValue = mutableDefaultsValue;
-		}
-		
-		[values setValue:defaultsValue forKey:[self _defaultsKeyForAutosaveName: defaultsKey]];
-	}
-}
-
-- (void)_loadKeyCombo
-{
-	NSString *defaultsKey = [self autosaveName];
-
-	if (defaultsKey != nil && [defaultsKey length])
-	{
-		id values = [[NSUserDefaultsController sharedUserDefaultsController] values];
-		NSDictionary *savedCombo = [values valueForKey: [self _defaultsKeyForAutosaveName: defaultsKey]];
-		
-		NSInteger keyCode = [[savedCombo valueForKey: @"keyCode"] shortValue];
-		NSUInteger flags;
-		if ((nil == [savedCombo valueForKey:@"modifierFlags"]) && (nil != [savedCombo valueForKey:@"modifiers"])) { // carbon, for compatibility with PTKeyCombo
-			flags = SRCarbonToCocoaFlags([[savedCombo valueForKey: @"modifiers"] unsignedIntegerValue]);
-		} else { // cocoa
-			flags = [[savedCombo valueForKey: @"modifierFlags"] unsignedIntegerValue];
-		}
-		
-		keyCombo.flags = [self _filteredCocoaFlags: flags];
-		keyCombo.code = keyCode;
-		
-		NSString *kc = [savedCombo valueForKey: @"keyChars"];
-		hasKeyChars = (nil != kc);
-		if (kc) {
-			keyCharsIgnoringModifiers = [[savedCombo valueForKey: @"keyCharsIgnoringModifiers"] retain];
-			keyChars = [kc retain];
-		}
-		
-		// Notify delegate
-		if (delegate != nil && [delegate respondsToSelector: @selector(shortcutRecorderCell:keyComboDidChange:)])
-			[delegate shortcutRecorderCell:self keyComboDidChange:keyCombo];
-		
-		[[self controlView] display];
-	}
 }
 
 #pragma mark *** Drawing Helpers ***

@@ -117,7 +117,7 @@
 	[animates setEnabled:[SRRecorderCell styleSupportsAnimation:[rec style]]];
 	[animates setState:([rec animates] ? NSOnState : NSOffState)];
 	
-	[initial setKeyCombo:[rec keyCombo]];
+	[initial setKeyCombo:[rec keyCombo] keyChars:nil keyCharsIgnoringModifiers:nil];
 	[initial setDelegate:self];
 	
 	[super refresh];
@@ -131,7 +131,7 @@
 		}
 		SRRecorderControl *rec = [objs objectAtIndex:0];
 		
-		[rec setKeyCombo: [initial keyCombo]];
+		[rec setKeyCombo: [initial keyCombo] keyChars:nil keyCharsIgnoringModifiers:nil];
 	}
 }
 
@@ -169,7 +169,7 @@
 	[rec setStyle:rst];
 	[animates setEnabled:[SRRecorderCell styleSupportsAnimation:rst]];
 	[rec setAnimates:([animates state] == NSOnState)];
-	[rec setKeyCombo:[initial keyCombo]];
+	[rec setKeyCombo:[initial keyCombo] keyChars:nil keyCharsIgnoringModifiers:nil];
 	
 	
 }

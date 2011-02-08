@@ -34,7 +34,7 @@ enum SRRecorderStyle {
 };
 typedef enum SRRecorderStyle SRRecorderStyle;
 
-@interface SRRecorderCell : NSActionCell <NSCoding>
+@interface SRRecorderCell : NSActionCell
 {	
 	NSGradient          *recordingGradient;
 	NSString            *autosaveName;
@@ -115,18 +115,12 @@ typedef enum SRRecorderStyle SRRecorderStyle;
 - (void)setCanCaptureGlobalHotKeys:(BOOL)inState;
 
 - (KeyCombo)keyCombo;
-- (void)setKeyCombo:(KeyCombo)aKeyCombo;
-
-#pragma mark *** Autosave Control ***
-
-- (NSString *)autosaveName;
-- (void)setAutosaveName:(NSString *)aName;
+- (NSString *)keyChars;
+- (NSString *)keyCharsIgnoringModifiers;
+- (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers;
 
 // Returns the displayed key combination if set
 - (NSString *)keyComboString;
-
-- (NSString *)keyChars;
-- (NSString *)keyCharsIgnoringModifiers;
 
 @end
 
