@@ -10,9 +10,15 @@
 //      David Dauer
 //      Jesper
 //      Jamie Kirkpatrick
+//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 #import "SRRecorderCell.h"
+
+extern NSString* const SRShortcutCodeKey;
+extern NSString* const SRShortcutFlagsKey;
+extern NSString* const SRShortcutCharacters;
+extern NSString* const SRShortcutCharactersIgnoringModifiers;
 
 @interface SRRecorderControl : NSControl
 {

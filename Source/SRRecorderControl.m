@@ -10,9 +10,15 @@
 //      David Dauer
 //      Jesper
 //      Jamie Kirkpatrick
+//      Ilya Kulakov
 
 #import "SRRecorderControl.h"
 #import "SRCommon.h"
+
+NSString* const SRShortcutCodeKey = @"keyCode";
+NSString* const SRShortcutFlagsKey = @"modifierFlags";
+NSString* const SRShortcutCharacters = @"characters";
+NSString* const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModifiers";
 
 #define SRCell (SRRecorderCell *)[self cell]
 
@@ -243,10 +249,10 @@
     if (keyCombo.code == ShortcutRecorderEmptyCode || keyCombo.flags == ShortcutRecorderEmptyFlags)
         return nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:
-            [self keyCharsIgnoringModifiers], @"charactersIgnoringModifiers",
-            [self keyChars], @"characters",
-            [NSNumber numberWithInteger:keyCombo.code], @"keyCode",
-            [NSNumber numberWithUnsignedInteger:keyCombo.flags], @"modifierFlags",
+            [self keyCharsIgnoringModifiers], SRShortcutCharactersIgnoringModifiers,
+            [self keyChars], SRShortcutCharacters,
+            [NSNumber numberWithInteger:keyCombo.code], SRShortcutCodeKey,
+            [NSNumber numberWithUnsignedInteger:keyCombo.flags], SRShortcutFlagsKey,
             nil];;
 }
 
@@ -256,14 +262,14 @@
     NSString *keyChars = nil;
     NSString *keyCharsIgnoringModifiers = nil;
     if (shortcut != nil && [shortcut isKindOfClass:[NSDictionary class]]) {
-        NSNumber *keyCode = [shortcut objectForKey:@"keyCode"];
-        NSNumber *modifierFlags = [shortcut objectForKey:@"modifierFlags"];
+        NSNumber *keyCode = [shortcut objectForKey:SRShortcutCodeKey];
+        NSNumber *modifierFlags = [shortcut objectForKey:SRShortcutFlagsKey];
         if ([keyCode isKindOfClass:[NSNumber class]] && [modifierFlags isKindOfClass:[NSNumber class]]) {
             keyCombo.code = [keyCode integerValue];
             keyCombo.flags = [modifierFlags unsignedIntegerValue];
         }
-        keyChars = [shortcut objectForKey:@"characters"];
-        keyCharsIgnoringModifiers = [shortcut objectForKey:@"charactersIgnoringModifiers"];
+        keyChars = [shortcut objectForKey:SRShortcutCharacters];
+        keyCharsIgnoringModifiers = [shortcut objectForKey:SRShortcutCharactersIgnoringModifiers];
     }
 
     [self setKeyCombo:keyCombo keyChars:keyChars keyCharsIgnoringModifiers:keyCharsIgnoringModifiers];
