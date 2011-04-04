@@ -31,4 +31,5 @@
 
 @interface NSObject( SRValidation )
 - (BOOL) shortcutValidator:(SRValidator *)validator isKeyCode:(NSInteger)keyCode andFlagsTaken:(NSUInteger)flags reason:(NSString **)aReason;
+- (BOOL) shortcutValidatorShouldCheckMenu:(SRValidator *)validator;
 @end

@@ -371,6 +371,14 @@ NSString* const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModi
 	[boundObject setValue:value forKeyPath:boundKeyPath];
 }
 
+- (BOOL)shortcutRecorderCellShouldCheckMenu:(SRRecorderCell *)aRecorderCell
+{
+    if (delegate != nil && [delegate respondsToSelector: @selector(shortcutRecorderShouldCheckMenu:)])
+		return [delegate shortcutRecorderShouldCheckMenu:self];
+	else
+		return NO;
+}
+
 @end
 
 @implementation SRRecorderControl (Private)

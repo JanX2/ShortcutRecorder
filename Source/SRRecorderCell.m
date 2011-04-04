@@ -1226,12 +1226,22 @@
 
 #pragma mark *** Delegate pass-through ***
 
-- (BOOL) shortcutValidator:(SRValidator *)validator isKeyCode:(NSInteger)keyCode andFlagsTaken:(NSUInteger)flags reason:(NSString **)aReason;
+- (BOOL) shortcutValidator:(SRValidator *)validator isKeyCode:(NSInteger)keyCode andFlagsTaken:(NSUInteger)flags reason:(NSString **)aReason
 {
     SEL selector = @selector( shortcutRecorderCell:isKeyCode:andFlagsTaken:reason: );
     if ( ( delegate ) && ( [delegate respondsToSelector:selector] ) )
     {
         return [delegate shortcutRecorderCell:self isKeyCode:keyCode andFlagsTaken:flags reason:aReason];
+    }
+    return NO;
+}
+
+- (BOOL) shortcutValidatorShouldCheckMenu:(SRValidator *)validator
+{
+    SEL selector = @selector( shortcutRecorderCellShouldCheckMenu: );
+    if ( ( delegate ) && ( [delegate respondsToSelector:selector] ) )
+    {
+        return [delegate shortcutRecorderCellShouldCheckMenu:self];
     }
     return NO;
 }

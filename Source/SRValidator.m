@@ -135,7 +135,10 @@
 	}
 	
 	// Check menus too
-	return [self isKeyCode:keyCode andFlags:flags takenInMenu:[NSApp mainMenu] error:error];
+    if ([delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] && [delegate shortcutValidatorShouldCheckMenu:self])
+        return [self isKeyCode:keyCode andFlags:flags takenInMenu:[NSApp mainMenu] error:error];
+    else
+        return NO;
 }
 
 //---------------------------------------------------------- 
@@ -243,6 +246,11 @@
 // shortcutValidator:isKeyCode:andFlagsTaken:reason:
 //---------------------------------------------------------- 
 - (BOOL) shortcutValidator:(SRValidator *)validator isKeyCode:(NSInteger)keyCode andFlagsTaken:(NSUInteger)flags reason:(NSString **)aReason;
+{
+    return NO;
+}
+
+- (BOOL) shortcutValidatorShouldCheckMenu:(SRValidator *)validator
 {
     return NO;
 }
