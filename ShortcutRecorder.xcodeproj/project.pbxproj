@@ -141,7 +141,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E273122D1349EC9000A84433 /* PTHotKey.framework */;
+			remoteGlobalIDString = E273122D1349EC9000A84433;
 			remoteInfo = PTHotKey.framework;
 		};
 /* End PBXContainerItemProxy section */
