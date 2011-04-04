@@ -20,7 +20,7 @@
 	id				mTarget;
 	SEL				mAction;
 
-	NSUInteger		mCarbonHotKeyID;
+	UInt32		    mCarbonHotKeyID;
 	EventHotKeyRef	mCarbonEventHotKeyRef;
 }
 
@@ -41,8 +41,8 @@
 - (void)setAction: (SEL)action;
 - (SEL)action;
 
-- (NSUInteger)carbonHotKeyID;
-- (void)setCarbonHotKeyID: (NSUInteger)hotKeyID;
+- (UInt32)carbonHotKeyID;
+- (void)setCarbonHotKeyID: (UInt32)hotKeyID;
 
 - (EventHotKeyRef)carbonEventHotKeyRef;
 - (void)setCarbonEventHotKeyRef:(EventHotKeyRef)hotKeyRef;

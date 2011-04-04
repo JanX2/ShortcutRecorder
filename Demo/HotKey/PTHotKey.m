@@ -106,12 +106,12 @@
 	return mAction;
 }
 
-- (NSUInteger)carbonHotKeyID
+- (UInt32)carbonHotKeyID
 {
 	return mCarbonHotKeyID;
 }
 
-- (void)setCarbonHotKeyID: (NSUInteger)hotKeyID;
+- (void)setCarbonHotKeyID: (UInt32)hotKeyID;
 {
 	mCarbonHotKeyID = hotKeyID;
 }
