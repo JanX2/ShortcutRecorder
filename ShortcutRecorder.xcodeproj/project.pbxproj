@@ -16,6 +16,7 @@
 			dependencies = (
 				342E020C109CCE74009AD8CA /* PBXTargetDependency */,
 				342E020E109CCE76009AD8CA /* PBXTargetDependency */,
+				E27312481349EE4900A84433 /* PBXTargetDependency */,
 			);
 			name = "Build ShortcutRecorder.framework";
 			productName = "Build ShortcutRecorder.framework";
@@ -96,6 +97,15 @@
 		93983B8B0DA441BB007F53F3 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93983B890DA441BB007F53F3 /* MainMenu.xib */; };
 		A1125B77104C8AF3005C6F7B /* PTKeyCodeTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */; };
 		A1125B79104C8B06005C6F7B /* PTKeyCodeTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */; };
+		E273123A1349EDB500A84433 /* PTHotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E273123D1349EDB500A84433 /* PTKeyCombo.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0709CDBADE0085E9ED /* PTKeyCombo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E27312401349EDCA00A84433 /* PTHotKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0409CDBADE0085E9ED /* PTHotKey.m */; };
+		E27312411349EDCA00A84433 /* PTHotKeyCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0609CDBADE0085E9ED /* PTHotKeyCenter.m */; };
+		E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */; };
+		E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0809CDBADE0085E9ED /* PTKeyCombo.m */; };
+		E273124C1349EE6500A84433 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273124B1349EE6500A84433 /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +136,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 939838A40DA4300F007F53F3;
 			remoteInfo = "ShortcutRecorder.ibplugin - for embedding in framework";
+		};
+		E27312471349EE4900A84433 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E273122D1349EC9000A84433 /* PTHotKey.framework */;
+			remoteInfo = PTHotKey.framework;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -212,6 +229,10 @@
 		93983B8A0DA441BB007F53F3 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Demo/English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCodeTranslator.h; sourceTree = "<group>"; };
 		A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCodeTranslator.m; sourceTree = "<group>"; };
+		E273122E1349EC9000A84433 /* PTHotKey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PTHotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E273122F1349EC9000A84433 /* PTHotKey-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PTHotKey-Info.plist"; sourceTree = "<group>"; };
+		E273124B1349EE6500A84433 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		E27312501349EE6E00A84433 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PTHotKey+ShortcutRecorder.h"; sourceTree = "<group>"; };
 		E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PTHotKey+ShortcutRecorder.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -265,6 +286,14 @@
 				93983B1C0DA43C4E007F53F3 /* Cocoa.framework in Frameworks */,
 				93983B1D0DA43C4E007F53F3 /* Carbon.framework in Frameworks */,
 				93983B1E0DA43C4E007F53F3 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E273122C1349EC9000A84433 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E273124C1349EE6500A84433 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +407,7 @@
 				93983B220DA43C4E007F53F3 /* ShortcutRecorder.app */,
 				342E00CF109CCBF5009AD8CA /* ShortcutRecorder.ibplugin */,
 				342E0104109CCC36009AD8CA /* ShortcutRecorder.framework */,
+				E273122E1349EC9000A84433 /* PTHotKey.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -390,6 +420,9 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				E273122F1349EC9000A84433 /* PTHotKey-Info.plist */,
+				E273124B1349EE6500A84433 /* Carbon.framework */,
+				E27312501349EE6E00A84433 /* Foundation.framework */,
 			);
 			name = ShortcutRecorder;
 			sourceTree = "<group>";
@@ -477,6 +510,17 @@
 				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
 				939839400DA4350B007F53F3 /* SRCommon.h in Headers */,
 				A1125B77104C8AF3005C6F7B /* PTKeyCodeTranslator.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E27312291349EC9000A84433 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E273123A1349EDB500A84433 /* PTHotKey.h in Headers */,
+				E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */,
+				E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */,
+				E273123D1349EDB500A84433 /* PTKeyCombo.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +618,23 @@
 			productReference = 93983B220DA43C4E007F53F3 /* ShortcutRecorder.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E273122D1349EC9000A84433 /* PTHotKey.framework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E27312381349EC9000A84433 /* Build configuration list for PBXNativeTarget "PTHotKey.framework" */;
+			buildPhases = (
+				E273122B1349EC9000A84433 /* Sources */,
+				E273122C1349EC9000A84433 /* Frameworks */,
+				E27312291349EC9000A84433 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PTHotKey.framework;
+			productName = PTHotKey;
+			productReference = E273122E1349EC9000A84433 /* PTHotKey.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -601,6 +662,7 @@
 				93983B060DA43C4E007F53F3 /* ShortcutRecorderFramework_Tester */,
 				342E00BA109CCBF5009AD8CA /* ShortcutRecorder.ibplugin - standalone */,
 				342E00EB109CCC36009AD8CA /* ShortcutRecorder.framework - for embedding in ibplugin */,
+				E273122D1349EC9000A84433 /* PTHotKey.framework */,
 			);
 		};
 /* End PBXProject section */
@@ -734,6 +796,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E273122B1349EC9000A84433 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E27312401349EDCA00A84433 /* PTHotKey.m in Sources */,
+				E27312411349EDCA00A84433 /* PTHotKeyCenter.m in Sources */,
+				E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */,
+				E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -756,6 +829,11 @@
 			isa = PBXTargetDependency;
 			target = 939838A40DA4300F007F53F3 /* ShortcutRecorder.ibplugin - for embedding in framework */;
 			targetProxy = 342E020D109CCE76009AD8CA /* PBXContainerItemProxy */;
+		};
+		E27312481349EE4900A84433 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E273122D1349EC9000A84433 /* PTHotKey.framework */;
+			targetProxy = E27312471349EE4900A84433 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -972,7 +1050,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "Framework/SR_LeopardFramework-Info.plist";
-				INSTALL_PATH = "@loader_path/../Frameworks";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -981,6 +1060,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = ShortcutRecorder;
+				SYMROOT = "$(SRCROOT)/../build";
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -999,7 +1079,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "Framework/SR_LeopardFramework-Info.plist";
-				INSTALL_PATH = "@loader_path/../Frameworks";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -1008,6 +1088,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = ShortcutRecorder;
+				SYMROOT = "$(SRCROOT)/../build";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -1113,13 +1194,15 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/../build";
 				WARNING_CFLAGS = "-Wall";
 				WARNING_LDFLAGS = "";
 			};
@@ -1136,9 +1219,64 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/../build";
 				WARNING_CFLAGS = "-Wall";
 				WARNING_LDFLAGS = "";
+			};
+			name = Release;
+		};
+		E27312361349EC9000A84433 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "PTHotKey-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = PTHotKey;
+			};
+			name = Debug;
+		};
+		E27312371349EC9000A84433 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "PTHotKey-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = PTHotKey;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1204,6 +1342,15 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E27312381349EC9000A84433 /* Build configuration list for PBXNativeTarget "PTHotKey.framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E27312361349EC9000A84433 /* Debug */,
+				E27312371349EC9000A84433 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
