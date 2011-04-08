@@ -106,6 +106,7 @@
 		E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */; };
 		E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0809CDBADE0085E9ED /* PTKeyCombo.m */; };
 		E273124C1349EE6500A84433 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273124B1349EE6500A84433 /* Carbon.framework */; };
+		E2BADEF4134F13B600F65E14 /* ShortcutRecorder.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0B68DD0709CC0BEB00596FC0 /* ShortcutRecorder.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -235,6 +236,7 @@
 		E27312501349EE6E00A84433 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PTHotKey+ShortcutRecorder.h"; sourceTree = "<group>"; };
 		E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PTHotKey+ShortcutRecorder.m"; sourceTree = "<group>"; };
+		E2BADE44134F0C6200F65E14 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -567,6 +569,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 939837840DA42965007F53F3 /* Build configuration list for PBXNativeTarget "ShortcutRecorder.framework - with embedded ibplugin" */;
 			buildPhases = (
+				E2BADF0A134F13CD00F65E14 /* Resources */,
 				9398377D0DA42965007F53F3 /* Sources */,
 				9398377E0DA42965007F53F3 /* Frameworks */,
 				9398394A0DA4351C007F53F3 /* Headers */,
@@ -651,6 +654,7 @@
 				German,
 				sv,
 				Dutch,
+				ru,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* ShortcutRecorder */;
 			projectDirPath = "";
@@ -701,6 +705,14 @@
 				93983B0C0DA43C4E007F53F3 /* SRRemoveShortcutRollover.tif in Resources */,
 				93983B0D0DA43C4E007F53F3 /* SRSnapback.tiff in Resources */,
 				93983B0E0DA43C4E007F53F3 /* ShortcutRecorder.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2BADF0A134F13CD00F65E14 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2BADEF4134F13B600F65E14 /* ShortcutRecorder.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,6 +865,7 @@
 				0B889A0A09CEC8BB0011F12B /* German */,
 				0BA347AB09E84C7A008B4374 /* sv */,
 				0B8216800A62B67D00E12BE3 /* Dutch */,
+				E2BADE44134F0C6200F65E14 /* ru */,
 			);
 			name = ShortcutRecorder.strings;
 			sourceTree = "<group>";
