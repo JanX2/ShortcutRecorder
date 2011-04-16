@@ -730,7 +730,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R \"$BUILT_PRODUCTS_DIR/ShortcutRecorder.ibplugin\" \"$BUILT_PRODUCTS_DIR/ShortcutRecorder.framework/Versions/A/Resources/\"\n";
+			shellScript = "cp -RfL \"$BUILT_PRODUCTS_DIR/ShortcutRecorder.ibplugin\" \"$BUILT_PRODUCTS_DIR/ShortcutRecorder.framework/Versions/A/Resources/\"\n";
 		};
 		939838C20DA430FB007F53F3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -911,7 +911,6 @@
 		342E00CD109CCBF5009AD8CA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1109,7 +1108,6 @@
 		939838A70DA43010007F53F3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
