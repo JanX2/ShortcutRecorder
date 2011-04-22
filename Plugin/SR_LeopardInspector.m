@@ -7,7 +7,7 @@
 //
 
 #import "SR_LeopardInspector.h"
-#import <ShortcutRecorder/ShortcutRecorder.h>
+#import "ShortcutRecorder.h"
 
 @implementation SR_LeopardInspector
 

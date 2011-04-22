@@ -7,8 +7,8 @@
 //
 
 #import <InterfaceBuilderKit/InterfaceBuilderKit.h>
-#import <ShortcutRecorder/SRCommon.h>
-#import <ShortcutRecorder/SRRecorderControl.h>
+#import "SRCommon.h"
+#import "SRRecorderControl.h"
 #import "SR_LeopardInspector.h"
 
 

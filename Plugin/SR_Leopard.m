@@ -6,7 +6,7 @@
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
-#import <ShortcutRecorder/ShortcutRecorder.h>
+#import "ShortcutRecorder.h"
 #import "SR_Leopard.h"
 //#import "SRRecorderControl+LeopardIB.m"
 
