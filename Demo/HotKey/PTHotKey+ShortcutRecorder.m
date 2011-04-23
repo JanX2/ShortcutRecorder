@@ -7,7 +7,7 @@
 //
 
 #import "PTHotKey+ShortcutRecorder.h"
-#import "SRCommon.h"
+#import <ShortcutRecorder/SRCommon.h>
 
 
 extern NSString* const SRShortcutCodeKey;

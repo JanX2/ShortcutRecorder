@@ -254,14 +254,14 @@
 		29B97314FDCFA39411CA2CEA /* ShortcutRecorder */ = {
 			isa = PBXGroup;
 			children = (
+				E27312501349EE6E00A84433 /* Foundation.framework */,
+				E273124B1349EE6500A84433 /* Carbon.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				E273122F1349EC9000A84433 /* PTHotKey-Info.plist */,
-				E273124B1349EE6500A84433 /* Carbon.framework */,
-				E27312501349EE6E00A84433 /* Foundation.framework */,
 			);
 			name = ShortcutRecorder;
 			sourceTree = "<group>";
@@ -560,16 +560,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(BUILT_PRODUCTS_DIR)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_FRAMEWORKS_DIR)\"";
+				FRAMEWORK_SEARCH_PATHS = /Developer/Library/Frameworks;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_GC = supported;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Plugin/SR_Leopard_Prefix.pch;
@@ -581,10 +575,8 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = ShortcutRecorder;
 				WRAPPER_EXTENSION = ibplugin;
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -593,15 +585,9 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)",
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_FRAMEWORKS_DIR)\"";
+				FRAMEWORK_SEARCH_PATHS = /Developer/Library/Frameworks;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_GC = supported;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Plugin/SR_Leopard_Prefix.pch;
 				INFOPLIST_FILE = "Plugin/SR_PluginStandalone-Info.plist";
@@ -612,10 +598,8 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = ShortcutRecorder;
 				WRAPPER_EXTENSION = ibplugin;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -629,7 +613,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_GC = supported;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
@@ -642,10 +625,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = ShortcutRecorder;
-				SYMROOT = "$(SRCROOT)/../build";
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -653,13 +633,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_GC = supported;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "Framework/SR_LeopardFramework-Info.plist";
@@ -670,10 +648,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = ShortcutRecorder;
-				SYMROOT = "$(SRCROOT)/../build";
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -684,18 +659,16 @@
 					i386,
 					x86_64,
 				);
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
-				SYMROOT = "$(SRCROOT)/../build";
-				VALID_ARCHS = "i386 x86_64";
 				WARNING_CFLAGS = "-Wall";
 				WARNING_LDFLAGS = "";
 			};
@@ -708,17 +681,15 @@
 					i386,
 					x86_64,
 				);
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
-				SYMROOT = "$(SRCROOT)/../build";
-				VALID_ARCHS = "i386 x86_64";
 				WARNING_CFLAGS = "-Wall";
 				WARNING_LDFLAGS = "";
 			};
@@ -734,7 +705,6 @@
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
@@ -746,7 +716,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = PTHotKey;
 			};
 			name = Debug;
@@ -761,7 +730,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "PTHotKey-Info.plist";
@@ -772,9 +740,7 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = PTHotKey;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
