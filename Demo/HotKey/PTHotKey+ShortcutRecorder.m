@@ -20,9 +20,10 @@ extern NSString* const SRShortcutFlagsKey;
                             target:(id)aTarget
                             action:(SEL)anAction
 {
-    PTKeyCombo *newKeyCombo = [[PTKeyCombo alloc] initWithKeyCode:[[aKeyCombo objectForKey:SRShortcutCodeKey] integerValue]
-                                                        modifiers:SRCocoaToCarbonFlags([[aKeyCombo objectForKey:SRShortcutFlagsKey] unsignedIntegerValue])];
-    PTHotKey *newHotKey = [[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo];
+    NSInteger keyCode = [[aKeyCombo objectForKey:SRShortcutCodeKey] integerValue];
+    NSUInteger modifiers = SRCocoaToCarbonFlags([[aKeyCombo objectForKey:SRShortcutFlagsKey] unsignedIntegerValue]);
+    PTKeyCombo *newKeyCombo = [[[PTKeyCombo alloc] initWithKeyCode:keyCode modifiers:modifiers] autorelease];
+    PTHotKey *newHotKey = [[[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo] autorelease];
     [newHotKey setTarget:aTarget];
     [newHotKey setAction:anAction];
     return newHotKey;
