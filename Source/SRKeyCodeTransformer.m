@@ -164,6 +164,16 @@ static NSArray              *padKeysArray        = nil;
 	CFDataRef layoutData;
 	UInt32 keysDown = 0;
 	layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
+
+	CFRelease(tisSource);
+
+	// For non-unicode layouts such as Chinese, Japanese, and Korean, get the ASCII capable layout
+	if(!layoutData) {
+		tisSource = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
+		layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
+		CFRelease(tisSource);
+	}
+
 	if(!layoutData) return nil;
 
 	const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
