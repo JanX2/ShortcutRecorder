@@ -65,12 +65,19 @@
 	}
 	
 	// then our implementation...
-	NSArray *globalHotKeys;
+	CFArrayRef tempArray = NULL;
+	OSStatus err = noErr;
 	
 	// get global hot keys...
-	if ( CopySymbolicHotKeys((CFArrayRef *)&globalHotKeys ) != noErr )
-		return YES;
-	
+	err = CopySymbolicHotKeys( &tempArray );
+
+	if ( err != noErr ) return YES;
+
+	// Not copying the array like this results in a leak on according to the Leaks Instrumen
+	NSArray *globalHotKeys = [NSArray arrayWithArray:(NSArray *)tempArray];
+
+	if ( tempArray ) CFRelease(tempArray);
+
 	NSEnumerator *globalHotKeysEnumerator = [globalHotKeys objectEnumerator];
 	NSDictionary *globalHotKeyInfoDictionary;
 	int32_t globalHotKeyFlags;

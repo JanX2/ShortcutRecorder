@@ -169,11 +169,9 @@ NSString *SRCharacterForKeyCodeAndCocoaFlags(NSInteger keyCode, NSUInteger cocoa
 #define	FailWithNaiveString SRStringForKeyCode(keyCode)
 	
 	UInt32              deadKeyState;
-    OSStatus err = noErr;
-    CFLocaleRef locale = CFLocaleCopyCurrent();
+	OSStatus err = noErr;
+	CFLocaleRef locale = CFLocaleCopyCurrent();
 	[(id)CFMakeCollectable(locale) autorelease]; // Autorelease here so that it gets released no matter what
-	
-	CFMutableStringRef resultString;
 	
 	TISInputSourceRef tisSource = TISCopyCurrentKeyboardInputSource();
     if(!tisSource)
@@ -186,8 +184,7 @@ NSString *SRCharacterForKeyCodeAndCocoaFlags(NSInteger keyCode, NSUInteger cocoa
 	const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
     if (!keyLayout)
 		return FailWithNaiveString;
-	
-    
+
 	EventModifiers modifiers = 0;
 	if (cocoaFlags & NSAlternateKeyMask)	modifiers |= optionKey;
 	if (cocoaFlags & NSShiftKeyMask)		modifiers |= shiftKey;
@@ -196,15 +193,19 @@ NSString *SRCharacterForKeyCodeAndCocoaFlags(NSInteger keyCode, NSUInteger cocoa
 	err = UCKeyTranslate( keyLayout, (UInt16)keyCode, kUCKeyActionDisplay, modifiers, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &deadKeyState, maxStringLength, &actualStringLength, unicodeString );
 	if(err != noErr)
 		return FailWithNaiveString;
+
 	CFStringRef temp = CFStringCreateWithCharacters(kCFAllocatorDefault, unicodeString, 1);
-	resultString = CFStringCreateMutableCopy(kCFAllocatorDefault, 0,temp);
-	if (temp)
-		CFRelease(temp);
-	CFStringCapitalize(resultString, locale);
-	
+	CFMutableStringRef mutableTemp = CFStringCreateMutableCopy(kCFAllocatorDefault, 0, temp);
+
+	CFStringCapitalize(mutableTemp, locale);
+
+	NSString *resultString = [NSString stringWithString:(NSString *)mutableTemp];
+
+	if (temp) CFRelease(temp);
+	if (mutableTemp) CFRelease(mutableTemp);
 	PUDNSLog(@"character: -%@-", (NSString *)resultString);
 	
-	return (NSString *)resultString;
+	return resultString;
 }
 
 #pragma mark Animation Easing
