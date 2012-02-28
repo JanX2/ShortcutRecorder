@@ -283,4 +283,9 @@
     return NO;
 }
 
+- (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRValidator *)validator
+{
+    return NO;
+}
+
 @end
