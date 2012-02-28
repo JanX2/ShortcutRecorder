@@ -48,6 +48,9 @@
 		E294881C1361B9AA00FA83B8 /* SRValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670F0A246B4900B69171 /* SRValidator.m */; };
 		E294881D1361B9AA00FA83B8 /* SRCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C367110A246B4900B69171 /* SRCommon.m */; };
 		E294881E1361B9AA00FA83B8 /* SR_LeopardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 939837B20DA42DC5007F53F3 /* SR_LeopardView.m */; };
+		E2BA74A414FAA55900449E42 /* SRASCIIKeyCodeTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BA74A214FAA55900449E42 /* SRASCIIKeyCodeTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E2BA74A514FAA55900449E42 /* SRASCIIKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BA74A314FAA55900449E42 /* SRASCIIKeyCodeTransformer.m */; };
+		E2BA74A714FAACD000449E42 /* SRASCIIKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BA74A314FAA55900449E42 /* SRASCIIKeyCodeTransformer.m */; };
 		E2BADEF4134F13B600F65E14 /* ShortcutRecorder.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0B68DD0709CC0BEB00596FC0 /* ShortcutRecorder.strings */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +113,8 @@
 		E27312501349EE6E00A84433 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PTHotKey+ShortcutRecorder.h"; sourceTree = "<group>"; };
 		E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PTHotKey+ShortcutRecorder.m"; sourceTree = "<group>"; };
+		E2BA74A214FAA55900449E42 /* SRASCIIKeyCodeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRASCIIKeyCodeTransformer.h; sourceTree = "<group>"; };
+		E2BA74A314FAA55900449E42 /* SRASCIIKeyCodeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRASCIIKeyCodeTransformer.m; sourceTree = "<group>"; };
 		E2BADE44134F0C6200F65E14 /* ShortcutRecorder.strings */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = ShortcutRecorder.strings; path = ru.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +186,8 @@
 				74C3670F0A246B4900B69171 /* SRValidator.m */,
 				74C367100A246B4900B69171 /* SRCommon.h */,
 				74C367110A246B4900B69171 /* SRCommon.m */,
+				E2BA74A214FAA55900449E42 /* SRASCIIKeyCodeTransformer.h */,
+				E2BA74A314FAA55900449E42 /* SRASCIIKeyCodeTransformer.m */,
 			);
 			name = Framework;
 			path = Source;
@@ -331,6 +338,7 @@
 				9398393B0DA4350B007F53F3 /* SRRecorderControl.h in Headers */,
 				9398393C0DA4350B007F53F3 /* SRRecorderCell.h in Headers */,
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
+				E2BA74A414FAA55900449E42 /* SRASCIIKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
 				939839400DA4350B007F53F3 /* SRCommon.h in Headers */,
 				A1125B77104C8AF3005C6F7B /* PTKeyCodeTranslator.h in Headers */,
@@ -462,6 +470,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2BA74A714FAACD000449E42 /* SRASCIIKeyCodeTransformer.m in Sources */,
 				E29488191361B9AA00FA83B8 /* SRRecorderControl.m in Sources */,
 				E294881A1361B9AA00FA83B8 /* SRRecorderCell.m in Sources */,
 				E294881B1361B9AA00FA83B8 /* SRKeyCodeTransformer.m in Sources */,
@@ -484,6 +493,7 @@
 				939837990DA429EC007F53F3 /* SRValidator.m in Sources */,
 				9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */,
 				939837B40DA42DC5007F53F3 /* SR_LeopardView.m in Sources */,
+				E2BA74A514FAA55900449E42 /* SRASCIIKeyCodeTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
