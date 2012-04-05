@@ -13,6 +13,7 @@
 //      Ilya Kulakov
 //      Silvio Rizzi
 
+#import <AppKit/AppKit.h>
 #import "SRKeyCodeTransformer.h"
 #import "SRCommon.h"
 
@@ -37,6 +38,18 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
     return sharedTransformer;
 }
 
++ (SRKeyCodeTransformer *)sharedPlainTransformer
+{
+    static dispatch_once_t onceToken;
+    static SRKeyCodeTransformer *sharedTransformer = nil;
+    dispatch_once(&onceToken, ^
+    {
+        sharedTransformer = [[self alloc] init];
+        sharedTransformer.transformsfunctionKeysToPlainStrings = YES;
+    });
+    return sharedTransformer;
+}
+
 - (id)init
 {
     if ((self = [super init]))
@@ -56,6 +69,26 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
     [_cache release];
     [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
+}
+
+
+#pragma mark Properties
+@synthesize transformsfunctionKeysToPlainStrings;
+
+- (void)setTransformsfunctionKeysToPlainStrings:(BOOL)newTransformsfunctionKeysToPlainStrings
+{
+    if (newTransformsfunctionKeysToPlainStrings != transformsfunctionKeysToPlainStrings)
+    {
+        [self willChangeValueForKey:@"transformsfunctionKeysToPlainStrings"];
+        self._specialKeyCodeStringsDictionary = nil;
+        transformsfunctionKeysToPlainStrings = newTransformsfunctionKeysToPlainStrings;
+        [self didChangeValueForKey:@"transformsfunctionKeysToPlainStrings"];
+    }
+}
+
++ (BOOL)automaticallyNotifiesObserversOfTransformsfunctionKeysToPlainStrings
+{
+    return NO;
 }
 
 
@@ -157,43 +190,43 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
         if (d == nil)
         {
             d = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  @"F1", SRInt(122),
-                                  @"F2", SRInt(120),
-                                  @"F3", SRInt(99),
-                                  @"F4", SRInt(118),
-                                  @"F5", SRInt(96),
-                                  @"F6", SRInt(97),
-                                  @"F7", SRInt(98),
-                                  @"F8", SRInt(100),
-                                  @"F9", SRInt(101),
-                                  @"F10", SRInt(109),
-                                  @"F11", SRInt(103),
-                                  @"F12", SRInt(111),
-                                  @"F13", SRInt(105),
-                                  @"F14", SRInt(107),
-                                  @"F15", SRInt(113),
-                                  @"F16", SRInt(106),
-                                  @"F17", SRInt(64),
-                                  @"F18", SRInt(79),
-                                  @"F19", SRInt(80),
-                                  SRChar(KeyboardSpaceGlyph), SRInt(49),
-                                  SRChar(KeyboardDeleteLeftGlyph), SRInt(51),
-                                  SRChar(KeyboardDeleteRightGlyph), SRInt(117),
-                                  SRChar(KeyboardPadClearGlyph), SRInt(71),
-                                  SRChar(KeyboardLeftArrowGlyph), SRInt(123),
-                                  SRChar(KeyboardRightArrowGlyph), SRInt(124),
-                                  SRChar(KeyboardUpArrowGlyph), SRInt(126),
-                                  SRChar(KeyboardDownArrowGlyph), SRInt(125),
-                                  SRChar(KeyboardSoutheastArrowGlyph), SRInt(119),
-                                  SRChar(KeyboardNorthwestArrowGlyph), SRInt(115),
-                                  SRChar(KeyboardEscapeGlyph), SRInt(53),
-                                  SRChar(KeyboardPageDownGlyph), SRInt(121),
-                                  SRChar(KeyboardPageUpGlyph), SRInt(116),
-                                  SRChar(KeyboardReturnR2LGlyph), SRInt(36),
-                                  SRChar(KeyboardReturnGlyph), SRInt(76),
-                                  SRChar(KeyboardTabRightGlyph), SRInt(48),
-                                  SRChar(KeyboardHelpGlyph), SRInt(114),
-                                  nil];
+                 self.transformsfunctionKeysToPlainStrings ? @"F1" : SRChar(NSF1FunctionKey),   SRInt(kSRKeysF1),
+                 self.transformsfunctionKeysToPlainStrings ? @"F2" : SRChar(NSF2FunctionKey),   SRInt(kSRKeysF2),
+                 self.transformsfunctionKeysToPlainStrings ? @"F3" : SRChar(NSF3FunctionKey),   SRInt(kSRKeysF3),
+                 self.transformsfunctionKeysToPlainStrings ? @"F4" : SRChar(NSF4FunctionKey),   SRInt(kSRKeysF4),
+                 self.transformsfunctionKeysToPlainStrings ? @"F5" : SRChar(NSF5FunctionKey),   SRInt(kSRKeysF5),
+                 self.transformsfunctionKeysToPlainStrings ? @"F6" : SRChar(NSF6FunctionKey),   SRInt(kSRKeysF6),
+                 self.transformsfunctionKeysToPlainStrings ? @"F7" : SRChar(NSF7FunctionKey),   SRInt(kSRKeysF7),
+                 self.transformsfunctionKeysToPlainStrings ? @"F8" : SRChar(NSF8FunctionKey),   SRInt(kSRKeysF8),
+                 self.transformsfunctionKeysToPlainStrings ? @"F9" : SRChar(NSF9FunctionKey),   SRInt(kSRKeysF9),
+                 self.transformsfunctionKeysToPlainStrings ? @"F10" : SRChar(NSF10FunctionKey), SRInt(kSRKeysF10),
+                 self.transformsfunctionKeysToPlainStrings ? @"F11" : SRChar(NSF11FunctionKey), SRInt(kSRKeysF11),
+                 self.transformsfunctionKeysToPlainStrings ? @"F12" : SRChar(NSF12FunctionKey), SRInt(kSRKeysF12),
+                 self.transformsfunctionKeysToPlainStrings ? @"F13" : SRChar(NSF13FunctionKey), SRInt(kSRKeysF13),
+                 self.transformsfunctionKeysToPlainStrings ? @"F14" : SRChar(NSF14FunctionKey), SRInt(kSRKeysF14),
+                 self.transformsfunctionKeysToPlainStrings ? @"F15" : SRChar(NSF15FunctionKey), SRInt(kSRKeysF15),
+                 self.transformsfunctionKeysToPlainStrings ? @"F16" : SRChar(NSF16FunctionKey), SRInt(kSRKeysF16),
+                 self.transformsfunctionKeysToPlainStrings ? @"F17" : SRChar(NSF17FunctionKey), SRInt(kSRKeysF17),
+                 self.transformsfunctionKeysToPlainStrings ? @"F18" : SRChar(NSF18FunctionKey), SRInt(kSRKeysF18),
+                 self.transformsfunctionKeysToPlainStrings ? @"F19" : SRChar(NSF19FunctionKey), SRInt(kSRKeysF19),
+                 SRChar(KeyboardSpaceGlyph),                                                    SRInt(kSRKeysSpace),
+                 SRChar(KeyboardDeleteLeftGlyph),                                               SRInt(kSRKeysDeleteLeft),
+                 SRChar(KeyboardDeleteRightGlyph),                                              SRInt(kSRKeysDeleteRight),
+                 SRChar(KeyboardPadClearGlyph),                                                 SRInt(kSRKeysPadClear),
+                 SRChar(KeyboardLeftArrowGlyph),                                                SRInt(kSRKeysLeftArrow),
+                 SRChar(KeyboardRightArrowGlyph),                                               SRInt(kSRKeysRightArrow),
+                 SRChar(KeyboardUpArrowGlyph),                                                  SRInt(kSRKeysUpArrow),
+                 SRChar(KeyboardDownArrowGlyph),                                                SRInt(kSRKeysDownArrow),
+                 SRChar(KeyboardSoutheastArrowGlyph),                                           SRInt(kSRKeysSoutheastArrow),
+                 SRChar(KeyboardNorthwestArrowGlyph),                                           SRInt(kSRKeysNorthwestArrow),
+                 SRChar(KeyboardEscapeGlyph),                                                   SRInt(kSRKeysEscape),
+                 SRChar(KeyboardPageDownGlyph),                                                 SRInt(kSRKeysPageDown),
+                 SRChar(KeyboardPageUpGlyph),                                                   SRInt(kSRKeysPageUp),
+                 SRChar(KeyboardReturnR2LGlyph),                                                SRInt(kSRKeysReturnR2L),
+                 SRChar(KeyboardReturnGlyph),                                                   SRInt(kSRKeysReturn),
+                 SRChar(KeyboardTabRightGlyph),                                                 SRInt(kSRKeysTabRight),
+                 SRChar(KeyboardHelpGlyph),                                                     SRInt(kSRKeysHelp),
+                 nil];
         }
         return d;
     }

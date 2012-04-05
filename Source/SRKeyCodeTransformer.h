@@ -19,10 +19,23 @@
 
 @interface SRKeyCodeTransformer : NSValueTransformer
 {
+    BOOL transformsfunctionKeysToPlainStrings;
+
     NSCache *_cache;
 }
 
+/*!
+ @abstract      Determines whether functional keys (F1...F19) are transformed to single-char unicode keys
+ (NSF1FunctionKey...NSF19FunctionKey) or to plain strings (@"F1"...@"F19")
+ @discussion    Defaults to NO.
+ If want to draw result of transforming, you should set this value to YES.
+ If you want to set the result as key equivalent of NSMenuItem or NSButton (etc), you should set this value to NO.
+ */
+@property (nonatomic) BOOL transformsfunctionKeysToPlainStrings;
+
 + (SRKeyCodeTransformer *)sharedTransformer;
+
++ (SRKeyCodeTransformer *)sharedPlainTransformer;
 
 /*!
  @discussion    You are responsible for releasing the result.

@@ -44,11 +44,27 @@ NSString *SRStringForKeyCode(NSInteger keyCode)
 }
 
 //----------------------------------------------------------
+// SRPlainStringForKeyCode()
+//----------------------------------------------------------
+NSString *SRPlainStringForKeyCode(NSInteger keyCode)
+{
+    return [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
+}
+
+//----------------------------------------------------------
 // SRASCIIStringForKeyCode()
 //----------------------------------------------------------
 NSString *SRASCIIStringForKeyCode(NSInteger keyCode)
 {
     return [[SRASCIIKeyCodeTransformer sharedTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
+}
+
+//----------------------------------------------------------
+// SRPlainASCIIStringForKeyCode()
+//----------------------------------------------------------
+NSString *SRPlainASCIIStringForKeyCode(NSInteger keyCode)
+{
+    return [[SRASCIIKeyCodeTransformer sharedPlainTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
 }
 
 //----------------------------------------------------------

@@ -1041,7 +1041,7 @@
 
     return [NSString stringWithFormat:@"%@%@",
                                       SRStringForCocoaModifierFlags(keyCombo.flags),
-                                      isASCIIOnly ? SRASCIIStringForKeyCode(keyCombo.code) : SRStringForKeyCode(keyCombo.code)];
+                                      isASCIIOnly ? SRPlainASCIIStringForKeyCode(keyCombo.code) : SRPlainStringForKeyCode(keyCombo.code)];
 }
 
 - (NSString *)keyChars

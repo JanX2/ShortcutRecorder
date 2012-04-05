@@ -27,6 +27,18 @@
     return sharedTransformer;
 }
 
++ (SRASCIIKeyCodeTransformer *)sharedPlainTransformer
+{
+    static dispatch_once_t onceToken;
+    static SRASCIIKeyCodeTransformer *sharedTransformer = nil;
+    dispatch_once(&onceToken, ^
+    {
+        sharedTransformer = [[self alloc] init];
+        sharedTransformer.transformsfunctionKeysToPlainStrings = YES;
+    });
+    return sharedTransformer;
+}
+
 + (TISInputSourceRef)preferredKeyboardInputSource
 {
     return [self ASCIICapableKeyboardInputSource];

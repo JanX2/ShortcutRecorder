@@ -148,7 +148,11 @@ enum
 //
 NSString *SRStringForKeyCode(NSInteger keyCode);
 
+NSString *SRPlainStringForKeyCode(NSInteger keyCode);
+
 NSString *SRASCIIStringForKeyCode(NSInteger keyCode);
+
+NSString *SRPlainASCIIStringForKeyCode(NSInteger keyCode);
 
 NSString *SRStringForCarbonModifierFlags(NSUInteger flags);
 
