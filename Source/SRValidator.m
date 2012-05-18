@@ -49,12 +49,13 @@
             if (error)
             {
                 BOOL isASCIIOnly = [delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
+                NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRReadableStringForCarbonModifierFlagsAndKeyCode(flags, keyCode);
                 NSString *description = [NSString stringWithFormat:
                                                       SRLoc(@"The key combination %@ can't be used!"),
-                                                      isASCIIOnly ? SRASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRStringForCarbonModifierFlagsAndKeyCode(flags, keyCode)];
+                                                      shortcut];
                 NSString *recoverySuggestion = [NSString stringWithFormat:
                                                              SRLoc(@"The key combination \"%@\" can't be used because %@."),
-                                                             isASCIIOnly ? SRReadableASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRReadableStringForCarbonModifierFlagsAndKeyCode(flags, keyCode),
+                                                             shortcut,
                                                              (delegateReason && [delegateReason length]) ? delegateReason : @"it's already used"];
                 NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                                            description, NSLocalizedDescriptionKey,
@@ -133,12 +134,14 @@
             if (error)
             {
                 BOOL isASCIIOnly = [delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
+                NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRReadableStringForCarbonModifierFlagsAndKeyCode(flags, keyCode);
                 NSString *description = [NSString stringWithFormat:
                                                       SRLoc(@"The key combination %@ can't be used!"),
-                                                      isASCIIOnly ? SRASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRStringForCarbonModifierFlagsAndKeyCode(flags, keyCode)];
+                                                      shortcut];
                 NSString *recoverySuggestion = [NSString stringWithFormat:
                                                              SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. (If you really want to use this key combination, most shortcuts can be changed in the Keyboard & Mouse panel in System Preferences.)"),
-                                                             isASCIIOnly ? SRReadableASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRReadableStringForCarbonModifierFlagsAndKeyCode(flags, keyCode)];
+                                                             shortcut
+                                                             ];
                 NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                                            description, NSLocalizedDescriptionKey,
                                                            recoverySuggestion, NSLocalizedRecoverySuggestionErrorKey,
@@ -226,12 +229,13 @@
                 if (error)
                 {
                     BOOL isASCIIOnly = [delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
+                    NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(menuItemModifierFlags, keyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(menuItemModifierFlags, keyCode);
                     NSString *description = [NSString stringWithFormat:
                                                           SRLoc(@"The key combination %@ can't be used!"),
-                                                          isASCIIOnly ? SRASCIIStringForCarbonModifierFlagsAndKeyCode(flags, keyCode) : SRStringForCarbonModifierFlagsAndKeyCode(flags, keyCode)];
+                                                          shortcut];
                     NSString *recoverySuggestion = [NSString stringWithFormat:
                                                                  SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."),
-                                                                 isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(menuItemModifierFlags, keyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(menuItemModifierFlags, keyCode),
+                                                                 shortcut,
                                                                  [menuItem title]];
                     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                description, NSLocalizedDescriptionKey,

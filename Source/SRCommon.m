@@ -144,7 +144,7 @@ NSString *SRReadableStringForCarbonModifierFlagsAndKeyCode(NSUInteger flags, NSI
                                                           (flags & optionKey ? SRLoc(@"Option + ") : @""),
                                                           (flags & controlKey ? SRLoc(@"Control + ") : @""),
                                                           (flags & shiftKey ? SRLoc(@"Shift + ") : @""),
-                                                          SRStringForKeyCode(keyCode)];
+                                                          SRPlainStringForKeyCode(keyCode)];
     return readableString;
 }
 
@@ -158,7 +158,7 @@ NSString *SRReadableASCIIStringForCarbonModifierFlagsAndKeyCode(NSUInteger flags
                                                           (flags & optionKey ? SRLoc(@"Option + ") : @""),
                                                           (flags & controlKey ? SRLoc(@"Control + ") : @""),
                                                           (flags & shiftKey ? SRLoc(@"Shift + ") : @""),
-                                                          SRASCIIStringForKeyCode(keyCode)];
+                                                          SRPlainASCIIStringForKeyCode(keyCode)];
     return readableString;
 }
 
@@ -172,7 +172,7 @@ NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger flags, NSIn
                                                           (flags & NSAlternateKeyMask ? SRLoc(@"Option + ") : @""),
                                                           (flags & NSControlKeyMask ? SRLoc(@"Control + ") : @""),
                                                           (flags & NSShiftKeyMask ? SRLoc(@"Shift + ") : @""),
-                                                          SRStringForKeyCode(keyCode)];
+                                                          SRPlainStringForKeyCode(keyCode)];
     return readableString;
 }
 
@@ -186,7 +186,7 @@ NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger flags,
                                                           (flags & NSAlternateKeyMask ? SRLoc(@"Option + ") : @""),
                                                           (flags & NSControlKeyMask ? SRLoc(@"Control + ") : @""),
                                                           (flags & NSShiftKeyMask ? SRLoc(@"Shift + ") : @""),
-                                                          SRASCIIStringForKeyCode(keyCode)];
+                                                          SRPlainASCIIStringForKeyCode(keyCode)];
     return readableString;
 }
 
