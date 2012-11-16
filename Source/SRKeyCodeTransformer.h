@@ -49,6 +49,8 @@
 
 - (BOOL)isSpecialKeyCode:(NSInteger)aKeyCode;
 
+- (BOOL)isPadKeyCode:(NSInteger)aKeyCode;
+
 
 @property (nonatomic, retain) NSDictionary *_reverseTransformDictionary;
 

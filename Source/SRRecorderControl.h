@@ -98,4 +98,6 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (void)shortcutRecorder:(SRRecorderControl *)aRecorder keyComboDidChange:(KeyCombo)newKeyCombo;
 
 - (BOOL)shortcutRecorderShouldCheckMenu:(SRRecorderControl *)aRecorder;
+
+- (BOOL)shortcutRecorderShouldSystemShortcuts:(SRRecorderControl *)aRecorder;
 @end

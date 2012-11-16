@@ -412,6 +412,14 @@ NSString *const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModi
         return NO;
 }
 
+- (BOOL)shortcutRecorderCellShouldSystemShortcuts:(SRRecorderCell *)aRecorderCell
+{
+    if (delegate != nil && [delegate respondsToSelector:@selector(shortcutRecorderShouldSystemShortcuts:)])
+        return [delegate shortcutRecorderShouldSystemShortcuts:self];
+    else
+        return YES;
+}
+
 @end
 
 @implementation SRRecorderControl (Private)

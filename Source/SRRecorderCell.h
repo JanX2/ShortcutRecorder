@@ -13,6 +13,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "SRCommon.h"
+#import "SRValidator.h"
 
 #define SRMinWidth 50
 #define SRMaxHeight 22
@@ -26,7 +27,7 @@
 
 #define SRAnimationOffsetRect(X,Y)    (SRAnimationAxisIsY ? NSOffsetRect(X,0.0f,-NSHeight(Y)) : NSOffsetRect(X,NSWidth(Y),0.0f))
 
-@class SRRecorderControl, SRValidator;
+@class SRRecorderControl;
 
 enum SRRecorderStyle
 {
@@ -35,7 +36,7 @@ enum SRRecorderStyle
 };
 typedef enum SRRecorderStyle SRRecorderStyle;
 
-@interface SRRecorderCell : NSActionCell
+@interface SRRecorderCell : NSActionCell <SRValidatorDelegate>
 {
     NSGradient *recordingGradient;
     NSString *autosaveName;
@@ -153,4 +154,7 @@ typedef enum SRRecorderStyle SRRecorderStyle;
 - (void)shortcutRecorderCell:(SRRecorderCell *)aRecorderCell keyComboDidChange:(KeyCombo)newCombo;
 
 - (BOOL)shortcutRecorderCellShouldCheckMenu:(SRRecorderCell *)aRecorderCell;
+
+- (BOOL)shortcutRecorderCellShouldSystemShortcuts:(SRRecorderCell *)aRecorderCell;
+
 @end

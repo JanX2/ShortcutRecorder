@@ -13,7 +13,7 @@
 
 #import "SRRecorderCell.h"
 #import "SRRecorderControl.h"
-#import "SRValidator.h"
+
 
 @interface SRRecorderCell (Private)
 
@@ -42,8 +42,6 @@
 - (NSRect)_snapbackRectForFrame:(NSRect)cellFrame;
 
 - (NSUInteger)_filteredCocoaFlags:(NSUInteger)flags;
-
-- (NSUInteger)_filteredCocoaToCarbonFlags:(NSUInteger)cocoaFlags;
 
 - (BOOL)_validModifierFlags:(NSUInteger)flags;
 
@@ -877,7 +875,7 @@
 
                     // Check if key combination is already used or not allowed by the delegate
                     if ([validator isKeyCode:[theEvent keyCode]
-                               andFlagsTaken:[self _filteredCocoaToCarbonFlags:flags]
+                               andFlagsTaken:[self _filteredCocoaFlags:flags]
                                        error:&error])
                     {
                         // display the error...
@@ -1041,7 +1039,7 @@
 
     return [NSString stringWithFormat:@"%@%@",
                                       SRStringForCocoaModifierFlags(keyCombo.flags),
-                                      isASCIIOnly ? SRPlainASCIIStringForKeyCode(keyCombo.code) : SRPlainStringForKeyCode(keyCombo.code)];
+                                      isASCIIOnly ? [SRPlainASCIIStringForKeyCode(keyCombo.code) uppercaseString] : [SRPlainStringForKeyCode(keyCombo.code) uppercaseString]];
 }
 
 - (NSString *)keyChars
@@ -1310,24 +1308,6 @@
     return (allowsKeyOnly ? YES : (((flags & NSCommandKeyMask) || (flags & NSAlternateKeyMask) || (flags & NSControlKeyMask) || (flags & NSShiftKeyMask) || (flags & NSFunctionKeyMask)) ? YES : NO));
 }
 
-#pragma mark -
-
-- (NSUInteger)_filteredCocoaToCarbonFlags:(NSUInteger)cocoaFlags
-{
-    NSUInteger carbonFlags = ShortcutRecorderEmptyFlags;
-    NSUInteger filteredFlags = [self _filteredCocoaFlags:cocoaFlags];
-
-    if (filteredFlags & NSCommandKeyMask) carbonFlags |= cmdKey;
-    if (filteredFlags & NSAlternateKeyMask) carbonFlags |= optionKey;
-    if (filteredFlags & NSControlKeyMask) carbonFlags |= controlKey;
-    if (filteredFlags & NSShiftKeyMask) carbonFlags |= shiftKey;
-
-    // I couldn't find out the equivalent constant in Carbon, but apparently it must use the same one as Cocoa. -AK
-    if (filteredFlags & NSFunctionKeyMask) carbonFlags |= NSFunctionKeyMask;
-
-    return carbonFlags;
-}
-
 #pragma mark *** Internal Check ***
 
 - (BOOL)_isEmpty
@@ -1355,6 +1335,16 @@
         return [delegate shortcutRecorderCellShouldCheckMenu:self];
     }
     return NO;
+}
+
+- (BOOL)shortcutValidatorShouldCheckSystemShortcuts:(SRValidator *)aValidator
+{
+    SEL selector = @selector( shortcutRecorderCellShouldSystemShortcuts: );
+    if ((delegate) && ([delegate respondsToSelector:selector]))
+    {
+        return [delegate shortcutRecorderCellShouldSystemShortcuts:self];
+    }
+    return YES;
 }
 
 - (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRValidator *)validator

@@ -122,7 +122,7 @@ enum
 
 // Macros for glyps
 #define SRInt(x) [NSNumber numberWithInteger:x]
-#define SRChar(x) [NSString stringWithFormat: @"%C", x]
+#define SRChar(x) [NSString stringWithFormat: @"%C", (unichar)(x)]
 
 // Some default values
 #define ShortcutRecorderEmptyFlags 0
@@ -184,6 +184,10 @@ NSUInteger SRCarbonToCocoaFlags(NSUInteger carbonFlags);
 
 NSUInteger SRCocoaToCarbonFlags(NSUInteger cocoaFlags);
 
+static const NSUInteger SRCocoaFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask | NSFunctionKeyMask;
+
+static const NSUInteger SRCarbonFlagsMask = cmdKey | optionKey | shiftKey | controlKey | NSFunctionKeyMask;
+
 #pragma mark -
 #pragma mark Animation pace function
 
@@ -225,3 +229,4 @@ FOUNDATION_STATIC_INLINE BOOL SRIsSpecialKey(NSInteger keyCode)
 
 + (NSImage *)supportingImageWithName:(NSString *)name;
 @end
+
