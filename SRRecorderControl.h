@@ -2,7 +2,7 @@
 //  SRRecorderControl.h
 //  ShortcutRecorder
 //
-//  Copyright 2006-2007 Contributors. All rights reserved.
+//  Copyright 2006-2012 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -25,56 +25,38 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     IBOutlet id delegate;
 }
 
-#pragma mark *** Aesthetics ***
-- (BOOL)animates;
+@property (nonatomic) BOOL animates;
 
-- (void)setAnimates:(BOOL)an;
+@property (nonatomic) SRRecorderStyle style;
 
-- (SRRecorderStyle)style;
+@property (assign) id delegate;
 
-- (void)setStyle:(SRRecorderStyle)nStyle;
+@property (nonatomic) NSUInteger allowedFlags;
 
-#pragma mark *** Delegate ***
-- (id)delegate;
+@property (readonly, nonatomic) BOOL allowsKeyOnly;
 
-- (void)setDelegate:(id)aDelegate;
-
-#pragma mark *** Key Combination Control ***
-
-- (NSUInteger)allowedFlags;
-
-- (void)setAllowedFlags:(NSUInteger)flags;
-
-- (BOOL)allowsKeyOnly;
+@property (readonly, nonatomic) BOOL escapeKeysRecord;
 
 - (void)setAllowsKeyOnly:(BOOL)nAllowsKeyOnly escapeKeysRecord:(BOOL)nEscapeKeysRecord;
 
-- (BOOL)escapeKeysRecord;
+@property (nonatomic) BOOL canCaptureGlobalHotKeys;
 
-- (BOOL)canCaptureGlobalHotKeys;
+@property (nonatomic) NSUInteger requiredFlags;
 
-- (void)setCanCaptureGlobalHotKeys:(BOOL)inState;
+@property (nonatomic, readonly) KeyCombo keyCombo;
 
-- (NSUInteger)requiredFlags;
+@property (nonatomic, readonly) NSString *keyChars;
 
-- (void)setRequiredFlags:(NSUInteger)flags;
-
-- (KeyCombo)keyCombo;
-
-- (NSString *)keyChars;
-
-- (NSString *)keyCharsIgnoringModifiers;
+@property (nonatomic, readonly) NSString *keyCharsIgnoringModifiers;
 
 - (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers;
 
-- (BOOL)isASCIIOnly;
+@property (nonatomic) BOOL isASCIIOnly;
 
-- (void)setIsASCIIOnly:(BOOL)newIsASCIIOnly;
-
-#pragma mark -
+@property (nonatomic, copy) NSDictionary *objectValue;
 
 // Returns the displayed key combination if set
-- (NSString *)keyComboString;
+@property (nonatomic, readonly) NSString *keyComboString;
 
 #pragma mark *** Conversion Methods ***
 
@@ -82,11 +64,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 - (NSUInteger)carbonToCocoaFlags:(NSUInteger)carbonFlags;
 
-#pragma mark *** Binding Methods ***
-
-- (NSDictionary *)objectValue;
-
-- (void)setObjectValue:(NSDictionary *)shortcut;
+- (void)resetTrackingRects;
 
 @end
 
