@@ -33,6 +33,12 @@ NSString *const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModi
 
 @implementation SRRecorderControl
 
++ (void)initialize
+{
+    if (self == [SRRecorderControl class])
+        [self setCellClass:[SRRecorderCell class]];
+}
+
 - (id)initWithFrame:(NSRect)frameRect
 {
     self = [super initWithFrame:frameRect];
@@ -242,12 +248,14 @@ keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
 }
 
 
-#pragma mark NSShortcutRecorderCell
+#pragma mark SRRecorderCellDelegate
 
-
-- (BOOL)shortcutRecorderCell:(SRRecorderCell *)aRecorderCell isKeyCode:(NSInteger)keyCode andFlagsTaken:(NSUInteger)flags reason:(NSString **)aReason
+- (BOOL)shortcutRecorderCell:(SRRecorderCell *)aRecorderCell
+                   isKeyCode:(NSInteger)keyCode
+               andFlagsTaken:(NSUInteger)flags
+                      reason:(NSString **)aReason
 {
-    if (delegate != nil && [delegate respondsToSelector:@selector(shortcutRecorder:isKeyCode:andFlagsTaken:reason:)])
+    if ([delegate respondsToSelector:@selector(shortcutRecorder:isKeyCode:andFlagsTaken:reason:)])
         return [delegate shortcutRecorder:self isKeyCode:keyCode andFlagsTaken:flags reason:aReason];
     else
         return NO;
@@ -255,14 +263,13 @@ keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
 
 - (void)shortcutRecorderCell:(SRRecorderCell *)aRecorderCell keyComboDidChange:(KeyCombo)newKeyCombo
 {
-    if (delegate != nil && [delegate respondsToSelector:@selector(shortcutRecorder:keyComboDidChange:)])
+    if ([delegate respondsToSelector:@selector(shortcutRecorder:keyComboDidChange:)])
         [delegate shortcutRecorder:self keyComboDidChange:newKeyCombo];
-
+    
     // propagate view changes to binding (see http://www.tomdalling.com/cocoa/implementing-your-own-cocoa-bindings)
     NSDictionary *bindingInfo = [self infoForBinding:@"value"];
     if (!bindingInfo)
         return;
-
     // apply the value transformer, if one has been set
     NSDictionary *value = [self objectValue];
     NSDictionary *bindingOptions = [bindingInfo objectForKey:NSOptionsKey];
@@ -275,7 +282,6 @@ keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
             if (!NilOrNull(transformerName))
                 transformer = [NSValueTransformer valueTransformerForName:transformerName];
         }
-
         if (!NilOrNull(transformer))
         {
             if ([[transformer class] allowsReverseTransformation])
@@ -284,21 +290,18 @@ keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
                 NSLog(@"WARNING: value has value transformer, but it doesn't allow reverse transformations in %s", __PRETTY_FUNCTION__);
         }
     }
-
     id boundObject = [bindingInfo objectForKey:NSObservedObjectKey];
     if (NilOrNull(boundObject))
     {
         NSLog(@"ERROR: NSObservedObjectKey was nil for value binding in %s", __PRETTY_FUNCTION__);
         return;
     }
-
     NSString *boundKeyPath = [bindingInfo objectForKey:NSObservedKeyPathKey];
     if (NilOrNull(boundKeyPath))
     {
         NSLog(@"ERROR: NSObservedKeyPathKey was nil for value binding in %s", __PRETTY_FUNCTION__);
         return;
     }
-
     [boundObject setValue:value forKeyPath:boundKeyPath];
 }
 
@@ -327,14 +330,6 @@ keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
         return [NSDictionary class];
 
     return [super valueClassForBinding:binding];
-}
-
-
-#pragma mark NSControl
-
-+ (Class)cellClass
-{
-    return [SRRecorderCell class];
 }
 
 
@@ -407,7 +402,8 @@ keyCharsIgnoringModifiers:newKeyCharsIgnoringModifiers];
     // tabbed past SRRecorderControl will put you into recording mode.
     if (([[[self window] firstResponder] isEqualTo:self]))
     {
-        if ([SRCell performKeyEquivalent:theEvent]) return YES;
+        if ([SRCell performKeyEquivalent:theEvent])
+            return YES;
     }
 
     return [super performKeyEquivalent:theEvent];
