@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>ShortcutRecorder</string>
 	<key>CFBundleIdentifier</key>
-	<string>net.wafflesoftware.ShortcutRecorder.framework.Leopard</string>
+	<string>com.kulakov.ShortcutRecorder</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -15,6 +15,6 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>2.0</string>
 </dict>
 </plist>

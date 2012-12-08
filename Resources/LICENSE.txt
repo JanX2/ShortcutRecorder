@@ -30,10 +30,10 @@ Contributors to Shortcut Recorder, in no order in particular:
 Jesper, waffle software, <wootest+shortcutrecorder@gmail.com>. Initial idea and concept, first shot at implementation using NSView.
 David Dauer, <david@daviddauer.de>. Refinement, cleaner reimplementation, documentation, IB Palette.
 Jamie Kirkpatrick, Kirk Consulting Ltd, <jkp@kirkconsulting.co.uk>.  Further modularisation and re-factoring, and general bug fixes.
+Ilya Kulakov <kulakov.ilya@gmail.com>
 
 =====================================================================
 
-ShortcutRecorder uses CTGradient, Copyright (c) 2005, Chad Weider.
 Some rights reserved: <http://creativecommons.org/licenses/by/2.5/>
 
 For more information, visit <http://blog.oofn.net/projects/misc/>
