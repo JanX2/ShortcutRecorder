@@ -15,7 +15,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
-#import <CoreServices/CoreServices.h>
 
 #pragma mark Dummy class
 
