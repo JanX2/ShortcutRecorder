@@ -15,7 +15,6 @@
 
 #import "SRCommon.h"
 #import "SRKeyCodeTransformer.h"
-#import "SRASCIIKeyCodeTransformer.h"
 
 //#define SRCommon_PotentiallyUsefulDebugInfo
 
@@ -56,7 +55,7 @@ NSString *SRPlainStringForKeyCode(NSInteger keyCode)
 //----------------------------------------------------------
 NSString *SRASCIIStringForKeyCode(NSInteger keyCode)
 {
-    return [[SRASCIIKeyCodeTransformer sharedTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
+    return nil;//[[SRASCIIKeyCodeTransformer sharedTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
 }
 
 //----------------------------------------------------------
@@ -64,7 +63,7 @@ NSString *SRASCIIStringForKeyCode(NSInteger keyCode)
 //----------------------------------------------------------
 NSString *SRPlainASCIIStringForKeyCode(NSInteger keyCode)
 {
-    return [[SRASCIIKeyCodeTransformer sharedPlainTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
+    return nil;//[[SRASCIIKeyCodeTransformer sharedPlainTransformer] transformedValue:[NSNumber numberWithShort:keyCode]];
 }
 
 //----------------------------------------------------------

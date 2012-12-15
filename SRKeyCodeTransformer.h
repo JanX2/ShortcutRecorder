@@ -17,47 +17,46 @@
 #import <Carbon/Carbon.h>
 
 
+/*!
+    @brief  Transforms key code into unicode character.
+ */
 @interface SRKeyCodeTransformer : NSValueTransformer
-{
-    BOOL transformsfunctionKeysToPlainStrings;
-
-    NSCache *_cache;
-}
 
 /*!
- @abstract      Determines whether functional keys (F1...F19) are transformed to single-char unicode keys
- (NSF1FunctionKey...NSF19FunctionKey) or to plain strings (@"F1"...@"F19")
- @discussion    Defaults to NO.
- If want to draw result of transforming, you should set this value to YES.
- If you want to set the result as key equivalent of NSMenuItem or NSButton (etc), you should set this value to NO.
+    @brief  Returns the shared trasformer.
  */
-@property (nonatomic) BOOL transformsfunctionKeysToPlainStrings;
++ (instancetype)sharedTransformer;
 
-+ (SRKeyCodeTransformer *)sharedTransformer;
+/*!
+    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source.
+ */
++ (instancetype)sharedASCIITransformer;
 
+/*!
+    @brief  Returns the shared transformer configured to transform key codes to plain strings.
+ */
 + (SRKeyCodeTransformer *)sharedPlainTransformer;
 
 /*!
- @discussion    You are responsible for releasing the result.
+    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source
+            and to transform key codes to plain strings.
  */
-+ (TISInputSourceRef)preferredKeyboardInputSource;
++ (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
 
 /*!
- @discussion    You are responsible for releasing the result.
+    @param      aUsesASCII Determines whether transformer uses only ASCII capable keyboard input source.
+ 
+    @param      aUsesPlainStrings Determines whether key codes without readable glyphs (e.g. F1...F19) are transformerd to
+                to unicode characters (NSF1FunctionKey...NSF19FunctionKey) or to plain strings (@"F1"...@"F19").
  */
-+ (TISInputSourceRef)ASCIICapableKeyboardInputSource;
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings;
 
-- (BOOL)isSpecialKeyCode:(NSInteger)aKeyCode;
+@property (readonly) BOOL usesASCIICapableKeyboardInputSource;
 
-- (BOOL)isPadKeyCode:(NSInteger)aKeyCode;
+@property (readonly) BOOL usesPlainStrings;
 
++ (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping;
 
-@property (nonatomic, retain) NSDictionary *_reverseTransformDictionary;
-
-@property (nonatomic, retain) NSArray *_padKeys;
-
-@property (nonatomic, retain) NSDictionary *_specialKeyCodeStringsDictionary;
-
-- (void)_keyboardInputSourceDidChange;
++ (NSDictionary *)specialKeyCodesToPlainStringsMapping;
 
 @end

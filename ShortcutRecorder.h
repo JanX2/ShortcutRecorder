@@ -13,5 +13,4 @@
 #import <ShortcutRecorder/SRKeyCodeTransformer.h>
 #import <ShortcutRecorder/SRASCIIKeyCodeTransformer.h>
 #import <ShortcutRecorder/SRValidator.h>
-#import <ShortcutRecorder/SRRecorderCell.h>
 #import <ShortcutRecorder/SRRecorderControl.h>

@@ -16,6 +16,17 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
+
+NSUInteger SRCarbonToCocoaFlags(NSUInteger carbonFlags);
+
+NSUInteger SRCocoaToCarbonFlags(NSUInteger cocoaFlags);
+
+static const NSUInteger SRCocoaFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask;
+
+static const NSUInteger SRCarbonFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
+
+
+
 #pragma mark Dummy class
 
 @interface SRDummyClass : NSObject
@@ -27,11 +38,7 @@
 #pragma mark -
 #pragma mark Typedefs
 
-typedef struct _KeyCombo
-{
-    NSUInteger flags; // 0 for no flags
-    NSInteger code; // -1 for no code
-} KeyCombo;
+
 
 #pragma mark -
 #pragma mark Enums
@@ -179,14 +186,6 @@ NSString *SRCharacterForKeyCodeAndCocoaFlags(NSInteger keyCode, NSUInteger cocoa
 
 #pragma mark Converting between Cocoa and Carbon modifier flags
 
-NSUInteger SRCarbonToCocoaFlags(NSUInteger carbonFlags);
-
-NSUInteger SRCocoaToCarbonFlags(NSUInteger cocoaFlags);
-
-static const NSUInteger SRCocoaFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask | NSFunctionKeyMask;
-
-static const NSUInteger SRCarbonFlagsMask = cmdKey | optionKey | shiftKey | controlKey | NSFunctionKeyMask;
-
 #pragma mark -
 #pragma mark Animation pace function
 
@@ -195,18 +194,7 @@ CGFloat SRAnimationEaseInOut(CGFloat t);
 #pragma mark -
 #pragma mark Inlines
 
-FOUNDATION_STATIC_INLINE KeyCombo SRMakeKeyCombo(NSInteger code, NSUInteger flags)
-{
-    KeyCombo kc;
-    kc.code = code;
-    kc.flags = flags;
-    return kc;
-}
 
-FOUNDATION_STATIC_INLINE BOOL SRKeyComboEqualToKeyCombo(KeyCombo keyCombo1, KeyCombo keyCombo2)
-{
-    return keyCombo1.code == keyCombo2.code && keyCombo1.flags == keyCombo2.flags;
-}
 
 FOUNDATION_STATIC_INLINE BOOL SRIsSpecialKey(NSInteger keyCode)
 {

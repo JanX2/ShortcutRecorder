@@ -10,8 +10,8 @@
 #import <ShortcutRecorder/SRCommon.h>
 
 
-extern NSString* const SRShortcutCodeKey;
-extern NSString* const SRShortcutFlagsKey;
+extern NSString* const SRShortcutKeyCode;
+extern NSString* const SRShortcutModifierFlagsKey;
 
 @implementation PTHotKey (ShortcutRecorder)
 
@@ -20,8 +20,8 @@ extern NSString* const SRShortcutFlagsKey;
                             target:(id)aTarget
                             action:(SEL)anAction
 {
-    NSInteger keyCode = [[aKeyCombo objectForKey:SRShortcutCodeKey] integerValue];
-    NSUInteger modifiers = SRCocoaToCarbonFlags([[aKeyCombo objectForKey:SRShortcutFlagsKey] unsignedIntegerValue]);
+    NSInteger keyCode = [[aKeyCombo objectForKey:SRShortcutKeyCode] integerValue];
+    NSUInteger modifiers = SRCocoaToCarbonFlags([[aKeyCombo objectForKey:SRShortcutModifierFlagsKey] unsignedIntegerValue]);
     PTKeyCombo *newKeyCombo = [[[PTKeyCombo alloc] initWithKeyCode:keyCode modifiers:modifiers] autorelease];
     PTHotKey *newHotKey = [[[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo] autorelease];
     [newHotKey setTarget:aTarget];

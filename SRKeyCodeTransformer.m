@@ -27,226 +27,168 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
 
 @implementation SRKeyCodeTransformer
 
-+ (SRKeyCodeTransformer *)sharedTransformer
++ (instancetype)sharedTransformer
 {
     static dispatch_once_t onceToken;
-    static SRKeyCodeTransformer *sharedTransformer = nil;
-    dispatch_once(&onceToken, ^
-    {
-        sharedTransformer = [[self alloc] init];
+    static SRKeyCodeTransformer *t = nil;
+    dispatch_once(&onceToken, ^{
+        t = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
+                                                     plainStrings:NO];
     });
-    return sharedTransformer;
+    return t;
 }
 
-+ (SRKeyCodeTransformer *)sharedPlainTransformer
++ (instancetype)sharedASCIITransformer
 {
     static dispatch_once_t onceToken;
-    static SRKeyCodeTransformer *sharedTransformer = nil;
-    dispatch_once(&onceToken, ^
-    {
-        sharedTransformer = [[self alloc] init];
-        sharedTransformer.transformsfunctionKeysToPlainStrings = YES;
+    static SRKeyCodeTransformer *t = nil;
+    dispatch_once(&onceToken, ^{
+        t = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
+                                                     plainStrings:NO];
     });
-    return sharedTransformer;
+    return t;
 }
 
-- (id)init
++ (instancetype)sharedPlainTransformer
 {
-    if ((self = [super init]))
+    static dispatch_once_t onceToken;
+    static SRKeyCodeTransformer *t = nil;
+    dispatch_once(&onceToken, ^{
+        t = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
+                                                     plainStrings:YES];
+    });
+    return t;
+}
+
++ (SRKeyCodeTransformer *)sharedPlainASCIITransformer
+{
+    static dispatch_once_t onceToken;
+    static SRKeyCodeTransformer *t = nil;
+    dispatch_once(&onceToken, ^{
+        t = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
+                                                     plainStrings:YES];
+    });
+    return t;
+}
+
+- (instancetype)init
+{
+    return [self initWithASCIICapableKeyboardInputSource:NO plainStrings:NO];
+}
+
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings
+{
+    self = [super init];
+    
+    if (self != nil)
     {
-        _cache = [[NSCache alloc] init];
-        [_cache setName:@"SRKeyCodeTransformer's cache"];
-        [[NSDistributedNotificationCenter defaultCenter] addObserver:self
-                                                            selector:@selector(_keyboardInputSourceDidChange)
-                                                                name:(NSString *)kTISNotifySelectedKeyboardInputSourceChanged
-                                                              object:nil];
+        _usesASCIICapableKeyboardInputSource = aUsesASCII;
+        _usesPlainStrings = aUsesPlainStrings;
     }
+    
     return self;
 }
 
 - (void)dealloc
 {
-    [_cache release];
     [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
-    [super dealloc];
-}
-
-
-#pragma mark Properties
-@synthesize transformsfunctionKeysToPlainStrings;
-
-- (void)setTransformsfunctionKeysToPlainStrings:(BOOL)newTransformsfunctionKeysToPlainStrings
-{
-    if (newTransformsfunctionKeysToPlainStrings != transformsfunctionKeysToPlainStrings)
-    {
-        [self willChangeValueForKey:@"transformsfunctionKeysToPlainStrings"];
-        self._specialKeyCodeStringsDictionary = nil;
-        transformsfunctionKeysToPlainStrings = newTransformsfunctionKeysToPlainStrings;
-        [self didChangeValueForKey:@"transformsfunctionKeysToPlainStrings"];
-    }
-}
-
-+ (BOOL)automaticallyNotifiesObserversOfTransformsfunctionKeysToPlainStrings
-{
-    return NO;
 }
 
 
 #pragma mark Methods
 
-- (BOOL)isSpecialKeyCode:(NSInteger)aKeyCode
++ (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping
 {
-    return ([self._specialKeyCodeStringsDictionary objectForKey:SRInt(aKeyCode)] != nil);
+    static dispatch_once_t onceToken;
+    static NSDictionary *d = nil;
+    dispatch_once(&onceToken, ^{
+        d = @{
+            @(kSRKeysF1): SRChar(NSF1FunctionKey),
+            @(kSRKeysF2): SRChar(NSF2FunctionKey),
+            @(kSRKeysF3): SRChar(NSF3FunctionKey),
+            @(kSRKeysF4): SRChar(NSF4FunctionKey),
+            @(kSRKeysF5): SRChar(NSF5FunctionKey),
+            @(kSRKeysF6): SRChar(NSF6FunctionKey),
+            @(kSRKeysF7): SRChar(NSF7FunctionKey),
+            @(kSRKeysF8): SRChar(NSF8FunctionKey),
+            @(kSRKeysF9): SRChar(NSF9FunctionKey),
+            @(kSRKeysF10): SRChar(NSF10FunctionKey),
+            @(kSRKeysF11): SRChar(NSF11FunctionKey),
+            @(kSRKeysF12): SRChar(NSF12FunctionKey),
+            @(kSRKeysF13): SRChar(NSF13FunctionKey),
+            @(kSRKeysF14): SRChar(NSF14FunctionKey),
+            @(kSRKeysF15): SRChar(NSF15FunctionKey),
+            @(kSRKeysF16): SRChar(NSF16FunctionKey),
+            @(kSRKeysF17): SRChar(NSF17FunctionKey),
+            @(kSRKeysF18): SRChar(NSF18FunctionKey),
+            @(kSRKeysF19): SRChar(NSF19FunctionKey),
+            @(kSRKeysSpace): SRChar(KeyboardSpaceGlyph),
+            @(kSRKeysDeleteLeft): SRChar(KeyboardDeleteLeftGlyph),
+            @(kSRKeysDeleteRight): SRChar(KeyboardDeleteRightGlyph),
+            @(kSRKeysPadClear): SRChar(KeyboardPadClearGlyph),
+            @(kSRKeysLeftArrow): SRChar(KeyboardLeftArrowGlyph),
+            @(kSRKeysRightArrow): SRChar(KeyboardRightArrowGlyph),
+            @(kSRKeysUpArrow): SRChar(KeyboardUpArrowGlyph),
+            @(kSRKeysDownArrow): SRChar(KeyboardDownArrowGlyph),
+            @(kSRKeysSoutheastArrow): SRChar(KeyboardSoutheastArrowGlyph),
+            @(kSRKeysNorthwestArrow): SRChar(KeyboardNorthwestArrowGlyph),
+            @(kSRKeysEscape): SRChar(KeyboardEscapeGlyph),
+            @(kSRKeysPageDown): SRChar(KeyboardPageDownGlyph),
+            @(kSRKeysPageUp): SRChar(KeyboardPageUpGlyph),
+            @(kSRKeysReturnR2L): SRChar(KeyboardReturnR2LGlyph),
+            @(kSRKeysReturn): SRChar(KeyboardReturnGlyph),
+            @(kSRKeysTabRight): SRChar(KeyboardTabRightGlyph),
+            @(kSRKeysHelp): SRChar(KeyboardHelpGlyph)
+        };
+    });
+    return d;
 }
 
-- (BOOL)isPadKeyCode:(NSInteger)aKeyCode
++ (NSDictionary *)specialKeyCodesToPlainStringsMapping
 {
-    return [self._padKeys containsObject:SRInt(aKeyCode)];
-}
-
-+ (TISInputSourceRef)preferredKeyboardInputSource
-{
-    return TISCopyCurrentKeyboardInputSource();
-}
-
-+ (TISInputSourceRef)ASCIICapableKeyboardInputSource
-{
-    return TISCopyCurrentASCIICapableKeyboardInputSource();
-}
-
-
-#pragma mark Private
-@dynamic _reverseTransformDictionary;
-@dynamic _padKeys;
-@dynamic _specialKeyCodeStringsDictionary;
-
-- (NSDictionary *)_reverseTransformDictionary
-{
-    @synchronized (self)
-    {
-        NSMutableDictionary *d = [[[_cache objectForKey:_SRReverseTransformDictionaryCacheKey] retain] autorelease];
-        if (d == nil)
-        {
-            static const NSUInteger NumberOfPrecalculatedKeyCodes = 128U;
-            d = [NSMutableDictionary dictionaryWithCapacity:NumberOfPrecalculatedKeyCodes];
-            for (NSUInteger i = 0U; i < NumberOfPrecalculatedKeyCodes; ++i)
-            {
-                NSNumber *keyCode = [NSNumber numberWithUnsignedInteger:i];
-                NSString *string = [self transformedValue:keyCode];
-                if ([string length] > 0)
-                    [d setObject:keyCode forKey:string];
-            }
-            [_cache setObject:d forKey:_SRReverseTransformDictionaryCacheKey];
-        }
-        return d;
-    }
-}
-
-- (void)set_reverseTransformDictionary:(NSDictionary *)newReverseTransformDictionary
-{
-    NSParameterAssert(newReverseTransformDictionary == nil);
-
-    [_cache removeObjectForKey:_SRReverseTransformDictionaryCacheKey];
-}
-
-- (NSArray *)_padKeys
-{
-    @synchronized (self)
-    {
-        NSArray *a = [[[_cache objectForKey:_SRPadKeysCacheKey] retain] autorelease];
-        if (a == nil)
-        {
-            a = [NSArray arrayWithObjects:
-                             SRInt(65), // ,
-                             SRInt(67), // *
-                             SRInt(69), // +
-                             SRInt(75), // /
-                             SRInt(78), // -
-                             SRInt(81), // =
-                             SRInt(82), // 0
-                             SRInt(83), // 1
-                             SRInt(84), // 2
-                             SRInt(85), // 3
-                             SRInt(86), // 4
-                             SRInt(87), // 5
-                             SRInt(88), // 6
-                             SRInt(89), // 7
-                             SRInt(91), // 8
-                             SRInt(92), // 9
-                             nil];
-            [_cache setObject:a forKey:_SRPadKeysCacheKey];
-        }
-        return a;
-    }
-}
-
-- (void)set_padKeys:(NSArray *)newPadKeys
-{
-    NSParameterAssert(newPadKeys == nil);
-
-    [_cache removeObjectForKey:_SRPadKeysCacheKey];
-}
-
-- (NSDictionary *)_specialKeyCodeStringsDictionary
-{
-    @synchronized (self)
-    {
-        NSDictionary *d = [[[_cache objectForKey:_SRSpecialKeyCodeStringsDictionaryCacheKey] retain] autorelease];
-        if (d == nil)
-        {
-            d = [NSDictionary dictionaryWithObjectsAndKeys:
-                 self.transformsfunctionKeysToPlainStrings ? @"F1" : SRChar(NSF1FunctionKey),   @(kSRKeysF1),
-                 self.transformsfunctionKeysToPlainStrings ? @"F2" : SRChar(NSF2FunctionKey),   @(kSRKeysF2),
-                 self.transformsfunctionKeysToPlainStrings ? @"F3" : SRChar(NSF3FunctionKey),   @(kSRKeysF3),
-                 self.transformsfunctionKeysToPlainStrings ? @"F4" : SRChar(NSF4FunctionKey),   @(kSRKeysF4),
-                 self.transformsfunctionKeysToPlainStrings ? @"F5" : SRChar(NSF5FunctionKey),   @(kSRKeysF5),
-                 self.transformsfunctionKeysToPlainStrings ? @"F6" : SRChar(NSF6FunctionKey),   @(kSRKeysF6),
-                 self.transformsfunctionKeysToPlainStrings ? @"F7" : SRChar(NSF7FunctionKey),   @(kSRKeysF7),
-                 self.transformsfunctionKeysToPlainStrings ? @"F8" : SRChar(NSF8FunctionKey),   @(kSRKeysF8),
-                 self.transformsfunctionKeysToPlainStrings ? @"F9" : SRChar(NSF9FunctionKey),   @(kSRKeysF9),
-                 self.transformsfunctionKeysToPlainStrings ? @"F10" : SRChar(NSF10FunctionKey), @(kSRKeysF10),
-                 self.transformsfunctionKeysToPlainStrings ? @"F11" : SRChar(NSF11FunctionKey), @(kSRKeysF11),
-                 self.transformsfunctionKeysToPlainStrings ? @"F12" : SRChar(NSF12FunctionKey), @(kSRKeysF12),
-                 self.transformsfunctionKeysToPlainStrings ? @"F13" : SRChar(NSF13FunctionKey), @(kSRKeysF13),
-                 self.transformsfunctionKeysToPlainStrings ? @"F14" : SRChar(NSF14FunctionKey), @(kSRKeysF14),
-                 self.transformsfunctionKeysToPlainStrings ? @"F15" : SRChar(NSF15FunctionKey), @(kSRKeysF15),
-                 self.transformsfunctionKeysToPlainStrings ? @"F16" : SRChar(NSF16FunctionKey), @(kSRKeysF16),
-                 self.transformsfunctionKeysToPlainStrings ? @"F17" : SRChar(NSF17FunctionKey), @(kSRKeysF17),
-                 self.transformsfunctionKeysToPlainStrings ? @"F18" : SRChar(NSF18FunctionKey), @(kSRKeysF18),
-                 self.transformsfunctionKeysToPlainStrings ? @"F19" : SRChar(NSF19FunctionKey), @(kSRKeysF19),
-                 SRChar(KeyboardSpaceGlyph),                                                    @(kSRKeysSpace),
-                 SRChar(KeyboardDeleteLeftGlyph),                                               @(kSRKeysDeleteLeft),
-                 SRChar(KeyboardDeleteRightGlyph),                                              @(kSRKeysDeleteRight),
-                 SRChar(KeyboardPadClearGlyph),                                                 @(kSRKeysPadClear),
-                 SRChar(KeyboardLeftArrowGlyph),                                                @(kSRKeysLeftArrow),
-                 SRChar(KeyboardRightArrowGlyph),                                               @(kSRKeysRightArrow),
-                 SRChar(KeyboardUpArrowGlyph),                                                  @(kSRKeysUpArrow),
-                 SRChar(KeyboardDownArrowGlyph),                                                @(kSRKeysDownArrow),
-                 SRChar(KeyboardSoutheastArrowGlyph),                                           @(kSRKeysSoutheastArrow),
-                 SRChar(KeyboardNorthwestArrowGlyph),                                           @(kSRKeysNorthwestArrow),
-                 SRChar(KeyboardEscapeGlyph),                                                   @(kSRKeysEscape),
-                 SRChar(KeyboardPageDownGlyph),                                                 @(kSRKeysPageDown),
-                 SRChar(KeyboardPageUpGlyph),                                                   @(kSRKeysPageUp),
-                 SRChar(KeyboardReturnR2LGlyph),                                                @(kSRKeysReturnR2L),
-                 SRChar(KeyboardReturnGlyph),                                                   @(kSRKeysReturn),
-                 SRChar(KeyboardTabRightGlyph),                                                 @(kSRKeysTabRight),
-                 SRChar(KeyboardHelpGlyph),                                                     @(kSRKeysHelp),
-                 nil];
-        }
-        return d;
-    }
-}
-
-- (void)set_specialKeyCodeStringsDictionary:(NSDictionary *)newSpecialKeyCodeStringsDictionary
-{
-    NSParameterAssert(newSpecialKeyCodeStringsDictionary == nil);
-
-    [_cache removeObjectForKey:_SRSpecialKeyCodeStringsDictionaryCacheKey];
-}
-
-- (void)_keyboardInputSourceDidChange
-{
-    self._reverseTransformDictionary = nil;
+    static dispatch_once_t onceToken;
+    static NSDictionary *d = nil;
+    dispatch_once(&onceToken, ^{
+        d = @{
+            @(kSRKeysF1): @"F1",
+            @(kSRKeysF2): @"F2",
+            @(kSRKeysF3): @"F3",
+            @(kSRKeysF4): @"F4",
+            @(kSRKeysF5): @"F5",
+            @(kSRKeysF6): @"F6",
+            @(kSRKeysF7): @"F7",
+            @(kSRKeysF8): @"F8",
+            @(kSRKeysF9): @"F9",
+            @(kSRKeysF10): @"F10",
+            @(kSRKeysF11): @"F11",
+            @(kSRKeysF12): @"F12",
+            @(kSRKeysF13): @"F13",
+            @(kSRKeysF14): @"F14",
+            @(kSRKeysF15): @"F15",
+            @(kSRKeysF16): @"F16",
+            @(kSRKeysF17): @"F17",
+            @(kSRKeysF18): @"F18",
+            @(kSRKeysF19): @"F18",
+            @(kSRKeysSpace): SRChar(KeyboardSpaceGlyph),
+            @(kSRKeysDeleteLeft): SRChar(KeyboardDeleteLeftGlyph),
+            @(kSRKeysDeleteRight): SRChar(KeyboardDeleteRightGlyph),
+            @(kSRKeysPadClear): SRChar(KeyboardPadClearGlyph),
+            @(kSRKeysLeftArrow): SRChar(KeyboardLeftArrowGlyph),
+            @(kSRKeysRightArrow): SRChar(KeyboardRightArrowGlyph),
+            @(kSRKeysUpArrow): SRChar(KeyboardUpArrowGlyph),
+            @(kSRKeysDownArrow): SRChar(KeyboardDownArrowGlyph),
+            @(kSRKeysSoutheastArrow): SRChar(KeyboardSoutheastArrowGlyph),
+            @(kSRKeysNorthwestArrow): SRChar(KeyboardNorthwestArrowGlyph),
+            @(kSRKeysEscape): SRChar(KeyboardEscapeGlyph),
+            @(kSRKeysPageDown): SRChar(KeyboardPageDownGlyph),
+            @(kSRKeysPageUp): SRChar(KeyboardPageUpGlyph),
+            @(kSRKeysReturnR2L): SRChar(KeyboardReturnR2LGlyph),
+            @(kSRKeysReturn): SRChar(KeyboardReturnGlyph),
+            @(kSRKeysTabRight): SRChar(KeyboardTabRightGlyph),
+            @(kSRKeysHelp): SRChar(KeyboardHelpGlyph)
+        };
+    });
+    return d;
 }
 
 
@@ -254,7 +196,7 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
 
 + (BOOL)allowsReverseTransformation
 {
-    return YES;
+    return NO;
 }
 
 + (Class)transformedValueClass;
@@ -262,38 +204,60 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
     return [NSString class];
 }
 
-- (id)transformedValue:(id)value
+- (NSString *)transformedValue:(NSNumber *)aValue
 {
-    if (![value isKindOfClass:[NSNumber class]])
+    if (![aValue isKindOfClass:[NSNumber class]])
         return nil;
+    
+    unsigned short keyCode = [aValue unsignedShortValue];
 
-    // Can be -1 when empty
-    NSInteger keyCode = [value shortValue];
-    if (keyCode < 0)
-        return nil;
-
-    // We have some special gylphs for some special keys...
-    NSString *unmappedString = [self._specialKeyCodeStringsDictionary objectForKey:SRInt(keyCode)];
+    // Some key codes cannot be translated directly.
+    NSString *unmappedString = nil;
+    
+    if (self.usesPlainStrings)
+        unmappedString = [[[self class] specialKeyCodesToPlainStringsMapping] objectForKey:@(keyCode)];
+    else
+        unmappedString = [[[self class] specialKeyCodesToUnicodeCharactersMapping] objectForKey:@(keyCode)];
+    
     if (unmappedString != nil)
         return unmappedString;
 
-    OSStatus err = noErr;
-    TISInputSourceRef tisSource = [[self class] preferredKeyboardInputSource];
-    if (tisSource == nil)
-        return nil;
-    CFDataRef layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
-    UInt32 keysDown = 0;
-    CFRelease(tisSource);
-
-    // For non-unicode layouts such as Chinese, Japanese, and Korean, get the ASCII capable layout
-    if (layoutData == nil)
+    CFDataRef layoutData = NULL;
+    
+    if (self.usesASCIICapableKeyboardInputSource)
     {
-        tisSource = [[self class] ASCIICapableKeyboardInputSource];
+        TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
+        
+        if (tisSource == NULL)
+            return nil;
+        
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
     }
+    else
+    {
+        TISInputSourceRef tisSource = TISCopyCurrentKeyboardInputSource();
+        
+        if (tisSource == NULL)
+            return nil;
+        
+        layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
+        CFRelease(tisSource);
+        
+        // For non-unicode layouts such as Chinese, Japanese, and Korean, get the ASCII capable layout
+        if (layoutData == NULL)
+        {
+            tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
+            
+            if (tisSource == NULL)
+                return nil;
+            
+            layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
+            CFRelease(tisSource);
+        }
+    }
 
-    if (layoutData == nil)
+    if (layoutData == NULL)
         return nil;
 
     const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
@@ -302,28 +266,21 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
     UniCharCount actualLength = 0;
     UniChar chars[MaxLength] = {0};
 
-    err = UCKeyTranslate(keyLayout,
-                         keyCode,
-                         kUCKeyActionDisplay,
-                         0,
-                         LMGetKbdType(),
-                         kUCKeyTranslateNoDeadKeysBit,
-                         &keysDown,
-                         MaxLength,
-                         &actualLength,
-                         chars);
+    UInt32 deadKeyState = 0;
+    OSErr err = UCKeyTranslate(keyLayout,
+                               keyCode,
+                               kUCKeyActionDisplay,
+                               0,
+                               LMGetKbdType(),
+                               kUCKeyTranslateNoDeadKeysBit,
+                               &deadKeyState,
+                               sizeof(chars) / sizeof(UniChar),
+                               &actualLength,
+                               chars);
     if (err != noErr)
         return nil;
 
     return [NSString stringWithCharacters:chars length:actualLength];
-}
-
-- (id)reverseTransformedValue:(id)value
-{
-    if (![value isKindOfClass:[NSString class]])
-        return nil;
-    else
-        return [self._reverseTransformDictionary objectForKey:value];
 }
 
 @end

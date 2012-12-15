@@ -13,69 +13,185 @@
 //      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
-#import "SRRecorderCell.h"
+#import <ShortcutRecorder/SRCommon.h>
+#import <ShortcutRecorder/SRValidator.h>
 
-extern NSString *const SRShortcutCodeKey;
-extern NSString *const SRShortcutFlagsKey;
+
+/*!
+    @brief      Key code.
+    @discussion NSNumber representation of unsigned short.
+                Required key of SRRecorderControl's objectValue.
+ */
+extern NSString *const SRShortcutKeyCode;
+
+/*!
+    @brief      Modifier flags.
+    @discussion NSNumber representation of NSUInteger.
+                Optional key of SRRecorderControl's objectValue.
+ */
+extern NSString *const SRShortcutModifierFlagsKey;
+
+/*!
+    @brief      Interpretation of key code and modifier flags depending on system locale and input source
+                used when shortcut was taken.
+    @discussion NSString.
+                Optional key of SRRecorderControl's objectValue.
+ */
 extern NSString *const SRShortcutCharacters;
+
+/*!
+    @brief      Interpretation of key code without modifier flags depending on system locale and input source
+                used when shortcut was taken.
+    @discussion NSString.
+                Optional key of SRRecorderControl's objectValue.
+ */
 extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
-@interface SRRecorderControl : NSControl
-{
-    IBOutlet id delegate;
-}
 
-@property (nonatomic) BOOL animates;
+@protocol SRRecorderControlDelegate;
 
-@property (nonatomic) SRRecorderStyle style;
 
-@property (assign) id delegate;
+@interface SRRecorderControl : NSView /* <NSToolTipOwner> */
 
-@property (nonatomic) NSUInteger allowedFlags;
+@property (assign) IBOutlet NSObject<SRRecorderControlDelegate> *delegate;
 
-@property (readonly, nonatomic) BOOL allowsKeyOnly;
+/*!
+    @brief      Returns an integer bit field indicating allowed modifier flags.
 
-@property (readonly, nonatomic) BOOL escapeKeysRecord;
+    @discussion Defaults to SRCocoaFlagsMask.
 
-- (void)setAllowsKeyOnly:(BOOL)nAllowsKeyOnly escapeKeysRecord:(BOOL)nEscapeKeysRecord;
+    @see        setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
+ */
+@property (readonly) NSUInteger allowedModifierFlags;
 
-@property (nonatomic) BOOL canCaptureGlobalHotKeys;
+/*!
+    @brief      Returns an integer bit field indicating required modifier flags.
 
-@property (nonatomic) NSUInteger requiredFlags;
+    @discussion Defaults to 0.
 
-@property (nonatomic, readonly) KeyCombo keyCombo;
+    @see        setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
+ */
+@property (readonly) NSUInteger requiredModifierFlags;
 
-@property (nonatomic, readonly) NSString *keyChars;
+/*!
+    @brief      Determines whether shortcuts without modifier flags are allowed.
 
-@property (nonatomic, readonly) NSString *keyCharsIgnoringModifiers;
+    @discussion Defaults to NO.
 
-- (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers;
+    @see        setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
+ */
+@property (readonly) BOOL allowsEmptyModifierFlags;
 
-@property (nonatomic) BOOL isASCIIOnly;
+/*!
+    @brief      Determines whether the control reinterpret key code and modifier flags
+                using ASCII capable input source.
+    @discussion If not set, the same key code may be dr
+    aw differently depending on current input source.
+                E.g. with US English input source key code 0x0 is interpreted as "a",
+                however with Russian input source, it's interpreted as "ф".
+                Default to YES.
+ */
+@property BOOL drawsASCIIEquivalentOfShortcut;
 
+/*!
+ */
+@property BOOL allowsEscapeToCancelRecording;
+
+@property BOOL allowsDeleteToClearShortcutAndEndRecording;
+
+/*!
+ */
+@property (readonly) BOOL isRecording;
+
+/*!
+    @brief  Returns dictionary representation shortcut.
+ */
 @property (nonatomic, copy) NSDictionary *objectValue;
 
-// Returns the displayed key combination if set
-@property (nonatomic, readonly) NSString *keyComboString;
+/*!
+    @brief      Configures recording behavior of the control.
 
-#pragma mark *** Conversion Methods ***
+    @param      newAllowedModifierFlags New allowed modifier flags.
 
-- (NSUInteger)cocoaToCarbonFlags:(NSUInteger)cocoaFlags;
+    @param      newRequiredModifierFlags New required modifier flags.
 
-- (NSUInteger)carbonToCocoaFlags:(NSUInteger)carbonFlags;
+    @param      newAllowsEmptyModifierFlags Determines whether empty modifier flags are allowed.
 
-- (void)resetTrackingRects;
+    @discussion Flags are filtered using SRCocoaFlagsMask. Flags does not affect object values set manually.
+
+                Throws NSInvalidArgumentException if either required flags are not allowed
+                or required flags are not empty and no modifier flags are allowed.
+ */
+- (void)setAllowedModifierFlags:(NSUInteger)newAllowedModifierFlags
+          requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
+       allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
+
+
+- (BOOL)beginEditing;
+
+- (void)endEditing;
+
+- (void)clearAndEndEditing;
+
+- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags;
+
+
+- (NSBezierPath *)controlShape;
+
+- (NSRect)enclosingLabelRect;
+
+- (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes;
+
+- (NSRect)snapBackButtonRect;
+
+- (NSRect)clearButtonRect;
+
+
+- (NSString *)label;
+
+- (NSDictionary *)labelAttributes;
+
+- (void)drawBackground:(NSRect)aDirtyRect;
+
+- (void)drawInterior:(NSRect)aDirtyRect;
+
+- (void)drawLabel:(NSRect)aDirtyRect;
+
+- (void)drawSnapBackButton:(NSRect)aDirtyRect;
+
+- (void)drawClearButton:(NSRect)aDirtyRect;
+
+
+- (BOOL)isMainButtonHighlighted;
+
+- (BOOL)isSnapBackButtonHighlighted;
+
+- (BOOL)isClearButtonHighlighted;
 
 @end
 
-// Delegate Methods
-@interface NSObject (SRRecorderDelegate)
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder isKeyCode:(NSInteger)keyCode andFlagsTaken:(NSUInteger)flags reason:(NSString **)aReason;
+@protocol SRRecorderControlDelegate <NSObject>
 
-- (void)shortcutRecorder:(SRRecorderControl *)aRecorder keyComboDidChange:(KeyCombo)newKeyCombo;
+@optional
 
-- (BOOL)shortcutRecorderShouldCheckMenu:(SRRecorderControl *)aRecorder;
+- (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder;
 
-- (BOOL)shortcutRecorderShouldSystemShortcuts:(SRRecorderControl *)aRecorder;
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut;
+
+- (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder;
+
+//- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder
+//               isKeyCode:(NSInteger)aKeyCode
+//           andFlagsTaken:(NSUInteger)aFlags
+//                  reason:(NSString **)aReason;
+//
+//- (void)shortcutRecorder:(SRRecorderControl *)aRecorder
+//       keyComboDidChange:(KeyCombo)aKeyCombo;
+//
+//- (BOOL)shortcutRecorderShouldCheckMenu:(SRRecorderControl *)aRecorder;
+//
+//- (BOOL)shortcutRecorderShouldSystemShortcuts:(SRRecorderControl *)aRecorder;
+
 @end
+

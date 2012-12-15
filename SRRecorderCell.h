@@ -10,31 +10,37 @@
 //      David Dauer
 //      Jesper
 //      Jamie Kirkpatrick
+//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 #import "SRCommon.h"
 #import "SRValidator.h"
 
+
 #define SRMinWidth 50
+
 #define SRMaxHeight 22
 
+
 #define SRTransitionFPS 30.0f
+
 #define SRTransitionDuration 0.35f
+
 //#define SRTransitionDuration 2.35
+
 #define SRTransitionFrames (SRTransitionFPS*SRTransitionDuration)
+
 #define SRAnimationAxisIsY YES
+
 #define ShortcutRecorderNewStyleDrawing
 
 #define SRAnimationOffsetRect(X,Y)    (SRAnimationAxisIsY ? NSOffsetRect(X,0.0f,-NSHeight(Y)) : NSOffsetRect(X,NSWidth(Y),0.0f))
 
+
 @class SRRecorderControl;
 
-enum SRRecorderStyle
-{
-    SRGradientBorderStyle = 0,
-    SRGreyStyle = 1
-};
-typedef enum SRRecorderStyle SRRecorderStyle;
+
+
 
 @interface SRRecorderCell : NSActionCell <SRValidatorDelegate>
 {
@@ -79,25 +85,45 @@ typedef enum SRRecorderStyle SRRecorderStyle;
     BOOL isASCIIOnly;
 }
 
+@property BOOL animates;
+
+@property (nonatomic) SRRecorderStyle style;
+
+@property (assign) id delegate;
+
+@property (nonatomic) NSUInteger allowedFlags;
+
+@property (nonatomic) NSUInteger requiredFlags;
+
+@property (readonly) BOOL allowsKeyOnly;
+
+@property (readonly) BOOL escapeKeysRecord;
+
+@property BOOL canCaptureGlobalHotKeys;
+
+@property (readonly) KeyCombo keyCombo;
+
+@property (nonatomic, readonly) NSString *keyChars;
+
+@property (nonatomic, readonly) NSString *keyCharsIgnoringModifiers;
+
+@property (nonatomic, readonly) NSString *keyComboString;
+
+@property (nonatomic) BOOL isASCIIOnly;
+
+- (void)setKeyCombo:(KeyCombo)newKeyCombo
+           keyChars:(NSString *)newKeyChars
+keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers;
+
+- (void)setAllowsKeyOnly:(BOOL)nAllowsKeyOnly escapeKeysRecord:(BOOL)nEscapeKeysRecord;
+
 - (void)resetTrackingRects;
 
 #pragma mark *** Aesthetics ***
 
 + (BOOL)styleSupportsAnimation:(SRRecorderStyle)style;
 
-- (BOOL)animates;
 
-- (void)setAnimates:(BOOL)an;
-
-- (SRRecorderStyle)style;
-
-- (void)setStyle:(SRRecorderStyle)nStyle;
-
-#pragma mark *** Delegate ***
-
-- (id)delegate;
-
-- (void)setDelegate:(id)aDelegate;
 
 #pragma mark *** Responder Control ***
 
@@ -110,39 +136,6 @@ typedef enum SRRecorderStyle SRRecorderStyle;
 - (BOOL)performKeyEquivalent:(NSEvent *)theEvent;
 
 - (void)flagsChanged:(NSEvent *)theEvent;
-
-- (NSUInteger)allowedFlags;
-
-- (void)setAllowedFlags:(NSUInteger)flags;
-
-- (NSUInteger)requiredFlags;
-
-- (void)setRequiredFlags:(NSUInteger)flags;
-
-- (BOOL)allowsKeyOnly;
-
-- (void)setAllowsKeyOnly:(BOOL)nAllowsKeyOnly escapeKeysRecord:(BOOL)nEscapeKeysRecord;
-
-- (BOOL)escapeKeysRecord;
-
-- (BOOL)canCaptureGlobalHotKeys;
-
-- (void)setCanCaptureGlobalHotKeys:(BOOL)inState;
-
-- (KeyCombo)keyCombo;
-
-- (NSString *)keyChars;
-
-- (NSString *)keyCharsIgnoringModifiers;
-
-- (void)setKeyCombo:(KeyCombo)newKeyCombo keyChars:(NSString *)newKeyChars keyCharsIgnoringModifiers:(NSString *)newKeyCharsIgnoringModifiers;
-
-- (BOOL)isASCIIOnly;
-
-- (void)setIsASCIIOnly:(BOOL)newIsASCIIOnly;
-
-// Returns the displayed key combination if set
-- (NSString *)keyComboString;
 
 @end
 
