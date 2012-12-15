@@ -93,13 +93,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         if ([self respondsToSelector:@selector(setContentHuggingPriority:forOrientation:)])
         {
             [self setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
+            [self setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
         }
 
         if ([self respondsToSelector:@selector(setContentCompressionResistancePriority:forOrientation:)])
         {
             [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
+            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
         }
 
         [self updateTrackingAreas];
@@ -221,7 +221,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSFont *font = anAttributes[NSFontAttributeName];
     NSSize labelSize = [aLabel sizeWithAttributes:anAttributes];
     CGFloat fontBaselineOffsetFromTop = labelSize.height + font.descender;
-    CGFloat baselineOffsetFromTop = NSHeight(self.bounds) - self.alignmentRectInsets.bottom - self.baselineOffsetFromBottom;
+    CGFloat baselineOffsetFromTop = _SRRecorderControlHeight - self.alignmentRectInsets.bottom - self.baselineOffsetFromBottom;
     labelRect.origin.x = NSMidX(self.bounds) - labelSize.width / 2.0;
     labelRect.origin.y = baselineOffsetFromTop - fontBaselineOffsetFromTop;
     labelRect.size = labelSize;
