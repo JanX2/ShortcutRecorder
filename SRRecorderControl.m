@@ -158,8 +158,10 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self willChangeValueForKey:@"isRecording"];
     _isRecording = YES;
     [self didChangeValueForKey:@"isRecording"];
+
     if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)])
         [self invalidateIntrinsicContentSize];
+
     [self updateTrackingAreas];
     [self setNeedsDisplay:YES];
     return YES;
@@ -173,10 +175,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self willChangeValueForKey:@"isRecording"];
     _isRecording = NO;
     [self didChangeValueForKey:@"isRecording"];
+
     if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)])
         [self invalidateIntrinsicContentSize];
+
     [self updateTrackingAreas];
     [self setNeedsDisplay:YES];
+
+    // Return to the "button" state but buttons cannot be first responders (unless Full Keyboard Access)
+    if (self.window.firstResponder == self && ![self canBecomeKeyView])
+        [self.window makeFirstResponder:nil];
 
     if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
         [self.delegate shortcutRecorderDidEndRecording:self];
@@ -753,8 +761,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)canBecomeKeyView
 {
-    return [[NSApplication sharedApplication] isFullKeyboardAccessEnabled];
+    return [super canBecomeKeyView] && [NSApp isFullKeyboardAccessEnabled];
 }
+
 
 - (BOOL)needsPanelToBecomeKey
 {
@@ -847,7 +856,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)performKeyEquivalent:(NSEvent *)anEvent
 {
-    if (![self.window.firstResponder isEqual:self])
+    if (self.window.firstResponder != self)
         return NO;
 
     if (_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
