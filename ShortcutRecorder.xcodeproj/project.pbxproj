@@ -9,16 +9,13 @@
 /* Begin PBXBuildFile section */
 		939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */; };
 		939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */; };
-		939837990DA429EC007F53F3 /* SRValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670F0A246B4900B69171 /* SRValidator.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C367110A246B4900B69171 /* SRCommon.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		939837990DA429EC007F53F3 /* SRValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670F0A246B4900B69171 /* SRValidator.m */; };
+		9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C367110A246B4900B69171 /* SRCommon.m */; };
 		939839390DA4350B007F53F3 /* ShortcutRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393B0DA4350B007F53F3 /* SRRecorderControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9398393C0DA4350B007F53F3 /* SRRecorderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E29C209CDB9360085E9ED /* SRRecorderCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670E0A246B4900B69171 /* SRValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		939839400DA4350B007F53F3 /* SRCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C367100A246B4900B69171 /* SRCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BC5980C9B63746F0F45AF310 /* NSImage+SRRecorderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = BC598840CFB1D658860C7FBB /* NSImage+SRRecorderControl.m */; };
-		BC598F903784D44A3BEB725E /* NSImage+SRRecorderControl.h in Headers */ = {isa = PBXBuildFile; fileRef = BC5988332F2157C45409B32E /* NSImage+SRRecorderControl.h */; };
 		E225E4671679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4471679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png */; };
 		E225E4681679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4481679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png */; };
 		E225E4691679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4491679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png */; };
@@ -65,15 +62,13 @@
 		E2741AE11673C90B00A139BD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2741AE01673C90B00A139BD /* Cocoa.framework */; };
 		E2741AE31673C91200A139BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2741AE21673C91200A139BD /* Foundation.framework */; };
 		E2741AE61673C94E00A139BD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273124B1349EE6500A84433 /* Carbon.framework */; };
-		E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */; };
+		E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRRecorderControl.h; sourceTree = "<group>"; };
 		0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRRecorderControl.m; sourceTree = "<group>"; };
-		0B8E29C209CDB9360085E9ED /* SRRecorderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRRecorderCell.h; sourceTree = "<group>"; };
-		0B8E29C309CDB9360085E9ED /* SRRecorderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRRecorderCell.m; sourceTree = "<group>"; };
 		0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTHotKey.h; sourceTree = "<group>"; };
 		0B8E2A0409CDBADE0085E9ED /* PTHotKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTHotKey.m; sourceTree = "<group>"; };
 		0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTHotKeyCenter.h; sourceTree = "<group>"; };
@@ -91,8 +86,6 @@
 		939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShortcutRecorder.h; sourceTree = SOURCE_ROOT; };
 		A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCodeTranslator.h; sourceTree = "<group>"; };
 		A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCodeTranslator.m; sourceTree = "<group>"; };
-		BC5988332F2157C45409B32E /* NSImage+SRRecorderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+SRRecorderControl.h"; sourceTree = "<group>"; };
-		BC598840CFB1D658860C7FBB /* NSImage+SRRecorderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+SRRecorderControl.m"; sourceTree = "<group>"; };
 		E225E4471679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-left.png"; sourceTree = "<group>"; };
 		E225E4481679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-left@2x.png"; sourceTree = "<group>"; };
 		E225E4491679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-middle.png"; sourceTree = "<group>"; };
@@ -191,16 +184,12 @@
 				74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */,
 				E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */,
 				E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */,
-				74C3670E0A246B4900B69171 /* SRValidator.h */,
 				0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */,
 				0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */,
-				0B8E29C209CDB9360085E9ED /* SRRecorderCell.h */,
-				0B8E29C309CDB9360085E9ED /* SRRecorderCell.m */,
+				74C3670E0A246B4900B69171 /* SRValidator.h */,
 				74C3670F0A246B4900B69171 /* SRValidator.m */,
 				74C367100A246B4900B69171 /* SRCommon.h */,
 				74C367110A246B4900B69171 /* SRCommon.m */,
-				BC598840CFB1D658860C7FBB /* NSImage+SRRecorderControl.m */,
-				BC5988332F2157C45409B32E /* NSImage+SRRecorderControl.h */,
 			);
 			name = ShortcutRecorder;
 			sourceTree = "<group>";
@@ -306,12 +295,10 @@
 			files = (
 				939839390DA4350B007F53F3 /* ShortcutRecorder.h in Headers */,
 				9398393B0DA4350B007F53F3 /* SRRecorderControl.h in Headers */,
-				9398393C0DA4350B007F53F3 /* SRRecorderCell.h in Headers */,
+				E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */,
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
 				939839400DA4350B007F53F3 /* SRCommon.h in Headers */,
-				BC598F903784D44A3BEB725E /* NSImage+SRRecorderControl.h in Headers */,
-				E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +458,6 @@
 				939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */,
 				939837990DA429EC007F53F3 /* SRValidator.m in Sources */,
 				9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */,
-				BC5980C9B63746F0F45AF310 /* NSImage+SRRecorderControl.m in Sources */,
 				E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

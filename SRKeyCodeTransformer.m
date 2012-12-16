@@ -13,62 +13,60 @@
 //      Ilya Kulakov
 //      Silvio Rizzi
 
-#import <AppKit/AppKit.h>
 #import "SRKeyCodeTransformer.h"
 #import "SRCommon.h"
 
 
-static NSString *const _SRReverseTransformDictionaryCacheKey = @"reverseTransform";
-
-static NSString *const _SRPadKeysCacheKey = @"padKeys";
-
-static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKeyCodeStrings";
+FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
+{
+    return [NSString stringWithFormat: @"%C", aChar];
+}
 
 
 @implementation SRKeyCodeTransformer
 
 + (instancetype)sharedTransformer
 {
-    static dispatch_once_t onceToken;
-    static SRKeyCodeTransformer *t = nil;
-    dispatch_once(&onceToken, ^{
-        t = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
-                                                     plainStrings:NO];
+    static dispatch_once_t OnceToken;
+    static SRKeyCodeTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
+                                                               plainStrings:NO];
     });
-    return t;
+    return Transformer;
 }
 
 + (instancetype)sharedASCIITransformer
 {
-    static dispatch_once_t onceToken;
-    static SRKeyCodeTransformer *t = nil;
-    dispatch_once(&onceToken, ^{
-        t = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
-                                                     plainStrings:NO];
+    static dispatch_once_t OnceToken;
+    static SRKeyCodeTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
+                                                               plainStrings:NO];
     });
-    return t;
+    return Transformer;
 }
 
 + (instancetype)sharedPlainTransformer
 {
-    static dispatch_once_t onceToken;
-    static SRKeyCodeTransformer *t = nil;
-    dispatch_once(&onceToken, ^{
-        t = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
-                                                     plainStrings:YES];
+    static dispatch_once_t OnceToken;
+    static SRKeyCodeTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
+                                                               plainStrings:YES];
     });
-    return t;
+    return Transformer;
 }
 
 + (SRKeyCodeTransformer *)sharedPlainASCIITransformer
 {
-    static dispatch_once_t onceToken;
-    static SRKeyCodeTransformer *t = nil;
-    dispatch_once(&onceToken, ^{
-        t = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
-                                                     plainStrings:YES];
+    static dispatch_once_t OnceToken;
+    static SRKeyCodeTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
+                                                               plainStrings:YES];
     });
-    return t;
+    return Transformer;
 }
 
 - (instancetype)init
@@ -79,13 +77,13 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
 - (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings
 {
     self = [super init];
-    
+
     if (self != nil)
     {
         _usesASCIICapableKeyboardInputSource = aUsesASCII;
         _usesPlainStrings = aUsesPlainStrings;
     }
-    
+
     return self;
 }
 
@@ -99,96 +97,98 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
 
 + (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping
 {
-    static dispatch_once_t onceToken;
-    static NSDictionary *d = nil;
-    dispatch_once(&onceToken, ^{
-        d = @{
-            @(kSRKeysF1): SRChar(NSF1FunctionKey),
-            @(kSRKeysF2): SRChar(NSF2FunctionKey),
-            @(kSRKeysF3): SRChar(NSF3FunctionKey),
-            @(kSRKeysF4): SRChar(NSF4FunctionKey),
-            @(kSRKeysF5): SRChar(NSF5FunctionKey),
-            @(kSRKeysF6): SRChar(NSF6FunctionKey),
-            @(kSRKeysF7): SRChar(NSF7FunctionKey),
-            @(kSRKeysF8): SRChar(NSF8FunctionKey),
-            @(kSRKeysF9): SRChar(NSF9FunctionKey),
-            @(kSRKeysF10): SRChar(NSF10FunctionKey),
-            @(kSRKeysF11): SRChar(NSF11FunctionKey),
-            @(kSRKeysF12): SRChar(NSF12FunctionKey),
-            @(kSRKeysF13): SRChar(NSF13FunctionKey),
-            @(kSRKeysF14): SRChar(NSF14FunctionKey),
-            @(kSRKeysF15): SRChar(NSF15FunctionKey),
-            @(kSRKeysF16): SRChar(NSF16FunctionKey),
-            @(kSRKeysF17): SRChar(NSF17FunctionKey),
-            @(kSRKeysF18): SRChar(NSF18FunctionKey),
-            @(kSRKeysF19): SRChar(NSF19FunctionKey),
-            @(kSRKeysSpace): SRChar(KeyboardSpaceGlyph),
-            @(kSRKeysDeleteLeft): SRChar(KeyboardDeleteLeftGlyph),
-            @(kSRKeysDeleteRight): SRChar(KeyboardDeleteRightGlyph),
-            @(kSRKeysPadClear): SRChar(KeyboardPadClearGlyph),
-            @(kSRKeysLeftArrow): SRChar(KeyboardLeftArrowGlyph),
-            @(kSRKeysRightArrow): SRChar(KeyboardRightArrowGlyph),
-            @(kSRKeysUpArrow): SRChar(KeyboardUpArrowGlyph),
-            @(kSRKeysDownArrow): SRChar(KeyboardDownArrowGlyph),
-            @(kSRKeysSoutheastArrow): SRChar(KeyboardSoutheastArrowGlyph),
-            @(kSRKeysNorthwestArrow): SRChar(KeyboardNorthwestArrowGlyph),
-            @(kSRKeysEscape): SRChar(KeyboardEscapeGlyph),
-            @(kSRKeysPageDown): SRChar(KeyboardPageDownGlyph),
-            @(kSRKeysPageUp): SRChar(KeyboardPageUpGlyph),
-            @(kSRKeysReturnR2L): SRChar(KeyboardReturnR2LGlyph),
-            @(kSRKeysReturn): SRChar(KeyboardReturnGlyph),
-            @(kSRKeysTabRight): SRChar(KeyboardTabRightGlyph),
-            @(kSRKeysHelp): SRChar(KeyboardHelpGlyph)
+    static dispatch_once_t OnceToken;
+    static NSDictionary *Mapping = nil;
+    dispatch_once(&OnceToken, ^{
+        Mapping = @{
+            @(kVK_F1): _SRUnicharToString(NSF1FunctionKey),
+            @(kVK_F2): _SRUnicharToString(NSF2FunctionKey),
+            @(kVK_F3): _SRUnicharToString(NSF3FunctionKey),
+            @(kVK_F4): _SRUnicharToString(NSF4FunctionKey),
+            @(kVK_F5): _SRUnicharToString(NSF5FunctionKey),
+            @(kVK_F6): _SRUnicharToString(NSF6FunctionKey),
+            @(kVK_F7): _SRUnicharToString(NSF7FunctionKey),
+            @(kVK_F8): _SRUnicharToString(NSF8FunctionKey),
+            @(kVK_F9): _SRUnicharToString(NSF9FunctionKey),
+            @(kVK_F10): _SRUnicharToString(NSF10FunctionKey),
+            @(kVK_F11): _SRUnicharToString(NSF11FunctionKey),
+            @(kVK_F12): _SRUnicharToString(NSF12FunctionKey),
+            @(kVK_F13): _SRUnicharToString(NSF13FunctionKey),
+            @(kVK_F14): _SRUnicharToString(NSF14FunctionKey),
+            @(kVK_F15): _SRUnicharToString(NSF15FunctionKey),
+            @(kVK_F16): _SRUnicharToString(NSF16FunctionKey),
+            @(kVK_F17): _SRUnicharToString(NSF17FunctionKey),
+            @(kVK_F18): _SRUnicharToString(NSF18FunctionKey),
+            @(kVK_F19): _SRUnicharToString(NSF19FunctionKey),
+            @(kVK_F20): _SRUnicharToString(NSF20FunctionKey),
+            @(kVK_Space): _SRUnicharToString(SRKeyCodeGlyphSpace),
+            @(kVK_Delete): _SRUnicharToString(SRKeyCodeGlyphDeleteLeft),
+            @(kVK_ForwardDelete): _SRUnicharToString(SRKeyCodeGlyphDeleteRight),
+            @(kVK_ANSI_KeypadClear): _SRUnicharToString(SRKeyCodeGlyphPadClear),
+            @(kVK_LeftArrow): _SRUnicharToString(SRKeyCodeGlyphLeftArrow),
+            @(kVK_RightArrow): _SRUnicharToString(SRKeyCodeGlyphRightArrow),
+            @(kVK_UpArrow): _SRUnicharToString(SRKeyCodeGlyphUpArrow),
+            @(kVK_DownArrow): _SRUnicharToString(SRKeyCodeGlyphDownArrow),
+            @(kVK_End): _SRUnicharToString(SRKeyCodeGlyphSoutheastArrow),
+            @(kVK_Home): _SRUnicharToString(SRKeyCodeGlyphNorthwestArrow),
+            @(kVK_Escape): _SRUnicharToString(SRKeyCodeGlyphEscape),
+            @(kVK_PageDown): _SRUnicharToString(SRKeyCodeGlyphPageDown),
+            @(kVK_PageUp): _SRUnicharToString(SRKeyCodeGlyphPageUp),
+            @(kVK_Return): _SRUnicharToString(SRKeyCodeGlyphReturnR2L),
+            @(kVK_ANSI_KeypadEnter): _SRUnicharToString(SRKeyCodeGlyphReturn),
+            @(kVK_Tab): _SRUnicharToString(SRKeyCodeGlyphRight),
+            @(kVK_Help): _SRUnicharToString(SRKeyCodeGlyphHelp)
         };
     });
-    return d;
+    return Mapping;
 }
 
 + (NSDictionary *)specialKeyCodesToPlainStringsMapping
 {
-    static dispatch_once_t onceToken;
-    static NSDictionary *d = nil;
-    dispatch_once(&onceToken, ^{
-        d = @{
-            @(kSRKeysF1): @"F1",
-            @(kSRKeysF2): @"F2",
-            @(kSRKeysF3): @"F3",
-            @(kSRKeysF4): @"F4",
-            @(kSRKeysF5): @"F5",
-            @(kSRKeysF6): @"F6",
-            @(kSRKeysF7): @"F7",
-            @(kSRKeysF8): @"F8",
-            @(kSRKeysF9): @"F9",
-            @(kSRKeysF10): @"F10",
-            @(kSRKeysF11): @"F11",
-            @(kSRKeysF12): @"F12",
-            @(kSRKeysF13): @"F13",
-            @(kSRKeysF14): @"F14",
-            @(kSRKeysF15): @"F15",
-            @(kSRKeysF16): @"F16",
-            @(kSRKeysF17): @"F17",
-            @(kSRKeysF18): @"F18",
-            @(kSRKeysF19): @"F18",
-            @(kSRKeysSpace): SRChar(KeyboardSpaceGlyph),
-            @(kSRKeysDeleteLeft): SRChar(KeyboardDeleteLeftGlyph),
-            @(kSRKeysDeleteRight): SRChar(KeyboardDeleteRightGlyph),
-            @(kSRKeysPadClear): SRChar(KeyboardPadClearGlyph),
-            @(kSRKeysLeftArrow): SRChar(KeyboardLeftArrowGlyph),
-            @(kSRKeysRightArrow): SRChar(KeyboardRightArrowGlyph),
-            @(kSRKeysUpArrow): SRChar(KeyboardUpArrowGlyph),
-            @(kSRKeysDownArrow): SRChar(KeyboardDownArrowGlyph),
-            @(kSRKeysSoutheastArrow): SRChar(KeyboardSoutheastArrowGlyph),
-            @(kSRKeysNorthwestArrow): SRChar(KeyboardNorthwestArrowGlyph),
-            @(kSRKeysEscape): SRChar(KeyboardEscapeGlyph),
-            @(kSRKeysPageDown): SRChar(KeyboardPageDownGlyph),
-            @(kSRKeysPageUp): SRChar(KeyboardPageUpGlyph),
-            @(kSRKeysReturnR2L): SRChar(KeyboardReturnR2LGlyph),
-            @(kSRKeysReturn): SRChar(KeyboardReturnGlyph),
-            @(kSRKeysTabRight): SRChar(KeyboardTabRightGlyph),
-            @(kSRKeysHelp): SRChar(KeyboardHelpGlyph)
+    static dispatch_once_t OnceToken;
+    static NSDictionary *Mapping = nil;
+    dispatch_once(&OnceToken, ^{
+        Mapping = @{
+            @(kVK_F1): @"F1",
+            @(kVK_F2): @"F2",
+            @(kVK_F3): @"F3",
+            @(kVK_F4): @"F4",
+            @(kVK_F5): @"F5",
+            @(kVK_F6): @"F6",
+            @(kVK_F7): @"F7",
+            @(kVK_F8): @"F8",
+            @(kVK_F9): @"F9",
+            @(kVK_F10): @"F10",
+            @(kVK_F11): @"F11",
+            @(kVK_F12): @"F12",
+            @(kVK_F13): @"F13",
+            @(kVK_F14): @"F14",
+            @(kVK_F15): @"F15",
+            @(kVK_F16): @"F16",
+            @(kVK_F17): @"F17",
+            @(kVK_F18): @"F18",
+            @(kVK_F19): @"F19",
+            @(kVK_F20): @"F20",
+            @(kVK_Space): _SRUnicharToString(SRKeyCodeGlyphSpace),
+            @(kVK_Delete): _SRUnicharToString(SRKeyCodeGlyphDeleteLeft),
+            @(kVK_ForwardDelete): _SRUnicharToString(SRKeyCodeGlyphDeleteRight),
+            @(kVK_ANSI_KeypadClear): _SRUnicharToString(SRKeyCodeGlyphPadClear),
+            @(kVK_LeftArrow): _SRUnicharToString(SRKeyCodeGlyphLeftArrow),
+            @(kVK_RightArrow): _SRUnicharToString(SRKeyCodeGlyphRightArrow),
+            @(kVK_UpArrow): _SRUnicharToString(SRKeyCodeGlyphUpArrow),
+            @(kVK_DownArrow): _SRUnicharToString(SRKeyCodeGlyphDownArrow),
+            @(kVK_End): _SRUnicharToString(SRKeyCodeGlyphSoutheastArrow),
+            @(kVK_Home): _SRUnicharToString(SRKeyCodeGlyphNorthwestArrow),
+            @(kVK_Escape): _SRUnicharToString(SRKeyCodeGlyphEscape),
+            @(kVK_PageDown): _SRUnicharToString(SRKeyCodeGlyphPageDown),
+            @(kVK_PageUp): _SRUnicharToString(SRKeyCodeGlyphPageUp),
+            @(kVK_Return): _SRUnicharToString(SRKeyCodeGlyphReturnR2L),
+            @(kVK_ANSI_KeypadEnter): _SRUnicharToString(SRKeyCodeGlyphReturn),
+            @(kVK_Tab): _SRUnicharToString(SRKeyCodeGlyphRight),
+            @(kVK_Help): _SRUnicharToString(SRKeyCodeGlyphHelp)
         };
     });
-    return d;
+    return Mapping;
 }
 
 
@@ -208,50 +208,50 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
 {
     if (![aValue isKindOfClass:[NSNumber class]])
         return nil;
-    
+
     unsigned short keyCode = [aValue unsignedShortValue];
 
     // Some key codes cannot be translated directly.
     NSString *unmappedString = nil;
-    
+
     if (self.usesPlainStrings)
         unmappedString = [[[self class] specialKeyCodesToPlainStringsMapping] objectForKey:@(keyCode)];
     else
         unmappedString = [[[self class] specialKeyCodesToUnicodeCharactersMapping] objectForKey:@(keyCode)];
-    
+
     if (unmappedString != nil)
         return unmappedString;
 
     CFDataRef layoutData = NULL;
-    
+
     if (self.usesASCIICapableKeyboardInputSource)
     {
         TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
-        
+
         if (tisSource == NULL)
             return nil;
-        
+
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
     }
     else
     {
         TISInputSourceRef tisSource = TISCopyCurrentKeyboardInputSource();
-        
+
         if (tisSource == NULL)
             return nil;
-        
+
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
-        
+
         // For non-unicode layouts such as Chinese, Japanese, and Korean, get the ASCII capable layout
         if (layoutData == NULL)
         {
             tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
-            
+
             if (tisSource == NULL)
                 return nil;
-            
+
             layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
             CFRelease(tisSource);
         }
@@ -267,16 +267,16 @@ static NSString *const _SRSpecialKeyCodeStringsDictionaryCacheKey = @"specialKey
     UniChar chars[MaxLength] = {0};
 
     UInt32 deadKeyState = 0;
-    OSErr err = UCKeyTranslate(keyLayout,
-                               keyCode,
-                               kUCKeyActionDisplay,
-                               0,
-                               LMGetKbdType(),
-                               kUCKeyTranslateNoDeadKeysBit,
-                               &deadKeyState,
-                               sizeof(chars) / sizeof(UniChar),
-                               &actualLength,
-                               chars);
+    OSStatus err = UCKeyTranslate(keyLayout,
+                                  keyCode,
+                                  kUCKeyActionDisplay,
+                                  0,
+                                  LMGetKbdType(),
+                                  kUCKeyTranslateNoDeadKeysBit,
+                                  &deadKeyState,
+                                  sizeof(chars) / sizeof(UniChar),
+                                  &actualLength,
+                                  chars);
     if (err != noErr)
         return nil;
 

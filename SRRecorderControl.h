@@ -14,11 +14,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import <ShortcutRecorder/SRCommon.h>
-#import <ShortcutRecorder/SRValidator.h>
 
 
 /*!
     @brief      Key code.
+
     @discussion NSNumber representation of unsigned short.
                 Required key of SRRecorderControl's objectValue.
  */
@@ -26,6 +26,7 @@ extern NSString *const SRShortcutKeyCode;
 
 /*!
     @brief      Modifier flags.
+
     @discussion NSNumber representation of NSUInteger.
                 Optional key of SRRecorderControl's objectValue.
  */
@@ -34,6 +35,7 @@ extern NSString *const SRShortcutModifierFlagsKey;
 /*!
     @brief      Interpretation of key code and modifier flags depending on system locale and input source
                 used when shortcut was taken.
+
     @discussion NSString.
                 Optional key of SRRecorderControl's objectValue.
  */
@@ -42,6 +44,7 @@ extern NSString *const SRShortcutCharacters;
 /*!
     @brief      Interpretation of key code without modifier flags depending on system locale and input source
                 used when shortcut was taken.
+
     @discussion NSString.
                 Optional key of SRRecorderControl's objectValue.
  */
@@ -51,16 +54,23 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 @protocol SRRecorderControlDelegate;
 
 
+/*!
+    @brief  An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
+ */
 @interface SRRecorderControl : NSView /* <NSToolTipOwner> */
 
+/*!
+    @brief      The receiver’s delegate.
+
+    @discussion A recorder control delegate responds to editing-related messages. You can use to to prevent editing
+                in some cases or to validate typed shortcuts.
+ */
 @property (assign) IBOutlet NSObject<SRRecorderControlDelegate> *delegate;
 
 /*!
     @brief      Returns an integer bit field indicating allowed modifier flags.
 
-    @discussion Defaults to SRCocoaFlagsMask.
-
-    @see        setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
+    @discussion Defaults to SRCocoaModifierFlagsMask.
  */
 @property (readonly) NSUInteger allowedModifierFlags;
 
@@ -68,8 +78,6 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @brief      Returns an integer bit field indicating required modifier flags.
 
     @discussion Defaults to 0.
-
-    @see        setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) NSUInteger requiredModifierFlags;
 
@@ -77,34 +85,43 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @brief      Determines whether shortcuts without modifier flags are allowed.
 
     @discussion Defaults to NO.
-
-    @see        setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) BOOL allowsEmptyModifierFlags;
 
 /*!
     @brief      Determines whether the control reinterpret key code and modifier flags
                 using ASCII capable input source.
-    @discussion If not set, the same key code may be dr
-    aw differently depending on current input source.
+
+    @discussion Defaults to YES.
+                If not set, the same key code may be draw differently depending on current input source.
                 E.g. with US English input source key code 0x0 is interpreted as "a",
                 however with Russian input source, it's interpreted as "ф".
-                Default to YES.
  */
 @property BOOL drawsASCIIEquivalentOfShortcut;
 
 /*!
+    @brief      Determines whether Escape is used to cancel recording.
+
+    @discussion Defaults to YES.
+                If set, Escape without modifier flags cannot be recorded as shortcut.
  */
 @property BOOL allowsEscapeToCancelRecording;
 
+/*!
+    @brief      Determines whether delete (or forward delete) is used to remove current shortcut and end recording.
+
+    @discussion Defaults to YES.
+                If set, neither Delete nor Forward Delete without modifier flags can be recorded as shortcut.
+ */
 @property BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
+    @brief  Determines whether recording is in process.
  */
 @property (readonly) BOOL isRecording;
 
 /*!
-    @brief  Returns dictionary representation shortcut.
+    @brief  Returns dictionary representation of receiver's shortcut.
  */
 @property (nonatomic, copy) NSDictionary *objectValue;
 
@@ -117,7 +134,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
     @param      newAllowsEmptyModifierFlags Determines whether empty modifier flags are allowed.
 
-    @discussion Flags are filtered using SRCocoaFlagsMask. Flags does not affect object values set manually.
+    @discussion Flags are filtered using SRCocoaModifierFlagsMask. Flags does not affect object values set manually.
 
                 Throws NSInvalidArgumentException if either required flags are not allowed
                 or required flags are not empty and no modifier flags are allowed.
@@ -126,12 +143,11 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
           requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
 
+- (BOOL)beginRecording;
 
-- (BOOL)beginEditing;
+- (void)endRecording;
 
-- (void)endEditing;
-
-- (void)clearAndEndEditing;
+- (void)clearAndEndRecording;
 
 - (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags;
 
@@ -181,17 +197,4 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 - (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder;
 
-//- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder
-//               isKeyCode:(NSInteger)aKeyCode
-//           andFlagsTaken:(NSUInteger)aFlags
-//                  reason:(NSString **)aReason;
-//
-//- (void)shortcutRecorder:(SRRecorderControl *)aRecorder
-//       keyComboDidChange:(KeyCombo)aKeyCombo;
-//
-//- (BOOL)shortcutRecorderShouldCheckMenu:(SRRecorderControl *)aRecorder;
-//
-//- (BOOL)shortcutRecorderShouldSystemShortcuts:(SRRecorderControl *)aRecorder;
-
 @end
-

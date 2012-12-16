@@ -2,26 +2,26 @@
 //  SRModifierFlagsTransformer.m
 //  ShortcutRecorder
 //
-//  Created by Илья Кулаков on 14.12.12.
+//  Copyright 2006-2012 Contributors. All rights reserved.
 //
+//  License: BSD
 //
+//  Contributors:
+//      Ilya Kulakov
 
-#import <Carbon/Carbon.h>
 #import "SRModifierFlagsTransformer.h"
 
 
 @implementation SRModifierFlagsTransformer
 
-#pragma mark Methods
-
 + (instancetype)sharedTransformer
 {
-    static dispatch_once_t onceToken;
-    static SRModifierFlagsTransformer *sharedTransformer = nil;
-    dispatch_once(&onceToken, ^{
-        sharedTransformer = [[self alloc] init];
+    static dispatch_once_t OnceToken;
+    static SRModifierFlagsTransformer *Transfomer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transfomer = [[self alloc] init];
     });
-    return sharedTransformer;
+    return Transfomer;
 }
 
 #pragma mark NSValueTransformer

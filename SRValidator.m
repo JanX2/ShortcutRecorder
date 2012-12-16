@@ -16,12 +16,12 @@
 
 #import "SRValidator.h"
 #import "SRCommon.h"
+#import "SRKeyCodeTransformer.h"
 
 
 @implementation SRValidator
-@synthesize delegate = _delegate;
 
-- (id)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate;
+- (instancetype)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate;
 {
     self = [super init];
 
@@ -33,7 +33,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithDelegate:nil];
 }
@@ -88,7 +88,7 @@
                 NSString *recoverySuggestion = [NSString stringWithFormat:
                                                 SRLoc(@"The key combination \"%@\" can't be used because %@."),
                                                 shortcut,
-                                                (delegateReason && [delegateReason length]) ? delegateReason : @"it's already used"];
+                                                [delegateReason length] ? delegateReason : @"it's already used"];
                 NSDictionary *userInfo = @{
                     NSLocalizedDescriptionKey : description,
                     NSLocalizedRecoverySuggestionErrorKey: recoverySuggestion,
@@ -106,27 +106,26 @@
 
 - (BOOL)isKeyCode:(NSInteger)aKeyCode andFlagsTakenInSystemShortcuts:(NSUInteger)aFlags error:(NSError **)outError
 {
-    CFArrayRef symbolicHotKeys = NULL;
-    OSStatus err = CopySymbolicHotKeys(&symbolicHotKeys);
+    CFArrayRef s = NULL;
+    OSStatus err = CopySymbolicHotKeys(&s);
 
     if (err != noErr)
         return YES;
 
-    [(NSArray *)symbolicHotKeys autorelease];
+    NSArray *symbolicHotKeys = (NSArray *)CFBridgingRelease(s);
+    aFlags &= SRCocoaModifierFlagsMask;
 
-    aFlags &= SRCocoaFlagsMask; // flags may contain not only modifiers
-
-    for (NSDictionary *symbolicHotKey in (NSArray *)symbolicHotKeys)
+    for (NSDictionary *symbolicHotKey in symbolicHotKeys)
     {
-        if ((CFBooleanRef)[symbolicHotKey objectForKey:(NSString *)kHISymbolicHotKeyEnabled] != kCFBooleanTrue)
+        if ((__bridge CFBooleanRef)[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyEnabled] != kCFBooleanTrue)
             continue;
 
-        NSInteger symbolicHotKeyCode = [[symbolicHotKey objectForKey:(NSString *)kHISymbolicHotKeyCode] integerValue];
+        NSInteger symbolicHotKeyCode = [[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyCode] integerValue];
 
         if (symbolicHotKeyCode == aKeyCode)
         {
-            NSUInteger symbolicHotKeyFlags = [[symbolicHotKey objectForKey:(NSString *)kHISymbolicHotKeyModifiers] unsignedIntegerValue]; // Carbon modifiers see HIToolbox/Event.h
-            symbolicHotKeyFlags &= SRCarbonFlagsMask;
+            NSUInteger symbolicHotKeyFlags = [[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyModifiers] unsignedIntegerValue];
+            symbolicHotKeyFlags &= SRCarbonModifierFlagsMask;
 
             if (SRCarbonToCocoaFlags(symbolicHotKeyFlags) == aFlags)
             {
@@ -142,7 +141,7 @@
                                              SRLoc(@"The key combination %@ can't be used!"),
                                              shortcut];
                     NSString *recoverySuggestion = [NSString stringWithFormat:
-                                                    SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. (If you really want to use this key combination, most shortcuts can be changed in the Keyboard & Mouse panel in System Preferences.)"),
+                                                    SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. (If you really want to use this key combination, most shortcuts can be changed in the Keyboard panel in System Preferences.)"),
                                                     shortcut];
                     NSDictionary *userInfo = @{
                         NSLocalizedDescriptionKey: description,
@@ -162,7 +161,7 @@
 
 - (BOOL)isKeyCode:(NSInteger)aKeyCode andFlags:(NSUInteger)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
 {
-    aFlags &= SRCocoaFlagsMask;
+    aFlags &= SRCocoaModifierFlagsMask;
 
     for (NSMenuItem *menuItem in [aMenu itemArray])
     {
@@ -184,10 +183,10 @@
             keyEquivalentModifierMask |= NSShiftKeyMask;
         }
 
-        if ((keyEquivalentModifierMask & SRCocoaFlagsMask) == aFlags)
+        if ((keyEquivalentModifierMask & SRCocoaModifierFlagsMask) == aFlags)
         {
-            NSString *keyCodeASCIIRepresentation = SRASCIIStringForKeyCode(aKeyCode);
-            NSString *keyCodeCurrentLayoutRepresentation = SRStringForKeyCode(aKeyCode);
+            NSString *keyCodeASCIIRepresentation = [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:@(aKeyCode)];
+            NSString *keyCodeCurrentLayoutRepresentation = [[SRKeyCodeTransformer sharedTransformer] transformedValue:@(aKeyCode)];
 
             if ([keyEquivalent isEqual:keyCodeASCIIRepresentation] ||
                 [keyEquivalent isEqualToString:keyCodeCurrentLayoutRepresentation])

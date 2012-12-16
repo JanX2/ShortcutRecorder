@@ -12,9 +12,7 @@
 //      Jamie Kirkpatrick
 //      Ilya Kulakov
 
-#import <Cocoa/Cocoa.h>
 #import "SRRecorderControl.h"
-#import "NSImage+SRRecorderControl.h"
 #import "SRKeyCodeTransformer.h"
 #import "SRModifierFlagsTransformer.h"
 
@@ -78,7 +76,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self != nil)
     {
-        _allowedModifierFlags = SRCocoaFlagsMask;
+        _allowedModifierFlags = SRCocoaModifierFlagsMask;
         _requiredModifierFlags = 0;
         _allowsEmptyModifierFlags = NO;
         _drawsASCIIEquivalentOfShortcut = YES;
@@ -120,8 +118,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
           requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags
 {
-    newAllowedModifierFlags &= SRCocoaFlagsMask;
-    newRequiredModifierFlags &= SRCocoaFlagsMask;
+    newAllowedModifierFlags &= SRCocoaModifierFlagsMask;
+    newRequiredModifierFlags &= SRCocoaModifierFlagsMask;
 
     if ((newAllowedModifierFlags & newRequiredModifierFlags) != newRequiredModifierFlags)
     {
@@ -143,7 +141,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 #pragma mark Methods
 
-- (BOOL)beginEditing
+- (BOOL)beginRecording
 {
     if (self.isRecording)
         return YES;
@@ -167,7 +165,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return YES;
 }
 
-- (void)endEditing
+- (void)endRecording
 {
     if (!self.isRecording)
         return;
@@ -184,15 +182,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self.delegate shortcutRecorderDidEndRecording:self];
 }
 
-- (void)clearAndEndEditing
+- (void)clearAndEndRecording
 {
     self.objectValue = nil;
-    [self endEditing];
+    [self endRecording];
 }
 
 - (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags
 {
-    aModifierFlags &= SRCocoaFlagsMask;
+    aModifierFlags &= SRCocoaModifierFlagsMask;
     return (aModifierFlags & self.requiredModifierFlags) == self.requiredModifierFlags &&
             (aModifierFlags & self.allowedModifierFlags) == aModifierFlags;
 }
@@ -217,14 +215,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes
 {
-    NSRect labelRect = NSZeroRect;
     NSFont *font = anAttributes[NSFontAttributeName];
     NSSize labelSize = [aLabel sizeWithAttributes:anAttributes];
+    labelSize.width = ceil(labelSize.width);
+    labelSize.height = ceil(labelSize.height);
     CGFloat fontBaselineOffsetFromTop = labelSize.height + font.descender;
     CGFloat baselineOffsetFromTop = _SRRecorderControlHeight - self.alignmentRectInsets.bottom - self.baselineOffsetFromBottom;
-    labelRect.origin.x = NSMidX(self.bounds) - labelSize.width / 2.0;
-    labelRect.origin.y = baselineOffsetFromTop - fontBaselineOffsetFromTop;
-    labelRect.size = labelSize;
+    NSRect labelRect = {
+        .origin = NSMakePoint(NSMidX(self.bounds) - labelSize.width / 2.0, baselineOffsetFromTop - fontBaselineOffsetFromTop),
+        .size = labelSize
+    };
     labelRect = [self centerScanRect:labelRect];
     return labelRect;
 }
@@ -601,24 +601,24 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     [super viewWillDraw];
 
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _SRImages[0] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-blue-highlighted-left"];
-        _SRImages[1] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-blue-highlighted-middle"];
-        _SRImages[2] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-blue-highlighted-right"];
-        _SRImages[3] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-editing-left"];
-        _SRImages[4] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-editing-middle"];
-        _SRImages[5] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-editing-right"];
-        _SRImages[6] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-graphite-highlight-mask-left"];
-        _SRImages[7] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-graphite-highlight-mask-middle"];
-        _SRImages[8] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-graphite-highlight-mask-right"];
-        _SRImages[9] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-left"];
-        _SRImages[10] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-middle"];
-        _SRImages[11] = [NSImage SR_imageNamed:@"shortcut-recorder-bezel-right"];
-        _SRImages[12] = [NSImage SR_imageNamed:@"shortcut-recorder-clear-highlighted"];
-        _SRImages[13] = [NSImage SR_imageNamed:@"shortcut-recorder-clear"];
-        _SRImages[14] = [NSImage SR_imageNamed:@"shortcut-recorder-snapback-highlighted"];
-        _SRImages[15] = [NSImage SR_imageNamed:@"shortcut-recorder-snapback"];
+    static dispatch_once_t OnceToken;
+    dispatch_once(&OnceToken, ^{
+        _SRImages[0] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-left");
+        _SRImages[1] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-middle");
+        _SRImages[2] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-right");
+        _SRImages[3] = SRImage(@"shortcut-recorder-bezel-editing-left");
+        _SRImages[4] = SRImage(@"shortcut-recorder-bezel-editing-middle");
+        _SRImages[5] = SRImage(@"shortcut-recorder-bezel-editing-right");
+        _SRImages[6] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-left");
+        _SRImages[7] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-middle");
+        _SRImages[8] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-right");
+        _SRImages[9] = SRImage(@"shortcut-recorder-bezel-left");
+        _SRImages[10] = SRImage(@"shortcut-recorder-bezel-middle");
+        _SRImages[11] = SRImage(@"shortcut-recorder-bezel-right");
+        _SRImages[12] = SRImage(@"shortcut-recorder-clear-highlighted");
+        _SRImages[13] = SRImage(@"shortcut-recorder-clear");
+        _SRImages[14] = SRImage(@"shortcut-recorder-snapback-highlighted");
+        _SRImages[15] = SRImage(@"shortcut-recorder-snapback");
     });
 }
 
@@ -636,10 +636,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSRect)focusRingMaskBounds
 {
-    if (self.isRecording || [[NSApplication sharedApplication] isFullKeyboardAccessEnabled])
-        return self.controlShape.bounds;
-    else
-        return NSZeroRect;
+    return self.controlShape.bounds;
 }
 
 - (NSEdgeInsets)alignmentRectInsets
@@ -726,7 +723,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (aWindow)
     {
         [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(endEditing)
+                                                 selector:@selector(endRecording)
                                                      name:NSWindowDidResignKeyNotification
                                                    object:aWindow];
     }
@@ -744,7 +741,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)resignFirstResponder
 {
-    [self endEditing];
+    [self endRecording];
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     return [super resignFirstResponder];
 }
@@ -757,6 +754,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (BOOL)canBecomeKeyView
 {
     return [[NSApplication sharedApplication] isFullKeyboardAccessEnabled];
+}
+
+- (BOOL)needsPanelToBecomeKey
+{
+    return YES;
 }
 
 - (void)mouseDown:(NSEvent *)anEvent
@@ -794,17 +796,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag &&
             [self mouse:locationInView inRect:self.bounds])
         {
-            [self beginEditing];
+            [self beginRecording];
         }
         else if (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag &&
                  [self mouse:locationInView inRect:self.snapBackButtonRect])
         {
-            [self endEditing];
+            [self endRecording];
         }
         else if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag &&
                  [self mouse:locationInView inRect:self.clearButtonRect])
         {
-            [self clearAndEndEditing];
+            [self clearAndEndRecording];
         }
 
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
@@ -855,22 +857,23 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         if (self.allowsEscapeToCancelRecording &&
             anEvent.keyCode == kVK_Escape &&
-            (anEvent.modifierFlags & SRCocoaFlagsMask) == 0)
+            (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
         {
-            [self endEditing];
+            [self endRecording];
             return YES;
         }
         else if (self.allowsDeleteToClearShortcutAndEndRecording &&
-                 (anEvent.keyCode == kVK_Delete || anEvent.keyCode == kVK_ForwardDelete))
+                (anEvent.keyCode == kVK_Delete || anEvent.keyCode == kVK_ForwardDelete) &&
+                (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
         {
-            [self clearAndEndEditing];
+            [self clearAndEndRecording];
             return YES;
         }
         else if ([self areModifierFlagsValid:anEvent.modifierFlags])
         {
             NSDictionary *newObjectValue = @{
                 SRShortcutKeyCode: @(anEvent.keyCode),
-                SRShortcutModifierFlagsKey: @(anEvent.modifierFlags & SRCocoaFlagsMask),
+                SRShortcutModifierFlagsKey: @(anEvent.modifierFlags & SRCocoaModifierFlagsMask),
                 SRShortcutCharacters: anEvent.characters,
                 SRShortcutCharactersIgnoringModifiers: anEvent.charactersIgnoringModifiers
             };
@@ -885,15 +888,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
             }
 
             self.objectValue = newObjectValue;
-            [self endEditing];
+            [self endRecording];
             return YES;
         }
     }
     else if (anEvent.keyCode == kVK_Space)
-    {
-        [self beginEditing];
-        return YES;
-    }
+        return [self beginRecording];
 
     return NO;
 }

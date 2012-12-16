@@ -17,203 +17,95 @@
 #import <Carbon/Carbon.h>
 
 
-NSUInteger SRCarbonToCocoaFlags(NSUInteger carbonFlags);
+/*!
+    @brief  Mask representing subset of Cocoa modifier flags suitable for shortcuts.
+ */
+static const NSUInteger SRCocoaModifierFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask;
 
-NSUInteger SRCocoaToCarbonFlags(NSUInteger cocoaFlags);
-
-static const NSUInteger SRCocoaFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask;
-
-static const NSUInteger SRCarbonFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
-
+/*!
+    @brief  Mask representing subset of Carbon modifier flags suitable for shortcuts.
+ */
+static const NSUInteger SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
 
 
-#pragma mark Dummy class
-
-@interface SRDummyClass : NSObject
+/*!
+    @brief  Converts carbon modifier flags to cocoa.
+ */
+FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(NSUInteger aCarbonFlags)
 {
+    NSUInteger cocoaFlags = 0;
+
+    if (aCarbonFlags & cmdKey)
+        cocoaFlags |= NSCommandKeyMask;
+
+    if (aCarbonFlags & optionKey)
+        cocoaFlags |= NSAlternateKeyMask;
+
+    if (aCarbonFlags & controlKey)
+        cocoaFlags |= NSControlKeyMask;
+
+    if (aCarbonFlags & shiftKey)
+        cocoaFlags |= NSShiftKeyMask;
+
+    return cocoaFlags;
 }
 
-@end
-
-#pragma mark -
-#pragma mark Typedefs
-
-
-
-#pragma mark -
-#pragma mark Enums
-
-// Unicode values of some keyboard glyphs
-enum
+/*!
+    @brief  Converts cocoa modifier flags to carbon.
+ */
+FOUNDATION_STATIC_INLINE NSUInteger SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
 {
-    KeyboardTabRightGlyph = 0x21E5,
-    KeyboardTabLeftGlyph = 0x21E4,
-    KeyboardCommandGlyph = kCommandUnicode,
-    KeyboardOptionGlyph = kOptionUnicode,
-    KeyboardShiftGlyph = kShiftUnicode,
-    KeyboardControlGlyph = kControlUnicode,
-    KeyboardReturnGlyph = 0x2305,
-    KeyboardReturnR2LGlyph = 0x21A9,
-    KeyboardDeleteLeftGlyph = 0x232B,
-    KeyboardDeleteRightGlyph = 0x2326,
-    KeyboardPadClearGlyph = 0x2327,
-    KeyboardLeftArrowGlyph = 0x2190,
-    KeyboardRightArrowGlyph = 0x2192,
-    KeyboardUpArrowGlyph = 0x2191,
-    KeyboardDownArrowGlyph = 0x2193,
-    KeyboardPageDownGlyph = 0x21DF,
-    KeyboardPageUpGlyph = 0x21DE,
-    KeyboardNorthwestArrowGlyph = 0x2196,
-    KeyboardSoutheastArrowGlyph = 0x2198,
-    KeyboardEscapeGlyph = 0x238B,
-    KeyboardHelpGlyph = 0x003F,
-    KeyboardUpArrowheadGlyph = 0x2303,
-    KeyboardSpaceGlyph = 0x23B5,
-};
+    NSUInteger carbonFlags = 0;
 
-// Special keys
-enum
-{
-    kSRKeysF1 = 122,
-    kSRKeysF2 = 120,
-    kSRKeysF3 = 99,
-    kSRKeysF4 = 118,
-    kSRKeysF5 = 96,
-    kSRKeysF6 = 97,
-    kSRKeysF7 = 98,
-    kSRKeysF8 = 100,
-    kSRKeysF9 = 101,
-    kSRKeysF10 = 109,
-    kSRKeysF11 = 103,
-    kSRKeysF12 = 111,
-    kSRKeysF13 = 105,
-    kSRKeysF14 = 107,
-    kSRKeysF15 = 113,
-    kSRKeysF16 = 106,
-    kSRKeysF17 = 64,
-    kSRKeysF18 = 79,
-    kSRKeysF19 = 80,
-    kSRKeysSpace = 49,
-    kSRKeysDeleteLeft = 51,
-    kSRKeysDeleteRight = 117,
-    kSRKeysPadClear = 71,
-    kSRKeysLeftArrow = 123,
-    kSRKeysRightArrow = 124,
-    kSRKeysUpArrow = 126,
-    kSRKeysDownArrow = 125,
-    kSRKeysSoutheastArrow = 119,
-    kSRKeysNorthwestArrow = 115,
-    kSRKeysEscape = 53,
-    kSRKeysPageDown = 121,
-    kSRKeysPageUp = 116,
-    kSRKeysReturnR2L = 36,
-    kSRKeysReturn = 76,
-    kSRKeysTabRight = 48,
-    kSRKeysHelp = 114
-};
+    if (aCocoaFlags & NSCommandKeyMask)
+        carbonFlags |= cmdKey;
 
-#pragma mark -
-#pragma mark Macros
+    if (aCocoaFlags & NSAlternateKeyMask)
+        carbonFlags |= optionKey;
 
-// Localization macros, for use in any bundle
-#define SRLoc(key) SRLocalizedString(key, nil)
-#define SRLocalizedString(key, comment) NSLocalizedStringFromTableInBundle(key, @"ShortcutRecorder", [NSBundle bundleForClass: [SRDummyClass class]], comment)
+    if (aCocoaFlags & NSControlKeyMask)
+        carbonFlags |= controlKey;
 
-// Image macros, for use in any bundle
-//#define SRImage(name) [[[NSImage alloc] initWithContentsOfFile: [[NSBundle bundleForClass: [self class]] pathForImageResource: name]] autorelease]
-#define SRResIndImage(name) [SRSharedImageProvider supportingImageWithName:name]
-#define SRImage(name) SRResIndImage(name)
+    if (aCocoaFlags & NSShiftKeyMask)
+        carbonFlags |= shiftKey;
 
-//#define SRCommonWriteDebugImagery
-
-// Macros for glyps
-#define SRInt(x) [NSNumber numberWithInteger:x]
-#define SRChar(x) [NSString stringWithFormat: @"%C", (unichar)(x)]
-
-// Some default values
-#define ShortcutRecorderEmptyFlags 0
-#define ShortcutRecorderAllFlags ShortcutRecorderEmptyFlags | (NSCommandKeyMask | NSAlternateKeyMask | NSControlKeyMask | NSShiftKeyMask | NSFunctionKeyMask)
-#define ShortcutRecorderEmptyCode -1
-
-// These keys will cancel the recoding mode if not pressed with any modifier
-#define ShortcutRecorderEscapeKey 53
-#define ShortcutRecorderBackspaceKey 51
-#define ShortcutRecorderDeleteKey 117
-
-#pragma mark -
-#pragma mark Getting a string of the key combination
-
-//
-// ################### +- Returns string from keyCode like NSEvent's -characters
-// #   EXPLANATORY   # | +- Returns string from keyCode like NSEvent's -charactersUsingModifiers
-// #      CHART      # | | +- Returns fully readable and localized name of modifier (if modifier given)
-// ################### | | | +- Returns glyph of modifier (if modifier given)
-// SRString...         X - - X
-// SRReadableString... X - X -
-// SRCharacter...      - X - -
-//
-NSString *SRStringForKeyCode(NSInteger keyCode);
-
-NSString *SRPlainStringForKeyCode(NSInteger keyCode);
-
-NSString *SRASCIIStringForKeyCode(NSInteger keyCode);
-
-NSString *SRPlainASCIIStringForKeyCode(NSInteger keyCode);
-
-NSString *SRStringForCarbonModifierFlags(NSUInteger flags);
-
-NSString *SRStringForCarbonModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRASCIIStringForCarbonModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRStringForCocoaModifierFlags(NSUInteger flags);
-
-NSString *SRStringForCocoaModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRReadableStringForCarbonModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRReadableASCIIStringForCarbonModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger flags, NSInteger keyCode);
-
-NSString *SRCharacterForKeyCodeAndCarbonFlags(NSInteger keyCode, NSUInteger carbonFlags);
-
-NSString *SRCharacterForKeyCodeAndCocoaFlags(NSInteger keyCode, NSUInteger cocoaFlags);
-
-#pragma mark Converting between Cocoa and Carbon modifier flags
-
-#pragma mark -
-#pragma mark Animation pace function
-
-CGFloat SRAnimationEaseInOut(CGFloat t);
-
-#pragma mark -
-#pragma mark Inlines
-
-
-
-FOUNDATION_STATIC_INLINE BOOL SRIsSpecialKey(NSInteger keyCode)
-{
-    return (keyCode == kSRKeysF1 || keyCode == kSRKeysF2 || keyCode == kSRKeysF3 || keyCode == kSRKeysF4 || keyCode == kSRKeysF5 || keyCode == kSRKeysF6 || keyCode == kSRKeysF7 || keyCode == kSRKeysF8 || keyCode == kSRKeysF9 || keyCode == kSRKeysF10 || keyCode == kSRKeysF11 || keyCode == kSRKeysF12 || keyCode == kSRKeysF13 || keyCode == kSRKeysF14 || keyCode == kSRKeysF15 || keyCode == kSRKeysF16 || keyCode == kSRKeysSpace || keyCode == kSRKeysDeleteLeft || keyCode == kSRKeysDeleteRight || keyCode == kSRKeysPadClear || keyCode == kSRKeysLeftArrow || keyCode == kSRKeysRightArrow || keyCode == kSRKeysUpArrow || keyCode == kSRKeysDownArrow || keyCode == kSRKeysSoutheastArrow || keyCode == kSRKeysNorthwestArrow || keyCode == kSRKeysEscape || keyCode == kSRKeysPageDown || keyCode == kSRKeysPageUp || keyCode == kSRKeysReturnR2L || keyCode == kSRKeysReturn || keyCode == kSRKeysTabRight || keyCode == kSRKeysHelp);
+    return carbonFlags;
 }
 
-#pragma mark -
-#pragma mark Additions
+/*!
+    @brief  Convenient method to get localized string from the framework bundle.
+ */
+FOUNDATION_STATIC_INLINE NSString *SRLoc(NSString *aKey)
+{
+    return NSLocalizedStringFromTableInBundle(aKey,
+                                              @"ShortcutRecorder",
+                                              [NSBundle bundleWithIdentifier:@"com.kulakov.ShortcutRecorder"],
+                                              nil);
+}
 
-@interface NSAlert (SRAdditions)
 
-+ (NSAlert *)alertWithNonRecoverableError:(NSError *)error;
-@end
+/*!
+    @brief  Convenient method to get image from the framework bundle.
+ */
+FOUNDATION_STATIC_INLINE NSImage *SRImage(NSString *anImageName)
+{
+    NSBundle *b = [NSBundle bundleWithIdentifier:@"com.kulakov.ShortcutRecorder"];
 
-#pragma mark -
-#pragma mark Image provider
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
+        return [[NSImage alloc] initByReferencingURL:[b URLForImageResource:anImageName]];
+    else
+        return [b imageForResource:anImageName];
+}
 
-@interface SRSharedImageProvider : NSObject
 
-+ (NSImage *)supportingImageWithName:(NSString *)name;
-@end
+/*!
+    @brief  Returns string representation of shortcut with modifier flags replaced with their localized
+            readable equivalents (e.g. ? -> Option).
+ */
+NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode);
 
+/*!
+    @brief  Returns string representation of shortcut with modifier flags replaced with their localized
+            readable equivalents (e.g. ? -> Option) and ASCII character for key code.
+ */
+NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode);
