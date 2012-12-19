@@ -85,17 +85,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _allowsDeleteToClearShortcutAndEndRecording = YES;
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
 
-        if ([self respondsToSelector:@selector(setTranslatesAutoresizingMaskIntoConstraints:)])
-            self.translatesAutoresizingMaskIntoConstraints = YES;
-
-        if ([self respondsToSelector:@selector(setContentHuggingPriority:forOrientation:)])
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         {
+            self.translatesAutoresizingMaskIntoConstraints = YES;
             [self setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
             [self setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
-        }
-
-        if ([self respondsToSelector:@selector(setContentCompressionResistancePriority:forOrientation:)])
-        {
             [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationHorizontal];
             [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
         }
@@ -139,6 +133,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _allowsEmptyModifierFlags = newAllowsEmptyModifierFlags;
 }
 
+- (void)setObjectValue:(NSDictionary *)newObjectValue
+{
+    _objectValue = [newObjectValue copy];
+
+    if (!self.isRecording)
+        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
+}
+
 
 #pragma mark Methods
 
@@ -160,12 +162,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _isRecording = YES;
     [self didChangeValueForKey:@"isRecording"];
 
-    if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)])
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         [self invalidateIntrinsicContentSize];
 
     [self updateTrackingAreas];
     [self setToolTip:SRLoc(@"Type shortcut")];
     [self setNeedsDisplay:YES];
+    NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
     return YES;
 }
 
@@ -178,12 +181,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _isRecording = NO;
     [self didChangeValueForKey:@"isRecording"];
 
-    if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)])
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         [self invalidateIntrinsicContentSize];
 
     [self updateTrackingAreas];
     [self setToolTip:SRLoc(@"Click to record shortcut")];
     [self setNeedsDisplay:YES];
+    NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
     // Return to the "button" state but buttons cannot be first responders (unless Full Keyboard Access)
     if (self.window.firstResponder == self && ![self canBecomeKeyView])
@@ -291,6 +295,42 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                 c = [[[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]] uppercaseString];
 
             label = [NSString stringWithFormat:@"%@%@", f, c];
+        }
+        else
+            label = SRLoc(@"Click to record shortcut");
+    }
+
+    return label;
+}
+
+- (NSString *)plainLabel
+{
+    NSString *label = nil;
+
+    if (self.isRecording)
+    {
+        NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        label = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:@(modifierFlags)];
+
+        if ([label length] == 0)
+            label = SRLoc(@"Type shortcut");
+    }
+    else
+    {
+        if (self.objectValue != nil)
+        {
+            NSString *f = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
+            NSString *c = nil;
+
+            if (self.drawsASCIIEquivalentOfShortcut)
+                c = [[SRKeyCodeTransformer sharedPlainASCIITransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
+            else
+                c = [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
+
+            if (f.length > 0)
+                label = [NSString stringWithFormat:@"%@-%@", f, c];
+            else
+                label = [NSString stringWithFormat:@"%@", c];
         }
         else
             label = SRLoc(@"Click to record shortcut");
@@ -512,10 +552,81 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSString *)view:(NSView *)aView stringForToolTip:(NSToolTipTag)aTag point:(NSPoint)aPoint userData:(void *)aData
 {
-    if (self.isRecording && [self mouse:aPoint inRect:_snapBackButtonTrackingArea.rect])
+    if (aTag == _snapBackButtonToolTipTag)
         return SRLoc(@"Use old shortcut");
     else
         return [super view:aView stringForToolTip:aTag point:aPoint userData:aData];
+}
+
+
+#pragma mark NSAccessibility
+
+- (BOOL)accessibilityIsIgnored
+{
+    return NO;
+}
+
+- (NSArray *)accessibilityAttributeNames
+{
+    static NSArray *AttributeNames = nil;
+    static dispatch_once_t OnceToken;
+    dispatch_once(&OnceToken, ^
+    {
+        AttributeNames = [[super accessibilityAttributeNames] mutableCopy];
+        NSArray *newAttributes = @[
+            NSAccessibilityRoleAttribute,
+            NSAccessibilityTitleAttribute
+        ];
+
+        for (NSString *attributeName in newAttributes)
+        {
+            if (![AttributeNames containsObject:attributeName])
+                [(NSMutableArray *)AttributeNames addObject:attributeName];
+        }
+
+        AttributeNames = [AttributeNames copy];
+    });
+    return AttributeNames;
+}
+
+- (id)accessibilityAttributeValue:(NSString *)anAttributeName
+{
+    if ([anAttributeName isEqualToString:NSAccessibilityRoleAttribute])
+        return NSAccessibilityButtonRole;
+    else if ([anAttributeName isEqualToString:NSAccessibilityTitleAttribute])
+        return self.plainLabel;
+    else
+        return [super accessibilityAttributeValue:anAttributeName];
+}
+
+- (NSArray *)accessibilityActionNames
+{
+    static NSArray *ActionNames = nil;
+    static dispatch_once_t OnceToken;
+    dispatch_once(&OnceToken, ^
+    {
+        ActionNames = @[
+            NSAccessibilityPressAction,
+            NSAccessibilityCancelAction,
+            NSAccessibilityDeleteAction
+        ];
+    });
+    return ActionNames;
+}
+
+- (NSString *)accessibilityActionDescription:(NSString *)anAction
+{
+    return NSAccessibilityActionDescription(anAction);
+}
+
+- (void)accessibilityPerformAction:(NSString *)anAction
+{
+    if ([anAction isEqualToString:NSAccessibilityPressAction])
+        [self beginRecording];
+    else if (self.isRecording && [anAction isEqualToString:NSAccessibilityCancelAction])
+        [self endRecording];
+    else if (self.isRecording && [anAction isEqualToString:NSAccessibilityDeleteAction])
+        [self clearAndEndRecording];
 }
 
 
@@ -601,6 +712,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                           _SRRecorderControlHeight);
     }
 }
+
 
 - (void)updateTrackingAreas
 {
@@ -840,7 +952,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         if (![self areModifierFlagsValid:anEvent.modifierFlags])
             NSBeep();
 
-        if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)])
+        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
             [self invalidateIntrinsicContentSize];
 
         [self setNeedsDisplayInRect:[self enclosingLabelRect]];

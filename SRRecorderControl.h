@@ -165,6 +165,8 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 - (NSString *)label;
 
+- (NSString *)plainLabel;
+
 - (NSDictionary *)labelAttributes;
 
 - (void)drawBackground:(NSRect)aDirtyRect;

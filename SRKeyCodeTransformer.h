@@ -23,27 +23,6 @@
 @interface SRKeyCodeTransformer : NSValueTransformer
 
 /*!
-    @brief  Returns the shared transformer.
- */
-+ (instancetype)sharedTransformer;
-
-/*!
-    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source.
- */
-+ (instancetype)sharedASCIITransformer;
-
-/*!
-    @brief  Returns the shared transformer configured to transform key codes to plain strings.
- */
-+ (SRKeyCodeTransformer *)sharedPlainTransformer;
-
-/*!
-    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source
-            and to transform key codes to plain strings.
- */
-+ (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
-
-/*!
     @brief      Returns initialized key code transformer.
 
     @param      aUsesASCII Determines whether transformer uses only ASCII capable keyboard input source.
@@ -65,6 +44,28 @@
     @brief  Determines whether key codes without readable glyphs are transformed to unicode characters or to plain strings.
  */
 @property (readonly) BOOL usesPlainStrings;
+
+/*!
+ @brief  Returns the shared transformer.
+ */
++ (instancetype)sharedTransformer;
+
+/*!
+ @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source.
+ */
++ (instancetype)sharedASCIITransformer;
+
+/*!
+ @brief  Returns the shared transformer configured to transform key codes to plain strings.
+ */
++ (SRKeyCodeTransformer *)sharedPlainTransformer;
+
+/*!
+ @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source
+ and to transform key codes to plain strings.
+ */
++ (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
+
 
 /*!
     @brief  Returns mapping from special key codes to unicode characters.

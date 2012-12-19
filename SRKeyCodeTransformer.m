@@ -25,6 +25,32 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 @implementation SRKeyCodeTransformer
 
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings
+{
+    self = [super init];
+
+    if (self != nil)
+    {
+        _usesASCIICapableKeyboardInputSource = aUsesASCII;
+        _usesPlainStrings = aUsesPlainStrings;
+    }
+
+    return self;
+}
+
+- (instancetype)init
+{
+    return [self initWithASCIICapableKeyboardInputSource:NO plainStrings:NO];
+}
+
+- (void)dealloc
+{
+    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+#pragma mark Methods
+
 + (instancetype)sharedTransformer
 {
     static dispatch_once_t OnceToken;
@@ -68,32 +94,6 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     });
     return Transformer;
 }
-
-- (instancetype)init
-{
-    return [self initWithASCIICapableKeyboardInputSource:NO plainStrings:NO];
-}
-
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings
-{
-    self = [super init];
-
-    if (self != nil)
-    {
-        _usesASCIICapableKeyboardInputSource = aUsesASCII;
-        _usesPlainStrings = aUsesPlainStrings;
-    }
-
-    return self;
-}
-
-- (void)dealloc
-{
-    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
-#pragma mark Methods
 
 + (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping
 {
@@ -169,7 +169,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             @(kVK_F18): @"F18",
             @(kVK_F19): @"F19",
             @(kVK_F20): @"F20",
-            @(kVK_Space): SRLoc(@"Space"),
+            @(kVK_Space): _SRUnicharToString(SRKeyCodeGlyphSpace),
             @(kVK_Delete): _SRUnicharToString(SRKeyCodeGlyphDeleteLeft),
             @(kVK_ForwardDelete): _SRUnicharToString(SRKeyCodeGlyphDeleteRight),
             @(kVK_ANSI_KeypadClear): _SRUnicharToString(SRKeyCodeGlyphPadClear),
