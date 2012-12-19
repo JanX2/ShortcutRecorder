@@ -169,7 +169,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             @(kVK_F18): @"F18",
             @(kVK_F19): @"F19",
             @(kVK_F20): @"F20",
-            @(kVK_Space): _SRUnicharToString(SRKeyCodeGlyphSpace),
+            @(kVK_Space): SRLoc(@"Space"),
             @(kVK_Delete): _SRUnicharToString(SRKeyCodeGlyphDeleteLeft),
             @(kVK_ForwardDelete): _SRUnicharToString(SRKeyCodeGlyphDeleteRight),
             @(kVK_ANSI_KeypadClear): _SRUnicharToString(SRKeyCodeGlyphPadClear),

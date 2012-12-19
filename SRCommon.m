@@ -20,20 +20,20 @@
 NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode)
 {
     return [NSString stringWithFormat:@"%@%@%@%@%@",
-                                      (aModifierFlags & NSCommandKeyMask ? SRLoc(@"Command + ") : @""),
-                                      (aModifierFlags & NSAlternateKeyMask ? SRLoc(@"Option + ") : @""),
-                                      (aModifierFlags & NSControlKeyMask ? SRLoc(@"Control + ") : @""),
-                                      (aModifierFlags & NSShiftKeyMask ? SRLoc(@"Shift + ") : @""),
-                                      [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:@(aKeyCode)]];
+                                      (aModifierFlags & NSCommandKeyMask ? SRLoc(@"Command-") : @""),
+                                      (aModifierFlags & NSAlternateKeyMask ? SRLoc(@"Option-") : @""),
+                                      (aModifierFlags & NSControlKeyMask ? SRLoc(@"Control-") : @""),
+                                      (aModifierFlags & NSShiftKeyMask ? SRLoc(@"Shift-") : @""),
+                                      [[[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:@(aKeyCode)] uppercaseString]];
 }
 
 
 NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode)
 {
     return [NSString stringWithFormat:@"%@%@%@%@%@",
-                                      (aModifierFlags & NSCommandKeyMask ? SRLoc(@"Command + ") : @""),
-                                      (aModifierFlags & NSAlternateKeyMask ? SRLoc(@"Option + ") : @""),
-                                      (aModifierFlags & NSControlKeyMask ? SRLoc(@"Control + ") : @""),
-                                      (aModifierFlags & NSShiftKeyMask ? SRLoc(@"Shift + ") : @""),
-                                      [[SRKeyCodeTransformer sharedPlainASCIITransformer] transformedValue:@(aKeyCode)]];
+                                      (aModifierFlags & NSCommandKeyMask ? SRLoc(@"Command-") : @""),
+                                      (aModifierFlags & NSAlternateKeyMask ? SRLoc(@"Option-") : @""),
+                                      (aModifierFlags & NSControlKeyMask ? SRLoc(@"Control-") : @""),
+                                      (aModifierFlags & NSShiftKeyMask ? SRLoc(@"Shift-") : @""),
+                                      [[[SRKeyCodeTransformer sharedPlainASCIITransformer] transformedValue:@(aKeyCode)] uppercaseString]];
 }

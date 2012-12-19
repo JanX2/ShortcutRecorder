@@ -50,7 +50,7 @@
 
     @param      aUsesPlainStrings Determines whether key codes without readable glyphs (e.g. F1...F19) are transformed to
                 to unicode characters (NSF1FunctionKey...NSF19FunctionKey) suitable for setting key equivalents
-                of Cocoa controls or to plain strings (@"F1"...@"F19") suitable for drawing and logging.
+                of Cocoa controls or to plain strings (@"F1"...@"F19") suitable for drawing, logging and accessibility.
 
     @discussion This method is the designated initializer for SRKeyCodeTransformer.
  */
