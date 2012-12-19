@@ -84,6 +84,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _allowsEscapeToCancelRecording = YES;
         _allowsDeleteToClearShortcutAndEndRecording = YES;
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
+        _snapBackButtonToolTipTag = NSIntegerMax;
 
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         {
@@ -450,7 +451,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect imageRect = self.snapBackButtonRect;
     imageRect.origin.x += _SRRecorderControlSnapBackButtonLeftOffset;
-    imageRect.origin.y += self.alignmentRectInsets.top + (NSHeight(imageRect) - _SRRecorderControlSnapBackButtonSize.height) / 2.0;
+    imageRect.origin.y += floor(self.alignmentRectInsets.top + (NSHeight(imageRect) - _SRRecorderControlSnapBackButtonSize.height) / 2.0);
     imageRect.size = _SRRecorderControlSnapBackButtonSize;
     imageRect = [self centerScanRect:imageRect];
 
@@ -481,7 +482,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect imageRect = self.clearButtonRect;
     imageRect.origin.x += _SRRecorderControlClearButtonLeftOffset;
-    imageRect.origin.y += self.alignmentRectInsets.top + (NSHeight(imageRect) - _SRRecorderControlClearButtonSize.height) / 2.0;
+    imageRect.origin.y += floor(self.alignmentRectInsets.top + (NSHeight(imageRect) - _SRRecorderControlClearButtonSize.height) / 2.0);
     imageRect.size = _SRRecorderControlClearButtonSize;
     imageRect = [self centerScanRect:imageRect];
 
@@ -672,6 +673,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     [self drawBackground:aDirtyRect];
     [self drawInterior:aDirtyRect];
+
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
+    {
+        if (self.window.firstResponder == self)
+        {
+            [NSGraphicsContext saveGraphicsState];
+            NSSetFocusRingStyle(NSFocusRingOnly);
+            [self.controlShape fill];
+            [NSGraphicsContext restoreGraphicsState];
+        }
+    }
 }
 
 - (void)drawFocusRingMask
@@ -718,7 +730,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     static const NSUInteger TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
 
-    [self removeTrackingArea:_mainButtonTrackingArea];
+    if (_mainButtonTrackingArea != nil)
+        [self removeTrackingArea:_mainButtonTrackingArea];
+
     _mainButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds
                                                         options:TrackingOptions
                                                           owner:self
@@ -737,7 +751,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _clearButtonTrackingArea = nil;
     }
 
-    [self removeToolTip:_snapBackButtonToolTipTag];
+    if (_snapBackButtonToolTipTag != NSIntegerMax)
+    {
+        [self removeToolTip:_snapBackButtonToolTipTag];
+        _snapBackButtonToolTipTag = NSIntegerMax;
+    }
 
     if (self.isRecording)
     {
@@ -786,8 +804,19 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return YES;
 }
 
+- (BOOL)becomeFirstResponder
+{
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
+        [self setKeyboardFocusRingNeedsDisplayInRect:self.bounds];
+
+    return [super becomeFirstResponder];
+}
+
 - (BOOL)resignFirstResponder
 {
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
+        [self setKeyboardFocusRingNeedsDisplayInRect:self.bounds];
+
     [self endRecording];
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     return [super resignFirstResponder];
