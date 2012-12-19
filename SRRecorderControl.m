@@ -68,6 +68,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSTrackingArea *_clearButtonTrackingArea;
 
     _SRRecorderControlButtonTag _mouseTrackingButtonTag;
+    NSToolTipTag _snapBackButtonToolTipTag;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -82,7 +83,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _drawsASCIIEquivalentOfShortcut = YES;
         _allowsEscapeToCancelRecording = YES;
         _allowsDeleteToClearShortcutAndEndRecording = YES;
-
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
 
         if ([self respondsToSelector:@selector(setTranslatesAutoresizingMaskIntoConstraints:)])
@@ -100,6 +100,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
             [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
         }
 
+        [self setToolTip:SRLoc(@"Click to record shortcut")];
         [self updateTrackingAreas];
     }
 
@@ -163,6 +164,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self invalidateIntrinsicContentSize];
 
     [self updateTrackingAreas];
+    [self setToolTip:SRLoc(@"Type shortcut")];
     [self setNeedsDisplay:YES];
     return YES;
 }
@@ -180,6 +182,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self invalidateIntrinsicContentSize];
 
     [self updateTrackingAreas];
+    [self setToolTip:SRLoc(@"Click to record shortcut")];
     [self setNeedsDisplay:YES];
 
     // Return to the "button" state but buttons cannot be first responders (unless Full Keyboard Access)
@@ -622,6 +625,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _clearButtonTrackingArea = nil;
     }
 
+    [self removeToolTip:_snapBackButtonToolTipTag];
+
     if (self.isRecording)
     {
         _snapBackButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:self.snapBackButtonRect
@@ -637,8 +642,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
         // Since this method is used to set up tracking rects of aux buttons, the rest of the code is aware
         // it should be called whenever geometry or apperance changes. Therefore it's a good place to set up tooltip rects.
-        [self removeAllToolTips];
-        [self addToolTipRect:[_snapBackButtonTrackingArea rect] owner:self userData:NULL];
+        _snapBackButtonToolTipTag = [self addToolTipRect:[_snapBackButtonTrackingArea rect] owner:self userData:NULL];
     }
 }
 
@@ -686,7 +690,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     return [super canBecomeKeyView] && [NSApp isFullKeyboardAccessEnabled];
 }
-
 
 - (BOOL)needsPanelToBecomeKey
 {
