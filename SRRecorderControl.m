@@ -89,10 +89,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         {
             self.translatesAutoresizingMaskIntoConstraints = YES;
-            [self setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
-            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutPriorityRequired];
+
+            [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
+                             forOrientation:NSLayoutConstraintOrientationHorizontal];
+            [self setContentHuggingPriority:NSLayoutPriorityRequired
+                             forOrientation:NSLayoutConstraintOrientationVertical];
+
+            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                           forOrientation:NSLayoutConstraintOrientationHorizontal];
+            [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
+                                           forOrientation:NSLayoutConstraintOrientationVertical];
         }
 
         [self setToolTip:SRLoc(@"Click to record shortcut")];
