@@ -1,6 +1,8 @@
 ShortcutRecorder 2.0
 ====================
 
+![ShortcutRecorder Preview](http://wireload.net/open_source/ShortcutRecorder%20Preview.png)
+
 The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
 
 - Fresh Look & Feel
