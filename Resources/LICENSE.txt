@@ -30,10 +30,11 @@ Contributors to Shortcut Recorder, in no order in particular:
 Jesper, waffle software, <wootest+shortcutrecorder@gmail.com>. Initial idea and concept, first shot at implementation using NSView.
 David Dauer, <david@daviddauer.de>. Refinement, cleaner reimplementation, documentation, IB Palette.
 Jamie Kirkpatrick, Kirk Consulting Ltd, <jkp@kirkconsulting.co.uk>.  Further modularisation and re-factoring, and general bug fixes.
-Ilya Kulakov <kulakov.ilya@gmail.com>
+Ilya Kulakov, <kulakov.ilya@gmail.com>. ShortcutRecorder 2.0 and further support.
+Alexander Ljungberg, <aljungberg@wireload.net>. Graphics for ShortcutRecorder 2.0
 
 =====================================================================
 
-Some rights reserved: <http://creativecommons.org/licenses/by/2.5/>
+Some rights reserved: <http://creativecommons.org/licenses/by/3.0/>
 
 For more information, visit <http://blog.oofn.net/projects/misc/>
