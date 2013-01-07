@@ -53,6 +53,7 @@
                 break;
             default:
                 mModifiers = modifiers;
+                break;
         }
 
 		mKeyCode = keyCode;
