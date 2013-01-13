@@ -26,6 +26,7 @@ NSString *const SRShortcutCharacters = @"characters";
 NSString *const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModifiers";
 
 
+// Control Layout Constants
 static const CGFloat _SRRecorderControlShapeXRadius = 11.0;
 
 static const CGFloat _SRRecorderControlShapeYRadius = 12.0;
@@ -34,19 +35,33 @@ static const CGFloat _SRRecorderControlHeight = 25.0;
 
 static const CGFloat _SRRecorderControlBottomShadowHeightInPixels = 1.0;
 
+static const CGFloat _SRRecorderControlBaselineOffset = 5.0;
+
+
+// Clear Button Layout Constants
+
+static const CGFloat _SRRecorderControlClearButtonWidth = 14.0;
+
+static const CGFloat _SRRecorderControlClearButtonHeight = 14.0;
+
 static const CGFloat _SRRecorderControlClearButtonRightOffset = 4.0;
 
 static const CGFloat _SRRecorderControlClearButtonLeftOffset = 1.0;
+
+static const NSSize _SRRecorderControlClearButtonSize = {.width = _SRRecorderControlClearButtonWidth, .height = _SRRecorderControlClearButtonHeight};
+
+
+// SanpBack Button Layout Constants
+
+static const CGFloat _SRRecorderControlSnapBackButtonWidth = 14.0;
+
+static const CGFloat _SRRecorderControlSnapBackButtonHeight = 14.0;
 
 static const CGFloat _SRRecorderControlSnapBackButtonRightOffset = 1.0;
 
 static const CGFloat _SRRecorderControlSnapBackButtonLeftOffset = 3.0;
 
-static const NSSize _SRRecorderControlSnapBackButtonSize = {.width = 14.0, .height = 14.0};
-
-static const NSSize _SRRecorderControlClearButtonSize = {.width = 14.0, .height = 14.0};
-
-static const CGFloat _SRRecorderControlBaselineOffset = 5.0;
+static const NSSize _SRRecorderControlSnapBackButtonSize = {.width = _SRRecorderControlSnapBackButtonWidth, .height = _SRRecorderControlSnapBackButtonHeight};
 
 
 static NSImage *_SRImages[16];
@@ -210,13 +225,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self endRecording];
 }
 
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags
-{
-    aModifierFlags &= SRCocoaModifierFlagsMask;
-    return (aModifierFlags & self.requiredModifierFlags) == self.requiredModifierFlags &&
-            (aModifierFlags & self.allowedModifierFlags) == aModifierFlags;
-}
-
 
 #pragma mark -
 
@@ -230,24 +238,37 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                                            yRadius:_SRRecorderControlShapeYRadius];
 }
 
-- (NSRect)enclosingLabelRect
-{
-    return NSInsetRect(self.bounds, _SRRecorderControlShapeXRadius, 0.0);
-}
-
 - (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes
 {
-    NSFont *font = anAttributes[NSFontAttributeName];
     NSSize labelSize = [aLabel sizeWithAttributes:anAttributes];
-    labelSize.width = ceil(labelSize.width);
+    NSRect enclosingRect = NSInsetRect(self.bounds, _SRRecorderControlShapeXRadius, 0.0);
+    labelSize.width = fmin(ceil(labelSize.width), NSWidth(enclosingRect));
     labelSize.height = ceil(labelSize.height);
-    CGFloat fontBaselineOffsetFromTop = labelSize.height + font.descender;
+    CGFloat fontBaselineOffsetFromTop = labelSize.height + [anAttributes[NSFontAttributeName] descender];
     CGFloat baselineOffsetFromTop = _SRRecorderControlHeight - self.alignmentRectInsets.bottom - self.baselineOffsetFromBottom;
     NSRect labelRect = {
-        .origin = NSMakePoint(NSMidX(self.bounds) - labelSize.width / 2.0, baselineOffsetFromTop - fontBaselineOffsetFromTop),
+        .origin = NSMakePoint(NSMidX(enclosingRect) - labelSize.width / 2.0, baselineOffsetFromTop - fontBaselineOffsetFromTop),
         .size = labelSize
     };
     labelRect = [self centerScanRect:labelRect];
+
+    // Ensure label and buttons do not overlap.
+    if (self.isRecording)
+    {
+        CGFloat rightOffsetFromButtons = NSMinX(self.snapBackButtonRect) - NSMaxX(labelRect);
+
+        if (rightOffsetFromButtons < 0.0)
+        {
+            labelRect = NSOffsetRect(labelRect, rightOffsetFromButtons, 0.0);
+
+            if (NSMinX(labelRect) < NSMinX(enclosingRect))
+            {
+                labelRect.size.width -= NSMinX(enclosingRect) - NSMinX(labelRect);
+                labelRect.origin.x = NSMinX(enclosingRect);
+            }
+        }
+    }
+
     return labelRect;
 }
 
@@ -310,7 +331,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return label;
 }
 
-- (NSString *)plainLabel
+- (NSString *)accessibilityLabel
 {
     NSString *label = nil;
 
@@ -370,6 +391,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     return self.isRecording ? RecordingAttributes : NormalAttributes;
 }
+
+
+#pragma mark -
 
 - (void)drawBackground:(NSRect)aDirtyRect
 {
@@ -445,11 +469,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)drawLabel:(NSRect)aDirtyRect
 {
-    [NSGraphicsContext saveGraphicsState];
-    NSDictionary *attributes = self.labelAttributes;
     NSString *label = self.label;
-    NSRect rect = [self rectForLabel:label withAttributes:attributes];
-    [label drawInRect:rect withAttributes:attributes];
+    NSDictionary *labelAttributes = self.labelAttributes;
+    NSRect labelRect = [self rectForLabel:label withAttributes:labelAttributes];
+
+    if (!NSIntersectsRect(labelRect, aDirtyRect))
+        return;
+
+    [NSGraphicsContext saveGraphicsState];
+    [label drawInRect:labelRect withAttributes:labelAttributes];
     [NSGraphicsContext restoreGraphicsState];
 }
 
@@ -554,6 +582,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return NO;
 }
 
+- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags
+{
+    aModifierFlags &= SRCocoaModifierFlagsMask;
+    return (aModifierFlags & self.requiredModifierFlags) == self.requiredModifierFlags &&
+    (aModifierFlags & self.allowedModifierFlags) == aModifierFlags;
+}
+
 
 #pragma mark NSToolTipOwner
 
@@ -601,7 +636,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if ([anAttributeName isEqualToString:NSAccessibilityRoleAttribute])
         return NSAccessibilityButtonRole;
     else if ([anAttributeName isEqualToString:NSAccessibilityTitleAttribute])
-        return self.plainLabel;
+        return self.accessibilityLabel;
     else
         return [super accessibilityAttributeValue:anAttributeName];
 }
@@ -712,7 +747,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (CGFloat)baselineOffsetFromBottom
 {
-    return floor(_SRRecorderControlBaselineOffset - [self.labelAttributes[NSFontAttributeName] descender]);
+    return (NSHeight(self.bounds) - _SRRecorderControlHeight) + floor(_SRRecorderControlBaselineOffset - [self.labelAttributes[NSFontAttributeName] descender]);
 }
 
 - (NSSize)intrinsicContentSize
@@ -990,7 +1025,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
             [self invalidateIntrinsicContentSize];
 
-        [self setNeedsDisplayInRect:[self enclosingLabelRect]];
+        [self setNeedsDisplay:YES];
     }
     else
         [super flagsChanged:anEvent];

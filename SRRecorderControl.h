@@ -55,9 +55,9 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 
 /*!
-    @brief  An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
+    @brief      An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
  */
-@interface SRRecorderControl : NSView /* <NSToolTipOwner> */
+@interface SRRecorderControl : NSView /* <NSToolTipOwner, NSAccessibility> */
 
 /*!
     @brief      The receiver’s delegate.
@@ -143,48 +143,121 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
           requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
 
+/*!
+    @brief      Turns the receiver into recording mode and marks view to display.
+
+    @dicussion  You SHOULD not call this method directly.
+ */
 - (BOOL)beginRecording;
 
+/*!
+    @brief      Turns the receiver into normal mode and saves input into objectValue. Also marks view to display.
+
+    @dicussion  You SHOULD not call this method directly.
+ */
 - (void)endRecording;
 
-- (void)clearAndEndRecording;
+/*!
+    @brief      Turns the receiver into normal mode and marks view to display.
 
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags;
+    @dicussion  You SHOULD not call this method directly.
+ */
+- (void)clearAndEndRecording;
 
 
 - (NSBezierPath *)controlShape;
 
-- (NSRect)enclosingLabelRect;
+/*!
+    @brief  Returns rect for label with given attributes.
 
+    @param  aLabel Label for drawing.
+
+    @param  anAttributes A dictionary of NSAttributedString text attributes to be applied to the string.
+ */
 - (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes;
 
+/*!
+    @brief  Returns rect of the snap back button in the receiver coordinates.
+ */
 - (NSRect)snapBackButtonRect;
 
+/*!
+    @brief  Returns rect of the snap clear in the receiver coordinates.
+ */
 - (NSRect)clearButtonRect;
 
 
+/*!
+    @brief      Returns label to be displayed by the receiver.
+
+    @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
+ */
 - (NSString *)label;
 
-- (NSString *)plainLabel;
+/*!
+    @brief      Returns label for accessibility.
 
+    @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
+ */
+- (NSString *)accessibilityLabel;
+
+/*!
+    @brief      Returns attirbutes of label to be displayed by the receiver.
+
+    @discussion Returned value depends on isRecording state.
+ */
 - (NSDictionary *)labelAttributes;
 
+
+/*!
+    @brief  Draws background of the receiver into current graphics context.
+ */
 - (void)drawBackground:(NSRect)aDirtyRect;
 
+/*!
+    @brief  Draws interior of the receiver into current graphics context.
+ */
 - (void)drawInterior:(NSRect)aDirtyRect;
 
+/*!
+    @brief  Draws label of the receiver into current graphics context.
+ */
 - (void)drawLabel:(NSRect)aDirtyRect;
 
+/*!
+    @brief  Draws snap back button of the receiver into current graphics context.
+ */
 - (void)drawSnapBackButton:(NSRect)aDirtyRect;
 
+/*!
+    @brief  Draws clear button of the receiver into current graphics context.
+ */
 - (void)drawClearButton:(NSRect)aDirtyRect;
 
 
+/*!
+    @brief  Determines whether main button (representation of the receiver in normal mode) is highlighted.
+ */
 - (BOOL)isMainButtonHighlighted;
 
+/*!
+    @brief  Determines whether snap back button is highlighted.
+ */
 - (BOOL)isSnapBackButtonHighlighted;
 
+/*!
+    @brief  Determines whetehr clear button is highlighted.
+ */
 - (BOOL)isClearButtonHighlighted;
+
+/*!
+    @brief  Determines whether modifier flags are valid according to the receiver settings.
+
+    @see    allowedModifierFlags
+
+    @see    requiredModifierFlags
+ */
+- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags;
 
 @end
 
@@ -193,10 +266,40 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 @optional
 
+/*!
+    @brief      Asks the delegate if editing should begin in the specified shortcut recorder.
+
+    @param      aRecorder The shortcut recorder which editing is about to begin.
+
+    @result     YES if an editing session should be initiated; otherwise, NO to disallow editing.
+
+    @discussion Implementation of this method by the delegate is optional. If it is not present, editing proceeds as if this method had returned YES.
+ */
 - (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder;
 
+/*!
+    @brief      Asks the delegate if the shortcut can be set by the specified shortcut recorder.
+
+    @param      aRecorder The shortcut recorder which shortcut is beign to be recordered.
+
+    @param      aShortcut The Shortcut user typed.
+
+    @result     YES if shortcut can be recordered. Otherwise NO.
+
+    @dicussion  Implementation of this method by the delegate is optional. If it is not present, shortcut is recordered as if this method had returned YES.
+                You may implement this method to filter shortcuts that were already set by other recorders.
+
+    @see        SRValidator
+ */
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut;
 
+/*!
+    @brief      Tells the delegate that editing stopped for the specified shortcut recorder.
+
+    @param      aRecorder The shortcut recorder for which editing ended.
+
+    @discussion Implementation of this method by the delegate is optional.
+ */
 - (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder;
 
 @end
