@@ -169,7 +169,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             @(kVK_F18): @"F18",
             @(kVK_F19): @"F19",
             @(kVK_F20): @"F20",
-            @(kVK_Space): _SRUnicharToString(SRKeyCodeGlyphSpace),
+            @(kVK_Space): SRLoc(@"Space"),
             @(kVK_Delete): _SRUnicharToString(SRKeyCodeGlyphDeleteLeft),
             @(kVK_ForwardDelete): _SRUnicharToString(SRKeyCodeGlyphDeleteRight),
             @(kVK_ANSI_KeypadClear): _SRUnicharToString(SRKeyCodeGlyphPadClear),
@@ -189,6 +189,53 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         };
     });
     return Mapping;
+}
+
+- (BOOL)isKeyCodeSpecial:(unsigned char)aKeyCode
+{
+    switch (aKeyCode)
+    {
+        case kVK_F1:
+        case kVK_F2:
+        case kVK_F3:
+        case kVK_F4:
+        case kVK_F5:
+        case kVK_F6:
+        case kVK_F7:
+        case kVK_F8:
+        case kVK_F9:
+        case kVK_F10:
+        case kVK_F11:
+        case kVK_F12:
+        case kVK_F13:
+        case kVK_F14:
+        case kVK_F15:
+        case kVK_F16:
+        case kVK_F17:
+        case kVK_F18:
+        case kVK_F19:
+        case kVK_F20:
+        case kVK_Space:
+        case kVK_Delete:
+        case kVK_ForwardDelete:
+        case kVK_ANSI_KeypadClear:
+        case kVK_LeftArrow:
+        case kVK_RightArrow:
+        case kVK_UpArrow:
+        case kVK_DownArrow:
+        case kVK_End:
+        case kVK_Home:
+        case kVK_Escape:
+        case kVK_PageDown:
+        case kVK_PageUp:
+        case kVK_Return:
+        case kVK_ANSI_KeypadEnter:
+        case kVK_Tab:
+        case kVK_Help:
+            return YES;
+        default:
+            return NO;
+    }
 }
 
 

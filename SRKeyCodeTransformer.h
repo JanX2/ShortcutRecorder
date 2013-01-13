@@ -18,7 +18,7 @@
 
 
 /*!
-    @brief  Transforms key code into unicode character.
+    @brief  Transforms key code into unicode character or plain string.
  */
 @interface SRKeyCodeTransformer : NSValueTransformer
 
@@ -46,23 +46,23 @@
 @property (readonly) BOOL usesPlainStrings;
 
 /*!
- @brief  Returns the shared transformer.
+    @brief  Returns the shared transformer.
  */
 + (instancetype)sharedTransformer;
 
 /*!
- @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source.
+    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source.
  */
 + (instancetype)sharedASCIITransformer;
 
 /*!
- @brief  Returns the shared transformer configured to transform key codes to plain strings.
+    @brief  Returns the shared transformer configured to transform key codes to plain strings.
  */
 + (SRKeyCodeTransformer *)sharedPlainTransformer;
 
 /*!
- @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source
- and to transform key codes to plain strings.
+    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source
+            and to transform key codes to plain strings.
  */
 + (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
 
@@ -76,6 +76,13 @@
     @brief  Returns mapping from special key codes to plain strings.
  */
 + (NSDictionary *)specialKeyCodesToPlainStringsMapping;
+
+/*!
+    @brief  Determines whether key code is special.
+
+    @param  aKeyCode Key code to be checked.
+ */
+- (BOOL)isKeyCodeSpecial:(unsigned char)aKeyCode;
 
 @end
 

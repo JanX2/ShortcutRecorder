@@ -315,12 +315,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         if (self.objectValue != nil)
         {
             NSString *f = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
-            NSString *c = nil;
+            SRKeyCodeTransformer *transformer = nil;
 
             if (self.drawsASCIIEquivalentOfShortcut)
-                c = [[[SRKeyCodeTransformer sharedPlainASCIITransformer] transformedValue:self.objectValue[SRShortcutKeyCode]] uppercaseString];
+                transformer = [SRKeyCodeTransformer sharedPlainASCIITransformer];
             else
-                c = [[[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]] uppercaseString];
+                transformer = [SRKeyCodeTransformer sharedPlainTransformer];
+
+            NSString *c = [transformer transformedValue:self.objectValue[SRShortcutKeyCode]];
+
+            if (![transformer isKeyCodeSpecial:[self.objectValue[SRShortcutKeyCode] unsignedShortValue]])
+                c = [c uppercaseString];
 
             label = [NSString stringWithFormat:@"%@%@", f, c];
         }
