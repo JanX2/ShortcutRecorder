@@ -254,7 +254,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 - (NSString *)transformedValue:(NSNumber *)aValue
 {
     if (![aValue isKindOfClass:[NSNumber class]])
-        return nil;
+        return @"";
 
     unsigned short keyCode = [aValue unsignedShortValue];
 
@@ -276,7 +276,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
 
         if (tisSource == NULL)
-            return nil;
+            return @"";
 
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
@@ -286,7 +286,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         TISInputSourceRef tisSource = TISCopyCurrentKeyboardInputSource();
 
         if (tisSource == NULL)
-            return nil;
+            return @"";
 
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
@@ -297,7 +297,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
 
             if (tisSource == NULL)
-                return nil;
+                return @"";
 
             layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
             CFRelease(tisSource);
@@ -305,7 +305,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     }
 
     if (layoutData == NULL)
-        return nil;
+        return @"";
 
     const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
 
@@ -325,7 +325,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
                                   &actualLength,
                                   chars);
     if (err != noErr)
-        return nil;
+        return @"";
 
     return [NSString stringWithCharacters:chars length:actualLength];
 }
