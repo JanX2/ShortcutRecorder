@@ -119,3 +119,13 @@
 - (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRValidator *)aValidator;
 
 @end
+
+
+@interface NSMenuItem (SRValidator)
+
+/*!
+ @brief  Returns full path to the menu item. E.g. "Window ➝ Zoom"
+ */
+- (NSString *)SR_path;
+
+@end

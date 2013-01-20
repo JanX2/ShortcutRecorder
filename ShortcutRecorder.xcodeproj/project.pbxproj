@@ -83,8 +83,8 @@
 		32CA4F630368D1EE00C91783 /* ShortcutRecorder_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShortcutRecorder_Prefix.pch; sourceTree = "<group>"; };
 		74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRKeyCodeTransformer.h; sourceTree = "<group>"; };
 		74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SRKeyCodeTransformer.m; sourceTree = "<group>"; };
-		74C3670E0A246B4900B69171 /* SRValidator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRValidator.h; sourceTree = "<group>"; };
-		74C3670F0A246B4900B69171 /* SRValidator.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SRValidator.m; sourceTree = "<group>"; };
+		74C3670E0A246B4900B69171 /* SRValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRValidator.h; sourceTree = "<group>"; };
+		74C3670F0A246B4900B69171 /* SRValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRValidator.m; sourceTree = "<group>"; };
 		74C367100A246B4900B69171 /* SRCommon.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRCommon.h; sourceTree = "<group>"; };
 		74C367110A246B4900B69171 /* SRCommon.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SRCommon.m; sourceTree = "<group>"; };
 		939837800DA42965007F53F3 /* ShortcutRecorder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShortcutRecorder.framework; sourceTree = BUILT_PRODUCTS_DIR; };

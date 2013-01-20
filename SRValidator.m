@@ -203,7 +203,7 @@
                     NSString *description = [NSString stringWithFormat:
                                              SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."),
                                              shortcut,
-                                             menuItem.title];
+                                             menuItem.SR_path];
                     NSDictionary *userInfo = @{
                         NSLocalizedFailureReasonErrorKey: failureReason,
                         NSLocalizedDescriptionKey: description
@@ -217,6 +217,37 @@
     }
 
     return NO;
+}
+
+@end
+
+
+@implementation NSMenuItem (SRValidator)
+
+- (NSString *)SR_path
+{
+    NSMutableArray *items = [NSMutableArray array];
+    static const NSUInteger Limit = 1000;
+    NSMenuItem *currentMenuItem = self;
+    NSUInteger i = 0;
+
+    do
+    {
+        [items insertObject:currentMenuItem atIndex:0];
+        currentMenuItem = currentMenuItem.parentItem;
+        ++i;
+    }
+    while (currentMenuItem != nil && i < Limit);
+
+    NSMutableString *path = [NSMutableString string];
+
+    for (NSMenuItem *menuItem in items)
+        [path appendFormat:@"%@ ➝ ", menuItem.title];
+
+    if ([path length] > 3)
+        [path deleteCharactersInRange:NSMakeRange([path length] - 3, 3)];
+
+    return path;
 }
 
 @end
