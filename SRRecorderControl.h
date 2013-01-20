@@ -60,6 +60,9 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @discussion In addition to NSView bindings, exposes NSValueBinding. This binding supports 2 options:
                     - NSValueTransformerBindingOption
                     - NSValueTransformerNameBindingOption
+
+                Required height: 25 points
+                Recommended min width: 100 points
  */
 @interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner> */
 

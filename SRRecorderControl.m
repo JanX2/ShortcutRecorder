@@ -133,7 +133,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         {
-            self.translatesAutoresizingMaskIntoConstraints = YES;
+            self.translatesAutoresizingMaskIntoConstraints = NO;
 
             [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
                              forOrientation:NSLayoutConstraintOrientationHorizontal];
@@ -303,7 +303,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     labelSize.width = fmin(ceil(labelSize.width), NSWidth(enclosingRect));
     labelSize.height = ceil(labelSize.height);
     CGFloat fontBaselineOffsetFromTop = labelSize.height + [anAttributes[NSFontAttributeName] descender];
-    CGFloat baselineOffsetFromTop = _SRRecorderControlHeight - self.alignmentRectInsets.bottom - self.baselineOffsetFromBottom;
+    CGFloat baselineOffsetFromTop = _SRRecorderControlHeight - self.baselineOffsetFromBottom;
     NSRect labelRect = {
         .origin = NSMakePoint(NSMidX(enclosingRect) - labelSize.width / 2.0, baselineOffsetFromTop - fontBaselineOffsetFromTop),
         .size = labelSize
@@ -893,7 +893,13 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (CGFloat)baselineOffsetFromBottom
 {
-    return (NSHeight(self.bounds) - _SRRecorderControlHeight) + floor(_SRRecorderControlBaselineOffset - [self.labelAttributes[NSFontAttributeName] descender]);
+    // True method to calculate is presented above. Unfortunately Cocoa implementation of Mac OS X 10.8.2 expects this value to be persistant.
+    // If baselineOffsetFromBottom depends on some other properties and may return different values for different calls,
+    // NSLayoutFormatAlignAllBaseline may not work. For this reason we return the constant.
+    // If you're going to change layout of the view, uncomment the line below, look what it typically returns and update the constant.
+    // TODO: Hopefully it will be fixed some day in Cocoa and therefore in SRRecorderControl.
+//    CGFloat baseline = fdim(NSHeight(self.bounds), _SRRecorderControlHeight) + floor(_SRRecorderControlBaselineOffset - [self.labelAttributes[NSFontAttributeName] descender]);
+    return 8.0;
 }
 
 - (NSSize)intrinsicContentSize
