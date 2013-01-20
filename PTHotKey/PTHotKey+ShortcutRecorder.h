@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PTHotKey.h"
 
+
 @interface PTHotKey (ShortcutRecorder)
 
 + (PTHotKey *)hotKeyWithIdentifier:(id)anIdentifier

@@ -67,6 +67,8 @@
 		E2BE924E16ABEFE400827E8C /* SRKeyEquivalentTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BE924C16ABEFE400827E8C /* SRKeyEquivalentTransformer.m */; };
 		E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BE925016ABF84100827E8C /* SRKeyEquivalentModifierMaskTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E2BE925316ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BE925116ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m */; };
+		E2BE927C16AC052000827E8C /* PTHotKey+ShortcutRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E2BE927D16AC052600827E8C /* PTHotKey+ShortcutRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -328,6 +330,7 @@
 				E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */,
 				E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */,
 				E273123D1349EDB500A84433 /* PTKeyCombo.h in Headers */,
+				E2BE927C16AC052000827E8C /* PTHotKey+ShortcutRecorder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +493,7 @@
 				E27312411349EDCA00A84433 /* PTHotKeyCenter.m in Sources */,
 				E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */,
 				E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */,
+				E2BE927D16AC052600827E8C /* PTHotKey+ShortcutRecorder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
