@@ -220,9 +220,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     _isRecording = YES;
     [self didChangeValueForKey:@"isRecording"];
 
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-        [self invalidateIntrinsicContentSize];
-
     [self updateTrackingAreas];
     [self setToolTip:SRLoc(@"Type shortcut")];
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
@@ -266,9 +263,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     }
     else
         self.objectValue = anObjectValue;
-
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-        [self invalidateIntrinsicContentSize];
 
     [self updateTrackingAreas];
     [self setToolTip:SRLoc(@"Click to record shortcut")];
@@ -1156,9 +1150,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     {
         if (![self areModifierFlagsValid:anEvent.modifierFlags])
             NSBeep();
-
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-            [self invalidateIntrinsicContentSize];
 
         [self setNeedsDisplay:YES];
     }
