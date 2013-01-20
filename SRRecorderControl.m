@@ -275,7 +275,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
-    // Return to the "button" state but buttons cannot be first responders (unless Full Keyboard Access)
     if (self.window.firstResponder == self && ![self canBecomeKeyView])
         [self.window makeFirstResponder:nil];
 
@@ -418,7 +417,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
             else
                 c = [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
 
-            if (f.length > 0)
+            if ([f length] > 0)
                 label = [NSString stringWithFormat:@"%@-%@", f, c];
             else
                 label = [NSString stringWithFormat:@"%@", c];
@@ -855,7 +854,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     });
 }
 
-
 - (void)drawRect:(NSRect)aDirtyRect
 {
     [self drawBackground:aDirtyRect];
@@ -907,7 +905,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     return NSMakeSize(NSWidth([self rectForLabel:SRLoc(@"Click to record shortcut") withAttributes:self.normalLabelAttributes]) + _SRRecorderControlShapeXRadius + _SRRecorderControlShapeXRadius,
                       _SRRecorderControlHeight);
 }
-
 
 - (void)updateTrackingAreas
 {
@@ -961,6 +958,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)viewWillMoveToWindow:(NSWindow *)aWindow
 {
+    // We want control to end recording whenever window resigns first responder status.
+    // Otherwise we could end up with "dangling" recording.
     if (self.window)
     {
         [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -1012,6 +1011,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (BOOL)canBecomeKeyView
 {
+    // SRRecorderControl uses the button metaphor, but buttons cannot become key unless
+    // Full Keyboard Access is enabled. Respect this.
     return [super canBecomeKeyView] && [NSApp isFullKeyboardAccessEnabled];
 }
 
