@@ -188,6 +188,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)setObjectValue:(NSDictionary *)newObjectValue
 {
+    // Cocoa KVO and KVC frequently uses NSNull as object substituation of nil.
+    // SRRecorderControl expects either nil or valid object value, it it's convenient
+    // to handle handle NSNull here and convert it into nil.
+    if ((NSNull *)newObjectValue == [NSNull null])
+        newObjectValue = nil;
+
     _objectValue = [newObjectValue copy];
 
     if (!self.isRecording)
@@ -1182,9 +1188,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
         if (valueTransformer)
             newObjectValue = [valueTransformer transformedValue:newObjectValue];
-
-        if (newObjectValue == [NSNull null])
-            newObjectValue = nil;
 
         self.objectValue = newObjectValue;
     }
