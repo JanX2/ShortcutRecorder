@@ -119,7 +119,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 {
     self = [super initWithFrame:aFrameRect];
 
-    if (self != nil)
+    if (self)
     {
         _allowedModifierFlags = SRCocoaModifierFlagsMask;
         _requiredModifierFlags = 0;
@@ -365,12 +365,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
         label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
 
-        if ([label length] == 0)
+        if (![label length])
             label = SRLoc(@"Type shortcut");
     }
     else
     {
-        if (self.objectValue != nil)
+        if (self.objectValue)
         {
             NSString *f = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
             SRKeyCodeTransformer *transformer = nil;
@@ -403,12 +403,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
         label = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:@(modifierFlags)];
 
-        if ([label length] == 0)
+        if (![label length])
             label = SRLoc(@"Type shortcut");
     }
     else
     {
-        if (self.objectValue != nil)
+        if (self.objectValue)
         {
             NSString *f = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
             NSString *c = nil;
@@ -907,7 +907,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 {
     static const NSUInteger TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
 
-    if (_mainButtonTrackingArea != nil)
+    if (_mainButtonTrackingArea)
         [self removeTrackingArea:_mainButtonTrackingArea];
 
     _mainButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds

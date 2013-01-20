@@ -29,7 +29,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 {
     self = [super init];
 
-    if (self != nil)
+    if (self)
     {
         _usesASCIICapableKeyboardInputSource = aUsesASCII;
         _usesPlainStrings = aUsesPlainStrings;
@@ -266,7 +266,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     else
         unmappedString = [[self class] specialKeyCodesToUnicodeCharactersMapping][@(keyCode)];
 
-    if (unmappedString != nil)
+    if (unmappedString)
         return unmappedString;
 
     CFDataRef layoutData = NULL;
@@ -275,7 +275,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     {
         TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
 
-        if (tisSource == NULL)
+        if (!tisSource)
             return @"";
 
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
@@ -285,18 +285,18 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     {
         TISInputSourceRef tisSource = TISCopyCurrentKeyboardInputSource();
 
-        if (tisSource == NULL)
+        if (!tisSource)
             return @"";
 
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
 
         // For non-unicode layouts such as Chinese, Japanese, and Korean, get the ASCII capable layout
-        if (layoutData == NULL)
+        if (!layoutData)
         {
             tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
 
-            if (tisSource == NULL)
+            if (!tisSource)
                 return @"";
 
             layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
@@ -304,7 +304,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         }
     }
 
-    if (layoutData == NULL)
+    if (!layoutData)
         return @"";
 
     const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);

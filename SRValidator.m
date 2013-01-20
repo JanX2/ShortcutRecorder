@@ -25,7 +25,7 @@
 {
     self = [super init];
 
-    if (self != nil)
+    if (self)
     {
         _delegate = aDelegate;
     }
@@ -65,7 +65,7 @@
 
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSUInteger)aFlags error:(NSError **)outError
 {
-    if (self.delegate != nil)
+    if (self.delegate)
     {
         NSString *delegateReason = nil;
         if ([self.delegate respondsToSelector:@selector(shortcutValidator:isKeyCode:andFlagsTaken:reason:)] &&
@@ -74,7 +74,7 @@
                                andFlagsTaken:aFlags
                                       reason:&delegateReason])
         {
-            if (outError != NULL)
+            if (outError)
             {
                 BOOL isASCIIOnly = NO;
 
@@ -128,7 +128,7 @@
 
             if (SRCarbonToCocoaFlags(symbolicHotKeyFlags) == aFlags)
             {
-                if (outError != NULL)
+                if (outError)
                 {
                     BOOL isASCIIOnly = NO;
 
@@ -168,7 +168,7 @@
 
         NSString *keyEquivalent = menuItem.keyEquivalent;
 
-        if ([keyEquivalent length] == 0)
+        if (![keyEquivalent length])
             continue;
 
         NSUInteger keyEquivalentModifierMask = menuItem.keyEquivalentModifierMask;
@@ -189,7 +189,7 @@
             if ([keyEquivalent isEqual:keyCodeASCIIRepresentation] ||
                 [keyEquivalent isEqualToString:keyCodeCurrentLayoutRepresentation])
             {
-                if (outError != NULL)
+                if (outError)
                 {
                     BOOL isASCIIOnly = NO;
 
@@ -237,7 +237,7 @@
         currentMenuItem = currentMenuItem.parentItem;
         ++i;
     }
-    while (currentMenuItem != nil && i < Limit);
+    while (currentMenuItem && i < Limit);
 
     NSMutableString *path = [NSMutableString string];
 
