@@ -82,17 +82,16 @@
                     isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                 NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
+                NSString *failureReason = [NSString stringWithFormat:
+                                           SRLoc(@"The key combination %@ can't be used!"),
+                                           shortcut];
                 NSString *description = [NSString stringWithFormat:
-                                         SRLoc(@"The key combination %@ can't be used!"),
-                                         shortcut];
-                NSString *recoverySuggestion = [NSString stringWithFormat:
-                                                SRLoc(@"The key combination \"%@\" can't be used because %@."),
-                                                shortcut,
-                                                [delegateReason length] ? delegateReason : @"it's already used"];
+                                         SRLoc(@"The key combination \"%@\" can't be used because %@."),
+                                         shortcut,
+                                         [delegateReason length] ? delegateReason : @"it's already used"];
                 NSDictionary *userInfo = @{
-                    NSLocalizedDescriptionKey : description,
-                    NSLocalizedRecoverySuggestionErrorKey: recoverySuggestion,
-                    NSLocalizedRecoveryOptionsErrorKey: @[@"OK"]
+                    NSLocalizedFailureReasonErrorKey : failureReason,
+                    NSLocalizedDescriptionKey: description
                 };
                 *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:userInfo];
             }
@@ -137,16 +136,15 @@
                         isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                     NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
+                    NSString *failureReason = [NSString stringWithFormat:
+                                               SRLoc(@"The key combination %@ can't be used!"),
+                                               shortcut];
                     NSString *description = [NSString stringWithFormat:
-                                             SRLoc(@"The key combination %@ can't be used!"),
+                                             SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. (If you really want to use this key combination, most shortcuts can be changed in the Keyboard panel in System Preferences.)"),
                                              shortcut];
-                    NSString *recoverySuggestion = [NSString stringWithFormat:
-                                                    SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. (If you really want to use this key combination, most shortcuts can be changed in the Keyboard panel in System Preferences.)"),
-                                                    shortcut];
                     NSDictionary *userInfo = @{
-                        NSLocalizedDescriptionKey: description,
-                        NSLocalizedRecoverySuggestionErrorKey: recoverySuggestion,
-                        NSLocalizedRecoveryOptionsErrorKey: @[@"OK"]
+                        NSLocalizedFailureReasonErrorKey: failureReason,
+                        NSLocalizedDescriptionKey: description
                     };
                     *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:userInfo];
                 }
@@ -199,17 +197,16 @@
                         isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                     NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
+                    NSString *failureReason = [NSString stringWithFormat:
+                                               SRLoc(@"The key combination %@ can't be used!"),
+                                               shortcut];
                     NSString *description = [NSString stringWithFormat:
-                                             SRLoc(@"The key combination %@ can't be used!"),
-                                             shortcut];
-                    NSString *recoverySuggestion = [NSString stringWithFormat:
-                                                    SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."),
-                                                    shortcut,
-                                                    menuItem.title];
+                                             SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."),
+                                             shortcut,
+                                             menuItem.title];
                     NSDictionary *userInfo = @{
-                        NSLocalizedDescriptionKey: description,
-                        NSLocalizedRecoverySuggestionErrorKey: recoverySuggestion,
-                        NSLocalizedRecoveryOptionsErrorKey: @[@"OK"]
+                        NSLocalizedFailureReasonErrorKey: failureReason,
+                        NSLocalizedDescriptionKey: description
                     };
                     *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:userInfo];
                 }
