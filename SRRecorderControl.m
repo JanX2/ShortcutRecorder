@@ -431,27 +431,43 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (NSDictionary *)labelAttributes
 {
+    return self.isRecording ? [self recordingLabelAttributes] : [self normalLabelAttributes];
+}
+
+- (NSDictionary *)normalLabelAttributes
+{
     static dispatch_once_t OnceToken;
     static NSDictionary *NormalAttributes = nil;
-    static NSDictionary *RecordingAttributes = nil;
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
         p.alignment = NSCenterTextAlignment;
         p.lineBreakMode = NSLineBreakByClipping;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         NormalAttributes = @{
-            NSParagraphStyleAttributeName: p,
+            NSParagraphStyleAttributeName: [p copy],
             NSFontAttributeName: [NSFont labelFontOfSize:[NSFont systemFontSize]],
             NSForegroundColorAttributeName: [NSColor controlTextColor]
         };
+    });
+    return NormalAttributes;
+}
+
+- (NSDictionary *)recordingLabelAttributes
+{
+    static dispatch_once_t OnceToken;
+    static NSDictionary *RecordingAttributes = nil;
+    dispatch_once(&OnceToken, ^{
+        NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
+        p.alignment = NSCenterTextAlignment;
+        p.lineBreakMode = NSLineBreakByClipping;
+        p.baseWritingDirection = NSWritingDirectionLeftToRight;
         RecordingAttributes = @{
-            NSParagraphStyleAttributeName: p,
+            NSParagraphStyleAttributeName: [p copy],
             NSFontAttributeName: [NSFont labelFontOfSize:[NSFont systemFontSize]],
             NSForegroundColorAttributeName: [NSColor disabledControlTextColor]
         };
     });
-
-    return self.isRecording ? RecordingAttributes : NormalAttributes;
+    return RecordingAttributes;
 }
 
 
@@ -881,18 +897,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (NSSize)intrinsicContentSize
 {
-    NSString *label = self.label;
-    NSDictionary *attributes = self.labelAttributes;
-    if (self.isRecording)
-    {
-        return NSMakeSize(NSWidth([self rectForLabel:label withAttributes:attributes]) + 2 * (NSWidth(self.snapBackButtonRect) + NSWidth(self.clearButtonRect)),
-                          _SRRecorderControlHeight);
-    }
-    else
-    {
-        return NSMakeSize(NSWidth([self rectForLabel:label withAttributes:attributes]) + 2 * _SRRecorderControlShapeXRadius,
-                          _SRRecorderControlHeight);
-    }
+    return NSMakeSize(NSWidth([self rectForLabel:SRLoc(@"Click to record shortcut") withAttributes:self.normalLabelAttributes]) + _SRRecorderControlShapeXRadius + _SRRecorderControlShapeXRadius,
+                      _SRRecorderControlHeight);
 }
 
 

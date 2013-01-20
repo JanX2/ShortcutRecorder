@@ -218,11 +218,23 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (NSString *)accessibilityLabel;
 
 /*!
-    @brief      Returns attirbutes of label to be displayed by the receiver.
+    @brief      Returns attirbutes of label to be displayed by the receiver according to current state.
 
-    @discussion Returned value depends on isRecording state.
+    @see        normalLabelAttributes
+
+    @see        recordingLabelAttributes
  */
 - (NSDictionary *)labelAttributes;
+
+/*!
+    @brief  Returns attributes of label to be displayed by the receiver in normal mode.
+ */
+- (NSDictionary *)normalLabelAttributes;
+
+/*!
+    @brief  Returns attributes of label to be displayed by the receiver in recording mode.
+ */
+- (NSDictionary *)recordingLabelAttributes;
 
 
 /*!
