@@ -205,6 +205,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     if (self.isRecording)
         return YES;
 
+    [self setNeedsDisplay:YES];
+
     if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
     {
         if (![self.delegate shortcutRecorderShouldBeginRecording:self])
@@ -223,7 +225,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
     [self updateTrackingAreas];
     [self setToolTip:SRLoc(@"Type shortcut")];
-    [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
     return YES;
 }
