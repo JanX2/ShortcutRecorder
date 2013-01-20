@@ -46,15 +46,15 @@
     if ([self isKeyCode:aKeyCode andFlagTakenInDelegate:aFlags error:outError])
         return YES;
 
-    if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckSystemShortcuts:)] &&
-        [self.delegate shortcutValidatorShouldCheckSystemShortcuts:self] &&
+    if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckSystemShortcuts:)] ||
+         [self.delegate shortcutValidatorShouldCheckSystemShortcuts:self]) &&
         [self isKeyCode:aKeyCode andFlagsTakenInSystemShortcuts:aFlags error:outError])
     {
         return YES;
     }
 
-    if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] &&
-        [self.delegate shortcutValidatorShouldCheckMenu:self] &&
+    if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] ||
+         [self.delegate shortcutValidatorShouldCheckMenu:self]) &&
         [self isKeyCode:aKeyCode andFlags:aFlags takenInMenu:[NSApp mainMenu] error:outError])
     {
         return YES;
