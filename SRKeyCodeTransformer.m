@@ -262,9 +262,9 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     NSString *unmappedString = nil;
 
     if (self.usesPlainStrings)
-        unmappedString = [[[self class] specialKeyCodesToPlainStringsMapping] objectForKey:@(keyCode)];
+        unmappedString = [[self class] specialKeyCodesToPlainStringsMapping][@(keyCode)];
     else
-        unmappedString = [[[self class] specialKeyCodesToUnicodeCharactersMapping] objectForKey:@(keyCode)];
+        unmappedString = [[self class] specialKeyCodesToUnicodeCharactersMapping][@(keyCode)];
 
     if (unmappedString != nil)
         return unmappedString;

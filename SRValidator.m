@@ -116,14 +116,14 @@
 
     for (NSDictionary *symbolicHotKey in symbolicHotKeys)
     {
-        if ((__bridge CFBooleanRef)[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyEnabled] != kCFBooleanTrue)
+        if ((__bridge CFBooleanRef)symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyEnabled] != kCFBooleanTrue)
             continue;
 
-        unsigned short symbolicHotKeyCode = [[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyCode] integerValue];
+        unsigned short symbolicHotKeyCode = [symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyCode] integerValue];
 
         if (symbolicHotKeyCode == aKeyCode)
         {
-            NSUInteger symbolicHotKeyFlags = [[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyModifiers] unsignedIntegerValue];
+            NSUInteger symbolicHotKeyFlags = [symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyModifiers] unsignedIntegerValue];
             symbolicHotKeyFlags &= SRCarbonModifierFlagsMask;
 
             if (SRCarbonToCocoaFlags(symbolicHotKeyFlags) == aFlags)
