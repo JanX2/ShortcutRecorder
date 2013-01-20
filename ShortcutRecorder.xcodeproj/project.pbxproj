@@ -63,6 +63,10 @@
 		E2741AE61673C94E00A139BD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273124B1349EE6500A84433 /* Carbon.framework */; };
 		E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */; };
+		E2BE924D16ABEFE400827E8C /* SRKeyEquivalentTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BE924B16ABEFE400827E8C /* SRKeyEquivalentTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E2BE924E16ABEFE400827E8C /* SRKeyEquivalentTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BE924C16ABEFE400827E8C /* SRKeyEquivalentTransformer.m */; };
+		E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BE925016ABF84100827E8C /* SRKeyEquivalentModifierMaskTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E2BE925316ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BE925116ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -150,6 +154,10 @@
 		E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PTHotKey+ShortcutRecorder.m"; sourceTree = "<group>"; };
 		E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRModifierFlagsTransformer.h; sourceTree = "<group>"; };
 		E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRModifierFlagsTransformer.m; sourceTree = "<group>"; };
+		E2BE924B16ABEFE400827E8C /* SRKeyEquivalentTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRKeyEquivalentTransformer.h; sourceTree = "<group>"; };
+		E2BE924C16ABEFE400827E8C /* SRKeyEquivalentTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRKeyEquivalentTransformer.m; sourceTree = "<group>"; };
+		E2BE925016ABF84100827E8C /* SRKeyEquivalentModifierMaskTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRKeyEquivalentModifierMaskTransformer.h; sourceTree = "<group>"; };
+		E2BE925116ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRKeyEquivalentModifierMaskTransformer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +190,10 @@
 				74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */,
 				E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */,
 				E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */,
+				E2BE924B16ABEFE400827E8C /* SRKeyEquivalentTransformer.h */,
+				E2BE924C16ABEFE400827E8C /* SRKeyEquivalentTransformer.m */,
+				E2BE925016ABF84100827E8C /* SRKeyEquivalentModifierMaskTransformer.h */,
+				E2BE925116ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m */,
 				0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */,
 				0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */,
 				74C3670E0A246B4900B69171 /* SRValidator.h */,
@@ -300,6 +312,8 @@
 				939839390DA4350B007F53F3 /* ShortcutRecorder.h in Headers */,
 				9398393B0DA4350B007F53F3 /* SRRecorderControl.h in Headers */,
 				E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */,
+				E2BE924D16ABEFE400827E8C /* SRKeyEquivalentTransformer.h in Headers */,
+				E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */,
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
 				939839400DA4350B007F53F3 /* SRCommon.h in Headers */,
@@ -463,6 +477,8 @@
 				939837990DA429EC007F53F3 /* SRValidator.m in Sources */,
 				9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */,
 				E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */,
+				E2BE924E16ABEFE400827E8C /* SRKeyEquivalentTransformer.m in Sources */,
+				E2BE925316ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
