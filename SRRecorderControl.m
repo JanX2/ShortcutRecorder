@@ -1129,8 +1129,11 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
             {
                 if (![self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue])
                 {
-                    NSBeep();
-                    return NO;
+                    // We acutally handled key equivalent, because client likely performs some action
+                    // to represent an error (e.g. beep and error dialog.
+                    // Do not end editing, because if client do not use additional window to show an error
+                    // first responder will not change. Allow a user to make another attempt.
+                    return YES;
                 }
             }
 
