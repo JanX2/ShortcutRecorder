@@ -166,7 +166,7 @@
     for (NSMenuItem *menuItem in [aMenu itemArray])
     {
         if (menuItem.hasSubmenu && [self isKeyCode:aKeyCode andFlags:aFlags takenInMenu:menuItem.submenu error:outError])
-                return YES;
+            return YES;
 
         NSString *keyEquivalent = menuItem.keyEquivalent;
 
