@@ -56,8 +56,12 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 /*!
     @brief      An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
+
+    @discussion In addition to NSView bindings, exposes NSValueBinding. This binding supports 2 options:
+                    - NSValueTransformerBindingOption
+                    - NSValueTransformerNameBindingOption
  */
-@interface SRRecorderControl : NSView /* <NSToolTipOwner, NSAccessibility> */
+@interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner> */
 
 /*!
     @brief      The receiver’s delegate.
@@ -118,7 +122,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 /*!
     @brief  Determines whether recording is in process.
  */
-@property (readonly) BOOL isRecording;
+@property (nonatomic, readonly) BOOL isRecording;
 
 /*!
     @brief  Returns dictionary representation of receiver's shortcut.
@@ -144,27 +148,39 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
 
 /*!
-    @brief      Turns the receiver into recording mode and marks view to display.
+    @brief      Turns on the recording mode.
 
-    @dicussion  You SHOULD not call this method directly.
+    @discussion You SHOULD not call this method directly.
  */
 - (BOOL)beginRecording;
 
 /*!
-    @brief      Turns the receiver into normal mode and saves input into objectValue. Also marks view to display.
+    @brief      Turns off the recording mode. Current object value is preserved.
 
-    @dicussion  You SHOULD not call this method directly.
+    @discussion You SHOULD not call this method directly.
  */
 - (void)endRecording;
 
 /*!
-    @brief      Turns the receiver into normal mode and marks view to display.
+    @brief      Clears object value and turns off the recording mode.
 
-    @dicussion  You SHOULD not call this method directly.
+    @discussion You SHOULD not call this method directly.
  */
 - (void)clearAndEndRecording;
 
+/*!
+    @brief      Designated method to end recording. Sets a given object value, updates bindings and turns off the recording mode.
 
+    @discussion You SHOULD not call this method directly.
+ */
+- (void)endRecordingWithObjectValue:(NSDictionary *)anObjectValue;
+
+
+/*!
+    @brief      Returns shape of the control.
+
+    @discussion Primarily used to draw appropriate focus ring.
+ */
 - (NSBezierPath *)controlShape;
 
 /*!
@@ -286,7 +302,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
     @result     YES if shortcut can be recordered. Otherwise NO.
 
-    @dicussion  Implementation of this method by the delegate is optional. If it is not present, shortcut is recordered as if this method had returned YES.
+    @discussion Implementation of this method by the delegate is optional. If it is not present, shortcut is recordered as if this method had returned YES.
                 You may implement this method to filter shortcuts that were already set by other recorders.
 
     @see        SRValidator

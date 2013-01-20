@@ -67,6 +67,9 @@ static const NSSize _SRRecorderControlSnapBackButtonSize = {.width = _SRRecorder
 static NSImage *_SRImages[16];
 
 
+static NSUInteger _SRValueObservationContext;
+
+
 typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     _SRRecorderControlInvalidButtonTag = -1,
@@ -74,6 +77,30 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _SRRecorderControlClearButtonTag = 1,
     _SRRecorderControlMainButtonTag = 2
 };
+
+
+/*!
+    @brief  Extracts value transformer from binding options.
+
+    @result Returns an instance of NSValueTransformer or nil if there is not transformer.
+ */
+static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *aBindingOptions)
+{
+    NSValueTransformer *valueTransformer = aBindingOptions[NSValueTransformerBindingOption];
+
+    if (!valueTransformer || (NSNull *)valueTransformer == [NSNull null])
+    {
+        NSString *valueTransformerName = aBindingOptions[NSValueTransformerNameBindingOption];
+
+        if (valueTransformerName && (NSNull *)valueTransformerName != [NSNull null])
+            valueTransformer = [NSValueTransformer valueTransformerForName:valueTransformerName];
+    }
+
+    if ((NSNull *)valueTransformer != [NSNull null])
+        return valueTransformer;
+    else
+        return nil;
+}
 
 
 @implementation SRRecorderControl
@@ -84,6 +111,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     _SRRecorderControlButtonTag _mouseTrackingButtonTag;
     NSToolTipTag _snapBackButtonToolTipTag;
+
+    NSMutableDictionary *_bindingInfo;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -100,6 +129,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _allowsDeleteToClearShortcutAndEndRecording = YES;
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
         _snapBackButtonToolTipTag = NSIntegerMax;
+        _bindingInfo = [NSMutableDictionary dictionary];
 
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         {
@@ -126,6 +156,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [_bindingInfo unbind:NSValueBinding];
 }
 
 
@@ -160,7 +191,10 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _objectValue = [newObjectValue copy];
 
     if (!self.isRecording)
+    {
         NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
+        [self setNeedsDisplay:YES];
+    }
 }
 
 
@@ -196,12 +230,41 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)endRecording
 {
+    [self endRecordingWithObjectValue:self.objectValue];
+}
+
+- (void)clearAndEndRecording
+{
+    [self endRecordingWithObjectValue:nil];
+}
+
+- (void)endRecordingWithObjectValue:(NSDictionary *)anObjectValue
+{
     if (!self.isRecording)
         return;
 
     [self willChangeValueForKey:@"isRecording"];
     _isRecording = NO;
     [self didChangeValueForKey:@"isRecording"];
+
+    NSDictionary *valueBindingInfo = _bindingInfo[NSValueBinding];
+
+    if (valueBindingInfo)
+    {
+        NSValueTransformer *transformer = _SRValueTransformerFromBindingOptions(valueBindingInfo);
+
+        if ([[transformer class] allowsReverseTransformation])
+        {
+            [valueBindingInfo[NSObservedObjectKey] setValue:[transformer reverseTransformedValue:anObjectValue]
+                                                 forKeyPath:valueBindingInfo[NSObservedKeyPathKey]];
+        }
+        else
+            [valueBindingInfo[NSObservedObjectKey] setValue:anObjectValue forKeyPath:valueBindingInfo[NSObservedKeyPathKey]];
+
+        // objectValue will be set in -observeValueForKeyPath:ofObject:change:context:
+    }
+    else
+        self.objectValue = anObjectValue;
 
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         [self invalidateIntrinsicContentSize];
@@ -217,12 +280,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
         [self.delegate shortcutRecorderDidEndRecording:self];
-}
-
-- (void)clearAndEndRecording
-{
-    self.objectValue = nil;
-    [self endRecording];
 }
 
 
@@ -595,17 +652,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
-#pragma mark NSToolTipOwner
-
-- (NSString *)view:(NSView *)aView stringForToolTip:(NSToolTipTag)aTag point:(NSPoint)aPoint userData:(void *)aData
-{
-    if (aTag == _snapBackButtonToolTipTag)
-        return SRLoc(@"Use old shortcut");
-    else
-        return [super view:aView stringForToolTip:aTag point:aPoint userData:aData];
-}
-
-
 #pragma mark NSAccessibility
 
 - (BOOL)accessibilityIsIgnored
@@ -651,13 +697,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     static NSArray *ActionNames = nil;
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^
-    {
-        ActionNames = @[
-            NSAccessibilityPressAction,
-            NSAccessibilityCancelAction,
-            NSAccessibilityDeleteAction
-        ];
-    });
+                  {
+                      ActionNames = @[
+                      NSAccessibilityPressAction,
+                      NSAccessibilityCancelAction,
+                      NSAccessibilityDeleteAction
+                      ];
+                  });
     return ActionNames;
 }
 
@@ -674,6 +720,84 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self endRecording];
     else if (self.isRecording && [anAction isEqualToString:NSAccessibilityDeleteAction])
         [self clearAndEndRecording];
+}
+
+
+#pragma mark NSKeyValueBindingCreation
+
+- (Class)valueClassForBinding:(NSString *)aBinding
+{
+    if ([aBinding isEqualToString:NSValueBinding])
+        return [NSDictionary class];
+    else
+        return [super valueClassForBinding:aBinding];
+}
+
+- (void)bind:(NSString *)aBinding toObject:(id)anObservable withKeyPath:(NSString *)aKeyPath options:(NSDictionary *)anOptions
+{
+    if ([aBinding isEqualToString:NSValueBinding])
+    {
+        [self unbind:aBinding];
+
+        [anObservable addObserver:self
+                       forKeyPath:aKeyPath
+                          options:0
+                          context:&_SRValueObservationContext];
+        _bindingInfo[aBinding] = @{
+            NSObservedObjectKey: anObservable,
+            NSObservedKeyPathKey: [aKeyPath copy],
+            NSOptionsKey: [NSDictionary dictionaryWithDictionary:anOptions]
+        };
+        self.objectValue = [anObservable valueForKeyPath:aKeyPath];
+
+        // This method is typically called when view is not presented to a user.
+        // If'd use -setNeedsDisplay:, the user may notice flickering when window with view is shown first time.
+        // Therefore ensure view is shown with correct value drawn by -displayIfNeeded
+        [self displayIfNeeded];
+    }
+    else
+        [super bind:aBinding toObject:anObservable withKeyPath:aKeyPath options:anOptions];
+}
+
+- (NSDictionary *)infoForBinding:(NSString *)aBinding
+{
+    NSDictionary *info = _bindingInfo[aBinding];
+
+    if (!info)
+        info = [super infoForBinding:aBinding];
+
+    return info;
+}
+
+- (void)unbind:(NSString *)aBinding
+{
+    if ([aBinding isEqualToString:NSValueBinding])
+    {
+        NSDictionary *valueBindingInfo = _bindingInfo[NSValueBinding];
+
+        if (valueBindingInfo)
+        {
+            if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
+                [valueBindingInfo[NSObservedObjectKey] removeObserver:self forKeyPath:valueBindingInfo[NSObservedKeyPathKey]];
+            else
+                [valueBindingInfo[NSObservedObjectKey] removeObserver:self forKeyPath:valueBindingInfo[NSObservedKeyPathKey] context:&_SRValueObservationContext];
+
+            [_bindingInfo removeObjectForKey:NSValueBinding];
+        }
+    }
+    else
+        [super unbind:aBinding];
+}
+
+
+#pragma mark NSToolTipOwner
+
+- (NSString *)view:(NSView *)aView stringForToolTip:(NSToolTipTag)aTag point:(NSPoint)aPoint userData:(void *)aData
+{
+    if (aTag == _snapBackButtonToolTipTag)
+        return SRLoc(@"Use old shortcut");
+    else
+        return [super view:aView stringForToolTip:aTag point:aPoint userData:aData];
 }
 
 
@@ -1009,8 +1133,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                 }
             }
 
-            self.objectValue = newObjectValue;
-            [self endRecording];
+            [self endRecordingWithObjectValue:newObjectValue];
             return YES;
         }
     }
@@ -1034,6 +1157,38 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
     else
         [super flagsChanged:anEvent];
+}
+
+
+#pragma mark NSObject
+
++ (void)initialize
+{
+    if (self == [SRRecorderControl class])
+        [self exposeBinding:NSValueBinding];
+}
+
+- (void)observeValueForKeyPath:(NSString *)aKeyPath ofObject:(id)anObject change:(NSDictionary *)aChange context:(void *)aContext
+{
+    if (aContext == &_SRValueObservationContext)
+    {
+        id newObjectValue = [anObject valueForKeyPath:aKeyPath];
+
+        if (NSIsControllerMarker(newObjectValue))
+            [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
+
+        NSValueTransformer *valueTransformer = _SRValueTransformerFromBindingOptions(_bindingInfo[NSValueBinding][NSOptionsKey]);
+
+        if (valueTransformer)
+            newObjectValue = [valueTransformer transformedValue:newObjectValue];
+
+        if (newObjectValue == [NSNull null])
+            newObjectValue = nil;
+
+        self.objectValue = newObjectValue;
+    }
+    else
+        [super observeValueForKeyPath:aKeyPath ofObject:anObject change:aChange context:aContext];
 }
 
 @end
