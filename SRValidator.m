@@ -41,7 +41,7 @@
 
 #pragma mark Methods
 
-- (BOOL)isKeyCode:(NSInteger)aKeyCode andFlagsTaken:(NSUInteger)aFlags error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSUInteger)aFlags error:(NSError **)outError;
 {
     if ([self isKeyCode:aKeyCode andFlagTakenInDelegate:aFlags error:outError])
         return YES;
@@ -63,7 +63,7 @@
     return NO;
 }
 
-- (BOOL)isKeyCode:(NSInteger)aKeyCode andFlagTakenInDelegate:(NSUInteger)aFlags error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSUInteger)aFlags error:(NSError **)outError
 {
     if (self.delegate != nil)
     {
@@ -104,7 +104,7 @@
     return NO;
 }
 
-- (BOOL)isKeyCode:(NSInteger)aKeyCode andFlagsTakenInSystemShortcuts:(NSUInteger)aFlags error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSUInteger)aFlags error:(NSError **)outError
 {
     CFArrayRef s = NULL;
     OSStatus err = CopySymbolicHotKeys(&s);
@@ -120,7 +120,7 @@
         if ((__bridge CFBooleanRef)[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyEnabled] != kCFBooleanTrue)
             continue;
 
-        NSInteger symbolicHotKeyCode = [[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyCode] integerValue];
+        unsigned short symbolicHotKeyCode = [[symbolicHotKey objectForKey:(__bridge NSString *)kHISymbolicHotKeyCode] integerValue];
 
         if (symbolicHotKeyCode == aKeyCode)
         {
@@ -159,7 +159,7 @@
     return NO;
 }
 
-- (BOOL)isKeyCode:(NSInteger)aKeyCode andFlags:(NSUInteger)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSUInteger)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
 {
     aFlags &= SRCocoaModifierFlagsMask;
 

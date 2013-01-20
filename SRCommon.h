@@ -102,10 +102,10 @@ FOUNDATION_STATIC_INLINE NSImage *SRImage(NSString *anImageName)
     @brief  Returns string representation of shortcut with modifier flags replaced with their localized
             readable equivalents (e.g. ? -> Option).
  */
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode);
+NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode);
 
 /*!
     @brief  Returns string representation of shortcut with modifier flags replaced with their localized
             readable equivalents (e.g. ? -> Option) and ASCII character for key code.
  */
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode);
+NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode);

@@ -17,7 +17,7 @@
 #import "SRKeyCodeTransformer.h"
 
 
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode)
+NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode)
 {
     return [NSString stringWithFormat:@"%@%@%@%@%@",
                                       (aModifierFlags & NSCommandKeyMask ? SRLoc(@"Command-") : @""),
@@ -28,7 +28,7 @@ NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFl
 }
 
 
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, NSInteger aKeyCode)
+NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode)
 {
     return [NSString stringWithFormat:@"%@%@%@%@%@",
                                       (aModifierFlags & NSCommandKeyMask ? SRLoc(@"Command-") : @""),
