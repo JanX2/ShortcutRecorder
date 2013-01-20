@@ -31,12 +31,12 @@
 - (NSString *)transformedValue:(NSDictionary *)aValue
 {
     if (![aValue isKindOfClass:[NSDictionary class]])
-        return nil;
+        return @"";
 
     NSNumber *keyCode = aValue[SRShortcutKeyCode];
 
     if (![keyCode isKindOfClass:[NSNumber class]])
-        return nil;
+        return @"";
 
     return [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:keyCode];
 }

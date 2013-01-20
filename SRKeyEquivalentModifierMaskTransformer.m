@@ -30,12 +30,12 @@
 - (NSNumber *)transformedValue:(NSDictionary *)aValue
 {
     if (![aValue isKindOfClass:[NSDictionary class]])
-        return nil;
+        return @(0);
 
     NSNumber *modifierFlags = aValue[SRShortcutModifierFlagsKey];
 
     if (![modifierFlags isKindOfClass:[NSNumber class]])
-        return nil;
+        return @(0);
 
     return modifierFlags;
 }
