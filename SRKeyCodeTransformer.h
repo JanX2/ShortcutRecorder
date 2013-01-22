@@ -82,7 +82,7 @@
 
     @param  aKeyCode Key code to be checked.
  */
-- (BOOL)isKeyCodeSpecial:(unsigned char)aKeyCode;
+- (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
 
 @end
 

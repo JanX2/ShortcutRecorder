@@ -191,7 +191,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     return Mapping;
 }
 
-- (BOOL)isKeyCodeSpecial:(unsigned char)aKeyCode
+- (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode
 {
     switch (aKeyCode)
     {
