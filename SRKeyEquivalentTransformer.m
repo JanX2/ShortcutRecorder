@@ -38,7 +38,12 @@
     if (![keyCode isKindOfClass:[NSNumber class]])
         return @"";
 
-    return [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:keyCode];
+    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedASCIITransformer];
+
+    if (![t isKeyCodeSpecial:[keyCode unsignedShortValue]])
+        return [[t transformedValue:keyCode] uppercaseString];
+    else
+        return [t transformedValue:keyCode];
 }
 
 @end

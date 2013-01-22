@@ -37,7 +37,7 @@
     if (![modifierFlags isKindOfClass:[NSNumber class]])
         return @(0);
 
-    return modifierFlags;
+    return @([modifierFlags unsignedIntegerValue] & (NSCommandKeyMask | NSAlternateKeyMask | NSControlKeyMask));
 }
 
 @end
