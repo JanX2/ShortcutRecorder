@@ -1,4 +1,4 @@
-ShortcutRecorder 2.0
+ShortcutRecorder 2
 ====================
 
 ![ShortcutRecorder Preview](http://wireload.net/open_source/ShortcutRecorder%20Preview.png)
