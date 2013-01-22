@@ -334,3 +334,16 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder;
 
 @end
+
+
+FOUNDATION_STATIC_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b)
+{
+    if (a == b)
+        return YES;
+    else if (a && !b)
+        return NO;
+    else if (!a && b)
+        return NO;
+    else
+        return ([a[SRShortcutKeyCode] isEqual:b[SRShortcutKeyCode]] && [a[SRShortcutModifierFlagsKey] isEqual:b[SRShortcutModifierFlagsKey]]);
+}
