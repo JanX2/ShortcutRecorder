@@ -1,6 +1,5 @@
 ShortcutRecorder 2
 ====================
-
 ![ShortcutRecorder Preview](http://wireload.net/open_source/ShortcutRecorder%20Preview.png)
 
 The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
@@ -14,6 +13,8 @@ The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
 - Translated into 24 languages
 
 Includes framework to set global shortcuts (PTHotKey).
+
+Take a look at [the demo](https://github.com/Kentzo/ShortcutRecorder).
 
 Get Sources
 -----------
