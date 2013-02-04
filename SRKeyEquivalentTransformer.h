@@ -13,8 +13,11 @@
 
 
 /*!
-    @brief  Transform dictionary representation of shortcut into string suitable
-            for -setKeyEquivalent: of various Cocoa classes (e.g. NSButton).
+    @brief      Transform dictionary representation of shortcut into string suitable
+                for -setKeyEquivalent: of various Cocoa classes (e.g. NSButton).
+
+    @discussion If shortcut's key code is not special, returned string will be uppercased.
+                Otherwise it's responsibility of modifier flags transformer to return NSShiftKeyMask.
  */
 @interface SRKeyEquivalentTransformer : NSValueTransformer
 

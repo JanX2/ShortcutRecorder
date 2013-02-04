@@ -39,11 +39,27 @@
         return @"";
 
     SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedASCIITransformer];
+    unsigned short keyCodeValue = [keyCode unsignedShortValue];
 
-    if (![t isKeyCodeSpecial:[keyCode unsignedShortValue]])
-        return [[t transformedValue:keyCode] uppercaseString];
+    if ([t isKeyCodeSpecial:keyCodeValue])
+    {
+        if (keyCodeValue == kVK_ANSI_KeypadEnter)
+            return [NSString stringWithFormat:@"%C", (unichar)NSEnterCharacter];
+        else
+            return [t transformedValue:keyCode];
+    }
     else
-        return [t transformedValue:keyCode];
+    {
+        NSNumber *modifierFlags = aValue[SRShortcutModifierFlagsKey];
+
+        if ([modifierFlags isKindOfClass:[NSNumber class]] &&
+            [modifierFlags unsignedIntegerValue] & NSShiftKeyMask)
+        {
+            return [[t transformedValue:keyCode] uppercaseString];
+        }
+        else
+            return [t transformedValue:keyCode];
+    }
 }
 
 @end
