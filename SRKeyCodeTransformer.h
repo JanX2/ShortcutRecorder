@@ -109,5 +109,5 @@ NS_ENUM(unichar, SRKeyCodeGlyph)
     SRKeyCodeGlyphSoutheastArrow = 0x2198,
     SRKeyCodeGlyphEscape = 0x238B,
     SRKeyCodeGlyphHelp = 0x003F,
-    SRKeyCodeGlyphSpace = 0x23B5,
+    SRKeyCodeGlyphSpace = 0x0020,
 };
