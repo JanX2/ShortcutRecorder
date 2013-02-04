@@ -663,8 +663,15 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 - (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
-    return (aModifierFlags & self.requiredModifierFlags) == self.requiredModifierFlags &&
-    (aModifierFlags & self.allowedModifierFlags) == aModifierFlags;
+
+    if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
+        return NO;
+    else if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
+        return NO;
+    else if ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags)
+        return NO;
+    else
+        return YES;
 }
 
 
