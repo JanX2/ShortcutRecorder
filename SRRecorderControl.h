@@ -347,3 +347,9 @@ FOUNDATION_STATIC_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDicti
     else
         return ([a[SRShortcutKeyCode] isEqual:b[SRShortcutKeyCode]] && [a[SRShortcutModifierFlagsKey] isEqual:b[SRShortcutModifierFlagsKey]]);
 }
+
+
+FOUNDATION_STATIC_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode)
+{
+    return @{SRShortcutKeyCode: @(aKeyCode), SRShortcutModifierFlagsKey: @(aModifierFlags)};
+}
