@@ -1179,13 +1179,14 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 {
     if (self.isRecording)
     {
-        if (![self areModifierFlagsValid:anEvent.modifierFlags])
+        NSUInteger modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
+        if (modifierFlags != 0 && ![self areModifierFlagsValid:modifierFlags])
             NSBeep();
 
         [self setNeedsDisplay:YES];
     }
-    else
-        [super flagsChanged:anEvent];
+
+    [super flagsChanged:anEvent];
 }
 
 
