@@ -1058,22 +1058,30 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 {
     if (_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
     {
-        NSPoint locationInView = [self convertPoint:anEvent.locationInWindow fromView:nil];
+        if (!self.window.isKeyWindow)
+        {
+            // It's possible to receive this event after window resigned its key status
+            // e.g. when shortcut brings new window and makes it key.
+            [self setNeedsDisplay:YES];
+        }
+        else {
+            NSPoint locationInView = [self convertPoint:anEvent.locationInWindow fromView:nil];
 
-        if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag &&
-            [self mouse:locationInView inRect:self.bounds])
-        {
-            [self beginRecording];
-        }
-        else if (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag &&
-                 [self mouse:locationInView inRect:self.snapBackButtonRect])
-        {
-            [self endRecording];
-        }
-        else if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag &&
-                 [self mouse:locationInView inRect:self.clearButtonRect])
-        {
-            [self clearAndEndRecording];
+            if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag &&
+                [self mouse:locationInView inRect:self.bounds])
+            {
+                [self beginRecording];
+            }
+            else if (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag &&
+                     [self mouse:locationInView inRect:self.snapBackButtonRect])
+            {
+                [self endRecording];
+            }
+            else if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag &&
+                     [self mouse:locationInView inRect:self.clearButtonRect])
+            {
+                [self clearAndEndRecording];
+            }
         }
 
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
