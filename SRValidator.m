@@ -76,7 +76,7 @@
         {
             if (outError)
             {
-                BOOL isASCIIOnly = NO;
+                BOOL isASCIIOnly = YES;
 
                 if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
                     isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
@@ -130,7 +130,7 @@
             {
                 if (outError)
                 {
-                    BOOL isASCIIOnly = NO;
+                    BOOL isASCIIOnly = YES;
 
                     if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
                         isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
@@ -191,7 +191,7 @@
             {
                 if (outError)
                 {
-                    BOOL isASCIIOnly = NO;
+                    BOOL isASCIIOnly = YES;
 
                     if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
                         isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];

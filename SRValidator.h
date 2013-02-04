@@ -114,7 +114,7 @@
 
     @result     YES if validator should use ASCII representation. Otherwise NO.
 
-    @discussion Implementation of this method by the delegate is optional. If it is not present, current locale representation of key code is used.
+    @discussion Implementation of this method by the delegate is optional. If it is not present, ASCII representation of key code is used.
  */
 - (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRValidator *)aValidator;
 
