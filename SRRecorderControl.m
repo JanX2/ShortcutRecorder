@@ -344,12 +344,23 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 - (NSRect)clearButtonRect
 {
     NSRect bounds = self.bounds;
-    NSRect clearButtonRect = NSZeroRect;
-    clearButtonRect.origin.x = NSMaxX(bounds) - _SRRecorderControlClearButtonRightOffset - _SRRecorderControlClearButtonSize.width - _SRRecorderControlClearButtonLeftOffset;
-    clearButtonRect.origin.y = NSMinY(bounds);
-    clearButtonRect.size.width = fdim(NSMaxX(bounds), NSMinX(clearButtonRect));
-    clearButtonRect.size.height = _SRRecorderControlHeight;
-    return clearButtonRect;
+
+    if ([self.objectValue count])
+    {
+        NSRect clearButtonRect = NSZeroRect;
+        clearButtonRect.origin.x = NSMaxX(bounds) - _SRRecorderControlClearButtonRightOffset - _SRRecorderControlClearButtonSize.width - _SRRecorderControlClearButtonLeftOffset;
+        clearButtonRect.origin.y = NSMinY(bounds);
+        clearButtonRect.size.width = fdim(NSMaxX(bounds), NSMinX(clearButtonRect));
+        clearButtonRect.size.height = _SRRecorderControlHeight;
+        return clearButtonRect;
+    }
+    else
+    {
+        return NSMakeRect(NSMaxX(bounds) - _SRRecorderControlClearButtonRightOffset - _SRRecorderControlClearButtonLeftOffset,
+                          NSMinY(bounds),
+                          0.0,
+                          _SRRecorderControlHeight);
+    }
 }
 
 
@@ -609,6 +620,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 - (void)drawClearButton:(NSRect)aDirtyRect
 {
     NSRect imageRect = self.clearButtonRect;
+
+    // If there is no reason to draw clear button (e.g. no shortcut was set)
+    // rect will have empty width.
+    if (NSWidth(imageRect) == 0.0)
+        return;
+
     imageRect.origin.x += _SRRecorderControlClearButtonLeftOffset;
     imageRect.origin.y += floor(self.alignmentRectInsets.top + (NSHeight(imageRect) - _SRRecorderControlClearButtonSize.height) / 2.0);
     imageRect.size = _SRRecorderControlClearButtonSize;

@@ -201,7 +201,9 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (NSRect)snapBackButtonRect;
 
 /*!
-    @brief  Returns rect of the snap clear in the receiver coordinates.
+    @brief      Returns rect of the clear button in the receiver coordinates.
+
+    @discussion Returned rect will have empty width (other values will be valid) if button should not be drawn.
  */
 - (NSRect)clearButtonRect;
 
