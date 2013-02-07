@@ -457,7 +457,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
         p.alignment = NSCenterTextAlignment;
-        p.lineBreakMode = NSLineBreakByClipping;
+        p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         NormalAttributes = @{
             NSParagraphStyleAttributeName: [p copy],
@@ -475,7 +475,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
         p.alignment = NSCenterTextAlignment;
-        p.lineBreakMode = NSLineBreakByClipping;
+        p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         RecordingAttributes = @{
             NSParagraphStyleAttributeName: [p copy],
