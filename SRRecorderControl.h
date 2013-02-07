@@ -221,6 +221,16 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (NSString *)accessibilityLabel;
 
 /*!
+    @brief      Returns string representation of object value.
+ */
+- (NSString *)stringValue;
+
+/*!
+    @brief      Returns string representation of object value for accessibility.
+ */
+- (NSString *)accessibilityStringValue;
+
+/*!
     @brief      Returns attirbutes of label to be displayed by the receiver according to current state.
 
     @see        normalLabelAttributes

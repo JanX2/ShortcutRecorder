@@ -362,31 +362,20 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     if (self.isRecording)
     {
         NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-        label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
+
+        if (modifierFlags)
+            label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
+        else
+            label = self.stringValue;
 
         if (![label length])
-            label = SRLoc(@"Type shortcut");
+            label = label = SRLoc(@"Type shortcut");
     }
     else
     {
-        if (self.objectValue)
-        {
-            NSString *f = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
-            SRKeyCodeTransformer *transformer = nil;
+        label = self.stringValue;
 
-            if (self.drawsASCIIEquivalentOfShortcut)
-                transformer = [SRKeyCodeTransformer sharedPlainASCIITransformer];
-            else
-                transformer = [SRKeyCodeTransformer sharedPlainTransformer];
-
-            NSString *c = [transformer transformedValue:self.objectValue[SRShortcutKeyCode]];
-
-            if (![transformer isKeyCodeSpecial:[self.objectValue[SRShortcutKeyCode] unsignedShortValue]])
-                c = [c uppercaseString];
-
-            label = [NSString stringWithFormat:@"%@%@", f, c];
-        }
-        else
+        if (![label length])
             label = SRLoc(@"Click to record shortcut");
     }
 
@@ -407,26 +396,53 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     }
     else
     {
-        if (self.objectValue)
-        {
-            NSString *f = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
-            NSString *c = nil;
+        label = self.accessibilityStringValue;
 
-            if (self.drawsASCIIEquivalentOfShortcut)
-                c = [[SRKeyCodeTransformer sharedPlainASCIITransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
-            else
-                c = [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
-
-            if ([f length] > 0)
-                label = [NSString stringWithFormat:@"%@-%@", f, c];
-            else
-                label = [NSString stringWithFormat:@"%@", c];
-        }
-        else
+        if (![label length])
             label = SRLoc(@"Click to record shortcut");
     }
 
     return label;
+}
+
+- (NSString *)stringValue
+{
+    if (![self.objectValue count])
+        return nil;
+
+    NSString *f = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
+    SRKeyCodeTransformer *transformer = nil;
+
+    if (self.drawsASCIIEquivalentOfShortcut)
+        transformer = [SRKeyCodeTransformer sharedPlainASCIITransformer];
+    else
+        transformer = [SRKeyCodeTransformer sharedPlainTransformer];
+
+    NSString *c = [transformer transformedValue:self.objectValue[SRShortcutKeyCode]];
+
+    if (![transformer isKeyCodeSpecial:[self.objectValue[SRShortcutKeyCode] unsignedShortValue]])
+        c = [c uppercaseString];
+
+    return [NSString stringWithFormat:@"%@%@", f, c];
+}
+
+- (NSString *)accessibilityStringValue
+{
+    if (![self.objectValue count])
+        return nil;
+
+    NSString *f = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
+    NSString *c = nil;
+
+    if (self.drawsASCIIEquivalentOfShortcut)
+        c = [[SRKeyCodeTransformer sharedPlainASCIITransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
+    else
+        c = [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
+
+    if ([f length] > 0)
+        return [NSString stringWithFormat:@"%@-%@", f, c];
+    else
+        return [NSString stringWithFormat:@"%@", c];
 }
 
 - (NSDictionary *)labelAttributes
