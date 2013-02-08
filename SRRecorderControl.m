@@ -913,12 +913,16 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)drawFocusRingMask
 {
-    [self.controlShape fill];
+    if (self.window.firstResponder == self)
+        [self.controlShape fill];
 }
 
 - (NSRect)focusRingMaskBounds
 {
-    return self.controlShape.bounds;
+    if (self.window.firstResponder == self)
+        return self.controlShape.bounds;
+    else
+        return NSZeroRect;
 }
 
 - (NSEdgeInsets)alignmentRectInsets
