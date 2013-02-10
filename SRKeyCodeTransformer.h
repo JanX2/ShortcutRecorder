@@ -84,6 +84,15 @@
  */
 - (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
 
+/*!
+    @brief  Transfroms given key code into unicode character by taking into account modifier flags.
+
+    @param  aValue An instance of NSNumber (unsigned short) that represents key code.
+
+    @param  aModifierFalgs An instance of NSNumber (NSUInteger) that represents modifier flags.
+ */
+- (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags;
+
 @end
 
 

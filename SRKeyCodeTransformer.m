@@ -253,6 +253,11 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 - (NSString *)transformedValue:(NSNumber *)aValue
 {
+    return [self transformedValue:aValue withModifierFlags:nil];
+}
+
+- (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags
+{
     if (![aValue isKindOfClass:[NSNumber class]])
         return @"";
 
@@ -317,7 +322,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     OSStatus err = UCKeyTranslate(keyLayout,
                                   keyCode,
                                   kUCKeyActionDisplay,
-                                  0,
+                                  SRCocoaToCarbonFlags([aModifierFlags unsignedIntegerValue]),
                                   LMGetKbdType(),
                                   kUCKeyTranslateNoDeadKeysBit,
                                   &deadKeyState,
