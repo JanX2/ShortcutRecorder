@@ -322,7 +322,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     OSStatus err = UCKeyTranslate(keyLayout,
                                   keyCode,
                                   kUCKeyActionDisplay,
-                                  SRCocoaToCarbonFlags([aModifierFlags unsignedIntegerValue]),
+                                  SRCocoaToCarbonFlags([aModifierFlags unsignedIntegerValue]) >> 8,
                                   LMGetKbdType(),
                                   kUCKeyTranslateNoDeadKeysBit,
                                   &deadKeyState,
