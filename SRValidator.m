@@ -123,7 +123,7 @@
 
         if (symbolicHotKeyCode == aKeyCode)
         {
-            NSUInteger symbolicHotKeyFlags = [symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyModifiers] unsignedIntegerValue];
+            UInt32 symbolicHotKeyFlags = [symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyModifiers] unsignedIntValue];
             symbolicHotKeyFlags &= SRCarbonModifierFlagsMask;
 
             if (SRCarbonToCocoaFlags(symbolicHotKeyFlags) == aFlags)

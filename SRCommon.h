@@ -31,7 +31,7 @@ static const NSUInteger SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKe
 /*!
     @brief  Converts carbon modifier flags to cocoa.
  */
-FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(NSUInteger aCarbonFlags)
+FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 {
     NSUInteger cocoaFlags = 0;
 
@@ -53,9 +53,9 @@ FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(NSUInteger aCarbonFlags
 /*!
     @brief  Converts cocoa modifier flags to carbon.
  */
-FOUNDATION_STATIC_INLINE NSUInteger SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
+FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
 {
-    NSUInteger carbonFlags = 0;
+    UInt32 carbonFlags = 0;
 
     if (aCocoaFlags & NSCommandKeyMask)
         carbonFlags |= cmdKey;
