@@ -38,16 +38,7 @@
     if (![modifierFlags isKindOfClass:[NSNumber class]])
         return @(0);
 
-    NSNumber *keyCode = aValue[SRShortcutKeyCode];
-    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedASCIITransformer];
-
-    if ([keyCode isKindOfClass:[NSNumber class]] &&
-        [t isKeyCodeSpecial:[keyCode unsignedShortValue]])
-    {
-        return @([modifierFlags unsignedIntegerValue] & (NSCommandKeyMask | NSAlternateKeyMask | NSControlKeyMask | NSShiftKeyMask));
-    }
-    else
-        return @([modifierFlags unsignedIntegerValue] & (NSCommandKeyMask | NSAlternateKeyMask | NSControlKeyMask));
+    return modifierFlags;
 }
 
 @end
