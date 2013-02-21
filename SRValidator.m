@@ -83,7 +83,7 @@
 
                 NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
                 NSString *failureReason = [NSString stringWithFormat:
-                                           SRLoc(@"The key combination %@ can't be used!"),
+                                           SRLoc(@"The key combination \"%@\" can't be used!"),
                                            shortcut];
                 NSString *description = [NSString stringWithFormat:
                                          SRLoc(@"The key combination \"%@\" can't be used because %@."),
@@ -137,10 +137,10 @@
 
                     NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
                     NSString *failureReason = [NSString stringWithFormat:
-                                               SRLoc(@"The key combination %@ can't be used!"),
+                                               SRLoc(@"The key combination \"%@\" can't be used!"),
                                                shortcut];
                     NSString *description = [NSString stringWithFormat:
-                                             SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. (If you really want to use this key combination, most shortcuts can be changed in the Keyboard panel in System Preferences.)"),
+                                             SRLoc(@"The key combination \"%@\" can't be used because it's already used by a system-wide keyboard shortcut. If you really want to use this key combination, most shortcuts can be changed in the Keyboard panel in System Preferences."),
                                              shortcut];
                     NSDictionary *userInfo = @{
                         NSLocalizedFailureReasonErrorKey: failureReason,
@@ -196,7 +196,7 @@
 
                 NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
                 NSString *failureReason = [NSString stringWithFormat:
-                                           SRLoc(@"The key combination %@ can't be used!"),
+                                           SRLoc(@"The key combination \"%@\" can't be used!"),
                                            shortcut];
                 NSString *description = [NSString stringWithFormat:
                                          SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."),
@@ -239,10 +239,10 @@
     NSMutableString *path = [NSMutableString string];
 
     for (NSMenuItem *menuItem in items)
-        [path appendFormat:@"%@ ➝ ", menuItem.title];
+        [path appendFormat:@"%@➝", menuItem.title];
 
-    if ([path length] > 3)
-        [path deleteCharactersInRange:NSMakeRange([path length] - 3, 3)];
+    if ([path length] > 1)
+        [path deleteCharactersInRange:NSMakeRange([path length] - 1, 1)];
 
     return path;
 }
