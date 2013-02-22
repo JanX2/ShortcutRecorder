@@ -38,12 +38,19 @@ Since Xcode 4 Apple removed support for custom control, unfortunately. However, 
 
 SRRecorderControl has fixed height of 25 points so ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend you to pin height in case you're using Auto Layout.
 
-ShortcutRecorder, Key Equivalents and Keyboard Layout
+Key Equivalents and Keyboard Layout
 ----------------------------------------------------
 While ShortcutRecorder keeps your shortcuts as combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The key difference here is that position key on keyboard does not depend on current keyboard layout, position of key character does. 
 
 ShortcutRecorder includes two special transformers: SRKeyEquivalentTransformer and SRKeyEquivalentModifierMaskTransformer. SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.  
 The drawback is that position of the character on keyboard may change depending on layout and used modifier keys (primarly Option and Shift).
+
+NSButton
+--------
+If you're going to bind ShortcutRecorder to key equivalent of NSButton, I encourage you to require `NSCommandKeyMask`.
+This is because NSButton handles key equivalents very strange. Rather than investigating full information of the keyboard event, it just asks for `charactersIgnoringModifiers`
+and compares returned value with its `keyEquivalent`. Unfortunately, Cocoa returns layout-independent (ASCII) representation of characters only when NSCommandKeyMask is set.
+If it's not set, assigned shortcut likely won't work with other layouts.
 
 Questions
 ---------
