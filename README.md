@@ -38,11 +38,61 @@ Since Xcode 4 Apple removed Interface Builder Plugins. You can only use it to ad
 
 SRRecorderControl has fixed height of 25 points so ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend you to pin height in case you're using Auto Layout.
 
+Usage
+-----
+First, we want to keep value of the control across relaunches of the app. We can simply achieve this by using NSUserDefaultsController and bindings:
+
+    [self.pingShortcutRecorder bind:NSValueBinding
+                           toObject:[NSUserDefaultsController sharedUserDefaultsController]
+                        withKeyPath:@"values.ping"
+                            options:nil];
+
+The value can be used to set key equivalent of NSMenuItem or NSButton. It can also be used to register a global shortcut.
+
+Setting key equivalent of NSMenuItem using bindings:
+
+    [self.pingItem bind:@"keyEquivalent"
+               toObject:defaults
+            withKeyPath:@"values.ping"
+                options:@{NSValueTransformerBindingOption: [SRKeyEquivalentTransformer new]}];
+    [self.pingItem bind:@"keyEquivalentModifierMask"
+               toObject:defaults
+            withKeyPath:@"values.ping"
+                options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
+                
+Setting key equivalent of NSButton using bindings:
+
+    [self.pingButton bind:@"keyEquivalent"
+                 toObject:defaults
+              withKeyPath:@"values.ping"
+                  options:@{NSValueTransformerBindingOption: [SRKeyEquivalentTransformer new]}];
+    [self.pingButton bind:@"keyEquivalentModifierMask"
+                 toObject:defaults
+              withKeyPath:@"values.ping"
+                  options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
+                  
+Setting global shortcut using PTHotKeyCenter:
+
+    PTHotKeyCenter *hotKeyCenter = [PTHotKeyCenter sharedCenter];
+    PTHotKey *oldHotKey = [hotKeyCenter hotKeyWithIdentifier:aKeyPath];
+    [hotKeyCenter unregisterHotKey:oldHotKey];
+        
+    PTHotKey *newHotKey = [PTHotKey hotKeyWithIdentifier:aKeyPath
+                                                keyCombo:newShortcut
+                                                  target:self
+                                                  action:@selector(ping:)];
+    [hotKeyCenter registerHotKey:newHotKey];
+
 Key Equivalents and Keyboard Layout
 ----------------------------------------------------
 While ShortcutRecorder keeps your shortcuts as combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that position of key code on keyboard does not depend on current keyboard layout while position of key character does. 
 
-ShortcutRecorder includes two special transformers: SRKeyEquivalentTransformer and SRKeyEquivalentModifierMaskTransformer. SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.  
+ShortcutRecorder includes two special transformers to simplify binding to the key equivalents of NSMenuItem and NSButton:
+
+- SRKeyEquivalentTransformer
+- SRKeyEquivalentModifierMaskTransformer
+
+SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.  
 The drawback is that position of the character on keyboard may change depending on layout and used modifier keys (primarly Option and Shift).
 
 NSButton
