@@ -202,7 +202,7 @@ static PTHotKeyCenter *_sharedHotKeyCenter = nil;
 
 - (void)_hotKeyUp: (PTHotKey*)hotKey
 {
-	[hotKey uninvoke];
+    [hotKey uninvoke];
 }
 
 - (void)sendEvent: (NSEvent*)event

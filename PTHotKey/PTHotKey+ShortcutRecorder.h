@@ -18,9 +18,9 @@
                             action:(SEL)anAction;
 
 + (PTHotKey *)hotKeyWithIdentifier:(id)anIdentifier
-						  keyCombo:(NSDictionary *)aKeyCombo
-							target:(id)aTarget
-							action:(SEL)anAction
-					   keyUpAction:(SEL)aKeyUpAction;
+                          keyCombo:(NSDictionary *)aKeyCombo
+                            target:(id)aTarget
+                            action:(SEL)anAction
+                        keyUpAction:(SEL)aKeyUpAction;
 
 @end

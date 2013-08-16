@@ -19,7 +19,7 @@
 	PTKeyCombo*		mKeyCombo;
 	id				mTarget;
 	SEL				mAction;
-	SEL             mKeyUpAction;
+    SEL             mKeyUpAction;
 
 	UInt32		    mCarbonHotKeyID;
 	EventHotKeyRef	mCarbonEventHotKeyRef;
