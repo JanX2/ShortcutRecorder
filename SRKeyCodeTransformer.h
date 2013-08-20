@@ -41,7 +41,7 @@
 @property (readonly) BOOL usesASCIICapableKeyboardInputSource;
 
 /*!
-    @brief  Determines whether key codes without readable glyphs are transformed to unicode characters or to plain strings.
+    @brief  Determines whether key codes without readable glyphs are transformed to unicode characters suitable for setting keqEquivalents or to plain strings suitable for drawing, logging and accessibility.
  */
 @property (readonly) BOOL usesPlainStrings;
 
@@ -85,38 +85,54 @@
 - (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
 
 /*!
-    @brief  Transfroms given key code into unicode character by taking into account modifier flags.
+    @brief      Transforms given special key code into unicode character by taking into account modifier flags.
+ 
+    @discussion E.g. the key code 0x30 is transformed to ⇥. But if shift is pressed, it is transformed to ⇤.
+ 
+    @result     Unicode character or plain string. nil if not a special key code.
+*/
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)aModifierFlags;
 
-    @param  aValue An instance of NSNumber (unsigned short) that represents key code.
-
-    @param  aModifierFalgs An instance of NSNumber (NSUInteger) that represents modifier flags.
+/*!
+    @brief  Shorcut to [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
  */
 - (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags;
+
+/*!
+    @brief  Transfroms given key code into unicode character by taking into account modifier flags.
+ 
+    @param  aValue An instance of NSNumber (unsigned short) that represents key code.
+ 
+    @param  anImplicitModifierFlags An instance of NSNumber (NSUInteger) that represents implicit modifier flags like opt in å.
+ 
+    @param  anExplicitModifierFlags An instance of NSNumber (NSUInteger) that represents explicit modifier flags like shift in shift-⇤.
+ */
+- (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags;
 
 @end
 
 
 /*!
-    @brief  These constants represents unicode characters for key codes that do not have appropriate constants
-            in Carbon or Cocoa.
+    @brief  These constants represents drawable unicode characters for key codes that do not have
+            appropriate constants in Carbon and Cocoa.
  */
 NS_ENUM(unichar, SRKeyCodeGlyph)
 {
-    SRKeyCodeGlyphRight = 0x21E5,
-    SRKeyCodeGlyphReturn = 0x2305,
-    SRKeyCodeGlyphReturnR2L = 0x21A9,
-    SRKeyCodeGlyphDeleteLeft = 0x232B,
-    SRKeyCodeGlyphDeleteRight = 0x2326,
-    SRKeyCodeGlyphPadClear = 0x2327,
-    SRKeyCodeGlyphLeftArrow = 0x2190,
-    SRKeyCodeGlyphRightArrow = 0x2192,
-    SRKeyCodeGlyphUpArrow = 0x2191,
-    SRKeyCodeGlyphDownArrow = 0x2193,
-    SRKeyCodeGlyphPageDown = 0x21DF,
-    SRKeyCodeGlyphPageUp = 0x21DE,
-    SRKeyCodeGlyphNorthwestArrow = 0x2196,
-    SRKeyCodeGlyphSoutheastArrow = 0x2198,
-    SRKeyCodeGlyphEscape = 0x238B,
-    SRKeyCodeGlyphHelp = 0x003F,
-    SRKeyCodeGlyphSpace = 0x0020,
+    SRKeyCodeGlyphTabRight = 0x21E5, // ⇥
+    SRKeyCodeGlyphTabLeft = 0x21E4, // ⇤
+    SRKeyCodeGlyphReturn = 0x2305, // ⌅
+    SRKeyCodeGlyphReturnR2L = 0x21A9, // ↩
+    SRKeyCodeGlyphDeleteLeft = 0x232B, // ⌫
+    SRKeyCodeGlyphDeleteRight = 0x2326, // ⌦
+    SRKeyCodeGlyphPadClear = 0x2327, // ⌧
+    SRKeyCodeGlyphLeftArrow = 0x2190, // ←
+    SRKeyCodeGlyphRightArrow = 0x2192, // →
+    SRKeyCodeGlyphUpArrow = 0x2191, // ↑
+    SRKeyCodeGlyphDownArrow = 0x2193, // ↓
+    SRKeyCodeGlyphPageDown = 0x21DF, // ⇟
+    SRKeyCodeGlyphPageUp = 0x21DE, // ⇞
+    SRKeyCodeGlyphNorthwestArrow = 0x2196, // ↖
+    SRKeyCodeGlyphSoutheastArrow = 0x2198, // ↘
+    SRKeyCodeGlyphEscape = 0x238B, // ⎋
+    SRKeyCodeGlyphSpace = 0x0020, // ' '
 };

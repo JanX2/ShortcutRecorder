@@ -97,6 +97,8 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 + (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping
 {
+    // Most of these keys are system constans.
+    // Values for rest of the keys were given by setting key equivalents in IB.
     static dispatch_once_t OnceToken;
     static NSDictionary *Mapping = nil;
     dispatch_once(&OnceToken, ^{
@@ -121,23 +123,23 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             @(kVK_F18): _SRUnicharToString(NSF18FunctionKey),
             @(kVK_F19): _SRUnicharToString(NSF19FunctionKey),
             @(kVK_F20): _SRUnicharToString(NSF20FunctionKey),
-            @(kVK_Space): _SRUnicharToString(SRKeyCodeGlyphSpace),
-            @(kVK_Delete): _SRUnicharToString(SRKeyCodeGlyphDeleteLeft),
-            @(kVK_ForwardDelete): _SRUnicharToString(SRKeyCodeGlyphDeleteRight),
-            @(kVK_ANSI_KeypadClear): _SRUnicharToString(SRKeyCodeGlyphPadClear),
-            @(kVK_LeftArrow): _SRUnicharToString(SRKeyCodeGlyphLeftArrow),
-            @(kVK_RightArrow): _SRUnicharToString(SRKeyCodeGlyphRightArrow),
-            @(kVK_UpArrow): _SRUnicharToString(SRKeyCodeGlyphUpArrow),
-            @(kVK_DownArrow): _SRUnicharToString(SRKeyCodeGlyphDownArrow),
-            @(kVK_End): _SRUnicharToString(SRKeyCodeGlyphSoutheastArrow),
-            @(kVK_Home): _SRUnicharToString(SRKeyCodeGlyphNorthwestArrow),
-            @(kVK_Escape): _SRUnicharToString(SRKeyCodeGlyphEscape),
-            @(kVK_PageDown): _SRUnicharToString(SRKeyCodeGlyphPageDown),
-            @(kVK_PageUp): _SRUnicharToString(SRKeyCodeGlyphPageUp),
-            @(kVK_Return): _SRUnicharToString(SRKeyCodeGlyphReturnR2L),
-            @(kVK_ANSI_KeypadEnter): _SRUnicharToString(SRKeyCodeGlyphReturn),
-            @(kVK_Tab): _SRUnicharToString(SRKeyCodeGlyphRight),
-            @(kVK_Help): _SRUnicharToString(SRKeyCodeGlyphHelp)
+            @(kVK_Space): _SRUnicharToString(' '),
+            @(kVK_Delete): _SRUnicharToString(NSBackspaceCharacter),
+            @(kVK_ForwardDelete): _SRUnicharToString(NSDeleteCharacter),
+            @(kVK_ANSI_KeypadClear): _SRUnicharToString(NSClearLineFunctionKey),
+            @(kVK_LeftArrow): _SRUnicharToString(NSLeftArrowFunctionKey),
+            @(kVK_RightArrow): _SRUnicharToString(NSRightArrowFunctionKey),
+            @(kVK_UpArrow): _SRUnicharToString(NSUpArrowFunctionKey),
+            @(kVK_DownArrow): _SRUnicharToString(NSDownArrowFunctionKey),
+            @(kVK_End): _SRUnicharToString(NSEndFunctionKey),
+            @(kVK_Home): _SRUnicharToString(NSHomeFunctionKey),
+            @(kVK_Escape): _SRUnicharToString('\e'),
+            @(kVK_PageDown): _SRUnicharToString(NSPageDownFunctionKey),
+            @(kVK_PageUp): _SRUnicharToString(NSPageUpFunctionKey),
+            @(kVK_Return): _SRUnicharToString(NSCarriageReturnCharacter),
+            @(kVK_ANSI_KeypadEnter): _SRUnicharToString(NSEnterCharacter),
+            @(kVK_Tab): _SRUnicharToString(NSTabCharacter),
+            @(kVK_Help): _SRUnicharToString(NSHelpFunctionKey)
         };
     });
     return Mapping;
@@ -184,8 +186,8 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             @(kVK_PageUp): _SRUnicharToString(SRKeyCodeGlyphPageUp),
             @(kVK_Return): _SRUnicharToString(SRKeyCodeGlyphReturnR2L),
             @(kVK_ANSI_KeypadEnter): _SRUnicharToString(SRKeyCodeGlyphReturn),
-            @(kVK_Tab): _SRUnicharToString(SRKeyCodeGlyphRight),
-            @(kVK_Help): _SRUnicharToString(SRKeyCodeGlyphHelp)
+            @(kVK_Tab): _SRUnicharToString(SRKeyCodeGlyphTabRight),
+            @(kVK_Help): @"?⃝"
         };
     });
     return Mapping;
@@ -258,18 +260,21 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 - (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags
 {
+    return [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:nil];
+}
+
+- (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+{
+    if ([anImplicitModifierFlags unsignedIntegerValue] & [anExplicitModifierFlags unsignedIntegerValue] & SRCocoaModifierFlagsMask)
+    {
+        [NSException raise:NSInvalidArgumentException format:@"anImplicitModifierFlags and anExplicitModifierFlags MUST NOT have common elements"];
+    }
+
     if (![aValue isKindOfClass:[NSNumber class]])
         return @"";
 
-    unsigned short keyCode = [aValue unsignedShortValue];
-
     // Some key codes cannot be translated directly.
-    NSString *unmappedString = nil;
-
-    if (self.usesPlainStrings)
-        unmappedString = [[self class] specialKeyCodesToPlainStringsMapping][@(keyCode)];
-    else
-        unmappedString = [[self class] specialKeyCodesToUnicodeCharactersMapping][@(keyCode)];
+    NSString *unmappedString = [self transformedSpecialKeyCode:aValue withExplicitModifierFlags:anExplicitModifierFlags];
 
     if (unmappedString)
         return unmappedString;
@@ -320,9 +325,9 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
     UInt32 deadKeyState = 0;
     OSStatus err = UCKeyTranslate(keyLayout,
-                                  keyCode,
+                                  [aValue unsignedShortValue],
                                   kUCKeyActionDisplay,
-                                  SRCocoaToCarbonFlags([aModifierFlags unsignedIntegerValue]) >> 8,
+                                  SRCocoaToCarbonFlags([anImplicitModifierFlags unsignedIntegerValue]) >> 8,
                                   LMGetKbdType(),
                                   kUCKeyTranslateNoDeadKeysBit,
                                   &deadKeyState,
@@ -332,7 +337,26 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     if (err != noErr)
         return @"";
 
-    return [NSString stringWithCharacters:chars length:actualLength];
+    if (self.usesPlainStrings)
+        return [[NSString stringWithCharacters:chars length:actualLength] uppercaseString];
+    else
+        return [NSString stringWithCharacters:chars length:actualLength];
+}
+
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+{
+    if ([anExplicitModifierFlags unsignedIntegerValue] & NSShiftKeyMask && [aKeyCode unsignedShortValue] == kVK_Tab)
+    {
+        if (self.usesPlainStrings)
+            return _SRUnicharToString(SRKeyCodeGlyphTabLeft);
+        else
+            return _SRUnicharToString(NSBackTabCharacter);
+    }
+
+    if (self.usesPlainStrings)
+        return [[self class] specialKeyCodesToPlainStringsMapping][aKeyCode];
+    else
+        return [[self class] specialKeyCodesToUnicodeCharactersMapping][aKeyCode];
 }
 
 @end

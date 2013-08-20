@@ -160,15 +160,6 @@
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSUInteger)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
 {
     aFlags &= SRCocoaModifierFlagsMask;
-    NSString *keyCodeASCIIRepresentation = [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:@(aKeyCode)];
-    NSString *keyCodeCurrentLayoutRepresentation = [[SRKeyCodeTransformer sharedTransformer] transformedValue:@(aKeyCode)];
-
-    // Shift flag may be set implicitly in key equivalent.
-    NSUInteger flagsWithoutShift = aFlags & ~NSShiftKeyMask;
-    NSString *keyCodeASCIIShiftedRepresentation = [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:@(aKeyCode)
-                                                                                                withModifierFlags:@(NSShiftKeyMask)];
-    NSString *keyCodeCurrentLayoutShiftedRepresentation = [[SRKeyCodeTransformer sharedTransformer] transformedValue:@(aKeyCode)
-                                                                                                   withModifierFlags:@(NSShiftKeyMask)];
 
     for (NSMenuItem *menuItem in [aMenu itemArray])
     {
@@ -182,10 +173,7 @@
 
         NSUInteger keyEquivalentModifierMask = menuItem.keyEquivalentModifierMask;
 
-        if ((keyEquivalentModifierMask == aFlags && [keyEquivalent isEqualToString:keyCodeASCIIRepresentation]) ||
-            (keyEquivalentModifierMask == aFlags && [keyEquivalent isEqualToString:keyCodeCurrentLayoutRepresentation]) ||
-            (aFlags & NSShiftKeyMask && keyEquivalentModifierMask == flagsWithoutShift && [keyEquivalent isEqualToString:keyCodeASCIIShiftedRepresentation]) ||
-            (aFlags & NSShiftKeyMask && keyEquivalentModifierMask == flagsWithoutShift && [keyEquivalent isEqualToString:keyCodeCurrentLayoutShiftedRepresentation]))
+        if (SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(aKeyCode, aFlags, keyEquivalent, keyEquivalentModifierMask))
         {
             if (outError)
             {
@@ -195,13 +183,8 @@
                     isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                 NSString *shortcut = isASCIIOnly ? SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode) : SRReadableStringForCocoaModifierFlagsAndKeyCode(aFlags, aKeyCode);
-                NSString *failureReason = [NSString stringWithFormat:
-                                           SRLoc(@"The key combination \"%@\" can't be used!"),
-                                           shortcut];
-                NSString *description = [NSString stringWithFormat:
-                                         SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."),
-                                         shortcut,
-                                         menuItem.SR_path];
+                NSString *failureReason = [NSString stringWithFormat:SRLoc(@"The key combination \"%@\" can't be used!"), shortcut];
+                NSString *description = [NSString stringWithFormat:SRLoc(@"The key combination \"%@\" can't be used because it's already used by the menu item \"%@\"."), shortcut, menuItem.SR_path];
                 NSDictionary *userInfo = @{
                     NSLocalizedFailureReasonErrorKey: failureReason,
                     NSLocalizedDescriptionKey: description

@@ -38,13 +38,16 @@
     if (![keyCode isKindOfClass:[NSNumber class]])
         return @"";
 
-    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedASCIITransformer];
-    unsigned short keyCodeValue = [keyCode unsignedShortValue];
+    NSNumber *modifierFlags = aValue[SRShortcutModifierFlagsKey];
 
-    if (keyCodeValue == kVK_ANSI_KeypadEnter)
-        return [NSString stringWithFormat:@"%C", (unichar)NSEnterCharacter];
-    else
-        return [t transformedValue:keyCode];
+    if (![modifierFlags isKindOfClass:[NSNumber class]])
+        modifierFlags = @(0);
+
+    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedASCIITransformer];
+
+    return [t transformedValue:keyCode
+     withImplicitModifierFlags:nil
+         explicitModifierFlags:modifierFlags];
 }
 
 @end

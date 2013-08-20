@@ -429,10 +429,9 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     else
         transformer = [SRKeyCodeTransformer sharedPlainTransformer];
 
-    NSString *c = [transformer transformedValue:self.objectValue[SRShortcutKeyCode]];
-
-    if (![transformer isKeyCodeSpecial:[self.objectValue[SRShortcutKeyCode] unsignedShortValue]])
-        c = [c uppercaseString];
+    NSString *c = [transformer transformedValue:self.objectValue[SRShortcutKeyCode]
+                      withImplicitModifierFlags:nil
+                          explicitModifierFlags:self.objectValue[SRShortcutModifierFlagsKey]];
 
     return [NSString stringWithFormat:@"%@%@", f, c];
 }
