@@ -692,11 +692,16 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         return NO;
 }
 
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags
+- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
 
-    if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
+    if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)] &&
+        [self.delegate shortcutRecorder:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode])
+    {
+        return YES;
+    }
+    else if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
         return NO;
     else if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
         return NO;
@@ -1180,7 +1185,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
             [self clearAndEndRecording];
             return YES;
         }
-        else if ([self areModifierFlagsValid:anEvent.modifierFlags])
+        else if ([self areModifierFlagsValid:anEvent.modifierFlags forKeyCode:anEvent.keyCode])
         {
             NSDictionary *newObjectValue = @{
                 SRShortcutKeyCode: @(anEvent.keyCode),
@@ -1216,7 +1221,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     if (self.isRecording)
     {
         NSUInteger modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
-        if (modifierFlags != 0 && ![self areModifierFlagsValid:modifierFlags])
+        if (modifierFlags != 0 && ![self areModifierFlagsValid:modifierFlags forKeyCode:anEvent.keyCode])
             NSBeep();
 
         [self setNeedsDisplay:YES];

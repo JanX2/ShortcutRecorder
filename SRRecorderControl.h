@@ -143,8 +143,12 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
     @discussion Flags are filtered using SRCocoaModifierFlagsMask. Flags does not affect object values set manually.
 
+                These restrictions can be ignored if delegate implements shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode: and returns YES for given modifier flags and key code.
+
                 Throws NSInvalidArgumentException if either required flags are not allowed
                 or required flags are not empty and no modifier flags are allowed.
+
+    @see        SRRecorderControlDelegate
  */
 - (void)setAllowedModifierFlags:(NSUInteger)newAllowedModifierFlags
           requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
@@ -294,13 +298,19 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (BOOL)isClearButtonHighlighted;
 
 /*!
-    @brief  Determines whether modifier flags are valid according to the receiver settings.
+    @brief  Determines whether modifier flags are valid for key code according to the receiver settings.
+
+    @param      aModifierFlags Proposed modifier flags.
+
+    @param      aKeyCode Code of the pressed key.
 
     @see    allowedModifierFlags
 
+    @see    allowsEmptyModifierFlags
+
     @see    requiredModifierFlags
  */
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags;
+- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 @end
 
@@ -319,6 +329,30 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @discussion Implementation of this method by the delegate is optional. If it is not present, editing proceeds as if this method had returned YES.
  */
 - (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder;
+
+/*!
+    @brief      Gives a delegate opportunity to bypass rules specified by allowed and required modifier flags.
+
+    @param      aRecorder The shortcut recorder for which editing ended.
+
+    @param      aModifierFlags Proposed modifier flags.
+
+    @param      aKeyCode Code of the pressed key.
+
+    @result     YES if recorder should bypass key code with given modifier flags despite settings like required modifier flags, allowed modifier flags.
+
+    @discussion Implementation of this method by the delegate is optional.
+                Normally, you wouldn't allow a user to record shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
+                However, some keys were designed to be key shortcuts by itself. E.g. Functional keys. By implementing this method a delegate can allow
+                these special keys to be set without modifier flags even when the control is configured to disallow empty modifier flags.
+
+    @see    allowedModifierFlags
+
+    @see    allowsEmptyModifierFlags
+
+    @see    requiredModifierFlags
+ */
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
     @brief      Asks the delegate if the shortcut can be set by the specified shortcut recorder.
