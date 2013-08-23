@@ -757,13 +757,13 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     static NSArray *ActionNames = nil;
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^
-                  {
-                      ActionNames = @[
-                      NSAccessibilityPressAction,
-                      NSAccessibilityCancelAction,
-                      NSAccessibilityDeleteAction
-                      ];
-                  });
+    {
+        ActionNames = @[
+            NSAccessibilityPressAction,
+            NSAccessibilityCancelAction,
+            NSAccessibilityDeleteAction
+        ];
+    });
     return ActionNames;
 }
 
@@ -1199,7 +1199,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
                 if (![self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue])
                 {
                     // We acutally handled key equivalent, because client likely performs some action
-                    // to represent an error (e.g. beep and error dialog.
+                    // to represent an error (e.g. beep and error dialog).
                     // Do not end editing, because if client do not use additional window to show an error
                     // first responder will not change. Allow a user to make another attempt.
                     return YES;
