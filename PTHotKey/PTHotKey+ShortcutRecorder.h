@@ -23,4 +23,9 @@
                             action:(SEL)anAction
                         keyUpAction:(SEL)aKeyUpAction;
 
++ (PTHotKey *)hotKeyWithIdentifier:(id)anIdentifier
+                          keyCombo:(NSDictionary *)aKeyCombo
+                            target:(id)aTarget
+                            action:(SEL)anAction
+                        withObject:(id)anObject;
 @end

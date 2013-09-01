@@ -15,10 +15,16 @@
 
 - (id)init
 {
-	return [self initWithIdentifier: nil keyCombo: nil];
+	return [self initWithIdentifier: nil keyCombo: nil withObject:nil];
 }
 
 - (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo
+{
+	return [self initWithIdentifier: identifier keyCombo: combo withObject:nil];
+
+}
+
+- (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo withObject: (id)object
 {
 	self = [super init];
 
@@ -26,6 +32,7 @@
 	{
 		[self setIdentifier: identifier];
 		[self setKeyCombo: combo];
+        [self setObject: object];
 	}
 
 	return self;
@@ -36,6 +43,7 @@
 	[mIdentifier release];
 	[mName release];
 	[mKeyCombo release];
+    [mObject release];
 
 	[super dealloc];
 }
@@ -94,6 +102,16 @@
 - (id)target
 {
 	return mTarget;
+}
+
+- (void)setObject:(id)object
+{
+	mObject = object;
+}
+
+- (id)object
+{
+	return mObject;
 }
 
 - (void)setAction: (SEL)action
