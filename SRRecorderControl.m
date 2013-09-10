@@ -1080,14 +1080,16 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
             _mouseTrackingButtonTag = _SRRecorderControlClearButtonTag;
             [self setNeedsDisplayInRect:self.clearButtonRect];
         }
+        else
+            [super mouseDown:anEvent];
     }
     else if ([self mouse:locationInView inRect:self.bounds])
     {
         _mouseTrackingButtonTag = _SRRecorderControlMainButtonTag;
         [self setNeedsDisplay:YES];
     }
-
-    [super mouseDown:anEvent];
+    else
+        [super mouseDown:anEvent];
 }
 
 - (void)mouseUp:(NSEvent *)anEvent
@@ -1100,7 +1102,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
             // e.g. when shortcut brings new window and makes it key.
             [self setNeedsDisplay:YES];
         }
-        else {
+        else
+        {
             NSPoint locationInView = [self convertPoint:anEvent.locationInWindow fromView:nil];
 
             if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag &&
@@ -1122,8 +1125,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     }
-
-    [super mouseUp:anEvent];
+    else
+        [super mouseUp:anEvent];
 }
 
 - (void)mouseEntered:(NSEvent *)anEvent
