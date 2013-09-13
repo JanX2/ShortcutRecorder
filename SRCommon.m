@@ -45,10 +45,11 @@ NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModif
 }
 
 
-BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
-                                                     NSUInteger aKeyCodeFlags,
-                                                     NSString *aKeyEquivalent,
-                                                     NSUInteger aKeyEquivalentModifierFlags)
+static BOOL _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
+                                                             NSUInteger aKeyCodeFlags,
+                                                             NSString *aKeyEquivalent,
+                                                             NSUInteger aKeyEquivalentModifierFlags,
+                                                             SRKeyCodeTransformer *aTransformer)
 {
     if (!aKeyEquivalent)
         return NO;
@@ -58,43 +59,59 @@ BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
 
     if (aKeyCodeFlags == aKeyEquivalentModifierFlags)
     {
-        NSString *keyCodeASCIIRepresentation = [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:@(aKeyCode)
-                                                                                     withImplicitModifierFlags:nil
-                                                                                         explicitModifierFlags:@(aKeyCodeFlags)];
-
-        if ([keyCodeASCIIRepresentation isEqual:aKeyEquivalent])
-            return YES;
-        else
-        {
-            // Developer can set key equivalet to unicode using native layout (e.g. Russian).
-            NSString *keyCodeCurrentLayoutRepresentation = [[SRKeyCodeTransformer sharedTransformer] transformedValue:@(aKeyCode)
-                                                                                            withImplicitModifierFlags:nil
-                                                                                                explicitModifierFlags:@(aKeyCodeFlags)];
-            return [keyCodeCurrentLayoutRepresentation isEqual:aKeyEquivalent];
-        }
+        NSString *keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
+                                               withImplicitModifierFlags:nil
+                                                   explicitModifierFlags:@(aKeyCodeFlags)];
+        return [keyCodeRepresentation isEqual:aKeyEquivalent];
     }
     else if (!aKeyEquivalentModifierFlags ||
              (aKeyCodeFlags & aKeyEquivalentModifierFlags) == aKeyEquivalentModifierFlags)
     {
         // Some key equivalent modifier flags can be implicitly set by using special unicode characters. E.g. Œ insetead of opt-a.
-        // Only check aKeyCodeFlags is equal to aKeyEquivalentModifierFlags, aKeyEquivalentModifierFlags is not set
-        // or aKeyCodeFlags contains aKeyEquivalentModifierFlags.
+        // However all modifier flags explictily set in key equivalent MUST be also set in key code flags.
         // E.g. ctrl-Œ/ctrl-opt-a and Œ/opt-a match this condition, but cmd-Œ/ctrl-opt-a doesn't.
-        NSUInteger possiblyImplicitFlags = aKeyCodeFlags & ~aKeyEquivalentModifierFlags;
-        NSString *keyCodeASCIIRepresentation = [[SRKeyCodeTransformer sharedASCIITransformer] transformedValue:@(aKeyCode)
-                                                                                     withImplicitModifierFlags:@(possiblyImplicitFlags)
-                                                                                         explicitModifierFlags:@(aKeyEquivalentModifierFlags)];
+        NSString *keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
+                                               withImplicitModifierFlags:nil
+                                                   explicitModifierFlags:@(aKeyCodeFlags)];
 
-        if ([keyCodeASCIIRepresentation isEqual:aKeyEquivalent])
-            return YES;
+        if ([keyCodeRepresentation isEqual:aKeyEquivalent])
+        {
+            // Key code and key equivalent are not equal key code representation matches key equivalent, but modifier flags are not.
+            return NO;
+        }
         else
         {
-            NSString *keyCodeCurrentLayoutRepresentation = [[SRKeyCodeTransformer sharedTransformer] transformedValue:@(aKeyCode)
-                                                                                            withImplicitModifierFlags:@(possiblyImplicitFlags)
-                                                                                                explicitModifierFlags:@(aKeyEquivalentModifierFlags)];
-            return [keyCodeCurrentLayoutRepresentation isEqual:aKeyEquivalent];
+            NSUInteger possiblyImplicitFlags = aKeyCodeFlags & ~aKeyEquivalentModifierFlags;
+            keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
+                                         withImplicitModifierFlags:@(possiblyImplicitFlags)
+                                             explicitModifierFlags:@(aKeyEquivalentModifierFlags)];
+            return [keyCodeRepresentation isEqual:aKeyEquivalent];
         }
     }
     else
         return NO;
+}
+
+
+BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
+                                                     NSUInteger aKeyCodeFlags,
+                                                     NSString *aKeyEquivalent,
+                                                     NSUInteger aKeyEquivalentModifierFlags)
+{
+    BOOL isEqual = _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(aKeyCode,
+                                                                    aKeyCodeFlags,
+                                                                    aKeyEquivalent,
+                                                                    aKeyEquivalentModifierFlags,
+                                                                    [SRKeyCodeTransformer sharedASCIITransformer]);
+
+    if (!isEqual)
+    {
+        isEqual = _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(aKeyCode,
+                                                                   aKeyCodeFlags,
+                                                                   aKeyEquivalent,
+                                                                   aKeyEquivalentModifierFlags,
+                                                                   [SRKeyCodeTransformer sharedTransformer]);
+    }
+
+    return isEqual;
 }
