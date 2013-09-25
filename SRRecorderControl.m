@@ -64,7 +64,7 @@ static const CGFloat _SRRecorderControlSnapBackButtonLeftOffset = 3.0;
 static const NSSize _SRRecorderControlSnapBackButtonSize = {.width = _SRRecorderControlSnapBackButtonWidth, .height = _SRRecorderControlSnapBackButtonHeight};
 
 
-static NSImage *_SRImages[16];
+static NSImage *_SRImages[19];
 
 
 typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
@@ -98,6 +98,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _drawsASCIIEquivalentOfShortcut = YES;
         _allowsEscapeToCancelRecording = YES;
         _allowsDeleteToClearShortcutAndEndRecording = YES;
+        _enabled = YES;
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
         _snapBackButtonToolTipTag = NSIntegerMax;
 
@@ -178,6 +179,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)beginRecording
 {
+    if (!self.enabled)
+        return NO;
+
     if (self.isRecording)
         return YES;
 
@@ -410,7 +414,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSDictionary *)labelAttributes
 {
-    return self.isRecording ? [self recordingLabelAttributes] : [self normalLabelAttributes];
+    if (self.enabled)
+    {
+        if (self.isRecording)
+            return [self recordingLabelAttributes];
+        else
+            return [self normalLabelAttributes];
+    }
+    else
+        return [self disabledLabelAttributes];
 }
 
 - (NSDictionary *)normalLabelAttributes
@@ -447,6 +459,24 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         };
     });
     return RecordingAttributes;
+}
+
+- (NSDictionary *)disabledLabelAttributes
+{
+    static dispatch_once_t OnceToken;
+    static NSDictionary *DisabledAttributes = nil;
+    dispatch_once(&OnceToken, ^{
+        NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
+        p.alignment = NSCenterTextAlignment;
+        p.lineBreakMode = NSLineBreakByTruncatingTail;
+        p.baseWritingDirection = NSWritingDirectionLeftToRight;
+        DisabledAttributes = @{
+            NSParagraphStyleAttributeName: [p copy],
+            NSFontAttributeName: [NSFont labelFontOfSize:[NSFont systemFontSize]],
+            NSForegroundColorAttributeName: [NSColor disabledControlTextColor]
+        };
+    });
+    return DisabledAttributes;
 }
 
 
@@ -497,12 +527,23 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                                      self.isFlipped);
             }
         }
-        else
+        else if (self.enabled)
         {
             NSDrawThreePartImage(frame,
                                  _SRImages[9],
                                  _SRImages[10],
                                  _SRImages[11],
+                                 NO,
+                                 NSCompositeSourceOver,
+                                 1.0,
+                                 self.isFlipped);
+        }
+        else
+        {
+            NSDrawThreePartImage(frame,
+                                 _SRImages[16],
+                                 _SRImages[17],
+                                 _SRImages[18],
                                  NO,
                                  NSCompositeSourceOver,
                                  1.0,
@@ -849,6 +890,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _SRImages[13] = SRImage(@"shortcut-recorder-clear");
         _SRImages[14] = SRImage(@"shortcut-recorder-snapback-highlighted");
         _SRImages[15] = SRImage(@"shortcut-recorder-snapback");
+        _SRImages[16] = SRImage(@"shortcut-recorder-bezel-disabled-left");
+        _SRImages[17] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
+        _SRImages[18] = SRImage(@"shortcut-recorder-bezel-disabled-right");
     });
 }
 
@@ -985,7 +1029,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)acceptsFirstResponder
 {
-    return YES;
+    return self.enabled;
 }
 
 - (BOOL)becomeFirstResponder
@@ -1025,6 +1069,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)mouseDown:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseDown:anEvent];
+        return;
+    }
+
     NSPoint locationInView = [self convertPoint:anEvent.locationInWindow fromView:nil];
 
     if (self.isRecording)
@@ -1053,6 +1103,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)mouseUp:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseUp:anEvent];
+        return;
+    }
+
     if (_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
     {
         if (!self.window.isKeyWindow)
@@ -1090,6 +1146,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)mouseEntered:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseEntered:anEvent];
+        return;
+    }
+
     if ((_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag && anEvent.trackingArea == _snapBackButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea))
@@ -1102,6 +1164,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)mouseExited:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseExited:anEvent];
+        return;
+    }
+
     if ((_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag && anEvent.trackingArea == _snapBackButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea))
@@ -1120,6 +1188,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)performKeyEquivalent:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+        return NO;
+
     if (self.window.firstResponder != self)
         return NO;
 

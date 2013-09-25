@@ -123,6 +123,13 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 @property BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
+    @brief  Determines whether control enabled and can be edited or not.
+
+    @discussion Defaults to YES.
+ */
+@property (getter=isEnabled) BOOL enabled;
+
+/*!
     @brief  Determines whether recording is in process.
  */
 @property (nonatomic, readonly) BOOL isRecording;
@@ -242,6 +249,8 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @see        normalLabelAttributes
 
     @see        recordingLabelAttributes
+
+    @see        disabledLabelAttributes
  */
 - (NSDictionary *)labelAttributes;
 
@@ -254,6 +263,11 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @brief  Returns attributes of label to be displayed by the receiver in recording mode.
  */
 - (NSDictionary *)recordingLabelAttributes;
+
+/*!
+    @brief  Returns attributes of label to be displayed by the receiver in disabled mode.
+ */
+- (NSDictionary *)disabledLabelAttributes;
 
 
 /*!
