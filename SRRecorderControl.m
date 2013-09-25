@@ -156,6 +156,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _allowsEmptyModifierFlags = newAllowsEmptyModifierFlags;
 }
 
+- (void)setEnabled:(BOOL)newEnabled
+{
+    _enabled = newEnabled;
+    [self setNeedsDisplay:YES];
+
+    // Focus ring is only drawn when view is enabled
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        [self noteFocusRingMaskChanged];
+}
+
 - (void)setObjectValue:(NSDictionary *)newObjectValue
 {
     // Cocoa KVO and KVC frequently uses NSNull as object substituation of nil.
@@ -903,7 +913,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
     {
-        if (self.window.firstResponder == self)
+        if (self.enabled && self.window.firstResponder == self)
         {
             [NSGraphicsContext saveGraphicsState];
             NSSetFocusRingStyle(NSFocusRingOnly);
@@ -915,13 +925,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)drawFocusRingMask
 {
-    if (self.window.firstResponder == self)
+    if (self.enabled && self.window.firstResponder == self)
         [self.controlShape fill];
 }
 
 - (NSRect)focusRingMaskBounds
 {
-    if (self.window.firstResponder == self)
+    if (self.enabled && self.window.firstResponder == self)
         return self.controlShape.bounds;
     else
         return NSZeroRect;

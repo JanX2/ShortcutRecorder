@@ -127,7 +127,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
     @discussion Defaults to YES.
  */
-@property (getter=isEnabled) BOOL enabled;
+@property (nonatomic, getter=isEnabled) BOOL enabled;
 
 /*!
     @brief  Determines whether recording is in process.
