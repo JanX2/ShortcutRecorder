@@ -158,8 +158,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)setObjectValue:(NSDictionary *)newObjectValue
 {
     // Cocoa KVO and KVC frequently uses NSNull as object substituation of nil.
-    // SRRecorderControl expects either nil or valid object value, it it's convenient
-    // to handle handle NSNull here and convert it into nil.
+    // SRRecorderControl expects either nil or valid object value, it's convenient
+    // to handle NSNull here and convert it into nil.
     if ((NSNull *)newObjectValue == [NSNull null])
         newObjectValue = nil;
 
@@ -665,6 +665,74 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
+#pragma mark -
+
+- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding
+{
+    NSParameterAssert(aBinding != nil);
+    
+    NSDictionary* bindingInfo = [self infoForBinding:aBinding];
+    
+    if(!bindingInfo || (id)bindingInfo == [NSNull null])
+        return;
+    
+    NSObject *boundObject = bindingInfo[NSObservedObjectKey];
+    
+    if(!boundObject || (id)boundObject == [NSNull null])
+        [NSException raise:NSInternalInconsistencyException format:@"NSObservedObjectKey MUST NOT be nil for binding \"%@\"", aBinding];
+    
+    NSString* boundKeyPath = bindingInfo[NSObservedKeyPathKey];
+    
+    if(!boundKeyPath || (id)boundKeyPath == [NSNull null])
+        [NSException raise:NSInternalInconsistencyException format:@"NSObservedKeyPathKey MUST NOT be nil for binding \"%@\"", aBinding];
+    
+    NSDictionary* bindingOptions = bindingInfo[NSOptionsKey];
+    
+    if(bindingOptions)
+    {
+        NSValueTransformer* transformer = [bindingOptions valueForKey:NSValueTransformerBindingOption];
+        
+        if(!transformer || (id)transformer == [NSNull null])
+        {
+            NSString* transformerName = [bindingOptions valueForKey:NSValueTransformerNameBindingOption];
+            
+            if(transformerName && (id)transformerName != [NSNull null])
+                transformer = [NSValueTransformer valueTransformerForName:transformerName];
+        }
+        
+        if(transformer && (id)transformer != [NSNull null])
+        {
+            if([[transformer class] allowsReverseTransformation])
+                aValue = [transformer reverseTransformedValue:aValue];
+#ifdef DEBUG
+            else
+                NSLog(@"WARNING: binding \"%@\" has value transformer, but it doesn't allow reverse transformations in %s", aBinding, __PRETTY_FUNCTION__);
+#endif
+        }
+    }
+    
+    [boundObject setValue:aValue forKeyPath:boundKeyPath];
+}
+
++ (BOOL)automaticallyNotifiesObserversOfValue
+{
+    return NO;
+}
+
+- (void)setValue:(id)newValue
+{
+    if (NSIsControllerMarker(newValue))
+        [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
+    
+    self.objectValue = newValue;
+}
+
+- (id)value
+{
+    return self.objectValue;
+}
+
+
 #pragma mark NSAccessibility
 
 - (BOOL)accessibilityIsIgnored
@@ -735,78 +803,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self clearAndEndRecording];
 }
 
-
-#pragma mark Bindings Support
-
-/*!
-    @brief A helper method to propagate view-driven changes back to model.
-    @discussion This method makes it easier to propagate changes from a view
-    back to the model without overriding bind:toObject:withKeyPath:options:,
-    see http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
-    for further discussion (this is also where the implementation comes from).
-*/
-- (void) propagateValue:(id)value forBinding:(NSString *)binding
-{
-	NSParameterAssert(binding != nil);
-
-	//WARNING: bindingInfo contains NSNull, so it must be accounted for
-	NSDictionary* bindingInfo = [self infoForBinding:binding];
-	if(!bindingInfo)
-		return; //there is no binding
-
-	//apply the value transformer, if one has been set
-	NSDictionary* bindingOptions = [bindingInfo objectForKey:NSOptionsKey];
-	if(bindingOptions){
-		NSValueTransformer* transformer = [bindingOptions valueForKey:NSValueTransformerBindingOption];
-		if(!transformer || (id)transformer == [NSNull null]){
-			NSString* transformerName = [bindingOptions valueForKey:NSValueTransformerNameBindingOption];
-			if(transformerName && (id)transformerName != [NSNull null]){
-				transformer = [NSValueTransformer valueTransformerForName:transformerName];
-			}
-		}
-
-		if(transformer && (id)transformer != [NSNull null]){
-			if([[transformer class] allowsReverseTransformation]){
-				value = [transformer reverseTransformedValue:value];
-			} else {
-				NSLog(@"WARNING: binding \"%@\" has value transformer, but it doesn't allow reverse transformations in %s", binding, __PRETTY_FUNCTION__);
-			}
-		}
-	}
-
-	id boundObject = [bindingInfo objectForKey:NSObservedObjectKey];
-	if(!boundObject || boundObject == [NSNull null]){
-		NSLog(@"ERROR: NSObservedObjectKey was nil for binding \"%@\" in %s", binding, __PRETTY_FUNCTION__);
-		return;
-	}
-
-	NSString* boundKeyPath = [bindingInfo objectForKey:NSObservedKeyPathKey];
-	if(!boundKeyPath || (id)boundKeyPath == [NSNull null]){
-		NSLog(@"ERROR: NSObservedKeyPathKey was nil for binding \"%@\" in %s", binding, __PRETTY_FUNCTION__);
-		return;
-	}
-
-	[boundObject setValue:value forKeyPath:boundKeyPath];
-}
-
-/*
-    @brief A backwards compatibility support for NSValueBinding.
-    @discussion The SRRecorderControl is documented to provide an NSValueBinding,
-    but the previous versions didn’t have a `value` property to back this binding,
-    the binding was supported through the overriden bind:toObject:withKeyPath:options:
-    method. That override was too complex to keep around, so it was removed. Now we have
-    to introduce a `value` property to keep the NSValueBinding working. The `value`
-    property is just a different name for `objectValue`.
-*/
-- (void) setValue: (id) value
-{
-    [self setObjectValue:value];
-}
-
-- (id) value
-{
-    return [self objectValue];
-}
 
 #pragma mark NSToolTipOwner
 
