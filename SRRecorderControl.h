@@ -312,6 +312,16 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
  */
 - (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
+/*!
+    @brief A helper method to propagate view-driven changes back to model.
+ 
+    @discussion This method makes it easier to propagate changes from a view
+                back to the model without overriding bind:toObject:withKeyPath:options:
+ 
+    @see        http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
+ */
+- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
+
 @end
 
 
