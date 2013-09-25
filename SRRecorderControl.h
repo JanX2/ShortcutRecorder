@@ -57,9 +57,14 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 /*!
     @brief      An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
 
-    @discussion In addition to NSView bindings, exposes NSValueBinding. This binding supports 2 options:
+    @discussion In addition to NSView bindings, exposes:
+                NSValueBinding. This binding supports 2 options:
                     - NSValueTransformerBindingOption
                     - NSValueTransformerNameBindingOption
+                NSEnabledBinding. This binding supports 2 options:
+                    - NSValueTransformerBindingOption
+                    - NSValueTransformerNameBindingOption
+                    Note that at that moment, this binding _is not_ multivalue.
 
                 Required height: 25 points
                 Recommended min width: 100 points
