@@ -161,6 +161,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _enabled = newEnabled;
     [self setNeedsDisplay:YES];
 
+    if (!_enabled)
+        [self endRecording];
+
     // Focus ring is only drawn when view is enabled
     if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         [self noteFocusRingMaskChanged];
