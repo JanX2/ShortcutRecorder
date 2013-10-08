@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D39CBD91803EA6C0001F249 /* ShortcutRecorder.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
+		0D39CBDA1803EA6E0001F249 /* PTHotKey.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; };
 		0D6B2469180304DE00CE1142 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2741AE01673C90B00A139BD /* Cocoa.framework */; };
 		0D6B24B4180304FA00CE1142 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0D6B249B180304FA00CE1142 /* Credits.rtf */; };
 		0D6B24B5180304FA00CE1142 /* IKCodeAutoLayoutWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D6B249D180304FA00CE1142 /* IKCodeAutoLayoutWindowController.xib */; };
@@ -91,6 +93,21 @@
 		E2BE927C16AC052000827E8C /* PTHotKey+ShortcutRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E2BE927D16AC052600827E8C /* PTHotKey+ShortcutRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0D39CBD81803EA5F0001F249 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				0D39CBD91803EA6C0001F249 /* ShortcutRecorder.framework in Copy Frameworks */,
+				0D39CBDA1803EA6E0001F249 /* PTHotKey.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRRecorderControl.h; path = Library/SRRecorderControl.h; sourceTree = "<group>"; };
@@ -475,6 +492,7 @@
 				0D6B2464180304DE00CE1142 /* Sources */,
 				0D6B2465180304DE00CE1142 /* Frameworks */,
 				0D6B2466180304DE00CE1142 /* Resources */,
+				0D39CBD81803EA5F0001F249 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -794,6 +812,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = Demo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -826,6 +845,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = Demo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -959,6 +979,7 @@
 				0D6B2495180304DF00CE1142 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		939837840DA42965007F53F3 /* Build configuration list for PBXNativeTarget "ShortcutRecorder.framework" */ = {
 			isa = XCConfigurationList;
