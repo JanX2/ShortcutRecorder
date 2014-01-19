@@ -28,8 +28,8 @@
 {
     NSInteger keyCode = [[aKeyCombo objectForKey:@"keyCode"] integerValue];
     NSUInteger modifiers = SRCocoaToCarbonFlags([[aKeyCombo objectForKey:@"modifierFlags"] unsignedIntegerValue]);
-    PTKeyCombo *newKeyCombo = [[[PTKeyCombo alloc] initWithKeyCode:keyCode modifiers:modifiers] autorelease];
-    PTHotKey *newHotKey = [[[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo] autorelease];
+    PTKeyCombo *newKeyCombo = [[PTKeyCombo alloc] initWithKeyCode:keyCode modifiers:modifiers];
+    PTHotKey *newHotKey = [[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo];
     [newHotKey setTarget:aTarget];
     [newHotKey setAction:anAction];
     [newHotKey setObject:anObject];
