@@ -1277,7 +1277,10 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 + (void)initialize
 {
     if (self == [SRRecorderControl class])
+    {
         [self exposeBinding:NSValueBinding];
+        [self exposeBinding:NSEnabledBinding];
+    }
 }
 
 @end
