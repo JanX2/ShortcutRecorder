@@ -803,7 +803,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         AttributeNames = [[super accessibilityAttributeNames] mutableCopy];
         NSArray *newAttributes = @[
             NSAccessibilityRoleAttribute,
-            NSAccessibilityTitleAttribute
+            NSAccessibilityTitleAttribute,
+            NSAccessibilityEnabledAttribute
         ];
 
         for (NSString *attributeName in newAttributes)
@@ -823,6 +824,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return NSAccessibilityButtonRole;
     else if ([anAttributeName isEqualToString:NSAccessibilityTitleAttribute])
         return self.accessibilityLabel;
+    else if ([anAttributeName isEqualToString:NSAccessibilityEnabledAttribute])
+        return @(self.enabled);
     else
         return [super accessibilityAttributeValue:anAttributeName];
 }
