@@ -502,6 +502,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSRect frame = self.bounds;
     frame.size.height = _SRRecorderControlHeight;
 
+    if (![self needsToDrawRect:frame])
+        return;
+
     if (self.isRecording)
     {
         NSDrawThreePartImage(frame,
@@ -584,7 +587,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSDictionary *labelAttributes = self.labelAttributes;
     NSRect labelRect = [self rectForLabel:label withAttributes:labelAttributes];
 
-    if (!NSIntersectsRect(labelRect, aDirtyRect))
+    if (![self needsToDrawRect:labelRect])
         return;
 
     [NSGraphicsContext saveGraphicsState];
@@ -600,7 +603,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     imageRect.size = _SRRecorderControlSnapBackButtonSize;
     imageRect = [self centerScanRect:imageRect];
 
-    if (!NSIntersectsRect(imageRect, aDirtyRect))
+    if (![self needsToDrawRect:imageRect])
         return;
 
     [NSGraphicsContext saveGraphicsState];
@@ -637,7 +640,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     imageRect.size = _SRRecorderControlClearButtonSize;
     imageRect = [self centerScanRect:imageRect];
 
-    if (!NSIntersectsRect(imageRect, aDirtyRect))
+    if (![self needsToDrawRect:imageRect])
         return;
 
     [NSGraphicsContext saveGraphicsState];
