@@ -832,17 +832,44 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSArray *)accessibilityActionNames
 {
-    static NSArray *ActionNames = nil;
+    static NSArray *AllActions = nil;
+    static NSArray *ButtonStateActionNames = nil;
+    static NSArray *RecorderStateActionNames = nil;
+
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^
     {
-        ActionNames = @[
+        AllActions = @[
             NSAccessibilityPressAction,
             NSAccessibilityCancelAction,
             NSAccessibilityDeleteAction
         ];
+
+        ButtonStateActionNames = @[
+            NSAccessibilityPressAction
+        ];
+
+        RecorderStateActionNames = @[
+            NSAccessibilityCancelAction,
+            NSAccessibilityDeleteAction
+        ];
     });
-    return ActionNames;
+
+    // List of supported actions names must be fixed for 10.6, but can vary for 10.7 and above.
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    {
+        if (self.enabled)
+        {
+            if (self.isRecording)
+                return RecorderStateActionNames;
+            else
+                return ButtonStateActionNames;
+        }
+        else
+            return @[];
+    }
+    else
+        return AllActions;
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)anAction
