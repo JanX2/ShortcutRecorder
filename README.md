@@ -14,8 +14,6 @@ The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
 
 Includes framework to set global shortcuts (PTHotKey).
 
-Take a look at [the demo](https://github.com/Kentzo/ShortcutRecorderDemo).
-
 Get Sources
 -----------
 The preferred way to add the ShortcutRecorder to your project is to use git submodules:  
