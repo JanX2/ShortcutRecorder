@@ -350,7 +350,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
             label = self.stringValue;
 
         if (![label length])
-            label = label = SRLoc(@"Type shortcut");
+            label = SRLoc(@"Type shortcut");
     }
     else
     {
