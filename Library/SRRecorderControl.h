@@ -57,9 +57,14 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 /*!
     @brief      An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
 
-    @discussion In addition to NSView bindings, exposes NSValueBinding. This binding supports 2 options:
+    @discussion In addition to NSView bindings, exposes:
+                NSValueBinding. This binding supports 2 options:
                     - NSValueTransformerBindingOption
                     - NSValueTransformerNameBindingOption
+                NSEnabledBinding. This binding supports 2 options:
+                    - NSValueTransformerBindingOption
+                    - NSValueTransformerNameBindingOption
+                    Note that at that moment, this binding _is not_ multivalue.
 
                 Required height: 25 points
                 Recommended min width: 100 points
@@ -121,6 +126,13 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
                 If set, neither Delete nor Forward Delete without modifier flags can be recorded as shortcut.
  */
 @property BOOL allowsDeleteToClearShortcutAndEndRecording;
+
+/*!
+    @brief  Determines whether control enabled and can be edited or not.
+
+    @discussion Defaults to YES.
+ */
+@property (nonatomic, getter=isEnabled) BOOL enabled;
 
 /*!
     @brief  Determines whether recording is in process.
@@ -242,6 +254,8 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @see        normalLabelAttributes
 
     @see        recordingLabelAttributes
+
+    @see        disabledLabelAttributes
  */
 - (NSDictionary *)labelAttributes;
 
@@ -254,6 +268,11 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @brief  Returns attributes of label to be displayed by the receiver in recording mode.
  */
 - (NSDictionary *)recordingLabelAttributes;
+
+/*!
+    @brief  Returns attributes of label to be displayed by the receiver in disabled mode.
+ */
+- (NSDictionary *)disabledLabelAttributes;
 
 
 /*!
@@ -311,6 +330,16 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
     @see    requiredModifierFlags
  */
 - (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+
+/*!
+    @brief A helper method to propagate view-driven changes back to model.
+ 
+    @discussion This method makes it easier to propagate changes from a view
+                back to the model without overriding bind:toObject:withKeyPath:options:
+ 
+    @see        http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
+ */
+- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
 
 @end
 

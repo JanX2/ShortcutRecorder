@@ -64,10 +64,7 @@ static const CGFloat _SRRecorderControlSnapBackButtonLeftOffset = 3.0;
 static const NSSize _SRRecorderControlSnapBackButtonSize = {.width = _SRRecorderControlSnapBackButtonWidth, .height = _SRRecorderControlSnapBackButtonHeight};
 
 
-static NSImage *_SRImages[16];
-
-
-static NSUInteger _SRValueObservationContext;
+static NSImage *_SRImages[19];
 
 
 typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
@@ -79,30 +76,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 };
 
 
-/*!
-    @brief  Extracts value transformer from binding options.
-
-    @result Returns an instance of NSValueTransformer or nil if there is not transformer.
- */
-static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *aBindingOptions)
-{
-    NSValueTransformer *valueTransformer = aBindingOptions[NSValueTransformerBindingOption];
-
-    if (!valueTransformer || (NSNull *)valueTransformer == [NSNull null])
-    {
-        NSString *valueTransformerName = aBindingOptions[NSValueTransformerNameBindingOption];
-
-        if (valueTransformerName && (NSNull *)valueTransformerName != [NSNull null])
-            valueTransformer = [NSValueTransformer valueTransformerForName:valueTransformerName];
-    }
-
-    if ((NSNull *)valueTransformer != [NSNull null])
-        return valueTransformer;
-    else
-        return nil;
-}
-
-
 @implementation SRRecorderControl
 {
     NSTrackingArea *_mainButtonTrackingArea;
@@ -111,8 +84,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
     _SRRecorderControlButtonTag _mouseTrackingButtonTag;
     NSToolTipTag _snapBackButtonToolTipTag;
-
-    NSMutableDictionary *_bindingInfo;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -127,9 +98,9 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         _drawsASCIIEquivalentOfShortcut = YES;
         _allowsEscapeToCancelRecording = YES;
         _allowsDeleteToClearShortcutAndEndRecording = YES;
+        _enabled = YES;
         _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
         _snapBackButtonToolTipTag = NSIntegerMax;
-        _bindingInfo = [NSMutableDictionary dictionary];
 
         if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
         {
@@ -156,7 +127,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [_bindingInfo unbind:NSValueBinding];
 }
 
 
@@ -186,15 +156,29 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     _allowsEmptyModifierFlags = newAllowsEmptyModifierFlags;
 }
 
+- (void)setEnabled:(BOOL)newEnabled
+{
+    _enabled = newEnabled;
+    [self setNeedsDisplay:YES];
+
+    if (!_enabled)
+        [self endRecording];
+
+    // Focus ring is only drawn when view is enabled
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+        [self noteFocusRingMaskChanged];
+}
+
 - (void)setObjectValue:(NSDictionary *)newObjectValue
 {
     // Cocoa KVO and KVC frequently uses NSNull as object substituation of nil.
-    // SRRecorderControl expects either nil or valid object value, it it's convenient
-    // to handle handle NSNull here and convert it into nil.
+    // SRRecorderControl expects either nil or valid object value, it's convenient
+    // to handle NSNull here and convert it into nil.
     if ((NSNull *)newObjectValue == [NSNull null])
         newObjectValue = nil;
 
     _objectValue = [newObjectValue copy];
+    [self propagateValue:_objectValue forBinding:NSValueBinding];
 
     if (!self.isRecording)
     {
@@ -208,6 +192,9 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (BOOL)beginRecording
 {
+    if (!self.enabled)
+        return NO;
+
     if (self.isRecording)
         return YES;
 
@@ -251,24 +238,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     _isRecording = NO;
     [self didChangeValueForKey:@"isRecording"];
 
-    NSDictionary *valueBindingInfo = _bindingInfo[NSValueBinding];
-
-    if (valueBindingInfo)
-    {
-        NSValueTransformer *transformer = _SRValueTransformerFromBindingOptions(valueBindingInfo);
-
-        if ([[transformer class] allowsReverseTransformation])
-        {
-            [valueBindingInfo[NSObservedObjectKey] setValue:[transformer reverseTransformedValue:anObjectValue]
-                                                 forKeyPath:valueBindingInfo[NSObservedKeyPathKey]];
-        }
-        else
-            [valueBindingInfo[NSObservedObjectKey] setValue:anObjectValue forKeyPath:valueBindingInfo[NSObservedKeyPathKey]];
-
-        // objectValue will be set in -observeValueForKeyPath:ofObject:change:context:
-    }
-    else
-        self.objectValue = anObjectValue;
+    self.objectValue = anObjectValue;
 
     [self updateTrackingAreas];
     [self setToolTip:SRLoc(@"Click to record shortcut")];
@@ -457,7 +427,15 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (NSDictionary *)labelAttributes
 {
-    return self.isRecording ? [self recordingLabelAttributes] : [self normalLabelAttributes];
+    if (self.enabled)
+    {
+        if (self.isRecording)
+            return [self recordingLabelAttributes];
+        else
+            return [self normalLabelAttributes];
+    }
+    else
+        return [self disabledLabelAttributes];
 }
 
 - (NSDictionary *)normalLabelAttributes
@@ -496,6 +474,24 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     return RecordingAttributes;
 }
 
+- (NSDictionary *)disabledLabelAttributes
+{
+    static dispatch_once_t OnceToken;
+    static NSDictionary *DisabledAttributes = nil;
+    dispatch_once(&OnceToken, ^{
+        NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
+        p.alignment = NSCenterTextAlignment;
+        p.lineBreakMode = NSLineBreakByTruncatingTail;
+        p.baseWritingDirection = NSWritingDirectionLeftToRight;
+        DisabledAttributes = @{
+            NSParagraphStyleAttributeName: [p copy],
+            NSFontAttributeName: [NSFont labelFontOfSize:[NSFont systemFontSize]],
+            NSForegroundColorAttributeName: [NSColor disabledControlTextColor]
+        };
+    });
+    return DisabledAttributes;
+}
+
 
 #pragma mark -
 
@@ -505,6 +501,9 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
     NSRect frame = self.bounds;
     frame.size.height = _SRRecorderControlHeight;
+
+    if (![self needsToDrawRect:frame])
+        return;
 
     if (self.isRecording)
     {
@@ -544,12 +543,23 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
                                      self.isFlipped);
             }
         }
-        else
+        else if (self.enabled)
         {
             NSDrawThreePartImage(frame,
                                  _SRImages[9],
                                  _SRImages[10],
                                  _SRImages[11],
+                                 NO,
+                                 NSCompositeSourceOver,
+                                 1.0,
+                                 self.isFlipped);
+        }
+        else
+        {
+            NSDrawThreePartImage(frame,
+                                 _SRImages[16],
+                                 _SRImages[17],
+                                 _SRImages[18],
                                  NO,
                                  NSCompositeSourceOver,
                                  1.0,
@@ -577,7 +587,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     NSDictionary *labelAttributes = self.labelAttributes;
     NSRect labelRect = [self rectForLabel:label withAttributes:labelAttributes];
 
-    if (!NSIntersectsRect(labelRect, aDirtyRect))
+    if (![self needsToDrawRect:labelRect])
         return;
 
     [NSGraphicsContext saveGraphicsState];
@@ -593,7 +603,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     imageRect.size = _SRRecorderControlSnapBackButtonSize;
     imageRect = [self centerScanRect:imageRect];
 
-    if (!NSIntersectsRect(imageRect, aDirtyRect))
+    if (![self needsToDrawRect:imageRect])
         return;
 
     [NSGraphicsContext saveGraphicsState];
@@ -630,7 +640,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
     imageRect.size = _SRRecorderControlClearButtonSize;
     imageRect = [self centerScanRect:imageRect];
 
-    if (!NSIntersectsRect(imageRect, aDirtyRect))
+    if (![self needsToDrawRect:imageRect])
         return;
 
     [NSGraphicsContext saveGraphicsState];
@@ -712,6 +722,74 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 }
 
 
+#pragma mark -
+
+- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding
+{
+    NSParameterAssert(aBinding != nil);
+    
+    NSDictionary* bindingInfo = [self infoForBinding:aBinding];
+    
+    if(!bindingInfo || (id)bindingInfo == [NSNull null])
+        return;
+    
+    NSObject *boundObject = bindingInfo[NSObservedObjectKey];
+    
+    if(!boundObject || (id)boundObject == [NSNull null])
+        [NSException raise:NSInternalInconsistencyException format:@"NSObservedObjectKey MUST NOT be nil for binding \"%@\"", aBinding];
+    
+    NSString* boundKeyPath = bindingInfo[NSObservedKeyPathKey];
+    
+    if(!boundKeyPath || (id)boundKeyPath == [NSNull null])
+        [NSException raise:NSInternalInconsistencyException format:@"NSObservedKeyPathKey MUST NOT be nil for binding \"%@\"", aBinding];
+    
+    NSDictionary* bindingOptions = bindingInfo[NSOptionsKey];
+    
+    if(bindingOptions)
+    {
+        NSValueTransformer* transformer = [bindingOptions valueForKey:NSValueTransformerBindingOption];
+        
+        if(!transformer || (id)transformer == [NSNull null])
+        {
+            NSString* transformerName = [bindingOptions valueForKey:NSValueTransformerNameBindingOption];
+            
+            if(transformerName && (id)transformerName != [NSNull null])
+                transformer = [NSValueTransformer valueTransformerForName:transformerName];
+        }
+        
+        if(transformer && (id)transformer != [NSNull null])
+        {
+            if([[transformer class] allowsReverseTransformation])
+                aValue = [transformer reverseTransformedValue:aValue];
+#ifdef DEBUG
+            else
+                NSLog(@"WARNING: binding \"%@\" has value transformer, but it doesn't allow reverse transformations in %s", aBinding, __PRETTY_FUNCTION__);
+#endif
+        }
+    }
+    
+    [boundObject setValue:aValue forKeyPath:boundKeyPath];
+}
+
++ (BOOL)automaticallyNotifiesObserversOfValue
+{
+    return NO;
+}
+
+- (void)setValue:(id)newValue
+{
+    if (NSIsControllerMarker(newValue))
+        [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
+    
+    self.objectValue = newValue;
+}
+
+- (id)value
+{
+    return self.objectValue;
+}
+
+
 #pragma mark NSAccessibility
 
 - (BOOL)accessibilityIsIgnored
@@ -728,7 +806,8 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         AttributeNames = [[super accessibilityAttributeNames] mutableCopy];
         NSArray *newAttributes = @[
             NSAccessibilityRoleAttribute,
-            NSAccessibilityTitleAttribute
+            NSAccessibilityTitleAttribute,
+            NSAccessibilityEnabledAttribute
         ];
 
         for (NSString *attributeName in newAttributes)
@@ -748,23 +827,52 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         return NSAccessibilityButtonRole;
     else if ([anAttributeName isEqualToString:NSAccessibilityTitleAttribute])
         return self.accessibilityLabel;
+    else if ([anAttributeName isEqualToString:NSAccessibilityEnabledAttribute])
+        return @(self.enabled);
     else
         return [super accessibilityAttributeValue:anAttributeName];
 }
 
 - (NSArray *)accessibilityActionNames
 {
-    static NSArray *ActionNames = nil;
+    static NSArray *AllActions = nil;
+    static NSArray *ButtonStateActionNames = nil;
+    static NSArray *RecorderStateActionNames = nil;
+
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^
     {
-        ActionNames = @[
+        AllActions = @[
             NSAccessibilityPressAction,
             NSAccessibilityCancelAction,
             NSAccessibilityDeleteAction
         ];
+
+        ButtonStateActionNames = @[
+            NSAccessibilityPressAction
+        ];
+
+        RecorderStateActionNames = @[
+            NSAccessibilityCancelAction,
+            NSAccessibilityDeleteAction
+        ];
     });
-    return ActionNames;
+
+    // List of supported actions names must be fixed for 10.6, but can vary for 10.7 and above.
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    {
+        if (self.enabled)
+        {
+            if (self.isRecording)
+                return RecorderStateActionNames;
+            else
+                return ButtonStateActionNames;
+        }
+        else
+            return @[];
+    }
+    else
+        return AllActions;
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)anAction
@@ -780,73 +888,6 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         [self endRecording];
     else if (self.isRecording && [anAction isEqualToString:NSAccessibilityDeleteAction])
         [self clearAndEndRecording];
-}
-
-
-#pragma mark NSKeyValueBindingCreation
-
-- (Class)valueClassForBinding:(NSString *)aBinding
-{
-    if ([aBinding isEqualToString:NSValueBinding])
-        return [NSDictionary class];
-    else
-        return [super valueClassForBinding:aBinding];
-}
-
-- (void)bind:(NSString *)aBinding toObject:(id)anObservable withKeyPath:(NSString *)aKeyPath options:(NSDictionary *)anOptions
-{
-    if ([aBinding isEqualToString:NSValueBinding])
-    {
-        [self unbind:aBinding];
-
-        [anObservable addObserver:self
-                       forKeyPath:aKeyPath
-                          options:0
-                          context:&_SRValueObservationContext];
-        _bindingInfo[aBinding] = @{
-            NSObservedObjectKey: anObservable,
-            NSObservedKeyPathKey: [aKeyPath copy],
-            NSOptionsKey: [NSDictionary dictionaryWithDictionary:anOptions]
-        };
-        self.objectValue = [anObservable valueForKeyPath:aKeyPath];
-
-        // This method is typically called when view is not presented to a user.
-        // If'd use -setNeedsDisplay:, the user may notice flickering when window with view is shown first time.
-        // Therefore ensure view is shown with correct value drawn by -displayIfNeeded
-        [self displayIfNeeded];
-    }
-    else
-        [super bind:aBinding toObject:anObservable withKeyPath:aKeyPath options:anOptions];
-}
-
-- (NSDictionary *)infoForBinding:(NSString *)aBinding
-{
-    NSDictionary *info = _bindingInfo[aBinding];
-
-    if (!info)
-        info = [super infoForBinding:aBinding];
-
-    return info;
-}
-
-- (void)unbind:(NSString *)aBinding
-{
-    if ([aBinding isEqualToString:NSValueBinding])
-    {
-        NSDictionary *valueBindingInfo = _bindingInfo[NSValueBinding];
-
-        if (valueBindingInfo)
-        {
-            if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
-                [valueBindingInfo[NSObservedObjectKey] removeObserver:self forKeyPath:valueBindingInfo[NSObservedKeyPathKey]];
-            else
-                [valueBindingInfo[NSObservedObjectKey] removeObserver:self forKeyPath:valueBindingInfo[NSObservedKeyPathKey] context:&_SRValueObservationContext];
-
-            [_bindingInfo removeObjectForKey:NSValueBinding];
-        }
-    }
-    else
-        [super unbind:aBinding];
 }
 
 
@@ -895,6 +936,9 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
         _SRImages[13] = SRImage(@"shortcut-recorder-clear");
         _SRImages[14] = SRImage(@"shortcut-recorder-snapback-highlighted");
         _SRImages[15] = SRImage(@"shortcut-recorder-snapback");
+        _SRImages[16] = SRImage(@"shortcut-recorder-bezel-disabled-left");
+        _SRImages[17] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
+        _SRImages[18] = SRImage(@"shortcut-recorder-bezel-disabled-right");
     });
 }
 
@@ -905,7 +949,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
     {
-        if (self.window.firstResponder == self)
+        if (self.enabled && self.window.firstResponder == self)
         {
             [NSGraphicsContext saveGraphicsState];
             NSSetFocusRingStyle(NSFocusRingOnly);
@@ -917,13 +961,13 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)drawFocusRingMask
 {
-    if (self.window.firstResponder == self)
+    if (self.enabled && self.window.firstResponder == self)
         [self.controlShape fill];
 }
 
 - (NSRect)focusRingMaskBounds
 {
-    if (self.window.firstResponder == self)
+    if (self.enabled && self.window.firstResponder == self)
         return self.controlShape.bounds;
     else
         return NSZeroRect;
@@ -1031,7 +1075,7 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (BOOL)acceptsFirstResponder
 {
-    return YES;
+    return self.enabled;
 }
 
 - (BOOL)becomeFirstResponder
@@ -1071,6 +1115,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)mouseDown:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseDown:anEvent];
+        return;
+    }
+
     NSPoint locationInView = [self convertPoint:anEvent.locationInWindow fromView:nil];
 
     if (self.isRecording)
@@ -1099,6 +1149,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)mouseUp:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseUp:anEvent];
+        return;
+    }
+
     if (_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
     {
         if (!self.window.isKeyWindow)
@@ -1136,6 +1192,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)mouseEntered:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseEntered:anEvent];
+        return;
+    }
+
     if ((_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag && anEvent.trackingArea == _snapBackButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea))
@@ -1148,6 +1210,12 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (void)mouseExited:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+    {
+        [super mouseExited:anEvent];
+        return;
+    }
+
     if ((_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlSnapBackButtonTag && anEvent.trackingArea == _snapBackButtonTrackingArea) ||
         (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea))
@@ -1166,6 +1234,9 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 
 - (BOOL)performKeyEquivalent:(NSEvent *)anEvent
 {
+    if (!self.enabled)
+        return NO;
+
     if (self.window.firstResponder != self)
         return NO;
 
@@ -1239,27 +1310,10 @@ static NSValueTransformer *_SRValueTransformerFromBindingOptions(NSDictionary *a
 + (void)initialize
 {
     if (self == [SRRecorderControl class])
-        [self exposeBinding:NSValueBinding];
-}
-
-- (void)observeValueForKeyPath:(NSString *)aKeyPath ofObject:(id)anObject change:(NSDictionary *)aChange context:(void *)aContext
-{
-    if (aContext == &_SRValueObservationContext)
     {
-        id newObjectValue = [anObject valueForKeyPath:aKeyPath];
-
-        if (NSIsControllerMarker(newObjectValue))
-            [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
-
-        NSValueTransformer *valueTransformer = _SRValueTransformerFromBindingOptions(_bindingInfo[NSValueBinding][NSOptionsKey]);
-
-        if (valueTransformer)
-            newObjectValue = [valueTransformer transformedValue:newObjectValue];
-
-        self.objectValue = newObjectValue;
+        [self exposeBinding:NSValueBinding];
+        [self exposeBinding:NSEnabledBinding];
     }
-    else
-        [super observeValueForKeyPath:aKeyPath ofObject:anObject change:aChange context:aContext];
 }
 
 @end
