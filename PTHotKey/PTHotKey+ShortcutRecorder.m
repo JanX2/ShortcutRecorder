@@ -17,12 +17,22 @@
                             target:(id)aTarget
                             action:(SEL)anAction
 {
+    return [PTHotKey hotKeyWithIdentifier:anIdentifier keyCombo:aKeyCombo target:aTarget action:anAction withObject:nil];
+}
+
++ (PTHotKey *)hotKeyWithIdentifier:(id)anIdentifier
+                          keyCombo:(NSDictionary *)aKeyCombo
+                            target:(id)aTarget
+                            action:(SEL)anAction
+                        withObject:(id)anObject
+{
     NSInteger keyCode = [[aKeyCombo objectForKey:@"keyCode"] integerValue];
     NSUInteger modifiers = SRCocoaToCarbonFlags([[aKeyCombo objectForKey:@"modifierFlags"] unsignedIntegerValue]);
-    PTKeyCombo *newKeyCombo = [[[PTKeyCombo alloc] initWithKeyCode:keyCode modifiers:modifiers] autorelease];
-    PTHotKey *newHotKey = [[[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo] autorelease];
+    PTKeyCombo *newKeyCombo = [[PTKeyCombo alloc] initWithKeyCode:keyCode modifiers:modifiers];
+    PTHotKey *newHotKey = [[PTHotKey alloc] initWithIdentifier:anIdentifier keyCombo:newKeyCombo];
     [newHotKey setTarget:aTarget];
     [newHotKey setAction:anAction];
+    [newHotKey setObject:anObject];
     return newHotKey;
 }
 

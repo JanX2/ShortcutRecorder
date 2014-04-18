@@ -856,6 +856,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 2.6;
 				DYLIB_CURRENT_VERSION = 2.8;
@@ -866,6 +867,7 @@
 				INFOPLIST_FILE = Library/Info.plist;
 				INSTALL_PATH = "@rpath";
 				PRODUCT_NAME = ShortcutRecorder;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -873,6 +875,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 2.6;
 				DYLIB_CURRENT_VERSION = 2.8;
@@ -882,6 +885,7 @@
 				INFOPLIST_FILE = Library/Info.plist;
 				INSTALL_PATH = "@rpath";
 				PRODUCT_NAME = ShortcutRecorder;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -929,6 +933,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1.1.1;
@@ -938,6 +944,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = PTHotKey/Info.plist;
 				INSTALL_PATH = "@rpath";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -952,6 +959,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1.1.1;
@@ -959,6 +968,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = PTHotKey/Info.plist;
 				INSTALL_PATH = "@rpath";
+				MACOSX_DEPLOYMENT_TARGET = 10.6.8;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
