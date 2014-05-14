@@ -103,3 +103,7 @@ If it's not set, assigned shortcut likely won't work with other layouts.
 Questions
 ---------
 Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecorder/issues/new) immediately and feel free to ping me.
+
+Paid Support
+------------
+If functional you need is missing but you're ready to pay for it, feel free to contact me. If not, create an issue anyway, I'll take a look as soon as I can.
