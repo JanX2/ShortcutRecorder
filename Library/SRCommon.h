@@ -18,18 +18,18 @@
 
 
 /*!
-    @brief  Mask representing subset of Cocoa modifier flags suitable for shortcuts.
+    Mask representing subset of Cocoa modifier flags suitable for shortcuts.
  */
 static const NSUInteger SRCocoaModifierFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask;
 
 /*!
-    @brief  Mask representing subset of Carbon modifier flags suitable for shortcuts.
+    Mask representing subset of Carbon modifier flags suitable for shortcuts.
  */
 static const NSUInteger SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
 
 
 /*!
-    @brief  Converts carbon modifier flags to cocoa.
+    Converts carbon modifier flags to cocoa.
  */
 FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 {
@@ -51,7 +51,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 }
 
 /*!
-    @brief  Converts cocoa modifier flags to carbon.
+    Converts cocoa modifier flags to carbon.
  */
 FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
 {
@@ -73,7 +73,7 @@ FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
 }
 
 /*!
-    @brief  Convenient method to get localized string from the framework bundle.
+    Convenient method to get localized string from the framework bundle.
  */
 FOUNDATION_STATIC_INLINE NSString *SRLoc(NSString *aKey)
 {
@@ -85,7 +85,7 @@ FOUNDATION_STATIC_INLINE NSString *SRLoc(NSString *aKey)
 
 
 /*!
-    @brief  Convenient method to get image from the framework bundle.
+    Convenient method to get image from the framework bundle.
  */
 FOUNDATION_STATIC_INLINE NSImage *SRImage(NSString *anImageName)
 {
@@ -99,20 +99,20 @@ FOUNDATION_STATIC_INLINE NSImage *SRImage(NSString *anImageName)
 
 
 /*!
-    @brief  Returns string representation of shortcut with modifier flags replaced with their localized
-            readable equivalents (e.g. ? -> Option).
+    Returns string representation of shortcut with modifier flags replaced with their localized
+    readable equivalents (e.g. ? -> Option).
  */
 NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode);
 
 /*!
-    @brief  Returns string representation of shortcut with modifier flags replaced with their localized
-            readable equivalents (e.g. ? -> Option) and ASCII character for key code.
+    Returns string representation of shortcut with modifier flags replaced with their localized
+    readable equivalents (e.g. ? -> Option) and ASCII character for key code.
  */
 NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode);
 
 /*!
-    @brief      Determines if given key code with flags is equal to key equivalent and flags
-                (usually taken from NSButton or NSMenu).
+    Determines if given key code with flags is equal to key equivalent and flags
+    (usually taken from NSButton or NSMenu).
 
     @discussion On Mac OS X some key combinations can have "alternates". E.g. option-A can be represented both as option-A and as Œ.
 */

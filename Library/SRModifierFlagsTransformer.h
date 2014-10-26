@@ -13,24 +13,24 @@
 
 
 /*!
-    @brief  Transforms mask of Cocoa modifier flags to string of unicode characters.
+    Transforms mask of Cocoa modifier flags to string of unicode characters.
  */
 @interface SRModifierFlagsTransformer : NSValueTransformer
 
 - (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings;
 
 /*!
- @brief  Determines whether modifier flags are transformed to unicode characters or to plain strings.
+    Determines whether modifier flags are transformed to unicode characters or to plain strings.
  */
 @property (readonly) BOOL usesPlainStrings;
 
 /*!
- @brief  Returns the shared transformer.
+     Returns the shared transformer.
  */
 + (instancetype)sharedTransformer;
 
 /*!
- @brief  Returns the shared plain transformer.
+     Returns the shared plain transformer.
  */
 + (instancetype)sharedPlainTransformer;
 

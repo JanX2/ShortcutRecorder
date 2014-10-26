@@ -4,6 +4,8 @@ ShortcutRecorder 2
 
 The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
 
+- :microscope: Support for Xcode 6 Quick Help
+- :microscope: Support for Xcode 6 Interface Builder integration
 - Fresh Look & Feel (brought to you by [Wireload](http://wireload.net))
 - With Retina support
 - Auto Layout ready

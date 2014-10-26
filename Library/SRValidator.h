@@ -20,7 +20,7 @@
 @protocol SRValidatorDelegate;
 
 /*!
-    @brief  Implements logic to check whether shortcut is taken by other parts of the application and system.
+    Implements logic to check whether shortcut is taken by other parts of the application and system.
  */
 @interface SRValidator : NSObject
 
@@ -29,7 +29,7 @@
 - (instancetype)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate;
 
 /*!
-    @brief      Determines whether shortcut is taken.
+    Determines whether shortcut is taken.
 
     @discussion Key is checked in the following order:
                 1. If delegate implements shortcutValidator:isKeyCode:andFlagsTaken:reason:
@@ -41,21 +41,21 @@
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSUInteger)aFlags error:(NSError **)outError;
 
 /*!
-    @brief      Determines whether shortcut is taken in delegate.
+    Determines whether shortcut is taken in delegate.
 
     @discussion If delegate does not implement appropriate method, returns immediately.
  */
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSUInteger)aFlags error:(NSError **)outError;
 
 /*!
-    @brief      Determines whether shortcut is taken by system-wide shortcuts.
+    Determines whether shortcut is taken by system-wide shortcuts.
 
     @discussion Does not check whether delegate allows or disallows checking in system shortcuts.
  */
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSUInteger)aFlags error:(NSError **)outError;
 
 /*!
-    @brief      Determines whether shortcut is taken by application menu item.
+    Determines whether shortcut is taken by application menu item.
 
     @discussion Does not check whether delegate allows or disallows checking in application menu.
  */
@@ -69,7 +69,7 @@
 @optional
 
 /*!
-    @brief      Asks the delegate if aKeyCode and aFlags are valid.
+    Asks the delegate if aKeyCode and aFlags are valid.
 
     @param      aValidator The validator that validates key code and flags.
 
@@ -86,7 +86,7 @@
 - (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSUInteger)aFlags reason:(NSString **)outReason;
 
 /*!
-    @brief      Asks the delegate whether validator should check key equivalents of app's menu items.
+    Asks the delegate whether validator should check key equivalents of app's menu items.
 
     @param      aValidator The validator that going to check app's menu items.
 
@@ -97,7 +97,7 @@
 - (BOOL)shortcutValidatorShouldCheckMenu:(SRValidator *)aValidator;
 
 /*!
-    @brief      Asks the delegate whether it should check system shortcuts.
+    Asks the delegate whether it should check system shortcuts.
 
     @param      aValidator The validator that going to check system shortcuts.
 
@@ -108,7 +108,7 @@
 - (BOOL)shortcutValidatorShouldCheckSystemShortcuts:(SRValidator *)aValidator;
 
 /*!
-    @brief      Asks the delegate whether it should use ASCII representation of key code when making error messages.
+    Asks the delegate whether it should use ASCII representation of key code when making error messages.
 
     @param      aValidator The validator that is about to make an error message.
 
@@ -124,7 +124,7 @@
 @interface NSMenuItem (SRValidator)
 
 /*!
- @brief  Returns full path to the menu item. E.g. "Window ➝ Zoom"
+    Returns full path to the menu item. E.g. "Window ➝ Zoom"
  */
 - (NSString *)SR_path;
 

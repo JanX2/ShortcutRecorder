@@ -16,3 +16,12 @@
 #import <ShortcutRecorder/SRKeyEquivalentModifierMaskTransformer.h>
 #import <ShortcutRecorder/SRValidator.h>
 #import <ShortcutRecorder/SRRecorderControl.h>
+
+
+#ifndef IBInspectable
+    #define IBInspectable
+#endif
+
+#ifndef IB_DESIGNABLE
+    #define IB_DESIGNABLE
+#endif

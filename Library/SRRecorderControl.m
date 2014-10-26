@@ -983,7 +983,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (CGFloat)baselineOffsetFromBottom
 {
-    // True method to calculate is presented above. Unfortunately Cocoa implementation of Mac OS X 10.8.2 expects this value to be persistant.
+    // True method to calculate is presented below. Unfortunately Cocoa implementation of Mac OS X 10.8.2 expects this value to be persistant.
     // If baselineOffsetFromBottom depends on some other properties and may return different values for different calls,
     // NSLayoutFormatAlignAllBaseline may not work. For this reason we return the constant.
     // If you're going to change layout of the view, uncomment the line below, look what it typically returns and update the constant.

@@ -17,7 +17,7 @@
 
 
 /*!
-    @brief      Key code.
+    Key code.
 
     @discussion NSNumber representation of unsigned short.
                 Required key of SRRecorderControl's objectValue.
@@ -25,7 +25,7 @@
 extern NSString *const SRShortcutKeyCode;
 
 /*!
-    @brief      Modifier flags.
+    Modifier flags.
 
     @discussion NSNumber representation of NSUInteger.
                 Optional key of SRRecorderControl's objectValue.
@@ -33,8 +33,8 @@ extern NSString *const SRShortcutKeyCode;
 extern NSString *const SRShortcutModifierFlagsKey;
 
 /*!
-    @brief      Interpretation of key code and modifier flags depending on system locale and input source
-                used when shortcut was taken.
+    Interpretation of key code and modifier flags depending on system locale and input source
+    used when shortcut was taken.
 
     @discussion NSString.
                 Optional key of SRRecorderControl's objectValue.
@@ -42,8 +42,8 @@ extern NSString *const SRShortcutModifierFlagsKey;
 extern NSString *const SRShortcutCharacters;
 
 /*!
-    @brief      Interpretation of key code without modifier flags depending on system locale and input source
-                used when shortcut was taken.
+    Interpretation of key code without modifier flags depending on system locale and input source
+    used when shortcut was taken.
 
     @discussion NSString.
                 Optional key of SRRecorderControl's objectValue.
@@ -55,7 +55,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 
 /*!
-    @brief      An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
+    An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
 
     @discussion In addition to NSView bindings, exposes:
                 NSValueBinding. This binding supports 2 options:
@@ -69,10 +69,11 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
                 Required height: 25 points
                 Recommended min width: 100 points
  */
+IB_DESIGNABLE
 @interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner> */
 
 /*!
-    @brief      The receiver’s delegate.
+    The receiver’s delegate.
 
     @discussion A recorder control delegate responds to editing-related messages. You can use to to prevent editing
                 in some cases or to validate typed shortcuts.
@@ -80,72 +81,72 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 @property (assign) IBOutlet NSObject<SRRecorderControlDelegate> *delegate;
 
 /*!
-    @brief      Returns an integer bit field indicating allowed modifier flags.
+    Returns an integer bit field indicating allowed modifier flags.
 
     @discussion Defaults to SRCocoaModifierFlagsMask.
  */
 @property (readonly) NSUInteger allowedModifierFlags;
 
 /*!
-    @brief      Returns an integer bit field indicating required modifier flags.
+    Returns an integer bit field indicating required modifier flags.
 
     @discussion Defaults to 0.
  */
 @property (readonly) NSUInteger requiredModifierFlags;
 
 /*!
-    @brief      Determines whether shortcuts without modifier flags are allowed.
+    Determines whether shortcuts without modifier flags are allowed.
 
     @discussion Defaults to NO.
  */
-@property (readonly) BOOL allowsEmptyModifierFlags;
+@property (readonly) IBInspectable BOOL allowsEmptyModifierFlags;
 
 /*!
-    @brief      Determines whether the control reinterpret key code and modifier flags
-                using ASCII capable input source.
+    Determines whether the control reinterpret key code and modifier flags
+    using ASCII capable input source.
 
     @discussion Defaults to YES.
                 If not set, the same key code may be draw differently depending on current input source.
                 E.g. with US English input source key code 0x0 is interpreted as "a",
                 however with Russian input source, it's interpreted as "ф".
  */
-@property BOOL drawsASCIIEquivalentOfShortcut;
+@property IBInspectable BOOL drawsASCIIEquivalentOfShortcut;
 
 /*!
-    @brief      Determines whether Escape is used to cancel recording.
+    Determines whether Escape is used to cancel recording.
 
     @discussion Defaults to YES.
                 If set, Escape without modifier flags cannot be recorded as shortcut.
  */
-@property BOOL allowsEscapeToCancelRecording;
+@property IBInspectable BOOL allowsEscapeToCancelRecording;
 
 /*!
-    @brief      Determines whether delete (or forward delete) is used to remove current shortcut and end recording.
+    Determines whether delete (or forward delete) is used to remove current shortcut and end recording.
 
     @discussion Defaults to YES.
                 If set, neither Delete nor Forward Delete without modifier flags can be recorded as shortcut.
  */
-@property BOOL allowsDeleteToClearShortcutAndEndRecording;
+@property IBInspectable BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
-    @brief  Determines whether control enabled and can be edited or not.
+    Determines whether control enabled and can be edited or not.
 
     @discussion Defaults to YES.
  */
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 
 /*!
-    @brief  Determines whether recording is in process.
+    Determines whether recording is in process.
  */
 @property (nonatomic, readonly) BOOL isRecording;
 
 /*!
-    @brief  Returns dictionary representation of receiver's shortcut.
+    Returns dictionary representation of receiver's shortcut.
  */
 @property (nonatomic, copy) NSDictionary *objectValue;
 
 /*!
-    @brief      Configures recording behavior of the control.
+    Configures recording behavior of the control.
 
     @param      newAllowedModifierFlags New allowed modifier flags.
 
@@ -167,28 +168,28 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
 
 /*!
-    @brief      Turns on the recording mode.
+    Turns on the recording mode.
 
     @discussion You SHOULD not call this method directly.
  */
 - (BOOL)beginRecording;
 
 /*!
-    @brief      Turns off the recording mode. Current object value is preserved.
+    Turns off the recording mode. Current object value is preserved.
 
     @discussion You SHOULD not call this method directly.
  */
 - (void)endRecording;
 
 /*!
-    @brief      Clears object value and turns off the recording mode.
+    Clears object value and turns off the recording mode.
 
     @discussion You SHOULD not call this method directly.
  */
 - (void)clearAndEndRecording;
 
 /*!
-    @brief      Designated method to end recording. Sets a given object value, updates bindings and turns off the recording mode.
+    Designated method to end recording. Sets a given object value, updates bindings and turns off the recording mode.
 
     @discussion You SHOULD not call this method directly.
  */
@@ -196,14 +197,14 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 
 /*!
-    @brief      Returns shape of the control.
+    Returns shape of the control.
 
     @discussion Primarily used to draw appropriate focus ring.
  */
 - (NSBezierPath *)controlShape;
 
 /*!
-    @brief  Returns rect for label with given attributes.
+    Returns rect for label with given attributes.
 
     @param  aLabel Label for drawing.
 
@@ -212,12 +213,12 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes;
 
 /*!
-    @brief  Returns rect of the snap back button in the receiver coordinates.
+    Returns rect of the snap back button in the receiver coordinates.
  */
 - (NSRect)snapBackButtonRect;
 
 /*!
-    @brief      Returns rect of the clear button in the receiver coordinates.
+    Returns rect of the clear button in the receiver coordinates.
 
     @discussion Returned rect will have empty width (other values will be valid) if button should not be drawn.
  */
@@ -225,31 +226,31 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
 
 /*!
-    @brief      Returns label to be displayed by the receiver.
+    Returns label to be displayed by the receiver.
 
     @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
  */
 - (NSString *)label;
 
 /*!
-    @brief      Returns label for accessibility.
+    Returns label for accessibility.
 
     @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
  */
 - (NSString *)accessibilityLabel;
 
 /*!
-    @brief      Returns string representation of object value.
+    Returns string representation of object value.
  */
 - (NSString *)stringValue;
 
 /*!
-    @brief      Returns string representation of object value for accessibility.
+    Returns string representation of object value for accessibility.
  */
 - (NSString *)accessibilityStringValue;
 
 /*!
-    @brief      Returns attirbutes of label to be displayed by the receiver according to current state.
+    Returns attirbutes of label to be displayed by the receiver according to current state.
 
     @see        normalLabelAttributes
 
@@ -260,64 +261,64 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (NSDictionary *)labelAttributes;
 
 /*!
-    @brief  Returns attributes of label to be displayed by the receiver in normal mode.
+    Returns attributes of label to be displayed by the receiver in normal mode.
  */
 - (NSDictionary *)normalLabelAttributes;
 
 /*!
-    @brief  Returns attributes of label to be displayed by the receiver in recording mode.
+    Returns attributes of label to be displayed by the receiver in recording mode.
  */
 - (NSDictionary *)recordingLabelAttributes;
 
 /*!
-    @brief  Returns attributes of label to be displayed by the receiver in disabled mode.
+    Returns attributes of label to be displayed by the receiver in disabled mode.
  */
 - (NSDictionary *)disabledLabelAttributes;
 
 
 /*!
-    @brief  Draws background of the receiver into current graphics context.
+    Draws background of the receiver into current graphics context.
  */
 - (void)drawBackground:(NSRect)aDirtyRect;
 
 /*!
-    @brief  Draws interior of the receiver into current graphics context.
+    Draws interior of the receiver into current graphics context.
  */
 - (void)drawInterior:(NSRect)aDirtyRect;
 
 /*!
-    @brief  Draws label of the receiver into current graphics context.
+    Draws label of the receiver into current graphics context.
  */
 - (void)drawLabel:(NSRect)aDirtyRect;
 
 /*!
-    @brief  Draws snap back button of the receiver into current graphics context.
+    Draws snap back button of the receiver into current graphics context.
  */
 - (void)drawSnapBackButton:(NSRect)aDirtyRect;
 
 /*!
-    @brief  Draws clear button of the receiver into current graphics context.
+    Draws clear button of the receiver into current graphics context.
  */
 - (void)drawClearButton:(NSRect)aDirtyRect;
 
 
 /*!
-    @brief  Determines whether main button (representation of the receiver in normal mode) is highlighted.
+    Determines whether main button (representation of the receiver in normal mode) is highlighted.
  */
 - (BOOL)isMainButtonHighlighted;
 
 /*!
-    @brief  Determines whether snap back button is highlighted.
+    Determines whether snap back button is highlighted.
  */
 - (BOOL)isSnapBackButtonHighlighted;
 
 /*!
-    @brief  Determines whetehr clear button is highlighted.
+    Determines whetehr clear button is highlighted.
  */
 - (BOOL)isClearButtonHighlighted;
 
 /*!
-    @brief  Determines whether modifier flags are valid for key code according to the receiver settings.
+    Determines whether modifier flags are valid for key code according to the receiver settings.
 
     @param      aModifierFlags Proposed modifier flags.
 
@@ -332,7 +333,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
-    @brief A helper method to propagate view-driven changes back to model.
+    A helper method to propagate view-driven changes back to model.
  
     @discussion This method makes it easier to propagate changes from a view
                 back to the model without overriding bind:toObject:withKeyPath:options:
@@ -349,7 +350,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 @optional
 
 /*!
-    @brief      Asks the delegate if editing should begin in the specified shortcut recorder.
+    Asks the delegate if editing should begin in the specified shortcut recorder.
 
     @param      aRecorder The shortcut recorder which editing is about to begin.
 
@@ -360,7 +361,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder;
 
 /*!
-    @brief      Gives a delegate opportunity to bypass rules specified by allowed and required modifier flags.
+    Gives a delegate opportunity to bypass rules specified by allowed and required modifier flags.
 
     @param      aRecorder The shortcut recorder for which editing ended.
 
@@ -384,7 +385,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
-    @brief      Asks the delegate if the shortcut can be set by the specified shortcut recorder.
+    Asks the delegate if the shortcut can be set by the specified shortcut recorder.
 
     @param      aRecorder The shortcut recorder which shortcut is beign to be recordered.
 
@@ -400,7 +401,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut;
 
 /*!
-    @brief      Tells the delegate that editing stopped for the specified shortcut recorder.
+    Tells the delegate that editing stopped for the specified shortcut recorder.
 
     @param      aRecorder The shortcut recorder for which editing ended.
 

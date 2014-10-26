@@ -18,12 +18,12 @@
 
 
 /*!
-    @brief  Transforms key code into unicode character or plain string.
+    Transforms key code into unicode character or plain string.
  */
 @interface SRKeyCodeTransformer : NSValueTransformer
 
 /*!
-    @brief      Returns initialized key code transformer.
+    Returns initialized key code transformer.
 
     @param      aUsesASCII Determines whether transformer uses only ASCII capable keyboard input source.
 
@@ -36,56 +36,57 @@
 - (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings;
 
 /*!
-    @brief  Determines whether transformer uses ASCII capable keyboard input source.
+    Determines whether transformer uses ASCII capable keyboard input source.
  */
 @property (readonly) BOOL usesASCIICapableKeyboardInputSource;
 
 /*!
-    @brief  Determines whether key codes without readable glyphs are transformed to unicode characters suitable for setting keqEquivalents or to plain strings suitable for drawing, logging and accessibility.
+    Determines whether key codes without readable glyphs are transformed to unicode characters
+    suitable for setting keqEquivalents or to plain strings suitable for drawing, logging and accessibility.
  */
 @property (readonly) BOOL usesPlainStrings;
 
 /*!
-    @brief  Returns the shared transformer.
+    Returns the shared transformer.
  */
 + (instancetype)sharedTransformer;
 
 /*!
-    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source.
+    Returns the shared transformer configured to use only ASCII capable keyboard input source.
  */
 + (instancetype)sharedASCIITransformer;
 
 /*!
-    @brief  Returns the shared transformer configured to transform key codes to plain strings.
+    Returns the shared transformer configured to transform key codes to plain strings.
  */
 + (SRKeyCodeTransformer *)sharedPlainTransformer;
 
 /*!
-    @brief  Returns the shared transformer configured to use only ASCII capable keyboard input source
+    Returns the shared transformer configured to use only ASCII capable keyboard input source
             and to transform key codes to plain strings.
  */
 + (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
 
 
 /*!
-    @brief  Returns mapping from special key codes to unicode characters.
+    Returns mapping from special key codes to unicode characters.
  */
 + (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping;
 
 /*!
-    @brief  Returns mapping from special key codes to plain strings.
+    Returns mapping from special key codes to plain strings.
  */
 + (NSDictionary *)specialKeyCodesToPlainStringsMapping;
 
 /*!
-    @brief  Determines whether key code is special.
+    Determines whether key code is special.
 
     @param  aKeyCode Key code to be checked.
  */
 - (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
 
 /*!
-    @brief      Transforms given special key code into unicode character by taking into account modifier flags.
+    Transforms given special key code into unicode character by taking into account modifier flags.
  
     @discussion E.g. the key code 0x30 is transformed to ⇥. But if shift is pressed, it is transformed to ⇤.
  
@@ -94,12 +95,12 @@
 - (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)aModifierFlags;
 
 /*!
-    @brief  Shorcut to [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
+    Shorcut to [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
  */
 - (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags;
 
 /*!
-    @brief  Transfroms given key code into unicode character by taking into account modifier flags.
+    Transfroms given key code into unicode character by taking into account modifier flags.
  
     @param  aValue An instance of NSNumber (unsigned short) that represents key code.
  
@@ -113,8 +114,8 @@
 
 
 /*!
-    @brief  These constants represents drawable unicode characters for key codes that do not have
-            appropriate constants in Carbon and Cocoa.
+    These constants represents drawable unicode characters for key codes that do not have
+    appropriate constants in Carbon and Cocoa.
  */
 NS_ENUM(unichar, SRKeyCodeGlyph)
 {
