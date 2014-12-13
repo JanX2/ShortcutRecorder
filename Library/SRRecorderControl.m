@@ -259,7 +259,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect shapeBounds = self.bounds;
     shapeBounds.size.height = _SRRecorderControlHeight - self.alignmentRectInsets.bottom;
-    shapeBounds = NSInsetRect(shapeBounds, 1.0, 1.0);
     return [NSBezierPath bezierPathWithRoundedRect:shapeBounds
                                            xRadius:_SRRecorderControlShapeXRadius
                                            yRadius:_SRRecorderControlShapeYRadius];
