@@ -27,9 +27,14 @@ NSString *const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModi
 
 
 // Control Layout Constants
-static const CGFloat _SRRecorderControlShapeXRadius = 2.0;
 
-static const CGFloat _SRRecorderControlShapeYRadius = 2.0;
+// * Below are values for Yosemite, we need version detection here *
+//static const CGFloat _SRRecorderControlShapeXRadius = 2.0;
+//static const CGFloat _SRRecorderControlShapeYRadius = 2.0;
+
+static const CGFloat _SRRecorderControlShapeXRadius = 11.0;
+
+static const CGFloat _SRRecorderControlShapeYRadius = 12.0;
 
 static const CGFloat _SRRecorderControlHeight = 25.0;
 
