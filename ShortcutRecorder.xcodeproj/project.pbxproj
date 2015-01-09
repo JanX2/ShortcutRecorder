@@ -691,10 +691,8 @@
 				"es-MX",
 				ca,
 				cs,
-				da,
 				pt,
 				"zh-Hant",
-				infoplist.strings,
 				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* ShortcutRecorder */;
