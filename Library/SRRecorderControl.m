@@ -28,9 +28,9 @@ NSString *const SRShortcutCharactersIgnoringModifiers = @"charactersIgnoringModi
 
 // Control Layout Constants
 
-// * Below are values for Yosemite, we need version detection here *
-//static const CGFloat _SRRecorderControlShapeXRadius = 2.0;
-//static const CGFloat _SRRecorderControlShapeYRadius = 2.0;
+static const CGFloat _SRRecorderControlYosemiteShapeXRadius = 2.0;
+
+static const CGFloat _SRRecorderControlYosemiteShapeYRadius = 2.0;
 
 static const CGFloat _SRRecorderControlShapeXRadius = 11.0;
 
@@ -89,6 +89,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     _SRRecorderControlButtonTag _mouseTrackingButtonTag;
     NSToolTipTag _snapBackButtonToolTipTag;
+
+    CGFloat _shapeXRadius;
+    CGFloat _shapeYRadious;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -120,6 +123,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                                            forOrientation:NSLayoutConstraintOrientationHorizontal];
             [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
                                            forOrientation:NSLayoutConstraintOrientationVertical];
+        }
+
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
+        {
+            _shapeXRadius = _SRRecorderControlShapeXRadius;
+            _shapeYRadious = _SRRecorderControlShapeYRadius;
+        }
+        else
+        {
+            _shapeXRadius = _SRRecorderControlYosemiteShapeXRadius;
+            _shapeYRadious = _SRRecorderControlYosemiteShapeYRadius;
         }
 
         [self setToolTip:SRLoc(@"Click to record shortcut")];
@@ -264,15 +278,21 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect shapeBounds = self.bounds;
     shapeBounds.size.height = _SRRecorderControlHeight - self.alignmentRectInsets.bottom;
+
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
+    {
+        shapeBounds = NSInsetRect(shapeBounds, 1.0, 1.0);
+    }
+
     return [NSBezierPath bezierPathWithRoundedRect:shapeBounds
-                                           xRadius:_SRRecorderControlShapeXRadius
-                                           yRadius:_SRRecorderControlShapeYRadius];
+                                           xRadius:_shapeXRadius
+                                           yRadius:_shapeYRadious];
 }
 
 - (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes
 {
     NSSize labelSize = [aLabel sizeWithAttributes:anAttributes];
-    NSRect enclosingRect = NSInsetRect(self.bounds, _SRRecorderControlShapeXRadius, 0.0);
+    NSRect enclosingRect = NSInsetRect(self.bounds, _shapeXRadius, 0.0);
     labelSize.width = fmin(ceil(labelSize.width), NSWidth(enclosingRect));
     labelSize.height = ceil(labelSize.height);
     CGFloat fontBaselineOffsetFromTop = labelSize.height + [anAttributes[NSFontAttributeName] descender];
@@ -924,25 +944,50 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
-        _SRImages[0] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-left");
-        _SRImages[1] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-middle");
-        _SRImages[2] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-right");
-        _SRImages[3] = SRImage(@"shortcut-recorder-bezel-editing-left");
-        _SRImages[4] = SRImage(@"shortcut-recorder-bezel-editing-middle");
-        _SRImages[5] = SRImage(@"shortcut-recorder-bezel-editing-right");
-        _SRImages[6] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-left");
-        _SRImages[7] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-middle");
-        _SRImages[8] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-right");
-        _SRImages[9] = SRImage(@"shortcut-recorder-bezel-left");
-        _SRImages[10] = SRImage(@"shortcut-recorder-bezel-middle");
-        _SRImages[11] = SRImage(@"shortcut-recorder-bezel-right");
-        _SRImages[12] = SRImage(@"shortcut-recorder-clear-highlighted");
-        _SRImages[13] = SRImage(@"shortcut-recorder-clear");
-        _SRImages[14] = SRImage(@"shortcut-recorder-snapback-highlighted");
-        _SRImages[15] = SRImage(@"shortcut-recorder-snapback");
-        _SRImages[16] = SRImage(@"shortcut-recorder-bezel-disabled-left");
-        _SRImages[17] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
-        _SRImages[18] = SRImage(@"shortcut-recorder-bezel-disabled-right");
+        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
+        {
+            _SRImages[0] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-left");
+            _SRImages[1] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-middle");
+            _SRImages[2] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-right");
+            _SRImages[3] = SRImage(@"shortcut-recorder-bezel-editing-left");
+            _SRImages[4] = SRImage(@"shortcut-recorder-bezel-editing-middle");
+            _SRImages[5] = SRImage(@"shortcut-recorder-bezel-editing-right");
+            _SRImages[6] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-left");
+            _SRImages[7] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-middle");
+            _SRImages[8] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-right");
+            _SRImages[9] = SRImage(@"shortcut-recorder-bezel-left");
+            _SRImages[10] = SRImage(@"shortcut-recorder-bezel-middle");
+            _SRImages[11] = SRImage(@"shortcut-recorder-bezel-right");
+            _SRImages[12] = SRImage(@"shortcut-recorder-clear-highlighted");
+            _SRImages[13] = SRImage(@"shortcut-recorder-clear");
+            _SRImages[14] = SRImage(@"shortcut-recorder-snapback-highlighted");
+            _SRImages[15] = SRImage(@"shortcut-recorder-snapback");
+            _SRImages[16] = SRImage(@"shortcut-recorder-bezel-disabled-left");
+            _SRImages[17] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
+            _SRImages[18] = SRImage(@"shortcut-recorder-bezel-disabled-right");
+        }
+        else
+        {
+            _SRImages[0] = SRImage(@"shortcut-recorder-yosemite-bezel-blue-highlighted-left");
+            _SRImages[1] = SRImage(@"shortcut-recorder-yosemite-bezel-blue-highlighted-middle");
+            _SRImages[2] = SRImage(@"shortcut-recorder-yosemite-bezel-blue-highlighted-right");
+            _SRImages[3] = SRImage(@"shortcut-recorder-yosemite-bezel-editing-left");
+            _SRImages[4] = SRImage(@"shortcut-recorder-yosemite-bezel-editing-middle");
+            _SRImages[5] = SRImage(@"shortcut-recorder-yosemite-bezel-editing-right");
+            _SRImages[6] = SRImage(@"shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left");
+            _SRImages[7] = SRImage(@"shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle");
+            _SRImages[8] = SRImage(@"shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right");
+            _SRImages[9] = SRImage(@"shortcut-recorder-yosemite-bezel-left");
+            _SRImages[10] = SRImage(@"shortcut-recorder-yosemite-bezel-middle");
+            _SRImages[11] = SRImage(@"shortcut-recorder-yosemite-bezel-right");
+            _SRImages[12] = SRImage(@"shortcut-recorder-yosemite-clear-highlighted");
+            _SRImages[13] = SRImage(@"shortcut-recorder-yosemite-clear");
+            _SRImages[14] = SRImage(@"shortcut-recorder-yosemite-snapback-highlighted");
+            _SRImages[15] = SRImage(@"shortcut-recorder-yosemite-snapback");
+            _SRImages[16] = SRImage(@"shortcut-recorder-yosemite-bezel-disabled-left");
+            _SRImages[17] = SRImage(@"shortcut-recorder-yosemite-bezel-disabled-middle");
+            _SRImages[18] = SRImage(@"shortcut-recorder-yosemite-bezel-disabled-right");
+        }
     });
 }
 
@@ -998,7 +1043,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSSize)intrinsicContentSize
 {
-    return NSMakeSize(NSWidth([self rectForLabel:SRLoc(@"Click to record shortcut") withAttributes:self.normalLabelAttributes]) + _SRRecorderControlShapeXRadius + _SRRecorderControlShapeXRadius,
+    return NSMakeSize(NSWidth([self rectForLabel:SRLoc(@"Click to record shortcut") withAttributes:self.normalLabelAttributes]) + _shapeXRadius + _shapeXRadius,
                       _SRRecorderControlHeight);
 }
 
