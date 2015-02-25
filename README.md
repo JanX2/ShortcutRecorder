@@ -25,7 +25,7 @@ You can download sources from the site as well.
 
 Integrate into your project
 ---------------------------
-First, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-structure_navigator/articles/adding_a_project_to_a_workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
+First, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
 
 Next step is to ensure your target is linked against the ShortcutRecorder or/and PTHotKey frameworks ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html#//apple_ref/doc/uid/TP40010155-CH17)). Desired frameworks will be listed under *Workspace*.
 
