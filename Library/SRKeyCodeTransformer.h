@@ -117,7 +117,7 @@
     These constants represents drawable unicode characters for key codes that do not have
     appropriate constants in Carbon and Cocoa.
  */
-NS_ENUM(unichar, SRKeyCodeGlyph)
+typedef NS_ENUM(unichar, SRKeyCodeGlyph)
 {
     SRKeyCodeGlyphTabRight = 0x21E5, // ⇥
     SRKeyCodeGlyphTabLeft = 0x21E4, // ⇤
