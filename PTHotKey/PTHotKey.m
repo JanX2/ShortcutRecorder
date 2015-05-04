@@ -15,10 +15,16 @@
 
 - (id)init
 {
-	return [self initWithIdentifier: nil keyCombo: nil];
+	return [self initWithIdentifier: nil keyCombo: nil withObject:nil];
 }
 
 - (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo
+{
+	return [self initWithIdentifier: identifier keyCombo: combo withObject:nil];
+
+}
+
+- (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo withObject: (id)object
 {
 	self = [super init];
 
@@ -26,19 +32,12 @@
 	{
 		[self setIdentifier: identifier];
 		[self setKeyCombo: combo];
+        [self setObject: object];
 	}
 
 	return self;
 }
 
-- (void)dealloc
-{
-	[mIdentifier release];
-	[mName release];
-	[mKeyCombo release];
-
-	[super dealloc];
-}
 
 - (NSString*)description
 {
@@ -49,8 +48,6 @@
 
 - (void)setIdentifier: (id)ident
 {
-	[ident retain];
-	[mIdentifier release];
 	mIdentifier = ident;
 }
 
@@ -64,8 +61,6 @@
 	if( combo == nil )
 		combo = [PTKeyCombo clearKeyCombo];
 
-	[combo retain];
-	[mKeyCombo release];
 	mKeyCombo = combo;
 }
 
@@ -76,8 +71,6 @@
 
 - (void)setName: (NSString*)name
 {
-	[name retain];
-	[mName release];
 	mName = name;
 }
 
@@ -94,6 +87,16 @@
 - (id)target
 {
 	return mTarget;
+}
+
+- (void)setObject:(id)object
+{
+	mObject = object;
+}
+
+- (id)object
+{
+	return mObject;
 }
 
 - (void)setAction: (SEL)action

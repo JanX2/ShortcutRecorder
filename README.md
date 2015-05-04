@@ -1,10 +1,13 @@
 ShortcutRecorder 2
 ====================
-![ShortcutRecorder Preview](http://wireload.net/open_source/ShortcutRecorder%20Preview.png)
+![pre-Yosemite ShortcutRecorder Preview](Demo/example.png)
+![Yosemite ShortcutRecorder Preview](Demo/example-yosemite.png)
 
 The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
 
-- Fresh Look & Feel (brought to you by [Wireload](http://wireload.net))
+- :microscope: Support for Xcode 6 Quick Help
+- :microscope: Support for Xcode 6 Interface Builder integration
+- Fresh Look & Feel (brought to you by [Wireload](http://wireload.net) and [John Wells](https://github.com/jwells89))
 - With Retina support
 - Auto Layout ready
 - Correct drawing on Layer-backed and Layer-hosted views
@@ -14,17 +17,15 @@ The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
 
 Includes framework to set global shortcuts (PTHotKey).
 
-Take a look at [the demo](https://github.com/Kentzo/ShortcutRecorderDemo).
-
 Get Sources
 -----------
-The preferred way to add the ShortcutRecorder to your project is to use git submodules:  
+The preferred way to add the ShortcutRecorder to your project is to use git submodules:
 `git submodule add git://github.com/Kentzo/ShortcutRecorder.git`
 You can download sources from the site as well.
 
 Integrate into your project
 ---------------------------
-First, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-structure_navigator/articles/adding_a_project_to_a_workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
+First, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
 
 Next step is to ensure your target is linked against the ShortcutRecorder or/and PTHotKey frameworks ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html#//apple_ref/doc/uid/TP40010155-CH17)). Desired frameworks will be listed under *Workspace*.
 
@@ -34,7 +35,7 @@ Finally, ensure your app will find frameworks upon start. Open Build Settings of
 
 Add control in Interface Builder
 --------------------------------
-Since Xcode 4 Apple removed Interface Builder Plugins. You can only use it to add and position/resize ShortcutRecorder control. To do this, add Custom View and set its class to SRRecorderControl.  
+Since Xcode 4 Apple removed Interface Builder Plugins. You can only use it to add and position/resize ShortcutRecorder control. To do this, add Custom View and set its class to SRRecorderControl.
 
 SRRecorderControl has fixed height of 25 points so ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend you to pin height in case you're using Auto Layout.
 
@@ -59,7 +60,7 @@ Setting key equivalent of NSMenuItem using bindings:
                toObject:defaults
             withKeyPath:@"values.ping"
                 options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
-                
+
 Setting key equivalent of NSButton using bindings:
 
     [self.pingButton bind:@"keyEquivalent"
@@ -70,13 +71,13 @@ Setting key equivalent of NSButton using bindings:
                  toObject:defaults
               withKeyPath:@"values.ping"
                   options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
-                  
+
 Setting global shortcut using PTHotKeyCenter:
 
     PTHotKeyCenter *hotKeyCenter = [PTHotKeyCenter sharedCenter];
     PTHotKey *oldHotKey = [hotKeyCenter hotKeyWithIdentifier:aKeyPath];
     [hotKeyCenter unregisterHotKey:oldHotKey];
-        
+
     PTHotKey *newHotKey = [PTHotKey hotKeyWithIdentifier:aKeyPath
                                                 keyCombo:newShortcut
                                                   target:self
@@ -85,14 +86,14 @@ Setting global shortcut using PTHotKeyCenter:
 
 Key Equivalents and Keyboard Layout
 ----------------------------------------------------
-While ShortcutRecorder keeps your shortcuts as combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that position of key code on keyboard does not depend on current keyboard layout while position of key character does. 
+While ShortcutRecorder keeps your shortcuts as combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that position of key code on keyboard does not depend on current keyboard layout while position of key character does.
 
 ShortcutRecorder includes two special transformers to simplify binding to the key equivalents of NSMenuItem and NSButton:
 
 - SRKeyEquivalentTransformer
 - SRKeyEquivalentModifierMaskTransformer
 
-SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.  
+SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.
 The drawback is that position of the character on keyboard may change depending on layout and used modifier keys (primarly Option and Shift).
 
 NSButton
@@ -105,3 +106,7 @@ If it's not set, assigned shortcut likely won't work with other layouts.
 Questions
 ---------
 Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecorder/issues/new) immediately and feel free to ping me.
+
+Paid Support
+------------
+If functional you need is missing but you're ready to pay for it, feel free to contact me. If not, create an issue anyway, I'll take a look as soon as I can.
