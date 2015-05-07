@@ -104,9 +104,9 @@
  
     @param  aValue An instance of NSNumber (unsigned short) that represents key code.
  
-    @param  anImplicitModifierFlags An instance of NSNumber (NSUInteger) that represents implicit modifier flags like opt in å.
+    @param  anImplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents implicit modifier flags like opt in å.
  
-    @param  anExplicitModifierFlags An instance of NSNumber (NSUInteger) that represents explicit modifier flags like shift in shift-⇤.
+    @param  anExplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents explicit modifier flags like shift in shift-⇤.
  */
 - (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags;
 

@@ -17,7 +17,7 @@
 #import "SRKeyCodeTransformer.h"
 
 
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode)
+NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
 {
     SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedPlainTransformer];
     NSString *c = [t transformedValue:@(aKeyCode)];
@@ -31,7 +31,7 @@ NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFl
 }
 
 
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode)
+NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
 {
     SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedPlainASCIITransformer];
     NSString *c = [t transformedValue:@(aKeyCode)];
@@ -46,9 +46,9 @@ NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModif
 
 
 static BOOL _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
-                                                             NSUInteger aKeyCodeFlags,
+                                                             NSEventModifierFlags aKeyCodeFlags,
                                                              NSString *aKeyEquivalent,
-                                                             NSUInteger aKeyEquivalentModifierFlags,
+                                                             NSEventModifierFlags aKeyEquivalentModifierFlags,
                                                              SRKeyCodeTransformer *aTransformer)
 {
     if (!aKeyEquivalent)
@@ -81,7 +81,7 @@ static BOOL _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKey
         }
         else
         {
-            NSUInteger possiblyImplicitFlags = aKeyCodeFlags & ~aKeyEquivalentModifierFlags;
+            NSEventModifierFlags possiblyImplicitFlags = aKeyCodeFlags & ~aKeyEquivalentModifierFlags;
             keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
                                          withImplicitModifierFlags:@(possiblyImplicitFlags)
                                              explicitModifierFlags:@(aKeyEquivalentModifierFlags)];
@@ -94,9 +94,9 @@ static BOOL _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKey
 
 
 BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
-                                                     NSUInteger aKeyCodeFlags,
+                                                     NSEventModifierFlags aKeyCodeFlags,
                                                      NSString *aKeyEquivalent,
-                                                     NSUInteger aKeyEquivalentModifierFlags)
+                                                     NSEventModifierFlags aKeyEquivalentModifierFlags)
 {
     BOOL isEqual = _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(aKeyCode,
                                                                     aKeyCodeFlags,

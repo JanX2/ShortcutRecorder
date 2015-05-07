@@ -20,7 +20,7 @@
 /*!
     Mask representing subset of Cocoa modifier flags suitable for shortcuts.
  */
-static const NSUInteger SRCocoaModifierFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask;
+static const NSEventModifierFlags SRCocoaModifierFlagsMask = NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask;
 
 /*!
     Mask representing subset of Carbon modifier flags suitable for shortcuts.
@@ -31,9 +31,9 @@ static const NSUInteger SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKe
 /*!
     Converts carbon modifier flags to cocoa.
  */
-FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
+FOUNDATION_STATIC_INLINE NSEventModifierFlags SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 {
-    NSUInteger cocoaFlags = 0;
+    NSEventModifierFlags cocoaFlags = 0;
 
     if (aCarbonFlags & cmdKey)
         cocoaFlags |= NSCommandKeyMask;
@@ -53,7 +53,7 @@ FOUNDATION_STATIC_INLINE NSUInteger SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 /*!
     Converts cocoa modifier flags to carbon.
  */
-FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
+FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 {
     UInt32 carbonFlags = 0;
 
@@ -129,13 +129,13 @@ FOUNDATION_STATIC_INLINE NSImage *SRImage(NSString *anImageName)
     Returns string representation of shortcut with modifier flags replaced with their localized
     readable equivalents (e.g. ? -> Option).
  */
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode);
+NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode);
 
 /*!
     Returns string representation of shortcut with modifier flags replaced with their localized
     readable equivalents (e.g. ? -> Option) and ASCII character for key code.
  */
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode);
+NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode);
 
 /*!
     Determines if given key code with flags is equal to key equivalent and flags
@@ -144,6 +144,6 @@ NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSUInteger aModif
     @discussion On Mac OS X some key combinations can have "alternates". E.g. option-A can be represented both as option-A and as Œ.
 */
 BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
-                                                     NSUInteger aKeyCodeFlags,
+                                                     NSEventModifierFlags aKeyCodeFlags,
                                                      NSString *aKeyEquivalent,
-                                                     NSUInteger aKeyEquivalentModifierFlags);
+                                                     NSEventModifierFlags aKeyEquivalentModifierFlags);

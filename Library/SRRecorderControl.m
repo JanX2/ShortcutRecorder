@@ -157,8 +157,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 #pragma mark Properties
 
-- (void)setAllowedModifierFlags:(NSUInteger)newAllowedModifierFlags
-          requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
+- (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
+          requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags
 {
     newAllowedModifierFlags &= SRCocoaModifierFlagsMask;
@@ -372,7 +372,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
 
         if (modifierFlags)
             label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
@@ -399,7 +399,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
         label = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:@(modifierFlags)];
 
         if (![label length])
@@ -732,7 +732,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return NO;
 }
 
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
 
@@ -1064,7 +1064,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)updateTrackingAreas
 {
-    static const NSUInteger TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
+    static const NSTrackingAreaOptions TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
 
     if (_mainButtonTrackingArea)
         [self removeTrackingArea:_mainButtonTrackingArea];
@@ -1358,7 +1358,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     if (self.isRecording)
     {
-        NSUInteger modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
+        NSEventModifierFlags modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
         if (modifierFlags != 0 && ![self areModifierFlagsValid:modifierFlags forKeyCode:anEvent.keyCode])
             NSBeep();
 
