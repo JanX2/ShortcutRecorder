@@ -936,7 +936,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)awakeFromNib
 {
-    [super awakeFromNib];
     [self _initInternalState];
 }
 
