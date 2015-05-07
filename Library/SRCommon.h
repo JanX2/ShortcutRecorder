@@ -73,14 +73,43 @@ FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSUInteger aCocoaFlags)
 }
 
 /*!
+    Return Bundle where resources can be found.
+
+    @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
+*/
+FOUNDATION_STATIC_INLINE NSBundle *SRBundle()
+{
+    static dispatch_once_t onceToken;
+    static NSBundle *Bundle = nil;
+    dispatch_once(&onceToken, ^{
+        Bundle = [NSBundle bundleWithIdentifier:@"com.kulakov.ShortcutRecorder"];
+
+        if (!Bundle)
+        {
+            // Could be a CocoaPods bundle
+            Bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ShortcutRecorder"
+                                                                              ofType:@"bundle"]];
+        }
+    });
+
+    if (!Bundle)
+    {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                       reason:@"Unable to find bundle with resources."
+                                     userInfo:nil];
+    }
+    else
+    {
+        return Bundle;
+    }
+}
+
+/*!
     Convenient method to get localized string from the framework bundle.
  */
 FOUNDATION_STATIC_INLINE NSString *SRLoc(NSString *aKey)
 {
-    return NSLocalizedStringFromTableInBundle(aKey,
-                                              @"ShortcutRecorder",
-                                              [NSBundle bundleWithIdentifier:@"com.kulakov.ShortcutRecorder"],
-                                              nil);
+    return NSLocalizedStringFromTableInBundle(aKey, @"ShortcutRecorder", SRBundle(), nil);
 }
 
 
@@ -89,12 +118,10 @@ FOUNDATION_STATIC_INLINE NSString *SRLoc(NSString *aKey)
  */
 FOUNDATION_STATIC_INLINE NSImage *SRImage(NSString *anImageName)
 {
-    NSBundle *b = [NSBundle bundleWithIdentifier:@"com.kulakov.ShortcutRecorder"];
-
     if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
-        return [[NSImage alloc] initByReferencingURL:[b URLForImageResource:anImageName]];
+        return [[NSImage alloc] initByReferencingURL:[SRBundle() URLForImageResource:anImageName]];
     else
-        return [b imageForResource:anImageName];
+        return [SRBundle() imageForResource:anImageName];
 }
 
 
