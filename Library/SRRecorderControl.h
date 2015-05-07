@@ -70,7 +70,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
                 Recommended min width: 100 points
  */
 IB_DESIGNABLE
-@interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner> */
+@interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner, NSNibAwaking> */
 
 /*!
     The receiver’s delegate.
@@ -133,7 +133,7 @@ IB_DESIGNABLE
 
     @discussion Defaults to YES.
  */
-@property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic, getter=isEnabled) IBInspectable BOOL enabled;
 
 /*!
     Determines whether recording is in process.
@@ -166,6 +166,11 @@ IB_DESIGNABLE
 - (void)setAllowedModifierFlags:(NSUInteger)newAllowedModifierFlags
           requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
+
+/*!
+    Called to initialize internal state after either initWithFrame or awakeFromNib is called.
+ */
+- (void)_initInternalState;
 
 /*!
     Turns on the recording mode.

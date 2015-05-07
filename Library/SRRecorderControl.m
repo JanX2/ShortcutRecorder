@@ -100,47 +100,53 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self)
     {
-        _allowedModifierFlags = SRCocoaModifierFlagsMask;
-        _requiredModifierFlags = 0;
         _allowsEmptyModifierFlags = NO;
         _drawsASCIIEquivalentOfShortcut = YES;
         _allowsEscapeToCancelRecording = YES;
         _allowsDeleteToClearShortcutAndEndRecording = YES;
         _enabled = YES;
-        _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
-        _snapBackButtonToolTipTag = NSIntegerMax;
 
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-        {
-            self.translatesAutoresizingMaskIntoConstraints = NO;
-
-            [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
-                             forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentHuggingPriority:NSLayoutPriorityRequired
-                             forOrientation:NSLayoutConstraintOrientationVertical];
-
-            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
-                                           forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
-                                           forOrientation:NSLayoutConstraintOrientationVertical];
-        }
-
-        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
-        {
-            _shapeXRadius = _SRRecorderControlShapeXRadius;
-            _shapeYRadious = _SRRecorderControlShapeYRadius;
-        }
-        else
-        {
-            _shapeXRadius = _SRRecorderControlYosemiteShapeXRadius;
-            _shapeYRadious = _SRRecorderControlYosemiteShapeYRadius;
-        }
-
-        [self setToolTip:SRLoc(@"Click to record shortcut")];
-        [self updateTrackingAreas];
+        [self _initInternalState];
     }
 
     return self;
+}
+
+- (void)_initInternalState
+{
+    _allowedModifierFlags = SRCocoaModifierFlagsMask;
+    _requiredModifierFlags = 0;
+    _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
+    _snapBackButtonToolTipTag = NSIntegerMax;
+
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    {
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+
+        [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
+                         forOrientation:NSLayoutConstraintOrientationHorizontal];
+        [self setContentHuggingPriority:NSLayoutPriorityRequired
+                         forOrientation:NSLayoutConstraintOrientationVertical];
+
+        [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                       forOrientation:NSLayoutConstraintOrientationHorizontal];
+        [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
+                                       forOrientation:NSLayoutConstraintOrientationVertical];
+    }
+
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
+    {
+        _shapeXRadius = _SRRecorderControlShapeXRadius;
+        _shapeYRadious = _SRRecorderControlShapeYRadius;
+    }
+    else
+    {
+        _shapeXRadius = _SRRecorderControlYosemiteShapeXRadius;
+        _shapeYRadious = _SRRecorderControlYosemiteShapeYRadius;
+    }
+
+    [self setToolTip:SRLoc(@"Click to record shortcut")];
+    [self updateTrackingAreas];
 }
 
 - (void)dealloc
@@ -923,6 +929,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return SRLoc(@"Use old shortcut");
     else
         return [super view:aView stringForToolTip:aTag point:aPoint userData:aData];
+}
+
+
+#pragma mark NSNibAwaking
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self _initInternalState];
 }
 
 
