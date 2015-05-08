@@ -100,12 +100,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self)
     {
-        _allowsEmptyModifierFlags = NO;
-        _drawsASCIIEquivalentOfShortcut = YES;
-        _allowsEscapeToCancelRecording = YES;
-        _allowsDeleteToClearShortcutAndEndRecording = YES;
-        _enabled = YES;
-
         [self _initInternalState];
     }
 
@@ -114,6 +108,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)_initInternalState
 {
+    _allowsEmptyModifierFlags = NO;
+    _drawsASCIIEquivalentOfShortcut = YES;
+    _allowsEscapeToCancelRecording = YES;
+    _allowsDeleteToClearShortcutAndEndRecording = YES;
+    _enabled = YES;
     _allowedModifierFlags = SRCocoaModifierFlagsMask;
     _requiredModifierFlags = 0;
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
@@ -932,11 +931,24 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
-#pragma mark NSNibAwaking
+#pragma mark NSCoding
 
-- (void)awakeFromNib
+- (instancetype)initWithCoder:(NSCoder *)aCoder
 {
-    [self _initInternalState];
+    // Since Xcode 6.x, user can configure xib to Prefer Coder.
+    // In that case initWithFrame will never be called.
+    //
+    // awakeFromNib cannot be used to set up defaults for IBDesignable.
+    // At the time it's called, it's impossible to know whether properties
+    // were set by a user they are compiler defaults.
+    self = [super initWithCoder:aCoder];
+
+    if (self)
+    {
+        [self _initInternalState];
+    }
+
+    return self;
 }
 
 
