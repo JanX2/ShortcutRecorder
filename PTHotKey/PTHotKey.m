@@ -143,13 +143,16 @@
 
 - (void)invoke
 {
-	[mTarget performSelector: mAction withObject: self];
+	if(mAction) {
+    		[NSApp sendAction:mAction to:mTarget from:self];
+    	}
 }
 
 - (void)uninvoke
 {
-    if ([mTarget respondsToSelector:mKeyUpAction])
-        [mTarget performSelector: mKeyUpAction withObject: self];
+	if(mKeyUpAction) {
+    		[NSApp sendAction:mKeyUpAction to:mTarget from:self];
+    	}
 }
 
 @end
