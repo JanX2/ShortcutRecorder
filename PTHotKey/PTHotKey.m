@@ -15,103 +15,103 @@
 
 - (id)init
 {
-	return [self initWithIdentifier: nil keyCombo: nil withObject:nil];
+    return [self initWithIdentifier: nil keyCombo: nil withObject:nil];
 }
 
 - (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo
 {
-	return [self initWithIdentifier: identifier keyCombo: combo withObject:nil];
+    return [self initWithIdentifier: identifier keyCombo: combo withObject:nil];
 
 }
 
 - (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo withObject: (id)object
 {
-	self = [super init];
+    self = [super init];
 
-	if( self )
-	{
-		[self setIdentifier: identifier];
-		[self setKeyCombo: combo];
+    if( self )
+    {
+        [self setIdentifier: identifier];
+        [self setKeyCombo: combo];
         [self setObject: object];
-	}
+    }
 
-	return self;
+    return self;
 }
 
 
 - (NSString*)description
 {
-	return [NSString stringWithFormat: @"<%@: %@, %@>", NSStringFromClass( [self class] ), [self identifier], [self keyCombo]];
+    return [NSString stringWithFormat: @"<%@: %@, %@>", NSStringFromClass( [self class] ), [self identifier], [self keyCombo]];
 }
 
 #pragma mark -
 
 - (void)setIdentifier: (id)ident
 {
-	mIdentifier = ident;
+    mIdentifier = ident;
 }
 
 - (id)identifier
 {
-	return mIdentifier;
+    return mIdentifier;
 }
 
 - (void)setKeyCombo: (PTKeyCombo*)combo
 {
-	if( combo == nil )
-		combo = [PTKeyCombo clearKeyCombo];
+    if( combo == nil )
+        combo = [PTKeyCombo clearKeyCombo];
 
-	mKeyCombo = combo;
+    mKeyCombo = combo;
 }
 
 - (PTKeyCombo*)keyCombo
 {
-	return mKeyCombo;
+    return mKeyCombo;
 }
 
 - (void)setName: (NSString*)name
 {
-	mName = name;
+    mName = name;
 }
 
 - (NSString*)name
 {
-	return mName;
+    return mName;
 }
 
 - (void)setTarget: (id)target
 {
-	mTarget = target;
+    mTarget = target;
 }
 
 - (id)target
 {
-	return mTarget;
+    return mTarget;
 }
 
 - (void)setObject:(id)object
 {
-	mObject = object;
+    mObject = object;
 }
 
 - (id)object
 {
-	return mObject;
+    return mObject;
 }
 
 - (void)setAction: (SEL)action
 {
-	mAction = action;
+    mAction = action;
 }
 
 - (SEL)action
 {
-	return mAction;
+    return mAction;
 }
 
 - (void)setKeyUpAction: (SEL)action
 {
-	mKeyUpAction = action;
+    mKeyUpAction = action;
 }
 
 - (SEL)keyUpAction
@@ -121,38 +121,36 @@
 
 - (UInt32)carbonHotKeyID
 {
-	return mCarbonHotKeyID;
+    return mCarbonHotKeyID;
 }
 
 - (void)setCarbonHotKeyID: (UInt32)hotKeyID;
 {
-	mCarbonHotKeyID = hotKeyID;
+    mCarbonHotKeyID = hotKeyID;
 }
 
 - (EventHotKeyRef)carbonEventHotKeyRef
 {
-	return mCarbonEventHotKeyRef;
+    return mCarbonEventHotKeyRef;
 }
 
 - (void)setCarbonEventHotKeyRef: (EventHotKeyRef)hotKeyRef
 {
-	mCarbonEventHotKeyRef = hotKeyRef;
+    mCarbonEventHotKeyRef = hotKeyRef;
 }
 
 #pragma mark -
 
 - (void)invoke
 {
-	if(mAction) {
-    		[NSApp sendAction:mAction to:mTarget from:self];
-    	}
+    if(mAction)
+        [NSApp sendAction:mAction to:mTarget from:self];
 }
 
 - (void)uninvoke
 {
-	if(mKeyUpAction) {
-    		[NSApp sendAction:mKeyUpAction to:mTarget from:self];
-    	}
+    if(mKeyUpAction)
+        [NSApp sendAction:mKeyUpAction to:mTarget from:self];
 }
 
 @end
