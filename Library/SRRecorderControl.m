@@ -756,36 +756,36 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding
 {
     NSParameterAssert(aBinding != nil);
-    
+
     NSDictionary* bindingInfo = [self infoForBinding:aBinding];
-    
+
     if(!bindingInfo || (id)bindingInfo == [NSNull null])
         return;
-    
+
     NSObject *boundObject = bindingInfo[NSObservedObjectKey];
-    
+
     if(!boundObject || (id)boundObject == [NSNull null])
         [NSException raise:NSInternalInconsistencyException format:@"NSObservedObjectKey MUST NOT be nil for binding \"%@\"", aBinding];
-    
+
     NSString* boundKeyPath = bindingInfo[NSObservedKeyPathKey];
-    
+
     if(!boundKeyPath || (id)boundKeyPath == [NSNull null])
         [NSException raise:NSInternalInconsistencyException format:@"NSObservedKeyPathKey MUST NOT be nil for binding \"%@\"", aBinding];
-    
+
     NSDictionary* bindingOptions = bindingInfo[NSOptionsKey];
-    
+
     if(bindingOptions)
     {
         NSValueTransformer* transformer = [bindingOptions valueForKey:NSValueTransformerBindingOption];
-        
+
         if(!transformer || (id)transformer == [NSNull null])
         {
             NSString* transformerName = [bindingOptions valueForKey:NSValueTransformerNameBindingOption];
-            
+
             if(transformerName && (id)transformerName != [NSNull null])
                 transformer = [NSValueTransformer valueTransformerForName:transformerName];
         }
-        
+
         if(transformer && (id)transformer != [NSNull null])
         {
             if([[transformer class] allowsReverseTransformation])
@@ -796,7 +796,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 #endif
         }
     }
-    
+
     [boundObject setValue:aValue forKeyPath:boundKeyPath];
 }
 
@@ -809,7 +809,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     if (NSIsControllerMarker(newValue))
         [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
-    
+
     self.objectValue = newValue;
 }
 
@@ -936,11 +936,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (instancetype)initWithCoder:(NSCoder *)aCoder
 {
     // Since Xcode 6.x, user can configure xib to Prefer Coder.
-    // In that case initWithFrame will never be called.
+    // In that case view will be instantiated with initWithCoder.
     //
-    // awakeFromNib cannot be used to set up defaults for IBDesignable.
-    // At the time it's called, it's impossible to know whether properties
-    // were set by a user they are compiler defaults.
+    // awakeFromNib cannot be used to set up defaults for IBDesignable,
+    // because at the time it's called, it's impossible to know whether properties
+    // were set by a user in xib or they are compilation-time defaults.
     self = [super initWithCoder:aCoder];
 
     if (self)
