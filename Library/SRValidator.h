@@ -38,28 +38,28 @@
 
     @see        SRValidatorDelegate
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSUInteger)aFlags error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError **)outError;
 
 /*!
     Determines whether shortcut is taken in delegate.
 
     @discussion If delegate does not implement appropriate method, returns immediately.
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSUInteger)aFlags error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError **)outError;
 
 /*!
     Determines whether shortcut is taken by system-wide shortcuts.
 
     @discussion Does not check whether delegate allows or disallows checking in system shortcuts.
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSUInteger)aFlags error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError **)outError;
 
 /*!
     Determines whether shortcut is taken by application menu item.
 
     @discussion Does not check whether delegate allows or disallows checking in application menu.
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSUInteger)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError;
 
 @end
 
@@ -83,7 +83,7 @@
 
     @discussion Implementation of this method by the delegate is optional. If it is not present, checking proceeds as if this method had returned YES.
  */
-- (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSUInteger)aFlags reason:(NSString **)outReason;
+- (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags reason:(NSString **)outReason;
 
 /*!
     Asks the delegate whether validator should check key equivalents of app's menu items.

@@ -41,7 +41,7 @@
 
 #pragma mark Methods
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSUInteger)aFlags error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError **)outError;
 {
     if ([self isKeyCode:aKeyCode andFlagTakenInDelegate:aFlags error:outError])
         return YES;
@@ -63,7 +63,7 @@
     return NO;
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSUInteger)aFlags error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError **)outError
 {
     if (self.delegate)
     {
@@ -103,7 +103,7 @@
     return NO;
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSUInteger)aFlags error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError **)outError
 {
     CFArrayRef s = NULL;
     OSStatus err = CopySymbolicHotKeys(&s);
@@ -157,7 +157,7 @@
     return NO;
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSUInteger)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
 {
     aFlags &= SRCocoaModifierFlagsMask;
 
@@ -171,7 +171,7 @@
         if (![keyEquivalent length])
             continue;
 
-        NSUInteger keyEquivalentModifierMask = menuItem.keyEquivalentModifierMask;
+        NSEventModifierFlags keyEquivalentModifierMask = menuItem.keyEquivalentModifierMask;
 
         if (SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(aKeyCode, aFlags, keyEquivalent, keyEquivalentModifierMask))
         {

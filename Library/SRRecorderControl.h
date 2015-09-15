@@ -27,7 +27,7 @@ extern NSString *const SRShortcutKeyCode;
 /*!
     Modifier flags.
 
-    @discussion NSNumber representation of NSUInteger.
+    @discussion NSNumber representation of NSEventModifierFlags.
                 Optional key of SRRecorderControl's objectValue.
  */
 extern NSString *const SRShortcutModifierFlagsKey;
@@ -70,7 +70,7 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
                 Recommended min width: 100 points
  */
 IB_DESIGNABLE
-@interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner> */
+@interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner, NSNibAwaking> */
 
 /*!
     The receiver’s delegate.
@@ -85,14 +85,14 @@ IB_DESIGNABLE
 
     @discussion Defaults to SRCocoaModifierFlagsMask.
  */
-@property (readonly) NSUInteger allowedModifierFlags;
+@property (readonly) IBInspectable NSEventModifierFlags allowedModifierFlags;
 
 /*!
     Returns an integer bit field indicating required modifier flags.
 
     @discussion Defaults to 0.
  */
-@property (readonly) NSUInteger requiredModifierFlags;
+@property (readonly) IBInspectable NSEventModifierFlags requiredModifierFlags;
 
 /*!
     Determines whether shortcuts without modifier flags are allowed.
@@ -133,7 +133,7 @@ IB_DESIGNABLE
 
     @discussion Defaults to YES.
  */
-@property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic, getter=isEnabled) IBInspectable BOOL enabled;
 
 /*!
     Determines whether recording is in process.
@@ -163,9 +163,14 @@ IB_DESIGNABLE
 
     @see        SRRecorderControlDelegate
  */
-- (void)setAllowedModifierFlags:(NSUInteger)newAllowedModifierFlags
-          requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
+- (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
+          requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
+
+/*!
+    Called to initialize internal state after either initWithFrame or awakeFromNib is called.
+ */
+- (void)_initInternalState;
 
 /*!
     Turns on the recording mode.
@@ -330,7 +335,7 @@ IB_DESIGNABLE
 
     @see    requiredModifierFlags
  */
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
     A helper method to propagate view-driven changes back to model.
@@ -382,7 +387,7 @@ IB_DESIGNABLE
 
     @see    requiredModifierFlags
  */
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
     Asks the delegate if the shortcut can be set by the specified shortcut recorder.
@@ -425,7 +430,7 @@ FOUNDATION_STATIC_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDicti
 }
 
 
-FOUNDATION_STATIC_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSUInteger aModifierFlags, unsigned short aKeyCode)
+FOUNDATION_STATIC_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
 {
     return @{SRShortcutKeyCode: @(aKeyCode), SRShortcutModifierFlagsKey: @(aModifierFlags)};
 }

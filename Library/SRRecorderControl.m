@@ -100,47 +100,52 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self)
     {
-        _allowedModifierFlags = SRCocoaModifierFlagsMask;
-        _requiredModifierFlags = 0;
-        _allowsEmptyModifierFlags = NO;
-        _drawsASCIIEquivalentOfShortcut = YES;
-        _allowsEscapeToCancelRecording = YES;
-        _allowsDeleteToClearShortcutAndEndRecording = YES;
-        _enabled = YES;
-        _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
-        _snapBackButtonToolTipTag = NSIntegerMax;
-
-        if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-        {
-            self.translatesAutoresizingMaskIntoConstraints = NO;
-
-            [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
-                             forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentHuggingPriority:NSLayoutPriorityRequired
-                             forOrientation:NSLayoutConstraintOrientationVertical];
-
-            [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
-                                           forOrientation:NSLayoutConstraintOrientationHorizontal];
-            [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
-                                           forOrientation:NSLayoutConstraintOrientationVertical];
-        }
-
-        if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
-        {
-            _shapeXRadius = _SRRecorderControlShapeXRadius;
-            _shapeYRadious = _SRRecorderControlShapeYRadius;
-        }
-        else
-        {
-            _shapeXRadius = _SRRecorderControlYosemiteShapeXRadius;
-            _shapeYRadious = _SRRecorderControlYosemiteShapeYRadius;
-        }
-
-        [self setToolTip:SRLoc(@"Click to record shortcut")];
-        [self updateTrackingAreas];
+        [self _initInternalState];
     }
 
     return self;
+}
+
+- (void)_initInternalState
+{
+    _allowsEmptyModifierFlags = NO;
+    _drawsASCIIEquivalentOfShortcut = YES;
+    _allowsEscapeToCancelRecording = YES;
+    _allowsDeleteToClearShortcutAndEndRecording = YES;
+    _enabled = YES;
+    _allowedModifierFlags = SRCocoaModifierFlagsMask;
+    _requiredModifierFlags = 0;
+    _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
+    _snapBackButtonToolTipTag = NSIntegerMax;
+
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
+    {
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+
+        [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
+                         forOrientation:NSLayoutConstraintOrientationHorizontal];
+        [self setContentHuggingPriority:NSLayoutPriorityRequired
+                         forOrientation:NSLayoutConstraintOrientationVertical];
+
+        [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                       forOrientation:NSLayoutConstraintOrientationHorizontal];
+        [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
+                                       forOrientation:NSLayoutConstraintOrientationVertical];
+    }
+
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
+    {
+        _shapeXRadius = _SRRecorderControlShapeXRadius;
+        _shapeYRadious = _SRRecorderControlShapeYRadius;
+    }
+    else
+    {
+        _shapeXRadius = _SRRecorderControlYosemiteShapeXRadius;
+        _shapeYRadious = _SRRecorderControlYosemiteShapeYRadius;
+    }
+
+    [self setToolTip:SRLoc(@"Click to record shortcut")];
+    [self updateTrackingAreas];
 }
 
 - (void)dealloc
@@ -151,8 +156,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 #pragma mark Properties
 
-- (void)setAllowedModifierFlags:(NSUInteger)newAllowedModifierFlags
-          requiredModifierFlags:(NSUInteger)newRequiredModifierFlags
+- (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
+          requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags
 {
     newAllowedModifierFlags &= SRCocoaModifierFlagsMask;
@@ -366,7 +371,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
 
         if (modifierFlags)
             label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
@@ -393,7 +398,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        NSUInteger modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
         label = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:@(modifierFlags)];
 
         if (![label length])
@@ -726,7 +731,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return NO;
 }
 
-- (BOOL)areModifierFlagsValid:(NSUInteger)aModifierFlags forKeyCode:(unsigned short)aKeyCode
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
 
@@ -926,6 +931,27 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
+#pragma mark NSCoding
+
+- (instancetype)initWithCoder:(NSCoder *)aCoder
+{
+    // Since Xcode 6.x, user can configure xib to Prefer Coder.
+    // In that case initWithFrame will never be called.
+    //
+    // awakeFromNib cannot be used to set up defaults for IBDesignable.
+    // At the time it's called, it's impossible to know whether properties
+    // were set by a user they are compiler defaults.
+    self = [super initWithCoder:aCoder];
+
+    if (self)
+    {
+        [self _initInternalState];
+    }
+
+    return self;
+}
+
+
 #pragma mark NSView
 
 - (BOOL)isOpaque
@@ -1049,7 +1075,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)updateTrackingAreas
 {
-    static const NSUInteger TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
+    static const NSTrackingAreaOptions TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
 
     if (_mainButtonTrackingArea)
         [self removeTrackingArea:_mainButtonTrackingArea];
@@ -1343,7 +1369,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     if (self.isRecording)
     {
-        NSUInteger modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
+        NSEventModifierFlags modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
         if (modifierFlags != 0 && ![self areModifierFlagsValid:modifierFlags forKeyCode:anEvent.keyCode])
             NSBeep();
 
