@@ -51,12 +51,12 @@
 		BA547C361A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C101A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png */; };
 		BA547C371A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C111A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png */; };
 		BA547C381A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C121A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png */; };
-		BA547C391A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left.png */; };
-		BA547C3A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left@2x.png */; };
-		BA547C3B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle.png */; };
-		BA547C3C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle@2x.png */; };
-		BA547C3D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right.png */; };
-		BA547C3E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right@2x.png */; };
+		BA547C391A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png */; };
+		BA547C3A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png */; };
+		BA547C3B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png */; };
+		BA547C3C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png */; };
+		BA547C3D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png */; };
+		BA547C3E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png */; };
 		BA547C3F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C191A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png */; };
 		BA547C401A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png */; };
 		BA547C411A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png */; };
@@ -89,12 +89,12 @@
 		E225E4701679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4501679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png */; };
 		E225E4711679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4511679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png */; };
 		E225E4721679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4521679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png */; };
-		E225E4731679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left.png */; };
-		E225E4741679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left@2x.png */; };
-		E225E4751679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle.png */; };
-		E225E4761679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle@2x.png */; };
-		E225E4771679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right.png */; };
-		E225E4781679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right@2x.png */; };
+		E225E4731679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png */; };
+		E225E4741679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png */; };
+		E225E4751679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png */; };
+		E225E4761679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png */; };
+		E225E4771679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png */; };
+		E225E4781679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png */; };
 		E225E4791679E30E00A00529 /* shortcut-recorder-bezel-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4591679E30E00A00529 /* shortcut-recorder-bezel-left.png */; };
 		E225E47A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png */; };
 		E225E47B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png */; };
@@ -209,12 +209,12 @@
 		BA547C101A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-middle@2x.png"; sourceTree = "<group>"; };
 		BA547C111A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-right.png"; sourceTree = "<group>"; };
 		BA547C121A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-right@2x.png"; sourceTree = "<group>"; };
-		BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left.png"; sourceTree = "<group>"; };
-		BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left@2x.png"; sourceTree = "<group>"; };
-		BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle.png"; sourceTree = "<group>"; };
-		BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle@2x.png"; sourceTree = "<group>"; };
-		BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right.png"; sourceTree = "<group>"; };
-		BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right@2x.png"; sourceTree = "<group>"; };
+		BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png"; sourceTree = "<group>"; };
+		BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png"; sourceTree = "<group>"; };
+		BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png"; sourceTree = "<group>"; };
+		BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png"; sourceTree = "<group>"; };
+		BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png"; sourceTree = "<group>"; };
+		BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png"; sourceTree = "<group>"; };
 		BA547C191A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-left.png"; sourceTree = "<group>"; };
 		BA547C1A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-left@2x.png"; sourceTree = "<group>"; };
 		BA547C1B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-middle.png"; sourceTree = "<group>"; };
@@ -247,12 +247,12 @@
 		E225E4501679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-middle@2x.png"; sourceTree = "<group>"; };
 		E225E4511679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-right.png"; sourceTree = "<group>"; };
 		E225E4521679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-right@2x.png"; sourceTree = "<group>"; };
-		E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlight-mask-left.png"; sourceTree = "<group>"; };
-		E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlight-mask-left@2x.png"; sourceTree = "<group>"; };
-		E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlight-mask-middle.png"; sourceTree = "<group>"; };
-		E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlight-mask-middle@2x.png"; sourceTree = "<group>"; };
-		E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlight-mask-right.png"; sourceTree = "<group>"; };
-		E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlight-mask-right@2x.png"; sourceTree = "<group>"; };
+		E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-left.png"; sourceTree = "<group>"; };
+		E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-left@2x.png"; sourceTree = "<group>"; };
+		E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-middle.png"; sourceTree = "<group>"; };
+		E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-middle@2x.png"; sourceTree = "<group>"; };
+		E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-right.png"; sourceTree = "<group>"; };
+		E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-right@2x.png"; sourceTree = "<group>"; };
 		E225E4591679E30E00A00529 /* shortcut-recorder-bezel-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-left.png"; sourceTree = "<group>"; };
 		E225E45A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-left@2x.png"; sourceTree = "<group>"; };
 		E225E45B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-middle.png"; sourceTree = "<group>"; };
@@ -467,12 +467,12 @@
 				BA547C101A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png */,
 				BA547C111A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png */,
 				BA547C121A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png */,
-				BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left.png */,
-				BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left@2x.png */,
-				BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle.png */,
-				BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle@2x.png */,
-				BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right.png */,
-				BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right@2x.png */,
+				BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png */,
+				BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png */,
+				BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png */,
+				BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png */,
+				BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png */,
+				BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png */,
 				BA547C191A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png */,
 				BA547C1A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png */,
 				BA547C1B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png */,
@@ -505,12 +505,12 @@
 				E225E4501679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png */,
 				E225E4511679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png */,
 				E225E4521679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png */,
-				E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left.png */,
-				E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left@2x.png */,
-				E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle.png */,
-				E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle@2x.png */,
-				E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right.png */,
-				E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right@2x.png */,
+				E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png */,
+				E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png */,
+				E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png */,
+				E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png */,
+				E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png */,
+				E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png */,
 				E225E4591679E30E00A00529 /* shortcut-recorder-bezel-left.png */,
 				E225E45A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png */,
 				E225E45B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png */,
@@ -724,13 +724,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA547C3C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle@2x.png in Resources */,
+				BA547C3C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png in Resources */,
 				E20A897E17F3322300502E33 /* shortcut-recorder-bezel-disabled-right@2x.png in Resources */,
 				BA547C371A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png in Resources */,
 				E2741AC51673C79F00A139BD /* ShortcutRecorder.strings in Resources */,
 				BA547C351A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle.png in Resources */,
 				E2741ADF1673C83800A139BD /* LICENSE.txt in Resources */,
-				BA547C3E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right@2x.png in Resources */,
+				BA547C3E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png in Resources */,
 				BA547C481A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear@2x.png in Resources */,
 				E20A897C17F3322300502E33 /* shortcut-recorder-bezel-disabled-middle@2x.png in Resources */,
 				E225E4671679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png in Resources */,
@@ -738,7 +738,7 @@
 				E225E4681679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png in Resources */,
 				BA547C291A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png in Resources */,
 				BA547C451A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted.png in Resources */,
-				BA547C3B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle.png in Resources */,
+				BA547C3B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png in Resources */,
 				E225E4691679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png in Resources */,
 				E225E46A1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle@2x.png in Resources */,
 				E225E46B1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right.png in Resources */,
@@ -754,31 +754,31 @@
 				BA547C321A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right@2x.png in Resources */,
 				BA547C4A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted@2x.png in Resources */,
 				E225E4721679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png in Resources */,
-				E225E4731679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left.png in Resources */,
+				E225E4731679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png in Resources */,
 				BA547C2F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle.png in Resources */,
-				E225E4741679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-left@2x.png in Resources */,
-				E225E4751679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle.png in Resources */,
-				E225E4761679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-middle@2x.png in Resources */,
+				E225E4741679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png in Resources */,
+				E225E4751679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png in Resources */,
+				E225E4761679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png in Resources */,
 				BA547C341A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left@2x.png in Resources */,
-				E225E4771679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right.png in Resources */,
+				E225E4771679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png in Resources */,
 				BA547C431A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right.png in Resources */,
 				BA547C2B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right.png in Resources */,
 				BA547C461A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted@2x.png in Resources */,
 				BA547C381A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png in Resources */,
-				E225E4781679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlight-mask-right@2x.png in Resources */,
+				E225E4781679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png in Resources */,
 				BA547C281A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png in Resources */,
 				BA547C301A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle@2x.png in Resources */,
-				BA547C3D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right.png in Resources */,
+				BA547C3D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png in Resources */,
 				E225E4791679E30E00A00529 /* shortcut-recorder-bezel-left.png in Resources */,
 				E225E47A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png in Resources */,
-				BA547C391A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left.png in Resources */,
+				BA547C391A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png in Resources */,
 				BA547C471A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear.png in Resources */,
 				E225E47B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png in Resources */,
 				BA547C2C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png in Resources */,
 				E225E47C1679E30E00A00529 /* shortcut-recorder-bezel-middle@2x.png in Resources */,
 				BA547C2A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png in Resources */,
 				E225E47D1679E30E00A00529 /* shortcut-recorder-bezel-right.png in Resources */,
-				BA547C3A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left@2x.png in Resources */,
+				BA547C3A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png in Resources */,
 				E225E47E1679E30E00A00529 /* shortcut-recorder-bezel-right@2x.png in Resources */,
 				BA547C271A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left.png in Resources */,
 				BA547C311A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right.png in Resources */,
