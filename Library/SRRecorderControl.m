@@ -692,6 +692,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [NSGraphicsContext restoreGraphicsState];
 }
 
+- (CGFloat)backingScaleFactor
+{
+    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6 || self.window == nil)
+        return 1.0;
+    else
+        return self.window.backingScaleFactor;
+}
+
 
 #pragma mark -
 
