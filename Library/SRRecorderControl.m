@@ -526,13 +526,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)drawBackground:(NSRect)aDirtyRect
 {
-    [NSGraphicsContext saveGraphicsState];
-
     NSRect frame = self.bounds;
     frame.size.height = _SRRecorderControlHeight;
 
     if (![self needsToDrawRect:frame])
         return;
+
+    [NSGraphicsContext saveGraphicsState];
 
     if (self.isRecording)
     {
