@@ -326,7 +326,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
 
 #ifdef DEBUG
-    if (labelRect.size.width <= labelSize.width || labelRect.size.height <= labelSize.height)
+    if (labelRect.size.width < labelSize.width || labelRect.size.height < labelSize.height)
         NSLog(@"WARNING: label rect (%@) is smaller than label size (%@). You may want to adjust size of the control.", NSStringFromRect(labelRect), NSStringFromSize(labelSize));
 #endif
 
