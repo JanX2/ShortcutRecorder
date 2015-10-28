@@ -12,6 +12,8 @@
 //      Jamie Kirkpatrick
 //      Ilya Kulakov
 
+#include <limits.h>
+
 #import "SRRecorderControl.h"
 #import "SRKeyCodeTransformer.h"
 #import "SRModifierFlagsTransformer.h"
@@ -1330,7 +1332,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        if (self.allowsEscapeToCancelRecording &&
+        if (anEvent.keyCode == USHRT_MAX)
+        {
+            // This shouldn't really happen ever, but was rarely observed.
+            // See https://github.com/Kentzo/ShortcutRecorder/issues/40
+            return NO;
+        }
+        else if (self.allowsEscapeToCancelRecording &&
             anEvent.keyCode == kVK_Escape &&
             (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
         {
