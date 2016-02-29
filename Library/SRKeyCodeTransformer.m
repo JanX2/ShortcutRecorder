@@ -43,11 +43,6 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     return [self initWithASCIICapableKeyboardInputSource:NO plainStrings:NO];
 }
 
-- (void)dealloc
-{
-    [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
-}
-
 
 #pragma mark Methods
 
