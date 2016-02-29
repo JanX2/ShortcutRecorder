@@ -283,7 +283,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
     if (self.usesASCIICapableKeyboardInputSource)
     {
-        TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
+        TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
 
         if (!tisSource)
             return @"";
@@ -293,7 +293,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     }
     else
     {
-        TISInputSourceRef tisSource = TISCopyCurrentKeyboardInputSource();
+        TISInputSourceRef tisSource = TISCopyCurrentKeyboardLayoutInputSource();
 
         if (!tisSource)
             return @"";
@@ -304,7 +304,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         // For non-unicode layouts such as Chinese, Japanese, and Korean, get the ASCII capable layout
         if (!layoutData)
         {
-            tisSource = TISCopyCurrentASCIICapableKeyboardInputSource();
+            tisSource = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
 
             if (!tisSource)
                 return @"";
