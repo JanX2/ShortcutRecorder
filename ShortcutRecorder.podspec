@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = 'ShortcutRecorder'
   s.homepage = "https://github.com/Kentzo/ShortcutRecorder"
-  s.summary = ""
+  s.summary = "The only user interface control to record shortcuts."
   s.version      = '2.13'
   s.source       = { :git => 'git://github.com/Kentzo/ShortcutRecorder.git',
                      :branch => 'master' }
