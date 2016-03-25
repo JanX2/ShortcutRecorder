@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
   s.name = 'ShortcutRecorder'
   s.homepage = 'https://github.com/Kentzo/ShortcutRecorder'
   s.summary = ''
-  s.version = '2.13'
+  s.version = '2.16'
   s.source = { :git => 'git://github.com/Kentzo/ShortcutRecorder.git', :branch => 'master' }
   s.author = { 'Ilya Kulakov' => 'kulakov.ilya@gmail.com' }
   s.source_files = 'Library/*.{h,m}'
