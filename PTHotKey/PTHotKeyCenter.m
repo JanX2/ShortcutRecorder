@@ -253,7 +253,8 @@ static PTHotKeyCenter *_sharedHotKeyCenter = nil;
     	if( hotKeyID.signature != 'PTHk' )
         	return eventNotHandledErr;
 
-	NSAssert( hotKeyID.id != 0, @"Invalid hot key id" );
+    if (hotKeyID.id == 0)
+        return eventNotHandledErr;
 
 	hotKey = [self _hotKeyForCarbonHotKeyID:hotKeyID];
 
