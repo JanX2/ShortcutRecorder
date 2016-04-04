@@ -269,7 +269,7 @@ static PTHotKeyCenter *_sharedHotKeyCenter = nil;
 		break;
 
 		default:
-			NSAssert( 0, @"Unknown event kind" );
+			return eventNotHandledErr;
 		break;
 	}
 
