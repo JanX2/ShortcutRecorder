@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D39CBD91803EA6C0001F249 /* ShortcutRecorder.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
-		0D39CBDA1803EA6E0001F249 /* PTHotKey.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; };
+		0D39CBD91803EA6C0001F249 /* ShortcutRecorder.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		0D39CBDA1803EA6E0001F249 /* PTHotKey.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		0D6B2469180304DE00CE1142 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2741AE01673C90B00A139BD /* Cocoa.framework */; };
 		0D6B24B4180304FA00CE1142 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 0D6B249B180304FA00CE1142 /* Credits.rtf */; };
 		0D6B24B5180304FA00CE1142 /* IKCodeAutoLayoutWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D6B249D180304FA00CE1142 /* IKCodeAutoLayoutWindowController.xib */; };
@@ -24,6 +24,32 @@
 		0D6B24C0180304FA00CE1142 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6B24B2180304FA00CE1142 /* main.m */; };
 		0D6B24C11803053800CE1142 /* ShortcutRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
 		0D6B24C31803057100CE1142 /* PTHotKey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; };
+		27D7CF991CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF731CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left.png */; };
+		27D7CF9A1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF741CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left@2x.png */; };
+		27D7CF9B1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF751CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle.png */; };
+		27D7CF9C1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF761CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle@2x.png */; };
+		27D7CF9D1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF771CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right.png */; };
+		27D7CF9E1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF781CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right@2x.png */; };
+		27D7CFA51CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF7F1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left.png */; };
+		27D7CFA61CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF801CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left@2x.png */; };
+		27D7CFA71CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF811CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle.png */; };
+		27D7CFA81CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF821CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle@2x.png */; };
+		27D7CFA91CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF831CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right.png */; };
+		27D7CFAA1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF841CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right@2x.png */; };
+		27D7CFB11CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF8B1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left.png */; };
+		27D7CFB21CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF8C1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left@2x.png */; };
+		27D7CFB31CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF8D1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle.png */; };
+		27D7CFB41CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF8E1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle@2x.png */; };
+		27D7CFB51CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF8F1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right.png */; };
+		27D7CFB61CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF901CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right@2x.png */; };
+		27D7CFB71CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF911CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted.png */; };
+		27D7CFB81CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF921CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted@2x.png */; };
+		27D7CFB91CE1E3CD00FB01C1 /* shortcut-recorder-clear.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF931CE1E3CD00FB01C1 /* shortcut-recorder-clear.png */; };
+		27D7CFBA1CE1E3CD00FB01C1 /* shortcut-recorder-clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF941CE1E3CD00FB01C1 /* shortcut-recorder-clear@2x.png */; };
+		27D7CFBB1CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF951CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted.png */; };
+		27D7CFBC1CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF961CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted@2x.png */; };
+		27D7CFBD1CE1E3CD00FB01C1 /* shortcut-recorder-snapback.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF971CE1E3CD00FB01C1 /* shortcut-recorder-snapback.png */; };
+		27D7CFBE1CE1E3CD00FB01C1 /* shortcut-recorder-snapback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27D7CF981CE1E3CD00FB01C1 /* shortcut-recorder-snapback@2x.png */; };
 		939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */; };
 		939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */; };
 		939837990DA429EC007F53F3 /* SRValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670F0A246B4900B69171 /* SRValidator.m */; };
@@ -33,82 +59,6 @@
 		9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670E0A246B4900B69171 /* SRValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		939839400DA4350B007F53F3 /* SRCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C367100A246B4900B69171 /* SRCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BA547C271A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C011A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left.png */; };
-		BA547C281A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C021A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png */; };
-		BA547C291A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C031A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png */; };
-		BA547C2A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C041A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png */; };
-		BA547C2B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C051A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right.png */; };
-		BA547C2C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C061A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png */; };
-		BA547C2D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C071A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left.png */; };
-		BA547C2E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C081A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left@2x.png */; };
-		BA547C2F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C091A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle.png */; };
-		BA547C301A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C0A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle@2x.png */; };
-		BA547C311A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C0B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right.png */; };
-		BA547C321A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C0C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right@2x.png */; };
-		BA547C331A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C0D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left.png */; };
-		BA547C341A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C0E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left@2x.png */; };
-		BA547C351A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C0F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle.png */; };
-		BA547C361A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C101A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png */; };
-		BA547C371A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C111A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png */; };
-		BA547C381A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C121A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png */; };
-		BA547C391A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png */; };
-		BA547C3A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png */; };
-		BA547C3B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png */; };
-		BA547C3C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png */; };
-		BA547C3D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png */; };
-		BA547C3E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png */; };
-		BA547C3F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C191A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png */; };
-		BA547C401A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png */; };
-		BA547C411A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png */; };
-		BA547C421A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle@2x.png */; };
-		BA547C431A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right.png */; };
-		BA547C441A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right@2x.png */; };
-		BA547C451A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C1F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted.png */; };
-		BA547C461A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C201A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted@2x.png */; };
-		BA547C471A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C211A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear.png */; };
-		BA547C481A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C221A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear@2x.png */; };
-		BA547C491A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C231A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted.png */; };
-		BA547C4A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C241A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted@2x.png */; };
-		BA547C4B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C251A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback.png */; };
-		BA547C4C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA547C261A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback@2x.png */; };
-		E20A897917F3322300502E33 /* shortcut-recorder-bezel-disabled-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E20A897317F3322300502E33 /* shortcut-recorder-bezel-disabled-left.png */; };
-		E20A897A17F3322300502E33 /* shortcut-recorder-bezel-disabled-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E20A897417F3322300502E33 /* shortcut-recorder-bezel-disabled-left@2x.png */; };
-		E20A897B17F3322300502E33 /* shortcut-recorder-bezel-disabled-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E20A897517F3322300502E33 /* shortcut-recorder-bezel-disabled-middle.png */; };
-		E20A897C17F3322300502E33 /* shortcut-recorder-bezel-disabled-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E20A897617F3322300502E33 /* shortcut-recorder-bezel-disabled-middle@2x.png */; };
-		E20A897D17F3322300502E33 /* shortcut-recorder-bezel-disabled-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E20A897717F3322300502E33 /* shortcut-recorder-bezel-disabled-right.png */; };
-		E20A897E17F3322300502E33 /* shortcut-recorder-bezel-disabled-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E20A897817F3322300502E33 /* shortcut-recorder-bezel-disabled-right@2x.png */; };
-		E225E4671679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4471679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png */; };
-		E225E4681679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4481679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png */; };
-		E225E4691679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4491679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png */; };
-		E225E46A1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E44A1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle@2x.png */; };
-		E225E46B1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E44B1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right.png */; };
-		E225E46C1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E44C1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right@2x.png */; };
-		E225E46D1679E30E00A00529 /* shortcut-recorder-bezel-editing-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E44D1679E30E00A00529 /* shortcut-recorder-bezel-editing-left.png */; };
-		E225E46E1679E30E00A00529 /* shortcut-recorder-bezel-editing-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E44E1679E30E00A00529 /* shortcut-recorder-bezel-editing-left@2x.png */; };
-		E225E46F1679E30E00A00529 /* shortcut-recorder-bezel-editing-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E44F1679E30E00A00529 /* shortcut-recorder-bezel-editing-middle.png */; };
-		E225E4701679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4501679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png */; };
-		E225E4711679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4511679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png */; };
-		E225E4721679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4521679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png */; };
-		E225E4731679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png */; };
-		E225E4741679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png */; };
-		E225E4751679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png */; };
-		E225E4761679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png */; };
-		E225E4771679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png */; };
-		E225E4781679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png */; };
-		E225E4791679E30E00A00529 /* shortcut-recorder-bezel-left.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4591679E30E00A00529 /* shortcut-recorder-bezel-left.png */; };
-		E225E47A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png */; };
-		E225E47B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png */; };
-		E225E47C1679E30E00A00529 /* shortcut-recorder-bezel-middle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45C1679E30E00A00529 /* shortcut-recorder-bezel-middle@2x.png */; };
-		E225E47D1679E30E00A00529 /* shortcut-recorder-bezel-right.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45D1679E30E00A00529 /* shortcut-recorder-bezel-right.png */; };
-		E225E47E1679E30E00A00529 /* shortcut-recorder-bezel-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45E1679E30E00A00529 /* shortcut-recorder-bezel-right@2x.png */; };
-		E225E47F1679E30E00A00529 /* shortcut-recorder-clear-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E45F1679E30E00A00529 /* shortcut-recorder-clear-highlighted.png */; };
-		E225E4801679E30E00A00529 /* shortcut-recorder-clear-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4601679E30E00A00529 /* shortcut-recorder-clear-highlighted@2x.png */; };
-		E225E4811679E30E00A00529 /* shortcut-recorder-clear.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4611679E30E00A00529 /* shortcut-recorder-clear.png */; };
-		E225E4821679E30E00A00529 /* shortcut-recorder-clear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4621679E30E00A00529 /* shortcut-recorder-clear@2x.png */; };
-		E225E4831679E30E00A00529 /* shortcut-recorder-snapback-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4631679E30E00A00529 /* shortcut-recorder-snapback-highlighted.png */; };
-		E225E4841679E30E00A00529 /* shortcut-recorder-snapback-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4641679E30E00A00529 /* shortcut-recorder-snapback-highlighted@2x.png */; };
-		E225E4851679E30E00A00529 /* shortcut-recorder-snapback.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4651679E30E00A00529 /* shortcut-recorder-snapback.png */; };
-		E225E4861679E30E00A00529 /* shortcut-recorder-snapback@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E225E4661679E30E00A00529 /* shortcut-recorder-snapback@2x.png */; };
 		E273123A1349EDB500A84433 /* PTHotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -180,6 +130,32 @@
 		0D6B24B1180304FA00CE1142 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D6B24B2180304FA00CE1142 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0D6B24B3180304FA00CE1142 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		27D7CF731CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-left.png"; sourceTree = "<group>"; };
+		27D7CF741CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-left@2x.png"; sourceTree = "<group>"; };
+		27D7CF751CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-middle.png"; sourceTree = "<group>"; };
+		27D7CF761CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-middle@2x.png"; sourceTree = "<group>"; };
+		27D7CF771CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-right.png"; sourceTree = "<group>"; };
+		27D7CF781CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-right@2x.png"; sourceTree = "<group>"; };
+		27D7CF7F1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-left.png"; sourceTree = "<group>"; };
+		27D7CF801CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-left@2x.png"; sourceTree = "<group>"; };
+		27D7CF811CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-middle.png"; sourceTree = "<group>"; };
+		27D7CF821CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-middle@2x.png"; sourceTree = "<group>"; };
+		27D7CF831CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-right.png"; sourceTree = "<group>"; };
+		27D7CF841CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-right@2x.png"; sourceTree = "<group>"; };
+		27D7CF8B1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-left.png"; sourceTree = "<group>"; };
+		27D7CF8C1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-left@2x.png"; sourceTree = "<group>"; };
+		27D7CF8D1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-middle.png"; sourceTree = "<group>"; };
+		27D7CF8E1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-middle@2x.png"; sourceTree = "<group>"; };
+		27D7CF8F1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-right.png"; sourceTree = "<group>"; };
+		27D7CF901CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-right@2x.png"; sourceTree = "<group>"; };
+		27D7CF911CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear-highlighted.png"; sourceTree = "<group>"; };
+		27D7CF921CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear-highlighted@2x.png"; sourceTree = "<group>"; };
+		27D7CF931CE1E3CD00FB01C1 /* shortcut-recorder-clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear.png"; sourceTree = "<group>"; };
+		27D7CF941CE1E3CD00FB01C1 /* shortcut-recorder-clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear@2x.png"; sourceTree = "<group>"; };
+		27D7CF951CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback-highlighted.png"; sourceTree = "<group>"; };
+		27D7CF961CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback-highlighted@2x.png"; sourceTree = "<group>"; };
+		27D7CF971CE1E3CD00FB01C1 /* shortcut-recorder-snapback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback.png"; sourceTree = "<group>"; };
+		27D7CF981CE1E3CD00FB01C1 /* shortcut-recorder-snapback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback@2x.png"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Prefix.pch; path = Library/Prefix.pch; sourceTree = "<group>"; };
 		74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRKeyCodeTransformer.h; path = Library/SRKeyCodeTransformer.h; sourceTree = "<group>"; };
 		74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRKeyCodeTransformer.m; path = Library/SRKeyCodeTransformer.m; sourceTree = "<group>"; };
@@ -191,82 +167,6 @@
 		939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = Library/ShortcutRecorder.h; sourceTree = SOURCE_ROOT; };
 		A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCodeTranslator.h; sourceTree = "<group>"; };
 		A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCodeTranslator.m; sourceTree = "<group>"; };
-		BA547C011A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-blue-highlighted-left.png"; sourceTree = "<group>"; };
-		BA547C021A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png"; sourceTree = "<group>"; };
-		BA547C031A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png"; sourceTree = "<group>"; };
-		BA547C041A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png"; sourceTree = "<group>"; };
-		BA547C051A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-blue-highlighted-right.png"; sourceTree = "<group>"; };
-		BA547C061A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png"; sourceTree = "<group>"; };
-		BA547C071A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-disabled-left.png"; sourceTree = "<group>"; };
-		BA547C081A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-disabled-left@2x.png"; sourceTree = "<group>"; };
-		BA547C091A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-disabled-middle.png"; sourceTree = "<group>"; };
-		BA547C0A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-disabled-middle@2x.png"; sourceTree = "<group>"; };
-		BA547C0B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-disabled-right.png"; sourceTree = "<group>"; };
-		BA547C0C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-disabled-right@2x.png"; sourceTree = "<group>"; };
-		BA547C0D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-left.png"; sourceTree = "<group>"; };
-		BA547C0E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-left@2x.png"; sourceTree = "<group>"; };
-		BA547C0F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-middle.png"; sourceTree = "<group>"; };
-		BA547C101A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-middle@2x.png"; sourceTree = "<group>"; };
-		BA547C111A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-right.png"; sourceTree = "<group>"; };
-		BA547C121A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-editing-right@2x.png"; sourceTree = "<group>"; };
-		BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png"; sourceTree = "<group>"; };
-		BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png"; sourceTree = "<group>"; };
-		BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png"; sourceTree = "<group>"; };
-		BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png"; sourceTree = "<group>"; };
-		BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png"; sourceTree = "<group>"; };
-		BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png"; sourceTree = "<group>"; };
-		BA547C191A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-left.png"; sourceTree = "<group>"; };
-		BA547C1A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-left@2x.png"; sourceTree = "<group>"; };
-		BA547C1B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-middle.png"; sourceTree = "<group>"; };
-		BA547C1C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-middle@2x.png"; sourceTree = "<group>"; };
-		BA547C1D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-right.png"; sourceTree = "<group>"; };
-		BA547C1E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-bezel-right@2x.png"; sourceTree = "<group>"; };
-		BA547C1F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-clear-highlighted.png"; sourceTree = "<group>"; };
-		BA547C201A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-clear-highlighted@2x.png"; sourceTree = "<group>"; };
-		BA547C211A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-clear.png"; sourceTree = "<group>"; };
-		BA547C221A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-clear@2x.png"; sourceTree = "<group>"; };
-		BA547C231A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-snapback-highlighted.png"; sourceTree = "<group>"; };
-		BA547C241A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-snapback-highlighted@2x.png"; sourceTree = "<group>"; };
-		BA547C251A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-snapback.png"; sourceTree = "<group>"; };
-		BA547C261A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-yosemite-snapback@2x.png"; sourceTree = "<group>"; };
-		E20A897317F3322300502E33 /* shortcut-recorder-bezel-disabled-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-left.png"; sourceTree = "<group>"; };
-		E20A897417F3322300502E33 /* shortcut-recorder-bezel-disabled-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-left@2x.png"; sourceTree = "<group>"; };
-		E20A897517F3322300502E33 /* shortcut-recorder-bezel-disabled-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-middle.png"; sourceTree = "<group>"; };
-		E20A897617F3322300502E33 /* shortcut-recorder-bezel-disabled-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-middle@2x.png"; sourceTree = "<group>"; };
-		E20A897717F3322300502E33 /* shortcut-recorder-bezel-disabled-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-right.png"; sourceTree = "<group>"; };
-		E20A897817F3322300502E33 /* shortcut-recorder-bezel-disabled-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-disabled-right@2x.png"; sourceTree = "<group>"; };
-		E225E4471679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-left.png"; sourceTree = "<group>"; };
-		E225E4481679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-left@2x.png"; sourceTree = "<group>"; };
-		E225E4491679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-middle.png"; sourceTree = "<group>"; };
-		E225E44A1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-middle@2x.png"; sourceTree = "<group>"; };
-		E225E44B1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-right.png"; sourceTree = "<group>"; };
-		E225E44C1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-blue-highlighted-right@2x.png"; sourceTree = "<group>"; };
-		E225E44D1679E30E00A00529 /* shortcut-recorder-bezel-editing-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-left.png"; sourceTree = "<group>"; };
-		E225E44E1679E30E00A00529 /* shortcut-recorder-bezel-editing-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-left@2x.png"; sourceTree = "<group>"; };
-		E225E44F1679E30E00A00529 /* shortcut-recorder-bezel-editing-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-middle.png"; sourceTree = "<group>"; };
-		E225E4501679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-middle@2x.png"; sourceTree = "<group>"; };
-		E225E4511679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-right.png"; sourceTree = "<group>"; };
-		E225E4521679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-editing-right@2x.png"; sourceTree = "<group>"; };
-		E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-left.png"; sourceTree = "<group>"; };
-		E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-left@2x.png"; sourceTree = "<group>"; };
-		E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-middle.png"; sourceTree = "<group>"; };
-		E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-middle@2x.png"; sourceTree = "<group>"; };
-		E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-right.png"; sourceTree = "<group>"; };
-		E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-graphite-highlighted-right@2x.png"; sourceTree = "<group>"; };
-		E225E4591679E30E00A00529 /* shortcut-recorder-bezel-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-left.png"; sourceTree = "<group>"; };
-		E225E45A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-left@2x.png"; sourceTree = "<group>"; };
-		E225E45B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-middle.png"; sourceTree = "<group>"; };
-		E225E45C1679E30E00A00529 /* shortcut-recorder-bezel-middle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-middle@2x.png"; sourceTree = "<group>"; };
-		E225E45D1679E30E00A00529 /* shortcut-recorder-bezel-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-right.png"; sourceTree = "<group>"; };
-		E225E45E1679E30E00A00529 /* shortcut-recorder-bezel-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-bezel-right@2x.png"; sourceTree = "<group>"; };
-		E225E45F1679E30E00A00529 /* shortcut-recorder-clear-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear-highlighted.png"; sourceTree = "<group>"; };
-		E225E4601679E30E00A00529 /* shortcut-recorder-clear-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear-highlighted@2x.png"; sourceTree = "<group>"; };
-		E225E4611679E30E00A00529 /* shortcut-recorder-clear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear.png"; sourceTree = "<group>"; };
-		E225E4621679E30E00A00529 /* shortcut-recorder-clear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-clear@2x.png"; sourceTree = "<group>"; };
-		E225E4631679E30E00A00529 /* shortcut-recorder-snapback-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback-highlighted.png"; sourceTree = "<group>"; };
-		E225E4641679E30E00A00529 /* shortcut-recorder-snapback-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback-highlighted@2x.png"; sourceTree = "<group>"; };
-		E225E4651679E30E00A00529 /* shortcut-recorder-snapback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback.png"; sourceTree = "<group>"; };
-		E225E4661679E30E00A00529 /* shortcut-recorder-snapback@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shortcut-recorder-snapback@2x.png"; sourceTree = "<group>"; };
 		E273122E1349EC9000A84433 /* PTHotKey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PTHotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E273122F1349EC9000A84433 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = PTHotKey/Info.plist; sourceTree = SOURCE_ROOT; };
 		E273124B1349EE6500A84433 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
@@ -449,82 +349,32 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BA547C011A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left.png */,
-				BA547C021A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png */,
-				BA547C031A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png */,
-				BA547C041A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png */,
-				BA547C051A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right.png */,
-				BA547C061A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png */,
-				BA547C071A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left.png */,
-				BA547C081A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left@2x.png */,
-				BA547C091A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle.png */,
-				BA547C0A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle@2x.png */,
-				BA547C0B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right.png */,
-				BA547C0C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right@2x.png */,
-				BA547C0D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left.png */,
-				BA547C0E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left@2x.png */,
-				BA547C0F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle.png */,
-				BA547C101A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png */,
-				BA547C111A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png */,
-				BA547C121A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png */,
-				BA547C131A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png */,
-				BA547C141A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png */,
-				BA547C151A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png */,
-				BA547C161A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png */,
-				BA547C171A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png */,
-				BA547C181A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png */,
-				BA547C191A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png */,
-				BA547C1A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png */,
-				BA547C1B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png */,
-				BA547C1C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle@2x.png */,
-				BA547C1D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right.png */,
-				BA547C1E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right@2x.png */,
-				BA547C1F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted.png */,
-				BA547C201A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted@2x.png */,
-				BA547C211A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear.png */,
-				BA547C221A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear@2x.png */,
-				BA547C231A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted.png */,
-				BA547C241A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted@2x.png */,
-				BA547C251A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback.png */,
-				BA547C261A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback@2x.png */,
-				E20A897317F3322300502E33 /* shortcut-recorder-bezel-disabled-left.png */,
-				E20A897417F3322300502E33 /* shortcut-recorder-bezel-disabled-left@2x.png */,
-				E20A897517F3322300502E33 /* shortcut-recorder-bezel-disabled-middle.png */,
-				E20A897617F3322300502E33 /* shortcut-recorder-bezel-disabled-middle@2x.png */,
-				E20A897717F3322300502E33 /* shortcut-recorder-bezel-disabled-right.png */,
-				E20A897817F3322300502E33 /* shortcut-recorder-bezel-disabled-right@2x.png */,
-				E225E4471679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png */,
-				E225E4481679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png */,
-				E225E4491679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png */,
-				E225E44A1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle@2x.png */,
-				E225E44B1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right.png */,
-				E225E44C1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right@2x.png */,
-				E225E44D1679E30E00A00529 /* shortcut-recorder-bezel-editing-left.png */,
-				E225E44E1679E30E00A00529 /* shortcut-recorder-bezel-editing-left@2x.png */,
-				E225E44F1679E30E00A00529 /* shortcut-recorder-bezel-editing-middle.png */,
-				E225E4501679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png */,
-				E225E4511679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png */,
-				E225E4521679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png */,
-				E225E4531679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png */,
-				E225E4541679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png */,
-				E225E4551679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png */,
-				E225E4561679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png */,
-				E225E4571679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png */,
-				E225E4581679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png */,
-				E225E4591679E30E00A00529 /* shortcut-recorder-bezel-left.png */,
-				E225E45A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png */,
-				E225E45B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png */,
-				E225E45C1679E30E00A00529 /* shortcut-recorder-bezel-middle@2x.png */,
-				E225E45D1679E30E00A00529 /* shortcut-recorder-bezel-right.png */,
-				E225E45E1679E30E00A00529 /* shortcut-recorder-bezel-right@2x.png */,
-				E225E45F1679E30E00A00529 /* shortcut-recorder-clear-highlighted.png */,
-				E225E4601679E30E00A00529 /* shortcut-recorder-clear-highlighted@2x.png */,
-				E225E4611679E30E00A00529 /* shortcut-recorder-clear.png */,
-				E225E4621679E30E00A00529 /* shortcut-recorder-clear@2x.png */,
-				E225E4631679E30E00A00529 /* shortcut-recorder-snapback-highlighted.png */,
-				E225E4641679E30E00A00529 /* shortcut-recorder-snapback-highlighted@2x.png */,
-				E225E4651679E30E00A00529 /* shortcut-recorder-snapback.png */,
-				E225E4661679E30E00A00529 /* shortcut-recorder-snapback@2x.png */,
+				27D7CF731CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left.png */,
+				27D7CF741CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left@2x.png */,
+				27D7CF751CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle.png */,
+				27D7CF761CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle@2x.png */,
+				27D7CF771CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right.png */,
+				27D7CF781CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right@2x.png */,
+				27D7CF7F1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left.png */,
+				27D7CF801CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left@2x.png */,
+				27D7CF811CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle.png */,
+				27D7CF821CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle@2x.png */,
+				27D7CF831CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right.png */,
+				27D7CF841CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right@2x.png */,
+				27D7CF8B1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left.png */,
+				27D7CF8C1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left@2x.png */,
+				27D7CF8D1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle.png */,
+				27D7CF8E1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle@2x.png */,
+				27D7CF8F1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right.png */,
+				27D7CF901CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right@2x.png */,
+				27D7CF911CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted.png */,
+				27D7CF921CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted@2x.png */,
+				27D7CF931CE1E3CD00FB01C1 /* shortcut-recorder-clear.png */,
+				27D7CF941CE1E3CD00FB01C1 /* shortcut-recorder-clear@2x.png */,
+				27D7CF951CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted.png */,
+				27D7CF961CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted@2x.png */,
+				27D7CF971CE1E3CD00FB01C1 /* shortcut-recorder-snapback.png */,
+				27D7CF981CE1E3CD00FB01C1 /* shortcut-recorder-snapback@2x.png */,
 				E2741ADE1673C83800A139BD /* LICENSE.txt */,
 				E2741AC31673C79F00A139BD /* ShortcutRecorder.strings */,
 			);
@@ -658,7 +508,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0730;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ShortcutRecorder" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -724,84 +574,34 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA547C3C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle@2x.png in Resources */,
-				E20A897E17F3322300502E33 /* shortcut-recorder-bezel-disabled-right@2x.png in Resources */,
-				BA547C371A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right.png in Resources */,
+				27D7CFBB1CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted.png in Resources */,
+				27D7CFB21CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left@2x.png in Resources */,
+				27D7CFB81CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted@2x.png in Resources */,
+				27D7CF9E1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right@2x.png in Resources */,
+				27D7CFA81CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle@2x.png in Resources */,
+				27D7CFA71CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-middle.png in Resources */,
+				27D7CFB31CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle.png in Resources */,
+				27D7CF9C1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle@2x.png in Resources */,
+				27D7CF9A1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left@2x.png in Resources */,
+				27D7CFB61CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right@2x.png in Resources */,
 				E2741AC51673C79F00A139BD /* ShortcutRecorder.strings in Resources */,
-				BA547C351A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle.png in Resources */,
+				27D7CFBE1CE1E3CD00FB01C1 /* shortcut-recorder-snapback@2x.png in Resources */,
+				27D7CFBA1CE1E3CD00FB01C1 /* shortcut-recorder-clear@2x.png in Resources */,
+				27D7CFA51CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left.png in Resources */,
+				27D7CFB11CE1E3CD00FB01C1 /* shortcut-recorder-bezel-left.png in Resources */,
+				27D7CF9B1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-middle.png in Resources */,
 				E2741ADF1673C83800A139BD /* LICENSE.txt in Resources */,
-				BA547C3E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right@2x.png in Resources */,
-				BA547C481A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear@2x.png in Resources */,
-				E20A897C17F3322300502E33 /* shortcut-recorder-bezel-disabled-middle@2x.png in Resources */,
-				E225E4671679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left.png in Resources */,
-				BA547C441A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right@2x.png in Resources */,
-				E225E4681679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-left@2x.png in Resources */,
-				BA547C291A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle.png in Resources */,
-				BA547C451A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted.png in Resources */,
-				BA547C3B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-middle.png in Resources */,
-				E225E4691679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle.png in Resources */,
-				E225E46A1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-middle@2x.png in Resources */,
-				E225E46B1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right.png in Resources */,
-				E20A897B17F3322300502E33 /* shortcut-recorder-bezel-disabled-middle.png in Resources */,
-				E225E46C1679E30E00A00529 /* shortcut-recorder-bezel-blue-highlighted-right@2x.png in Resources */,
-				E225E46D1679E30E00A00529 /* shortcut-recorder-bezel-editing-left.png in Resources */,
-				E225E46E1679E30E00A00529 /* shortcut-recorder-bezel-editing-left@2x.png in Resources */,
-				E225E46F1679E30E00A00529 /* shortcut-recorder-bezel-editing-middle.png in Resources */,
-				E225E4701679E30E00A00529 /* shortcut-recorder-bezel-editing-middle@2x.png in Resources */,
-				BA547C421A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle@2x.png in Resources */,
-				E225E4711679E30E00A00529 /* shortcut-recorder-bezel-editing-right.png in Resources */,
-				BA547C361A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-middle@2x.png in Resources */,
-				BA547C321A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right@2x.png in Resources */,
-				BA547C4A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted@2x.png in Resources */,
-				E225E4721679E30E00A00529 /* shortcut-recorder-bezel-editing-right@2x.png in Resources */,
-				E225E4731679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left.png in Resources */,
-				BA547C2F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle.png in Resources */,
-				E225E4741679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-left@2x.png in Resources */,
-				E225E4751679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle.png in Resources */,
-				E225E4761679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-middle@2x.png in Resources */,
-				BA547C341A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left@2x.png in Resources */,
-				E225E4771679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right.png in Resources */,
-				BA547C431A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-right.png in Resources */,
-				BA547C2B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right.png in Resources */,
-				BA547C461A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear-highlighted@2x.png in Resources */,
-				BA547C381A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-right@2x.png in Resources */,
-				E225E4781679E30E00A00529 /* shortcut-recorder-bezel-graphite-highlighted-right@2x.png in Resources */,
-				BA547C281A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left@2x.png in Resources */,
-				BA547C301A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-middle@2x.png in Resources */,
-				BA547C3D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-right.png in Resources */,
-				E225E4791679E30E00A00529 /* shortcut-recorder-bezel-left.png in Resources */,
-				E225E47A1679E30E00A00529 /* shortcut-recorder-bezel-left@2x.png in Resources */,
-				BA547C391A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left.png in Resources */,
-				BA547C471A5FD45B00C45C31 /* shortcut-recorder-yosemite-clear.png in Resources */,
-				E225E47B1679E30E00A00529 /* shortcut-recorder-bezel-middle.png in Resources */,
-				BA547C2C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-right@2x.png in Resources */,
-				E225E47C1679E30E00A00529 /* shortcut-recorder-bezel-middle@2x.png in Resources */,
-				BA547C2A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-middle@2x.png in Resources */,
-				E225E47D1679E30E00A00529 /* shortcut-recorder-bezel-right.png in Resources */,
-				BA547C3A1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-graphite-highlighted-left@2x.png in Resources */,
-				E225E47E1679E30E00A00529 /* shortcut-recorder-bezel-right@2x.png in Resources */,
-				BA547C271A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-blue-highlighted-left.png in Resources */,
-				BA547C311A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-right.png in Resources */,
-				E225E47F1679E30E00A00529 /* shortcut-recorder-clear-highlighted.png in Resources */,
-				E225E4801679E30E00A00529 /* shortcut-recorder-clear-highlighted@2x.png in Resources */,
-				E20A897A17F3322300502E33 /* shortcut-recorder-bezel-disabled-left@2x.png in Resources */,
-				BA547C3F1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left.png in Resources */,
-				BA547C331A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-editing-left.png in Resources */,
-				BA547C401A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-left@2x.png in Resources */,
-				E20A897D17F3322300502E33 /* shortcut-recorder-bezel-disabled-right.png in Resources */,
-				E225E4811679E30E00A00529 /* shortcut-recorder-clear.png in Resources */,
-				BA547C2D1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left.png in Resources */,
-				BA547C491A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback-highlighted.png in Resources */,
-				BA547C2E1A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-disabled-left@2x.png in Resources */,
-				E225E4821679E30E00A00529 /* shortcut-recorder-clear@2x.png in Resources */,
-				E225E4831679E30E00A00529 /* shortcut-recorder-snapback-highlighted.png in Resources */,
-				E225E4841679E30E00A00529 /* shortcut-recorder-snapback-highlighted@2x.png in Resources */,
-				E225E4851679E30E00A00529 /* shortcut-recorder-snapback.png in Resources */,
-				E225E4861679E30E00A00529 /* shortcut-recorder-snapback@2x.png in Resources */,
-				BA547C4C1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback@2x.png in Resources */,
-				BA547C411A5FD45B00C45C31 /* shortcut-recorder-yosemite-bezel-middle.png in Resources */,
-				BA547C4B1A5FD45B00C45C31 /* shortcut-recorder-yosemite-snapback.png in Resources */,
-				E20A897917F3322300502E33 /* shortcut-recorder-bezel-disabled-left.png in Resources */,
+				27D7CFBD1CE1E3CD00FB01C1 /* shortcut-recorder-snapback.png in Resources */,
+				27D7CFBC1CE1E3CD00FB01C1 /* shortcut-recorder-snapback-highlighted@2x.png in Resources */,
+				27D7CFA91CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right.png in Resources */,
+				27D7CFB71CE1E3CD00FB01C1 /* shortcut-recorder-clear-highlighted.png in Resources */,
+				27D7CF991CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-left.png in Resources */,
+				27D7CF9D1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-disabled-right.png in Resources */,
+				27D7CFB51CE1E3CD00FB01C1 /* shortcut-recorder-bezel-right.png in Resources */,
+				27D7CFAA1CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-right@2x.png in Resources */,
+				27D7CFB91CE1E3CD00FB01C1 /* shortcut-recorder-clear.png in Resources */,
+				27D7CFB41CE1E3CD00FB01C1 /* shortcut-recorder-bezel-middle@2x.png in Resources */,
+				27D7CFA61CE1E3CD00FB01C1 /* shortcut-recorder-bezel-editing-left@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -964,6 +764,7 @@
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kulakov.ShortcutRecorder.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -997,6 +798,7 @@
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kulakov.ShortcutRecorder.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1016,6 +818,7 @@
 				GCC_PREFIX_HEADER = Library/Prefix.pch;
 				INFOPLIST_FILE = Library/Info.plist;
 				INSTALL_PATH = "@rpath";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder;
 				PRODUCT_NAME = ShortcutRecorder;
 				PROVISIONING_PROFILE = "";
 			};
@@ -1034,6 +837,7 @@
 				GCC_PREFIX_HEADER = Library/Prefix.pch;
 				INFOPLIST_FILE = Library/Info.plist;
 				INSTALL_PATH = "@rpath";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder;
 				PRODUCT_NAME = ShortcutRecorder;
 				PROVISIONING_PROFILE = "";
 			};
@@ -1046,6 +850,7 @@
 				CLANG_X86_VECTOR_INSTRUCTIONS = ssse3;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_VERSION = "";
@@ -1054,7 +859,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -1076,7 +881,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = "-Wall";
@@ -1105,6 +910,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.PTHotKey;
 				PRODUCT_NAME = PTHotKey;
 			};
 			name = Debug;
@@ -1129,6 +935,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.PTHotKey;
 				PRODUCT_NAME = PTHotKey;
 			};
 			name = Release;
