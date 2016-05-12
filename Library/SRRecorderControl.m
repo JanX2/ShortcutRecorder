@@ -36,9 +36,9 @@ static const CGFloat _SRRecorderControlShapeYRadius = 4.5;
 
 static const CGFloat _SRRecorderControlHeight = 25.0;
 
-static const CGFloat _SRRecorderControlInset = 0.5;
+static const CGFloat _SRRecorderControlInset = 1.0;
 
-static const CGFloat _SRRecorderControlBottomShadowHeight = 0.5;
+static const CGFloat _SRRecorderControlBottomShadowHeight = 1.0;
 
 // TODO: see baselineOffsetFromBottom
 // static const CGFloat _SRRecorderControlBaselineOffset = 5.0;
@@ -267,11 +267,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSBezierPath *)controlShape
 {
-    NSRect shapeBounds = self.bounds;
-	shapeBounds.size.height = _SRRecorderControlHeight;
-	shapeBounds = NSInsetRect(shapeBounds, _SRRecorderControlInset, _SRRecorderControlInset);
-    shapeBounds.size.height -= self.alignmentRectInsets.bottom;
+    NSRect shapeBounds = [self controlShapeBounds];
     return [NSBezierPath bezierPathWithRoundedRect:shapeBounds xRadius:_shapeXRadius yRadius:_shapeYRadius];
+}
+
+- (CGRect)controlShapeBounds {
+    NSRect bounds = self.bounds;
+	bounds.size.height = _SRRecorderControlHeight;
+	bounds = NSInsetRect(bounds, _SRRecorderControlInset, _SRRecorderControlInset);
+	bounds.size.height -= self.alignmentRectInsets.bottom;
+	return bounds;
 }
 
 - (NSRect)rectForLabel:(NSAttributedString *)aLabel
@@ -548,8 +553,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSRect frame = self.bounds;
     frame.size.height = _SRRecorderControlHeight;
 
-    if (![self needsToDrawRect:frame])
-        return;
+    if ([self needsToDrawRect:frame] == NO) return;
 
     [NSGraphicsContext saveGraphicsState];
 
@@ -1014,7 +1018,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (NSRect)focusRingMaskBounds
 {
     if (self.enabled && self.window.firstResponder == self)
-        return self.controlShape.bounds;
+        return self.controlShapeBounds;
     else
         return NSZeroRect;
 }

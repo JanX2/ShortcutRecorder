@@ -209,6 +209,13 @@ IB_DESIGNABLE
 - (NSBezierPath *)controlShape;
 
 /*!
+    Returns bounds rect of the control.
+
+    @discussion Primarily used to draw appropriate focus ring.
+ */
+- (CGRect)controlShapeBounds;
+
+/*!
     Returns rect for label with given attributes.
 
     @param  aLabel Label for drawing.
