@@ -1,9 +1,8 @@
 ShortcutRecorder 2
 ====================
-![pre-Yosemite ShortcutRecorder Preview](Demo/example.png)
-![Yosemite ShortcutRecorder Preview](Demo/example-yosemite.png)
+![Yosemite ShortcutRecorder Preview](Demo/example.png)
 
-The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
+The only user interface control to record shortcuts. For Mac OS X 10.7+, 64bit.
 
 - :microscope: Support for Xcode 6 Quick Help
 - :microscope: Support for Xcode 6 Interface Builder integration
