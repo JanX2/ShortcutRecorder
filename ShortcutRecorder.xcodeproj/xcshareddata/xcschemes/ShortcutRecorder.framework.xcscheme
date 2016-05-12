@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9398377F0DA42965007F53F3"
                BuildableName = "ShortcutRecorder.framework"
-               BlueprintName = "ShortcutRecorder.framework"
+               BlueprintName = "ShortcutRecorder"
                ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9398377F0DA42965007F53F3"
             BuildableName = "ShortcutRecorder.framework"
-            BlueprintName = "ShortcutRecorder.framework"
+            BlueprintName = "ShortcutRecorder"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9398377F0DA42965007F53F3"
             BuildableName = "ShortcutRecorder.framework"
-            BlueprintName = "ShortcutRecorder.framework"
+            BlueprintName = "ShortcutRecorder"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
