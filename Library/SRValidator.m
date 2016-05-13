@@ -90,7 +90,7 @@
                                          shortcut,
                                          delegateReason] :
 										 [NSString stringWithFormat:
-                                         SRLoc(@"The key combination \"%@\" can't be used because it's already in use."),
+                                         SRLoc(@"The key combination \"%@\" is already in use."),
                                          shortcut];
 
                 NSDictionary *userInfo = @{
