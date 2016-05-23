@@ -484,7 +484,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         SmallNormalAttributes = @{
             NSParagraphStyleAttributeName: [p copy],
-            NSFontAttributeName: [NSFont labelFontOfSize:[NSFont systemFontSize]-1.0],
+            NSFontAttributeName: [NSFont labelFontOfSize:[NSFont smallSystemFontSize]],
             NSForegroundColorAttributeName: [NSColor controlTextColor]
         };
     });
@@ -520,7 +520,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         SmallRecordingAttributes = @{
             NSParagraphStyleAttributeName: [p copy],
-            NSFontAttributeName: [NSFont labelFontOfSize:[NSFont systemFontSize]-1.0],
+            NSFontAttributeName: [NSFont labelFontOfSize:[NSFont smallSystemFontSize]],
             NSForegroundColorAttributeName: [NSColor disabledControlTextColor]
         };
     });
