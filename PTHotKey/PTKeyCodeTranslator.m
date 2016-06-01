@@ -43,9 +43,7 @@
 
 - (void)dealloc
 {
-    [super dealloc];
 	CFRelease(keyboardLayout);
-
 }
 
 - (NSString *)translateKeyCode:(short)keyCode {
