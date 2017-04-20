@@ -16,21 +16,34 @@ The only user interface control to record shortcuts. For Mac OS X 10.7+, 64bit.
 
 Includes framework to set global shortcuts (PTHotKey).
 
-Get Sources
------------
-The preferred way to add the ShortcutRecorder to your project is to use git submodules:
-`git submodule add git://github.com/Kentzo/ShortcutRecorder.git`
-You can download sources from the site as well.
-
 Integrate into your project
 ---------------------------
-First, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
 
-Next step is to ensure your target is linked against the ShortcutRecorder or/and PTHotKey frameworks ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html#//apple_ref/doc/uid/TP40010155-CH17)). Desired frameworks will be listed under *Workspace*.
+There are two ways to integrate ShortcutRecorder into your project. You can either add ShortcutRecorder using a git submodule and add it as a framework or declare a CocoaPods dependency for your project.
 
-Now it's time to make frameworks part of your app. To do this, you need to add custom Build Phase ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/CreatingaCopyFilesBuildPhase.html)). Remember to set *Destination* to *Frameworks* and clean up *Subpath*.
+### Integrating using a git submodule and adding it as a framework
 
-Finally, ensure your app will find frameworks upon start. Open Build Settings of your target, look up *Runtime Search Paths*. Add `@executable_path/../Frameworks` to the list of paths.
+1. Add ShortcutRecorder to your project using git submodules. Alternatievly download the sources from the repository site.
+
+    `git submodule add git://github.com/Kentzo/ShortcutRecorder.git`
+2. Next, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
+3. Ensure that your target is linked against the ShortcutRecorder or/and PTHotKey frameworks ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html#//apple_ref/doc/uid/TP40010155-CH17)). Desired frameworks will be listed under *Workspace*.
+4. Now it's time to make frameworks part of your app. To do this, you need to add custom Build Phase ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/CreatingaCopyFilesBuildPhase.html)). Remember to set *Destination* to *Frameworks* and clean up *Subpath*.
+5. Finally, ensure your app will find frameworks upon start. Open Build Settings of your target, look up *Runtime Search Paths*. Add `@executable_path/../Frameworks` to the list of paths.
+
+### Integrating using a CocoaPods dependency
+
+1. [Install CocoaPods](https://guides.cocoapods.org/using/getting-started.html) if you haven't installed this dependency manager yet.
+2. Create a file named `Podfile` in your project's root directory (or run `pod init`) and add a dependency to ShortcutRecorder using the following file content. If you want to use a specific release version instead of latest release, replace the `:branch` attribute with `:tag => '2.17'`.
+
+    ```
+    platform :osx, '10.9'
+    use_frameworks!
+    pod 'ShortcutRecorder/Core', :git => 'https://github.com/Kentzo/ShortcutRecorder', :branch => 'master'
+    ```
+3. Run `pod install` from your project's root directory.
+4. From now on open the newly created Xcode workspace to modify and run your application.
+
 
 Add control in Interface Builder
 --------------------------------
