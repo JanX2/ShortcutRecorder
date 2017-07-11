@@ -110,10 +110,10 @@ The drawback is that position of the character on keyboard may change depending 
 
 NSButton
 --------
-If you're going to bind ShortcutRecorder to key equivalent of NSButton, I encourage you to require `NSCommandKeyMask`.
-This is because NSButton handles key equivalents very strange. Rather than investigating full information of the keyboard event, it just asks for `charactersIgnoringModifiers`
-and compares returned value with its `keyEquivalent`. Unfortunately, Cocoa returns layout-independent (ASCII) representation of characters only when NSCommandKeyMask is set.
-If it's not set, assigned shortcut likely won't work with other layouts.
+If you're going to bind ShortcutRecorder to the key equivalent of an NSButton, I encourage you to require `NSCommandKeyMask`.
+This is because NSButton handles key equivalents in a very strange way. Rather than investigating all information available for the keyboard event, it just checks `charactersIgnoringModifiers`
+and compares the returned value with its `keyEquivalent`. Unfortunately, Cocoa returns keyboard-layout-independent (ASCII) representation of characters only when NSCommandKeyMask is set.
+If it's not set, the assigned shortcut likely won't work with other layouts.
 
 Coding Style
 ------------
