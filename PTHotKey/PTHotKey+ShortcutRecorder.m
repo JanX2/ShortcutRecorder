@@ -41,7 +41,7 @@
                             target:(id)aTarget
                             action:(SEL)anAction
                        keyUpAction:(SEL)aKeyUpAction
-{				
+{
     PTHotKey *newHotKey = [PTHotKey hotKeyWithIdentifier:anIdentifier
                                                 keyCombo:aKeyCombo
                                                   target:aTarget

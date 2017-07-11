@@ -68,7 +68,7 @@ NSString *SRLoc(NSString *aKey)
 
 NSImage *SRImage(NSString *anImageName)
 {
-	return [SRBundle() imageForResource:anImageName];
+    return [SRBundle() imageForResource:anImageName];
 }
 
 

@@ -85,11 +85,11 @@
                 NSString *failureReason = [NSString stringWithFormat:
                                            SRLoc(@"The key combination \"%@\" can't be used!"),
                                            shortcut];
-				NSString *description = ([delegateReason length]) ? [NSString stringWithFormat:
+                NSString *description = ([delegateReason length]) ? [NSString stringWithFormat:
                                          SRLoc(@"The key combination \"%@\" can't be used because %@."),
                                          shortcut,
                                          delegateReason] :
-										 [NSString stringWithFormat:
+                                         [NSString stringWithFormat:
                                          SRLoc(@"The key combination \"%@\" is already in use."),
                                          shortcut];
 
@@ -222,11 +222,11 @@
     }
     while (currentMenuItem && i < Limit);
 
-	NSMutableArray *titles = [[NSMutableArray alloc] initWithCapacity:items.count];
+    NSMutableArray *titles = [[NSMutableArray alloc] initWithCapacity:items.count];
     for (NSMenuItem *menuItem in items) {
-		NSString *title = menuItem.title;
-		if (title) [titles addObject:title];
-	}
+        NSString *title = menuItem.title;
+        if (title) [titles addObject:title];
+    }
 
     return [titles componentsJoinedByString:@" → "];
 }

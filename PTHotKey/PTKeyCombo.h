@@ -10,8 +10,8 @@
 
 @interface PTKeyCombo : NSObject <NSCopying>
 {
-	NSInteger	mKeyCode;
-	NSUInteger	mModifiers;
+    NSInteger   mKeyCode;
+    NSUInteger  mModifiers;
 }
 
 + (id)clearKeyCombo;

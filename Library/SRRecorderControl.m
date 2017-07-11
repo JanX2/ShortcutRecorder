@@ -118,18 +118,18 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     _snapBackButtonToolTipTag = NSIntegerMax;
 
-	self.translatesAutoresizingMaskIntoConstraints = NO;
-	[self setContentHuggingPriority:NSLayoutPriorityDefaultLow
-					 forOrientation:NSLayoutConstraintOrientationHorizontal];
-	[self setContentHuggingPriority:NSLayoutPriorityRequired
-					 forOrientation:NSLayoutConstraintOrientationVertical];
-	[self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
-								   forOrientation:NSLayoutConstraintOrientationHorizontal];
-	[self setContentCompressionResistancePriority:NSLayoutPriorityRequired
-								   forOrientation:NSLayoutConstraintOrientationVertical];
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
+                     forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [self setContentHuggingPriority:NSLayoutPriorityRequired
+                     forOrientation:NSLayoutConstraintOrientationVertical];
+    [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                   forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
+                                   forOrientation:NSLayoutConstraintOrientationVertical];
 
-	_shapeXRadius = _SRRecorderControlShapeXRadius;
-	_shapeYRadius = _SRRecorderControlShapeYRadius;
+    _shapeXRadius = _SRRecorderControlShapeXRadius;
+    _shapeYRadius = _SRRecorderControlShapeYRadius;
 
     [self setToolTip:SRLoc(@"Click to record shortcut")];
     [self updateTrackingAreas];
@@ -273,10 +273,10 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (CGRect)controlShapeBounds {
     NSRect bounds = self.bounds;
-	bounds.size.height = _SRRecorderControlHeight;
-	bounds = NSInsetRect(bounds, _SRRecorderControlInset, _SRRecorderControlInset);
-	bounds.size.height -= self.alignmentRectInsets.bottom;
-	return bounds;
+    bounds.size.height = _SRRecorderControlHeight;
+    bounds = NSInsetRect(bounds, _SRRecorderControlInset, _SRRecorderControlInset);
+    bounds.size.height -= self.alignmentRectInsets.bottom;
+    return bounds;
 }
 
 - (NSRect)rectForLabel:(NSAttributedString *)aLabel
@@ -285,7 +285,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSRect enclosingRect = NSInsetRect(self.bounds, _shapeXRadius, 0.0);
     labelSize.width = fmin(ceil(labelSize.width), NSWidth(enclosingRect));
     labelSize.height = ceil(labelSize.height);
-	NSDictionary *attributes = [aLabel attributesAtIndex:0 effectiveRange:NULL];
+    NSDictionary *attributes = [aLabel attributesAtIndex:0 effectiveRange:NULL];
     CGFloat fontBaselineOffsetFromTop = labelSize.height + [attributes[NSFontAttributeName] descender];
     CGFloat baselineOffsetFromTop = _SRRecorderControlHeight - self.baselineOffsetFromBottom;
     NSRect labelRect = {
@@ -359,37 +359,37 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (NSAttributedString *)label
 {
     NSString *label = nil;
-	NSDictionary *attributes = nil;
+    NSDictionary *attributes = nil;
 
     if (self.isRecording) {
 
-		NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-		attributes = [self recordingLabelAttributes];
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        attributes = [self recordingLabelAttributes];
 
-		if (modifierFlags) {
-			label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
-		} else {
-			label = self.stringValue;
-		}
+        if (modifierFlags) {
+            label = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:@(modifierFlags)];
+        } else {
+            label = self.stringValue;
+        }
 
-		if (![label length]) {
-			label = SRLoc(@"Type shortcut");
-			attributes = [self smallRecordingLabelAttributes];
-		}
+        if (![label length]) {
+            label = SRLoc(@"Type shortcut");
+            attributes = [self smallRecordingLabelAttributes];
+        }
 
     } else {
 
         label = self.stringValue;
-		attributes = [self normalLabelAttributes];
+        attributes = [self normalLabelAttributes];
 
         if (![label length]) {
             label = SRLoc(@"Click to record shortcut");
-			attributes = [self smallNormalLabelAttributes];
-		}
+            attributes = [self smallNormalLabelAttributes];
+        }
 
     }
 
-	NSAttributedString *attributedLabel = [[NSAttributedString alloc] initWithString:label attributes:attributes];
+    NSAttributedString *attributedLabel = [[NSAttributedString alloc] initWithString:label attributes:attributes];
     return attributedLabel;
 }
 
@@ -557,13 +557,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     [NSGraphicsContext saveGraphicsState];
 
-	if (self.isRecording) {
-		NSDrawThreePartImage(frame,_SRImages[3],_SRImages[4],_SRImages[5],NO,NSCompositeSourceOver,1.0,self.isFlipped);
-	} else if (self.enabled) {
-		NSDrawThreePartImage(frame,_SRImages[0],_SRImages[1],_SRImages[2],NO,NSCompositeSourceOver,1.0,self.isFlipped);
-	} else {
-		NSDrawThreePartImage(frame,_SRImages[6],_SRImages[7],_SRImages[8],NO,NSCompositeSourceOver,1.0,self.isFlipped);
-	}
+    if (self.isRecording) {
+        NSDrawThreePartImage(frame,_SRImages[3],_SRImages[4],_SRImages[5],NO,NSCompositeSourceOver,1.0,self.isFlipped);
+    } else if (self.enabled) {
+        NSDrawThreePartImage(frame,_SRImages[0],_SRImages[1],_SRImages[2],NO,NSCompositeSourceOver,1.0,self.isFlipped);
+    } else {
+        NSDrawThreePartImage(frame,_SRImages[6],_SRImages[7],_SRImages[8],NO,NSCompositeSourceOver,1.0,self.isFlipped);
+    }
 
     [NSGraphicsContext restoreGraphicsState];
 }
@@ -573,47 +573,47 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 //    NSRect frame = self.bounds;
 //    if (![self needsToDrawRect:frame]) return;
 //
-//	// TODO: currently all states have the same background
-//	//    if (self.isRecording) {
-//	//
-//	//    } else if (self.isMainButtonHighlighted) {
-//	//
-//	//	} else if (self.enabled) {
-//	//
-//	//	} else {
-//	//
-//	//	}
+//    // TODO: currently all states have the same background
+//    //    if (self.isRecording) {
+//    //
+//    //    } else if (self.isMainButtonHighlighted) {
+//    //
+//    //    } else if (self.enabled) {
+//    //
+//    //    } else {
+//    //
+//    //    }
 //
-//	CGFloat xRadius = _SRRecorderControlShapeXRadius;
-//	CGFloat yRadius = _SRRecorderControlShapeYRadius;
-//	CGFloat bottomOffset = self.alignmentRectInsets.bottom;
+//    CGFloat xRadius = _SRRecorderControlShapeXRadius;
+//    CGFloat yRadius = _SRRecorderControlShapeYRadius;
+//    CGFloat bottomOffset = self.alignmentRectInsets.bottom;
 //
 //    [NSGraphicsContext saveGraphicsState];
 //
-//	// Draw the shadow
+//    // Draw the shadow
 //
-//	NSRect shadowFrame = frame;
-//	shadowFrame.size.height -= bottomOffset / 2.0;
-//	NSBezierPath *shadowPath = [NSBezierPath bezierPathWithRoundedRect:shadowFrame xRadius:xRadius yRadius:yRadius];
-//	[[NSColor colorWithWhite:0.0 alpha:0.04] setFill];
-//	[shadowPath fill];
+//    NSRect shadowFrame = frame;
+//    shadowFrame.size.height -= bottomOffset / 2.0;
+//    NSBezierPath *shadowPath = [NSBezierPath bezierPathWithRoundedRect:shadowFrame xRadius:xRadius yRadius:yRadius];
+//    [[NSColor colorWithWhite:0.0 alpha:0.04] setFill];
+//    [shadowPath fill];
 //
-//	NSRect outlineFrame = NSInsetRect(frame,0.5,0.5);
-//	outlineFrame.size.height -= bottomOffset;
-//	NSBezierPath *outlinePath = [NSBezierPath bezierPathWithRoundedRect:outlineFrame xRadius:xRadius-0.5 yRadius:yRadius-0.5];
-//	[[NSColor colorWithWhite:0.0 alpha:0.15] setFill];
-//	[outlinePath fill];
+//    NSRect outlineFrame = NSInsetRect(frame,0.5,0.5);
+//    outlineFrame.size.height -= bottomOffset;
+//    NSBezierPath *outlinePath = [NSBezierPath bezierPathWithRoundedRect:outlineFrame xRadius:xRadius-0.5 yRadius:yRadius-0.5];
+//    [[NSColor colorWithWhite:0.0 alpha:0.15] setFill];
+//    [outlinePath fill];
 //
-//	// Fill the main shape
+//    // Fill the main shape
 //
-//	NSRect mainFrame = NSInsetRect(frame,1.0,1.0);
-//	mainFrame.size.height -= bottomOffset;
-//	NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:mainFrame xRadius:xRadius-1.0 yRadius:yRadius-1.0];
-//	NSColor *color = [NSColor colorWithWhite:0.98 alpha:1.0];
-//	[color setFill];
-//	[path fill];
+//    NSRect mainFrame = NSInsetRect(frame,1.0,1.0);
+//    mainFrame.size.height -= bottomOffset;
+//    NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:mainFrame xRadius:xRadius-1.0 yRadius:yRadius-1.0];
+//    NSColor *color = [NSColor colorWithWhite:0.98 alpha:1.0];
+//    [color setFill];
+//    [path fill];
 //
-//	[NSGraphicsContext restoreGraphicsState];
+//    [NSGraphicsContext restoreGraphicsState];
 //
 //}
 
@@ -637,13 +637,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return;
 
     [NSGraphicsContext saveGraphicsState];
-	
-	CGContextRef contextRef = [NSGraphicsContext currentContext].CGContext;
-	CGContextSetShouldAntialias(contextRef, YES);
-	CGContextSetShouldSmoothFonts(contextRef, YES);
-	// CGContextSetShouldSubpixelPositionFonts(contextRef, YES);
-	// CGContextSetShouldSubpixelQuantizeFonts(contextRef, YES);
-	
+    
+    CGContextRef contextRef = [NSGraphicsContext currentContext].CGContext;
+    CGContextSetShouldAntialias(contextRef, YES);
+    CGContextSetShouldSmoothFonts(contextRef, YES);
+    // CGContextSetShouldSubpixelPositionFonts(contextRef, YES);
+    // CGContextSetShouldSubpixelQuantizeFonts(contextRef, YES);
+    
     [label drawInRect:labelRect];
 
     [NSGraphicsContext restoreGraphicsState];
@@ -910,15 +910,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         ];
     });
 
-	if (self.enabled) {
-		if (self.isRecording) {
-			return RecorderStateActionNames;
-		} else {
-			return ButtonStateActionNames;
-		}
-	} else {
-		return @[];
-	}
+    if (self.enabled) {
+        if (self.isRecording) {
+            return RecorderStateActionNames;
+        } else {
+            return ButtonStateActionNames;
+        }
+    } else {
+        return @[];
+    }
 }
 
 - (NSString *)accessibilityActionDescription:(NSString *)anAction
@@ -987,19 +987,19 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
-		_SRImages[0] = SRImage(@"shortcut-recorder-bezel-left");
-		_SRImages[1] = SRImage(@"shortcut-recorder-bezel-middle");
-		_SRImages[2] = SRImage(@"shortcut-recorder-bezel-right");
-		_SRImages[3] = SRImage(@"shortcut-recorder-bezel-editing-left");
-		_SRImages[4] = SRImage(@"shortcut-recorder-bezel-editing-middle");
-		_SRImages[5] = SRImage(@"shortcut-recorder-bezel-editing-right");
-		_SRImages[6] = SRImage(@"shortcut-recorder-bezel-disabled-left");
-		_SRImages[7] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
-		_SRImages[8] = SRImage(@"shortcut-recorder-bezel-disabled-right");
-		_SRImages[9] = SRImage(@"shortcut-recorder-snapback-highlighted");
-		_SRImages[10] = SRImage(@"shortcut-recorder-snapback");
-		_SRImages[11] = SRImage(@"shortcut-recorder-clear-highlighted");
-		_SRImages[12] = SRImage(@"shortcut-recorder-clear");
+        _SRImages[0] = SRImage(@"shortcut-recorder-bezel-left");
+        _SRImages[1] = SRImage(@"shortcut-recorder-bezel-middle");
+        _SRImages[2] = SRImage(@"shortcut-recorder-bezel-right");
+        _SRImages[3] = SRImage(@"shortcut-recorder-bezel-editing-left");
+        _SRImages[4] = SRImage(@"shortcut-recorder-bezel-editing-middle");
+        _SRImages[5] = SRImage(@"shortcut-recorder-bezel-editing-right");
+        _SRImages[6] = SRImage(@"shortcut-recorder-bezel-disabled-left");
+        _SRImages[7] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
+        _SRImages[8] = SRImage(@"shortcut-recorder-bezel-disabled-right");
+        _SRImages[9] = SRImage(@"shortcut-recorder-snapback-highlighted");
+        _SRImages[10] = SRImage(@"shortcut-recorder-snapback");
+        _SRImages[11] = SRImage(@"shortcut-recorder-clear-highlighted");
+        _SRImages[12] = SRImage(@"shortcut-recorder-clear");
     });
 }
 
@@ -1041,8 +1041,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSSize)intrinsicContentSize
 {
-	NSString *string = SRLoc(@"Click to record shortcut");
-	NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:string attributes:[self smallNormalLabelAttributes]];
+    NSString *string = SRLoc(@"Click to record shortcut");
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:string attributes:[self smallNormalLabelAttributes]];
     return NSMakeSize(NSWidth([self rectForLabel:attributedString]) + _shapeXRadius + _shapeXRadius, _SRRecorderControlHeight);
 }
 
