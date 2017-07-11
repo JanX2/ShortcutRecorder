@@ -115,6 +115,10 @@ This is because NSButton handles key equivalents very strange. Rather than inves
 and compares returned value with its `keyEquivalent`. Unfortunately, Cocoa returns layout-independent (ASCII) representation of characters only when NSCommandKeyMask is set.
 If it's not set, assigned shortcut likely won't work with other layouts.
 
+Coding Style
+------------
+Please use (four) spaces for indentation. It's not that all contributors prefer spaces over tabs or vice versa. Most of the code in the project used spaces at one point and it was easier to convert the occasional tab than all the spaces.
+
 Questions
 ---------
 Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecorder/issues/new) immediately and feel free to ping me.
