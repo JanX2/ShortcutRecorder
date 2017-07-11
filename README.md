@@ -97,16 +97,16 @@ Setting global shortcut using `PTHotKeyCenter`:
     [hotKeyCenter registerHotKey:newHotKey];
 
 Key Equivalents and Keyboard Layout
-----------------------------------------------------
-While ShortcutRecorder keeps your shortcuts as combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that position of key code on keyboard does not depend on current keyboard layout while position of key character does.
+-----------------------------------
+While ShortcutRecorder keeps your shortcuts as a combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that the position of a key code on a keyboard does not depend on the current keyboard layout while the position of a key character does.
 
 ShortcutRecorder includes two special transformers to simplify binding to the key equivalents of NSMenuItem and NSButton:
 
-- SRKeyEquivalentTransformer
-- SRKeyEquivalentModifierMaskTransformer
+- `SRKeyEquivalentTransformer`
+- `SRKeyEquivalentModifierMaskTransformer`
 
-SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.
-The drawback is that position of the character on keyboard may change depending on layout and used modifier keys (primarly Option and Shift).
+SRKeyEquivalentTransformer uses ASCII keyboard layout to convert the key code into a character. This way the resulting character does not depend on the keyboard layout.
+The drawback is that the position of the character on the keyboard may change depending on the layout and modifier keys used (primarily Option and Shift).
 
 NSButton
 --------
