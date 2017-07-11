@@ -23,13 +23,13 @@ There are two ways to integrate ShortcutRecorder into your project. You can eith
 
 ### Integrating using a git submodule and adding it as a framework
 
-1. Add ShortcutRecorder to your project using git submodules. Alternatievly download the sources from the repository site.
+1. Add ShortcutRecorder to your project using git submodules. Alternatively download the sources from the repository site.
 
     `git submodule add git://github.com/Kentzo/ShortcutRecorder.git`
-2. Next, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
+2. Next, add `ShortcutRecorder.xcodeproj` to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
 3. Ensure that your target is linked against the ShortcutRecorder or/and PTHotKey frameworks ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html#//apple_ref/doc/uid/TP40010155-CH17)). Desired frameworks will be listed under *Workspace*.
-4. Now it's time to make frameworks part of your app. To do this, you need to add custom Build Phase ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/CreatingaCopyFilesBuildPhase.html)). Remember to set *Destination* to *Frameworks* and clean up *Subpath*.
-5. Finally, ensure your app will find frameworks upon start. Open Build Settings of your target, look up *Runtime Search Paths*. Add `@executable_path/../Frameworks` to the list of paths.
+4. Now it's time to make the frameworks part of your app. To do this, you need to add a custom Build Phase ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/CreatingaCopyFilesBuildPhase.html)). Remember to set *Destination* to *Frameworks* and clean up *Subpath*.
+5. Finally, we need to ensure that your app will find the frameworks upon start. Open the Build Settings of your target, look up *Runtime Search Paths*. Add `@executable_path/../Frameworks` to the list of paths.
 
 ### Integrating using a CocoaPods dependency
 
@@ -45,11 +45,11 @@ There are two ways to integrate ShortcutRecorder into your project. You can eith
 4. From now on open the newly created Xcode workspace to modify and run your application.
 
 
-Add control in Interface Builder
---------------------------------
-Since Xcode 4 Apple removed Interface Builder Plugins. You can only use it to add and position/resize ShortcutRecorder control. To do this, add Custom View and set its class to SRRecorderControl.
+Adding the control in Interface Builder
+---------------------------------------
+In Xcode 4 Apple removed Interface Builder plugins. You can only use IB to add and position/resize ShortcutRecorder control. To do this, add q Custom View and set its class to `SRRecorderControl`.
 
-SRRecorderControl has fixed height of 25 points so ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend you to pin height in case you're using Auto Layout.
+SRRecorderControl has a fixed height of 25 points so please ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend that you pin the height in case you're using Auto Layout.
 
 Usage
 -----
