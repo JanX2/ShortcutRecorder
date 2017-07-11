@@ -209,13 +209,20 @@ IB_DESIGNABLE
 - (NSBezierPath *)controlShape;
 
 /*!
+    Returns bounds rect of the control.
+
+    @discussion Primarily used to draw appropriate focus ring.
+ */
+- (CGRect)controlShapeBounds;
+
+/*!
     Returns rect for label with given attributes.
 
     @param  aLabel Label for drawing.
 
     @param  anAttributes A dictionary of NSAttributedString text attributes to be applied to the string.
  */
-- (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes;
+- (NSRect)rectForLabel:(NSAttributedString *)aLabel;
 
 /*!
     Returns rect of the snap back button in the receiver coordinates.
@@ -235,7 +242,7 @@ IB_DESIGNABLE
 
     @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
  */
-- (NSString *)label;
+- (NSAttributedString *)label;
 
 /*!
     Returns label for accessibility.
@@ -255,25 +262,24 @@ IB_DESIGNABLE
 - (NSString *)accessibilityStringValue;
 
 /*!
-    Returns attirbutes of label to be displayed by the receiver according to current state.
-
-    @see        normalLabelAttributes
-
-    @see        recordingLabelAttributes
-
-    @see        disabledLabelAttributes
- */
-- (NSDictionary *)labelAttributes;
-
-/*!
     Returns attributes of label to be displayed by the receiver in normal mode.
  */
 - (NSDictionary *)normalLabelAttributes;
 
 /*!
+    Returns attributes of label to be displayed by the receiver in normal mode when no value is set.
+ */
+- (NSDictionary *)smallNormalLabelAttributes;
+
+/*!
     Returns attributes of label to be displayed by the receiver in recording mode.
  */
 - (NSDictionary *)recordingLabelAttributes;
+
+/*!
+    Returns attributes of label to be displayed by the receiver in recording mode when no value is set.
+ */
+- (NSDictionary *)smallRecordingLabelAttributes;
 
 /*!
     Returns attributes of label to be displayed by the receiver in disabled mode.

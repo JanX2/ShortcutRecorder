@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0710"
+   LastUpgradeVersion = "0730"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E273122D1349EC9000A84433"
                BuildableName = "PTHotKey.framework"
-               BlueprintName = "PTHotKey.framework"
+               BlueprintName = "PTHotKey"
                ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E273122D1349EC9000A84433"
             BuildableName = "PTHotKey.framework"
-            BlueprintName = "PTHotKey.framework"
+            BlueprintName = "PTHotKey"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E273122D1349EC9000A84433"
             BuildableName = "PTHotKey.framework"
-            BlueprintName = "PTHotKey.framework"
+            BlueprintName = "PTHotKey"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

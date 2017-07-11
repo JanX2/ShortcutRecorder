@@ -1,9 +1,8 @@
 ShortcutRecorder 2
 ====================
-![pre-Yosemite ShortcutRecorder Preview](Demo/example.png)
-![Yosemite ShortcutRecorder Preview](Demo/example-yosemite.png)
+![Yosemite ShortcutRecorder Preview](Demo/example.png)
 
-The only user interface control to record shortcuts. For Mac OS X 10.6+, 64bit.
+The only user interface control to record shortcuts. For Mac OS X 10.7+, 64bit.
 
 - :microscope: Support for Xcode 6 Quick Help
 - :microscope: Support for Xcode 6 Interface Builder integration
@@ -24,13 +23,13 @@ There are two ways to integrate ShortcutRecorder into your project. You can eith
 
 ### Integrating using a git submodule and adding it as a framework
 
-1. Add ShortcutRecorder to your project using git submodules. Alternatievly download the sources from the repository site.
+1. Add ShortcutRecorder to your project using git submodules. Alternatively download the sources from the repository site.
 
     `git submodule add git://github.com/Kentzo/ShortcutRecorder.git`
-2. Next, add ShortcutRecorder.xcodeproj to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
+2. Next, add `ShortcutRecorder.xcodeproj` to your workspace via Xcode ([Apple docs](https://developer.apple.com/library/mac/recipes/xcode_help-structure_navigator/articles/Adding_an_Existing_Project_to_a_Workspace.html)). Don't have a workspace? No problem, just add ShortcutRecorder.xcodeproj via the "Add Files to" dialog.
 3. Ensure that your target is linked against the ShortcutRecorder or/and PTHotKey frameworks ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/AddingaLibrarytoaTarget.html#//apple_ref/doc/uid/TP40010155-CH17)). Desired frameworks will be listed under *Workspace*.
-4. Now it's time to make frameworks part of your app. To do this, you need to add custom Build Phase ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/CreatingaCopyFilesBuildPhase.html)). Remember to set *Destination* to *Frameworks* and clean up *Subpath*.
-5. Finally, ensure your app will find frameworks upon start. Open Build Settings of your target, look up *Runtime Search Paths*. Add `@executable_path/../Frameworks` to the list of paths.
+4. Now it's time to make the frameworks part of your app. To do this, you need to add a custom Build Phase ([Apple docs](http://developer.apple.com/library/ios/#recipes/xcode_help-project_editor/Articles/CreatingaCopyFilesBuildPhase.html)). Remember to set *Destination* to *Frameworks* and clean up *Subpath*.
+5. Finally, we need to ensure that your app will find the frameworks upon start. Open the Build Settings of your target, look up *Runtime Search Paths*. Add `@executable_path/../Frameworks` to the list of paths.
 
 ### Integrating using a CocoaPods dependency
 
@@ -46,24 +45,24 @@ There are two ways to integrate ShortcutRecorder into your project. You can eith
 4. From now on open the newly created Xcode workspace to modify and run your application.
 
 
-Add control in Interface Builder
---------------------------------
-Since Xcode 4 Apple removed Interface Builder Plugins. You can only use it to add and position/resize ShortcutRecorder control. To do this, add Custom View and set its class to SRRecorderControl.
+Adding the control in Interface Builder
+---------------------------------------
+In Xcode 4 Apple removed Interface Builder plugins. You can only use IB to add and position/resize ShortcutRecorder control. To do this, add q Custom View and set its class to `SRRecorderControl`.
 
-SRRecorderControl has fixed height of 25 points so ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend you to pin height in case you're using Auto Layout.
+SRRecorderControl has a fixed height of 25 points so please ensure you do not use autoresizing masks/layout rules which allows vertical resizing. I recommend that you pin the height in case you're using Auto Layout.
 
 Usage
 -----
-First, we want to keep value of the control across relaunches of the app. We can simply achieve this by using NSUserDefaultsController and bindings:
+First, we want to keep the value of the control across relaunches of the app. We can simply achieve this by using `NSUserDefaultsController` and bindings:
 
     [self.pingShortcutRecorder bind:NSValueBinding
                            toObject:[NSUserDefaultsController sharedUserDefaultsController]
                         withKeyPath:@"values.ping"
                             options:nil];
 
-The value can be used to set key equivalent of NSMenuItem or NSButton. It can also be used to register a global shortcut.
+The value can be used to set the key equivalent of an NSMenuItem or NSButton. It can also be used to register a global shortcut.
 
-Setting key equivalent of NSMenuItem using bindings:
+Setting the key equivalent of an `NSMenuItem` using bindings:
 
     [self.pingItem bind:@"keyEquivalent"
                toObject:defaults
@@ -74,7 +73,7 @@ Setting key equivalent of NSMenuItem using bindings:
             withKeyPath:@"values.ping"
                 options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
 
-Setting key equivalent of NSButton using bindings:
+Setting the key equivalent of an `NSButton` using bindings:
 
     [self.pingButton bind:@"keyEquivalent"
                  toObject:defaults
@@ -85,7 +84,7 @@ Setting key equivalent of NSButton using bindings:
               withKeyPath:@"values.ping"
                   options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
 
-Setting global shortcut using PTHotKeyCenter:
+Setting global shortcut using `PTHotKeyCenter`:
 
     PTHotKeyCenter *hotKeyCenter = [PTHotKeyCenter sharedCenter];
     PTHotKey *oldHotKey = [hotKeyCenter hotKeyWithIdentifier:aKeyPath];
@@ -98,23 +97,27 @@ Setting global shortcut using PTHotKeyCenter:
     [hotKeyCenter registerHotKey:newHotKey];
 
 Key Equivalents and Keyboard Layout
-----------------------------------------------------
-While ShortcutRecorder keeps your shortcuts as combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that position of key code on keyboard does not depend on current keyboard layout while position of key character does.
+-----------------------------------
+While ShortcutRecorder keeps your shortcuts as a combination of *key code* and modifier masks, key equivalents are expressed using *key character* and modifier mask. The difference is that the position of a key code on a keyboard does not depend on the current keyboard layout while the position of a key character does.
 
 ShortcutRecorder includes two special transformers to simplify binding to the key equivalents of NSMenuItem and NSButton:
 
-- SRKeyEquivalentTransformer
-- SRKeyEquivalentModifierMaskTransformer
+- `SRKeyEquivalentTransformer`
+- `SRKeyEquivalentModifierMaskTransformer`
 
-SRKeyEquivalentTransformer uses ASCII keyboard layout to convert key code into character, therefore resulting character does not depend on keyboard layout.
-The drawback is that position of the character on keyboard may change depending on layout and used modifier keys (primarly Option and Shift).
+SRKeyEquivalentTransformer uses ASCII keyboard layout to convert the key code into a character. This way the resulting character does not depend on the keyboard layout.
+The drawback is that the position of the character on the keyboard may change depending on the layout and modifier keys used (primarily Option and Shift).
 
 NSButton
 --------
-If you're going to bind ShortcutRecorder to key equivalent of NSButton, I encourage you to require `NSCommandKeyMask`.
-This is because NSButton handles key equivalents very strange. Rather than investigating full information of the keyboard event, it just asks for `charactersIgnoringModifiers`
-and compares returned value with its `keyEquivalent`. Unfortunately, Cocoa returns layout-independent (ASCII) representation of characters only when NSCommandKeyMask is set.
-If it's not set, assigned shortcut likely won't work with other layouts.
+If you're going to bind ShortcutRecorder to the key equivalent of an NSButton, I encourage you to require `NSCommandKeyMask`.
+This is because NSButton handles key equivalents in a very strange way. Rather than investigating all information available for the keyboard event, it just checks `charactersIgnoringModifiers`
+and compares the returned value with its `keyEquivalent`. Unfortunately, Cocoa returns keyboard-layout-independent (ASCII) representation of characters only when NSCommandKeyMask is set.
+If it's not set, the assigned shortcut likely won't work with other layouts.
+
+Coding Style
+------------
+Please use (four) spaces for indentation. It's not that all contributors prefer spaces over tabs or vice versa. Most of the code in the project used spaces at one point and it was easier to convert the occasional tab than all the spaces.
 
 Questions
 ---------
@@ -122,4 +125,4 @@ Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecord
 
 Paid Support
 ------------
-If functional you need is missing but you're ready to pay for it, feel free to contact me. If not, create an issue anyway, I'll take a look as soon as I can.
+If functionality you need is missing, but you're ready to pay for it, feel free to contact me. If not, create an issue anyway, I'll take a look as soon as I can.

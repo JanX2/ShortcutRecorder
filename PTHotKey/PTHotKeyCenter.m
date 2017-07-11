@@ -26,24 +26,24 @@ static PTHotKeyCenter *_sharedHotKeyCenter = nil;
 
 + (PTHotKeyCenter*)sharedCenter
 {
-	if( _sharedHotKeyCenter == nil )
-	{
-		_sharedHotKeyCenter = [[self alloc] init];
-	}
+    if( _sharedHotKeyCenter == nil )
+    {
+        _sharedHotKeyCenter = [[self alloc] init];
+    }
 
-	return _sharedHotKeyCenter;
+    return _sharedHotKeyCenter;
 }
 
 - (id)init
 {
-	self = [super init];
+    self = [super init];
 
-	if( self )
-	{
-		mHotKeys = [[NSMutableDictionary alloc] init];
-	}
+    if( self )
+    {
+        mHotKeys = [[NSMutableDictionary alloc] init];
+    }
 
-	return self;
+    return self;
 }
 
 
@@ -132,67 +132,67 @@ static PTHotKeyCenter *_sharedHotKeyCenter = nil;
 
 - (NSArray*)allHotKeys
 {
-	return [mHotKeys allValues];
+    return [mHotKeys allValues];
 }
 
 - (PTHotKey*)hotKeyWithIdentifier: (id)ident
 {
-	NSEnumerator* hotKeysEnum = [[self allHotKeys] objectEnumerator];
-	PTHotKey* hotKey;
+    NSEnumerator* hotKeysEnum = [[self allHotKeys] objectEnumerator];
+    PTHotKey* hotKey;
 
-	if( !ident )
-		return nil;
+    if( !ident )
+        return nil;
 
-	while( (hotKey = [hotKeysEnum nextObject]) != nil )
-	{
-		if( [[hotKey identifier] isEqual: ident] )
-			return hotKey;
-	}
+    while( (hotKey = [hotKeysEnum nextObject]) != nil )
+    {
+        if( [[hotKey identifier] isEqual: ident] )
+            return hotKey;
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
 
 - (PTHotKey*)_hotKeyForCarbonHotKey: (EventHotKeyRef)carbonHotKeyRef
 {
-	NSEnumerator *e = [mHotKeys objectEnumerator];
-	PTHotKey *hotkey = nil;
+    NSEnumerator *e = [mHotKeys objectEnumerator];
+    PTHotKey *hotkey = nil;
 
-	while( (hotkey = [e nextObject]) )
-	{
-		if( [hotkey carbonEventHotKeyRef] == carbonHotKeyRef )
-			return hotkey;
-	}
+    while( (hotkey = [e nextObject]) )
+    {
+        if( [hotkey carbonEventHotKeyRef] == carbonHotKeyRef )
+            return hotkey;
+    }
 
-	return nil;
+    return nil;
 }
 
 - (PTHotKey*)_hotKeyForCarbonHotKeyID: (EventHotKeyID)hotKeyID
 {
-	return [mHotKeys objectForKey:[NSNumber numberWithInteger:hotKeyID.id]];
+    return [mHotKeys objectForKey:[NSNumber numberWithInteger:hotKeyID.id]];
 }
 
 - (void)_updateEventHandler
 {
-	if( [mHotKeys count] && mEventHandlerInstalled == NO )
-	{
-		EventTypeSpec eventSpec[2] = {
-			{ kEventClassKeyboard, kEventHotKeyPressed },
-			{ kEventClassKeyboard, kEventHotKeyReleased }
-		};
+    if( [mHotKeys count] && mEventHandlerInstalled == NO )
+    {
+        EventTypeSpec eventSpec[2] = {
+            { kEventClassKeyboard, kEventHotKeyPressed },
+            { kEventClassKeyboard, kEventHotKeyReleased }
+        };
 
-		InstallEventHandler( GetEventDispatcherTarget(),
-							 (EventHandlerProcPtr)hotKeyEventHandler,
-							 2, eventSpec, nil, &mEventHandler);
+        InstallEventHandler( GetEventDispatcherTarget(),
+                             (EventHandlerProcPtr)hotKeyEventHandler,
+                             2, eventSpec, nil, &mEventHandler);
 
-		mEventHandlerInstalled = YES;
-	}
+        mEventHandlerInstalled = YES;
+    }
 }
 
 - (void)_hotKeyDown: (PTHotKey*)hotKey
 {
-	[hotKey invoke];
+    [hotKey invoke];
 }
 
 - (void)_hotKeyUp: (PTHotKey*)hotKey
@@ -202,78 +202,78 @@ static PTHotKeyCenter *_sharedHotKeyCenter = nil;
 
 - (void)sendEvent: (NSEvent*)event
 {
-	// Not sure why this is needed? - Andy Kim (Aug 23, 2009)
+    // Not sure why this is needed? - Andy Kim (Aug 23, 2009)
 
-	short subType;
-	EventHotKeyRef carbonHotKey;
+    short subType;
+    EventHotKeyRef carbonHotKey;
 
-	if( [event type] == NSSystemDefined )
-	{
-		subType = [event subtype];
+    if( [event type] == NSSystemDefined )
+    {
+        subType = [event subtype];
 
-		if( subType == 6 ) //6 is hot key down
-		{
-			carbonHotKey= (EventHotKeyRef)[event data1]; //data1 is our hot key ref
-			if( carbonHotKey != nil )
-			{
-				PTHotKey* hotKey = [self _hotKeyForCarbonHotKey: carbonHotKey];
-				[self _hotKeyDown: hotKey];
-			}
-		}
-		else if( subType == 9 ) //9 is hot key up
-		{
-			carbonHotKey= (EventHotKeyRef)[event data1];
-			if( carbonHotKey != nil )
-			{
-				PTHotKey* hotKey = [self _hotKeyForCarbonHotKey: carbonHotKey];
-				[self _hotKeyUp: hotKey];
-			}
-		}
-	}
+        if( subType == 6 ) //6 is hot key down
+        {
+            carbonHotKey= (EventHotKeyRef)[event data1]; //data1 is our hot key ref
+            if( carbonHotKey != nil )
+            {
+                PTHotKey* hotKey = [self _hotKeyForCarbonHotKey: carbonHotKey];
+                [self _hotKeyDown: hotKey];
+            }
+        }
+        else if( subType == 9 ) //9 is hot key up
+        {
+            carbonHotKey= (EventHotKeyRef)[event data1];
+            if( carbonHotKey != nil )
+            {
+                PTHotKey* hotKey = [self _hotKeyForCarbonHotKey: carbonHotKey];
+                [self _hotKeyUp: hotKey];
+            }
+        }
+    }
 }
 
 - (OSStatus)sendCarbonEvent: (EventRef)event
 {
-	OSStatus err;
-	EventHotKeyID hotKeyID;
-	PTHotKey* hotKey;
+    OSStatus err;
+    EventHotKeyID hotKeyID;
+    PTHotKey* hotKey;
 
-	NSAssert( GetEventClass( event ) == kEventClassKeyboard, @"Unknown event class" );
+    NSAssert( GetEventClass( event ) == kEventClassKeyboard, @"Unknown event class" );
 
-	err = GetEventParameter(	event,
-								kEventParamDirectObject,
-								typeEventHotKeyID,
-								nil,
-								sizeof(EventHotKeyID),
-								nil,
-								&hotKeyID );
-	if( err )
-		return err;
+    err = GetEventParameter(    event,
+                                kEventParamDirectObject,
+                                typeEventHotKeyID,
+                                nil,
+                                sizeof(EventHotKeyID),
+                                nil,
+                                &hotKeyID );
+    if( err )
+        return err;
 
-    	if( hotKeyID.signature != 'PTHk' )
-        	return eventNotHandledErr;
+        if( hotKeyID.signature != 'PTHk' )
+            return eventNotHandledErr;
 
     if (hotKeyID.id == 0)
         return eventNotHandledErr;
 
-	hotKey = [self _hotKeyForCarbonHotKeyID:hotKeyID];
+    hotKey = [self _hotKeyForCarbonHotKeyID:hotKeyID];
 
-	switch( GetEventKind( event ) )
-	{
-		case kEventHotKeyPressed:
-			[self _hotKeyDown: hotKey];
-		break;
+    switch( GetEventKind( event ) )
+    {
+        case kEventHotKeyPressed:
+            [self _hotKeyDown: hotKey];
+        break;
 
-		case kEventHotKeyReleased:
-			[self _hotKeyUp: hotKey];
-		break;
+        case kEventHotKeyReleased:
+            [self _hotKeyUp: hotKey];
+        break;
 
-		default:
-			return eventNotHandledErr;
-		break;
-	}
+        default:
+            return eventNotHandledErr;
+        break;
+    }
 
-	return noErr;
+    return noErr;
 }
 
 - (void)pause

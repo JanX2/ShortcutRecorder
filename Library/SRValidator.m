@@ -85,10 +85,14 @@
                 NSString *failureReason = [NSString stringWithFormat:
                                            SRLoc(@"The key combination \"%@\" can't be used!"),
                                            shortcut];
-                NSString *description = [NSString stringWithFormat:
+                NSString *description = ([delegateReason length]) ? [NSString stringWithFormat:
                                          SRLoc(@"The key combination \"%@\" can't be used because %@."),
                                          shortcut,
-                                         [delegateReason length] ? delegateReason : @"it's already used"];
+                                         delegateReason] :
+                                         [NSString stringWithFormat:
+                                         SRLoc(@"The key combination \"%@\" is already in use."),
+                                         shortcut];
+
                 NSDictionary *userInfo = @{
                     NSLocalizedFailureReasonErrorKey : failureReason,
                     NSLocalizedDescriptionKey: description
@@ -211,23 +215,20 @@
     NSMenuItem *currentMenuItem = self;
     NSUInteger i = 0;
 
-    do
-    {
+    do {
         [items insertObject:currentMenuItem atIndex:0];
         currentMenuItem = currentMenuItem.parentItem;
         ++i;
     }
     while (currentMenuItem && i < Limit);
 
-    NSMutableString *path = [NSMutableString string];
+    NSMutableArray *titles = [[NSMutableArray alloc] initWithCapacity:items.count];
+    for (NSMenuItem *menuItem in items) {
+        NSString *title = menuItem.title;
+        if (title) [titles addObject:title];
+    }
 
-    for (NSMenuItem *menuItem in items)
-        [path appendFormat:@"%@➝", menuItem.title];
-
-    if ([path length] > 1)
-        [path deleteCharactersInRange:NSMakeRange([path length] - 1, 1)];
-
-    return path;
+    return [titles componentsJoinedByString:@" → "];
 }
 
 @end

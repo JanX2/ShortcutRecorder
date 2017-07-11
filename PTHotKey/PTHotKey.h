@@ -6,7 +6,7 @@
 //  Copyright (c) 2003 Quentin D. Carnicelli. All rights reserved.
 //
 //  Contributors:
-// 		Andy Kim
+//         Andy Kim
 
 #import <Foundation/Foundation.h>
 #import <Carbon/Carbon.h>
@@ -14,16 +14,16 @@
 
 @interface PTHotKey : NSObject
 {
-	NSString*		mIdentifier;
-	NSString*		mName;
-	PTKeyCombo*		mKeyCombo;
-	id				mTarget;
-    id              mObject;
-	SEL				mAction;
-    SEL             mKeyUpAction;
+    NSString*           mIdentifier;
+    NSString*           mName;
+    PTKeyCombo*         mKeyCombo;
+    id                  mTarget;
+    id                  mObject;
+    SEL                 mAction;
+    SEL                 mKeyUpAction;
 
-	UInt32		    mCarbonHotKeyID;
-	EventHotKeyRef	mCarbonEventHotKeyRef;
+    UInt32              mCarbonHotKeyID;
+    EventHotKeyRef      mCarbonEventHotKeyRef;
 }
 
 - (id)initWithIdentifier: (id)identifier keyCombo: (PTKeyCombo*)combo;

@@ -10,10 +10,10 @@
 
 @interface PTKeyCodeTranslator : NSObject
 {
-    TISInputSourceRef	keyboardLayout;
-    const UCKeyboardLayout	*uchrData;
-    UInt32		keyTranslateState;
-    UInt32		deadKeyState;
+    TISInputSourceRef           keyboardLayout;
+    const UCKeyboardLayout      *uchrData;
+    UInt32                      keyTranslateState;
+    UInt32                      deadKeyState;
 }
 
 + (id)currentTranslator;
