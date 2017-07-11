@@ -53,16 +53,16 @@ SRRecorderControl has a fixed height of 25 points so please ensure you do not us
 
 Usage
 -----
-First, we want to keep value of the control across relaunches of the app. We can simply achieve this by using NSUserDefaultsController and bindings:
+First, we want to keep the value of the control across relaunches of the app. We can simply achieve this by using `NSUserDefaultsController` and bindings:
 
     [self.pingShortcutRecorder bind:NSValueBinding
                            toObject:[NSUserDefaultsController sharedUserDefaultsController]
                         withKeyPath:@"values.ping"
                             options:nil];
 
-The value can be used to set key equivalent of NSMenuItem or NSButton. It can also be used to register a global shortcut.
+The value can be used to set the key equivalent of an NSMenuItem or NSButton. It can also be used to register a global shortcut.
 
-Setting key equivalent of NSMenuItem using bindings:
+Setting the key equivalent of an `NSMenuItem` using bindings:
 
     [self.pingItem bind:@"keyEquivalent"
                toObject:defaults
@@ -73,7 +73,7 @@ Setting key equivalent of NSMenuItem using bindings:
             withKeyPath:@"values.ping"
                 options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
 
-Setting key equivalent of NSButton using bindings:
+Setting the key equivalent of an `NSButton` using bindings:
 
     [self.pingButton bind:@"keyEquivalent"
                  toObject:defaults
@@ -84,7 +84,7 @@ Setting key equivalent of NSButton using bindings:
               withKeyPath:@"values.ping"
                   options:@{NSValueTransformerBindingOption: [SRKeyEquivalentModifierMaskTransformer new]}];
 
-Setting global shortcut using PTHotKeyCenter:
+Setting global shortcut using `PTHotKeyCenter`:
 
     PTHotKeyCenter *hotKeyCenter = [PTHotKeyCenter sharedCenter];
     PTHotKey *oldHotKey = [hotKeyCenter hotKeyWithIdentifier:aKeyPath];
