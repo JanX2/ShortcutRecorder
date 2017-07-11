@@ -309,6 +309,7 @@
 			);
 			name = ShortcutRecorder;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
