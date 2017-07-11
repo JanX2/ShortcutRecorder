@@ -355,6 +355,7 @@
 			);
 			path = Inspector;
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		BAC79C19216FCE9000E45F23 /* UI Tests */ = {
 			isa = PBXGroup;
