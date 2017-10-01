@@ -78,7 +78,7 @@ FOUNDATION_STATIC_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoa
 
     @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
 */
-NSBundle *SRBundle();
+NSBundle *SRBundle(void);
 
 
 /*!
