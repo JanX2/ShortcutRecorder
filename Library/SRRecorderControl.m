@@ -987,47 +987,47 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     dispatch_once(&OnceToken, ^{
         if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_9)
         {
-            _SRImages[0] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-left");
-            _SRImages[1] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-middle");
-            _SRImages[2] = SRImage(@"shortcut-recorder-bezel-blue-highlighted-right");
-            _SRImages[3] = SRImage(@"shortcut-recorder-bezel-editing-left");
-            _SRImages[4] = SRImage(@"shortcut-recorder-bezel-editing-middle");
-            _SRImages[5] = SRImage(@"shortcut-recorder-bezel-editing-right");
-            _SRImages[6] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-left");
-            _SRImages[7] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-middle");
-            _SRImages[8] = SRImage(@"shortcut-recorder-bezel-graphite-highlight-mask-right");
-            _SRImages[9] = SRImage(@"shortcut-recorder-bezel-left");
-            _SRImages[10] = SRImage(@"shortcut-recorder-bezel-middle");
-            _SRImages[11] = SRImage(@"shortcut-recorder-bezel-right");
-            _SRImages[12] = SRImage(@"shortcut-recorder-clear-highlighted");
-            _SRImages[13] = SRImage(@"shortcut-recorder-clear");
-            _SRImages[14] = SRImage(@"shortcut-recorder-snapback-highlighted");
-            _SRImages[15] = SRImage(@"shortcut-recorder-snapback");
-            _SRImages[16] = SRImage(@"shortcut-recorder-bezel-disabled-left");
-            _SRImages[17] = SRImage(@"shortcut-recorder-bezel-disabled-middle");
-            _SRImages[18] = SRImage(@"shortcut-recorder-bezel-disabled-right");
+            _SRImages[0] = SRImage(@"snow-leopard-shortcut-recorder-bezel-blue-highlighted-left");
+            _SRImages[1] = SRImage(@"snow-leopard-shortcut-recorder-bezel-blue-highlighted-middle");
+            _SRImages[2] = SRImage(@"snow-leopard-shortcut-recorder-bezel-blue-highlighted-right");
+            _SRImages[3] = SRImage(@"snow-leopard-shortcut-recorder-bezel-editing-left");
+            _SRImages[4] = SRImage(@"snow-leopard-shortcut-recorder-bezel-editing-middle");
+            _SRImages[5] = SRImage(@"snow-leopard-shortcut-recorder-bezel-editing-right");
+            _SRImages[6] = SRImage(@"snow-leopard-shortcut-recorder-bezel-graphite-highlight-mask-left");
+            _SRImages[7] = SRImage(@"snow-leopard-shortcut-recorder-bezel-graphite-highlight-mask-middle");
+            _SRImages[8] = SRImage(@"snow-leopard-shortcut-recorder-bezel-graphite-highlight-mask-right");
+            _SRImages[9] = SRImage(@"snow-leopard-shortcut-recorder-bezel-left");
+            _SRImages[10] = SRImage(@"snow-leopard-shortcut-recorder-bezel-middle");
+            _SRImages[11] = SRImage(@"snow-leopard-shortcut-recorder-bezel-right");
+            _SRImages[12] = SRImage(@"snow-leopard-shortcut-recorder-clear-highlighted");
+            _SRImages[13] = SRImage(@"snow-leopard-shortcut-recorder-clear");
+            _SRImages[14] = SRImage(@"snow-leopard-shortcut-recorder-snapback-highlighted");
+            _SRImages[15] = SRImage(@"snow-leopard-shortcut-recorder-snapback");
+            _SRImages[16] = SRImage(@"snow-leopard-shortcut-recorder-bezel-disabled-left");
+            _SRImages[17] = SRImage(@"snow-leopard-shortcut-recorder-bezel-disabled-middle");
+            _SRImages[18] = SRImage(@"snow-leopard-shortcut-recorder-bezel-disabled-right");
         }
         else
         {
-            _SRImages[0] = SRImage(@"shortcut-recorder-yosemite-bezel-blue-highlighted-left");
-            _SRImages[1] = SRImage(@"shortcut-recorder-yosemite-bezel-blue-highlighted-middle");
-            _SRImages[2] = SRImage(@"shortcut-recorder-yosemite-bezel-blue-highlighted-right");
-            _SRImages[3] = SRImage(@"shortcut-recorder-yosemite-bezel-editing-left");
-            _SRImages[4] = SRImage(@"shortcut-recorder-yosemite-bezel-editing-middle");
-            _SRImages[5] = SRImage(@"shortcut-recorder-yosemite-bezel-editing-right");
-            _SRImages[6] = SRImage(@"shortcut-recorder-yosemite-bezel-graphite-highlight-mask-left");
-            _SRImages[7] = SRImage(@"shortcut-recorder-yosemite-bezel-graphite-highlight-mask-middle");
-            _SRImages[8] = SRImage(@"shortcut-recorder-yosemite-bezel-graphite-highlight-mask-right");
-            _SRImages[9] = SRImage(@"shortcut-recorder-yosemite-bezel-left");
-            _SRImages[10] = SRImage(@"shortcut-recorder-yosemite-bezel-middle");
-            _SRImages[11] = SRImage(@"shortcut-recorder-yosemite-bezel-right");
-            _SRImages[12] = SRImage(@"shortcut-recorder-yosemite-clear-highlighted");
-            _SRImages[13] = SRImage(@"shortcut-recorder-yosemite-clear");
-            _SRImages[14] = SRImage(@"shortcut-recorder-yosemite-snapback-highlighted");
-            _SRImages[15] = SRImage(@"shortcut-recorder-yosemite-snapback");
-            _SRImages[16] = SRImage(@"shortcut-recorder-yosemite-bezel-disabled-left");
-            _SRImages[17] = SRImage(@"shortcut-recorder-yosemite-bezel-disabled-middle");
-            _SRImages[18] = SRImage(@"shortcut-recorder-yosemite-bezel-disabled-right");
+            _SRImages[0] = SRImage(@"yosemite-shortcut-recorder-bezel-blue-highlighted-left");
+            _SRImages[1] = SRImage(@"yosemite-shortcut-recorder-bezel-blue-highlighted-middle");
+            _SRImages[2] = SRImage(@"yosemite-shortcut-recorder-bezel-blue-highlighted-right");
+            _SRImages[3] = SRImage(@"yosemite-shortcut-recorder-bezel-editing-left");
+            _SRImages[4] = SRImage(@"yosemite-shortcut-recorder-bezel-editing-middle");
+            _SRImages[5] = SRImage(@"yosemite-shortcut-recorder-bezel-editing-right");
+            _SRImages[6] = SRImage(@"yosemite-shortcut-recorder-bezel-graphite-highlight-mask-left");
+            _SRImages[7] = SRImage(@"yosemite-shortcut-recorder-bezel-graphite-highlight-mask-middle");
+            _SRImages[8] = SRImage(@"yosemite-shortcut-recorder-bezel-graphite-highlight-mask-right");
+            _SRImages[9] = SRImage(@"yosemite-shortcut-recorder-bezel-left");
+            _SRImages[10] = SRImage(@"yosemite-shortcut-recorder-bezel-middle");
+            _SRImages[11] = SRImage(@"yosemite-shortcut-recorder-bezel-right");
+            _SRImages[12] = SRImage(@"yosemite-shortcut-recorder-clear-highlighted");
+            _SRImages[13] = SRImage(@"yosemite-shortcut-recorder-clear");
+            _SRImages[14] = SRImage(@"yosemite-shortcut-recorder-snapback-highlighted");
+            _SRImages[15] = SRImage(@"yosemite-shortcut-recorder-snapback");
+            _SRImages[16] = SRImage(@"yosemite-shortcut-recorder-bezel-disabled-left");
+            _SRImages[17] = SRImage(@"yosemite-shortcut-recorder-bezel-disabled-middle");
+            _SRImages[18] = SRImage(@"yosemite-shortcut-recorder-bezel-disabled-right");
         }
     });
 }

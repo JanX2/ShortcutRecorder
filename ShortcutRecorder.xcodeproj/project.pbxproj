@@ -33,9 +33,7 @@
 		9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670E0A246B4900B69171 /* SRValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		939839400DA4350B007F53F3 /* SRCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C367100A246B4900B69171 /* SRCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BAE3063B1F80955700904E9A /* Snow Leopard.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE3063A1F80955700904E9A /* Snow Leopard.xcassets */; };
-		BAE3063D1F80957700904E9A /* Yosemite.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE3063C1F80957700904E9A /* Yosemite.xcassets */; };
-		BAE3063F1F80959800904E9A /* El Capitan.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE3063E1F80959800904E9A /* El Capitan.xcassets */; };
+		BAE3063B1F80955700904E9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE3063A1F80955700904E9A /* Images.xcassets */; };
 		E273123A1349EDB500A84433 /* PTHotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -118,9 +116,7 @@
 		939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = Library/ShortcutRecorder.h; sourceTree = SOURCE_ROOT; };
 		A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCodeTranslator.h; sourceTree = "<group>"; };
 		A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCodeTranslator.m; sourceTree = "<group>"; };
-		BAE3063A1F80955700904E9A /* Snow Leopard.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Snow Leopard.xcassets"; sourceTree = "<group>"; };
-		BAE3063C1F80957700904E9A /* Yosemite.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Yosemite.xcassets; sourceTree = "<group>"; };
-		BAE3063E1F80959800904E9A /* El Capitan.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "El Capitan.xcassets"; sourceTree = "<group>"; };
+		BAE3063A1F80955700904E9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E273122E1349EC9000A84433 /* PTHotKey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PTHotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E273122F1349EC9000A84433 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = PTHotKey/Info.plist; sourceTree = SOURCE_ROOT; };
 		E273124B1349EE6500A84433 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
@@ -303,11 +299,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BAE3063A1F80955700904E9A /* Snow Leopard.xcassets */,
+				BAE3063A1F80955700904E9A /* Images.xcassets */,
 				E2741ADE1673C83800A139BD /* LICENSE.txt */,
 				E2741AC31673C79F00A139BD /* ShortcutRecorder.strings */,
-				BAE3063C1F80957700904E9A /* Yosemite.xcassets */,
-				BAE3063E1F80959800904E9A /* El Capitan.xcassets */,
 			);
 			path = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -507,9 +501,7 @@
 			files = (
 				E2741AC51673C79F00A139BD /* ShortcutRecorder.strings in Resources */,
 				E2741ADF1673C83800A139BD /* LICENSE.txt in Resources */,
-				BAE3063D1F80957700904E9A /* Yosemite.xcassets in Resources */,
-				BAE3063F1F80959800904E9A /* El Capitan.xcassets in Resources */,
-				BAE3063B1F80955700904E9A /* Snow Leopard.xcassets in Resources */,
+				BAE3063B1F80955700904E9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
