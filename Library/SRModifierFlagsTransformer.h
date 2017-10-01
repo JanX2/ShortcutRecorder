@@ -17,7 +17,7 @@
  */
 @interface SRModifierFlagsTransformer : NSValueTransformer
 
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings;
+- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings NS_DESIGNATED_INITIALIZER;
 
 /*!
     Determines whether modifier flags are transformed to unicode characters or to plain strings.

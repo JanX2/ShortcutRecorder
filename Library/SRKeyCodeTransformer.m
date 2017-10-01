@@ -260,7 +260,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 - (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags
 {
-    if ([anImplicitModifierFlags unsignedIntegerValue] & [anExplicitModifierFlags unsignedIntegerValue] & SRCocoaModifierFlagsMask)
+    if (anImplicitModifierFlags.unsignedIntegerValue & anExplicitModifierFlags.unsignedIntegerValue & SRCocoaModifierFlagsMask)
     {
         [NSException raise:NSInvalidArgumentException format:@"anImplicitModifierFlags and anExplicitModifierFlags MUST NOT have common elements"];
     }
@@ -320,9 +320,9 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
     UInt32 deadKeyState = 0;
     OSStatus err = UCKeyTranslate(keyLayout,
-                                  [aValue unsignedShortValue],
+                                  aValue.unsignedShortValue,
                                   kUCKeyActionDisplay,
-                                  SRCocoaToCarbonFlags([anImplicitModifierFlags unsignedIntegerValue]) >> 8,
+                                  SRCocoaToCarbonFlags(anImplicitModifierFlags.unsignedIntegerValue) >> 8,
                                   LMGetKbdType(),
                                   kUCKeyTranslateNoDeadKeysBit,
                                   &deadKeyState,
@@ -333,14 +333,14 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         return @"";
 
     if (self.usesPlainStrings)
-        return [[NSString stringWithCharacters:chars length:actualLength] uppercaseString];
+        return [NSString stringWithCharacters:chars length:actualLength].uppercaseString;
     else
         return [NSString stringWithCharacters:chars length:actualLength];
 }
 
 - (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)anExplicitModifierFlags
 {
-    if ([anExplicitModifierFlags unsignedIntegerValue] & NSShiftKeyMask && [aKeyCode unsignedShortValue] == kVK_Tab)
+    if (anExplicitModifierFlags.unsignedIntegerValue & NSShiftKeyMask && aKeyCode.unsignedShortValue == kVK_Tab)
     {
         if (self.usesPlainStrings)
             return _SRUnicharToString(SRKeyCodeGlyphTabLeft);

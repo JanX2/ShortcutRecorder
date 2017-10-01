@@ -146,7 +146,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         _shapeYRadious = _SRRecorderControlYosemiteShapeYRadius;
     }
 
-    [self setToolTip:SRLoc(@"Click to record shortcut")];
+    self.toolTip = SRLoc(@"Click to record shortcut");
     [self updateTrackingAreas];
 }
 
@@ -240,7 +240,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self didChangeValueForKey:@"isRecording"];
 
     [self updateTrackingAreas];
-    [self setToolTip:SRLoc(@"Type shortcut")];
+    self.toolTip = SRLoc(@"Type shortcut");
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
     return YES;
 }
@@ -267,11 +267,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     self.objectValue = anObjectValue;
 
     [self updateTrackingAreas];
-    [self setToolTip:SRLoc(@"Click to record shortcut")];
+    self.toolTip = SRLoc(@"Click to record shortcut");
     [self setNeedsDisplay:YES];
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
-    if (self.window.firstResponder == self && ![self canBecomeKeyView])
+    if (self.window.firstResponder == self && !self.canBecomeKeyView)
         [self.window makeFirstResponder:nil];
 
     if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
@@ -351,7 +351,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect bounds = self.bounds;
 
-    if ([self.objectValue count])
+    if ((self.objectValue).count)
     {
         NSRect clearButtonRect = NSZeroRect;
         clearButtonRect.origin.x = NSMaxX(bounds) - _SRRecorderControlClearButtonRightOffset - _SRRecorderControlClearButtonSize.width - _SRRecorderControlClearButtonLeftOffset;
@@ -385,14 +385,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         else
             label = self.stringValue;
 
-        if (![label length])
+        if (!label.length)
             label = SRLoc(@"Type shortcut");
     }
     else
     {
         label = self.stringValue;
 
-        if (![label length])
+        if (!label.length)
             label = SRLoc(@"Click to record shortcut");
     }
 
@@ -408,14 +408,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
         label = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:@(modifierFlags)];
 
-        if (![label length])
+        if (!label.length)
             label = SRLoc(@"Type shortcut");
     }
     else
     {
         label = self.accessibilityStringValue;
 
-        if (![label length])
+        if (!label.length)
             label = SRLoc(@"Click to record shortcut");
     }
 
@@ -424,7 +424,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSString *)stringValue
 {
-    if (![self.objectValue count])
+    if (!(self.objectValue).count)
         return nil;
 
     NSString *f = [[SRModifierFlagsTransformer sharedTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
@@ -444,7 +444,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSString *)accessibilityStringValue
 {
-    if (![self.objectValue count])
+    if (!(self.objectValue).count)
         return nil;
 
     NSString *f = [[SRModifierFlagsTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutModifierFlagsKey]];
@@ -455,7 +455,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     else
         c = [[SRKeyCodeTransformer sharedPlainTransformer] transformedValue:self.objectValue[SRShortcutKeyCode]];
 
-    if ([f length] > 0)
+    if (f.length > 0)
         return [NSString stringWithFormat:@"%@-%@", f, c];
     else
         return [NSString stringWithFormat:@"%@", c];
@@ -1131,7 +1131,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
         // Since this method is used to set up tracking rects of aux buttons, the rest of the code is aware
         // it should be called whenever geometry or apperance changes. Therefore it's a good place to set up tooltip rects.
-        _snapBackButtonToolTipTag = [self addToolTipRect:[_snapBackButtonTrackingArea rect] owner:self userData:NULL];
+        _snapBackButtonToolTipTag = [self addToolTipRect:_snapBackButtonTrackingArea.rect owner:self userData:NULL];
     }
 }
 
@@ -1192,7 +1192,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     // SRRecorderControl uses the button metaphor, but buttons cannot become key unless
     // Full Keyboard Access is enabled. Respect this.
-    return [super canBecomeKeyView] && [NSApp isFullKeyboardAccessEnabled];
+    return super.canBecomeKeyView && NSApp.fullKeyboardAccessEnabled;
 }
 
 - (BOOL)needsPanelToBecomeKey

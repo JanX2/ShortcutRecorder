@@ -74,7 +74,7 @@
         return nil;
     else if (self.usesPlainStrings)
     {
-        NSEventModifierFlags modifierFlags = [aValue unsignedIntegerValue];
+        NSEventModifierFlags modifierFlags = aValue.unsignedIntegerValue;
         NSMutableString *s = [NSMutableString string];
 
         if (modifierFlags & NSControlKeyMask)
@@ -96,7 +96,7 @@
     }
     else
     {
-        NSEventModifierFlags f = [aValue unsignedIntegerValue];
+        NSEventModifierFlags f = aValue.unsignedIntegerValue;
         return [NSString stringWithFormat:@"%@%@%@%@",
                 (f & NSControlKeyMask ? @"⌃" : @""),
                 (f & NSAlternateKeyMask ? @"⌥" : @""),

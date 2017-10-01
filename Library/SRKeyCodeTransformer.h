@@ -33,7 +33,7 @@
 
     @discussion This method is the designated initializer for SRKeyCodeTransformer.
  */
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings;
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings NS_DESIGNATED_INITIALIZER;
 
 /*!
     Determines whether transformer uses ASCII capable keyboard input source.

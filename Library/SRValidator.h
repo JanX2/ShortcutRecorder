@@ -26,7 +26,7 @@
 
 @property (assign) NSObject<SRValidatorDelegate> *delegate;
 
-- (instancetype)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate;
+- (instancetype)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate NS_DESIGNATED_INITIALIZER;
 
 /*!
     Determines whether shortcut is taken.

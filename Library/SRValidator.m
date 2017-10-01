@@ -55,7 +55,7 @@
 
     if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] ||
          [self.delegate shortcutValidatorShouldCheckMenu:self]) &&
-        [self isKeyCode:aKeyCode andFlags:aFlags takenInMenu:[NSApp mainMenu] error:outError])
+        [self isKeyCode:aKeyCode andFlags:aFlags takenInMenu:NSApp.mainMenu error:outError])
     {
         return YES;
     }
@@ -88,7 +88,7 @@
                 NSString *description = [NSString stringWithFormat:
                                          SRLoc(@"The key combination \"%@\" can't be used because %@."),
                                          shortcut,
-                                         [delegateReason length] ? delegateReason : @"it's already used"];
+                                         delegateReason.length ? delegateReason : @"it's already used"];
                 NSDictionary *userInfo = @{
                     NSLocalizedFailureReasonErrorKey : failureReason,
                     NSLocalizedDescriptionKey: description
@@ -161,14 +161,14 @@
 {
     aFlags &= SRCocoaModifierFlagsMask;
 
-    for (NSMenuItem *menuItem in [aMenu itemArray])
+    for (NSMenuItem *menuItem in aMenu.itemArray)
     {
         if (menuItem.hasSubmenu && [self isKeyCode:aKeyCode andFlags:aFlags takenInMenu:menuItem.submenu error:outError])
             return YES;
 
         NSString *keyEquivalent = menuItem.keyEquivalent;
 
-        if (![keyEquivalent length])
+        if (!keyEquivalent.length)
             continue;
 
         NSEventModifierFlags keyEquivalentModifierMask = menuItem.keyEquivalentModifierMask;
@@ -224,8 +224,8 @@
     for (NSMenuItem *menuItem in items)
         [path appendFormat:@"%@➝", menuItem.title];
 
-    if ([path length] > 1)
-        [path deleteCharactersInRange:NSMakeRange([path length] - 1, 1)];
+    if (path.length > 1)
+        [path deleteCharactersInRange:NSMakeRange(path.length - 1, 1)];
 
     return path;
 }
