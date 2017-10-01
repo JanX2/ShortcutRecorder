@@ -86,9 +86,8 @@
                                            SRLoc(@"The key combination \"%@\" can't be used!"),
                                            shortcut];
                 NSString *description = [NSString stringWithFormat:
-                                         SRLoc(@"The key combination \"%@\" can't be used because %@."),
-                                         shortcut,
-                                         delegateReason.length ? delegateReason : @"it's already used"];
+                                         SRLoc(@"The key combination \"%@\" is already in use."),
+                                         shortcut];
                 NSDictionary *userInfo = @{
                     NSLocalizedFailureReasonErrorKey : failureReason,
                     NSLocalizedDescriptionKey: description
