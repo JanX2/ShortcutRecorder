@@ -1,0 +1,6 @@
+framework module PTHotKey {
+	umbrella header "HotKey.h"
+
+	export *
+	module * { export * }
+}
