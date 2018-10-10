@@ -14,45 +14,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import <ShortcutRecorder/SRCommon.h>
-
-
-/*!
-    Key code.
-
-    @discussion NSNumber representation of unsigned short.
-                Required key of SRRecorderControl's objectValue.
- */
-extern NSString *const SRShortcutKeyCode;
-
-/*!
-    Modifier flags.
-
-    @discussion NSNumber representation of NSEventModifierFlags.
-                Optional key of SRRecorderControl's objectValue.
- */
-extern NSString *const SRShortcutModifierFlagsKey;
-
-/*!
-    Interpretation of key code and modifier flags depending on system locale and input source
-    used when shortcut was taken.
-
-    @discussion NSString.
-                Optional key of SRRecorderControl's objectValue.
- */
-extern NSString *const SRShortcutCharacters;
-
-/*!
-    Interpretation of key code without modifier flags depending on system locale and input source
-    used when shortcut was taken.
-
-    @discussion NSString.
-                Optional key of SRRecorderControl's objectValue.
- */
-extern NSString *const SRShortcutCharactersIgnoringModifiers;
-
+#import <ShortcutRecorder/SRShortcut.h>
 
 @protocol SRRecorderControlDelegate;
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 /*!
     An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
@@ -68,9 +35,15 @@ extern NSString *const SRShortcutCharactersIgnoringModifiers;
 
                 Required height: 25 points
                 Recommended min width: 100 points
+
+    @note See objectValue for Shortcut Recorder 2 compatibility notes.
  */
 IB_DESIGNABLE
-@interface SRRecorderControl : NSView /* <NSAccessibility, NSKeyValueBindingCreation, NSToolTipOwner, NSNibAwaking> */
+NS_SWIFT_NAME(RecorderControl)
+@interface SRRecorderControl : NSView /* <NSAccessibility, NSNibLoading, NSKeyValueBindingCreation, NSToolTipOwner> */
+{
+    BOOL _isCompatibilityModeEnabled;
+}
 
 /*!
     The receiver’s delegate.
@@ -78,7 +51,7 @@ IB_DESIGNABLE
     @discussion A recorder control delegate responds to editing-related messages. You can use to to prevent editing
                 in some cases or to validate typed shortcuts.
  */
-@property (assign) IBOutlet NSObject<SRRecorderControlDelegate> *delegate;
+@property (nullable, weak) IBOutlet NSObject<SRRecorderControlDelegate> *delegate;
 
 /*!
     Returns an integer bit field indicating allowed modifier flags.
@@ -141,9 +114,18 @@ IB_DESIGNABLE
 @property (nonatomic, readonly) BOOL isRecording;
 
 /*!
-    Returns dictionary representation of receiver's shortcut.
+    The value of the receiver.
+
+    @discussion If the very first non-nil value is an instance of NSDictionary the control will
+                enter the compatibility mode where objectValue and NSValueBinding accessors will
+                accept and return instances of NSDictionary.
  */
-@property (nonatomic, copy) NSDictionary *objectValue;
+@property (nullable, nonatomic, copy) SRShortcut *objectValue;
+
+/*!
+    Dictionary representation of the shortcut.
+*/
+@property (nullable, nonatomic, copy) NSDictionary *dictionaryValue;
 
 /*!
     Configures recording behavior of the control.
@@ -198,7 +180,7 @@ IB_DESIGNABLE
 
     @discussion You SHOULD not call this method directly.
  */
-- (void)endRecordingWithObjectValue:(NSDictionary *)anObjectValue;
+- (void)endRecordingWithObjectValue:(nullable SRShortcut *)aShortcut;
 
 
 /*!
@@ -247,12 +229,12 @@ IB_DESIGNABLE
 /*!
     Returns string representation of object value.
  */
-- (NSString *)stringValue;
+- (nullable NSString *)stringValue;
 
 /*!
     Returns string representation of object value for accessibility.
  */
-- (NSString *)accessibilityStringValue;
+- (nullable NSString *)accessibilityStringValue;
 
 /*!
     Returns attirbutes of label to be displayed by the receiver according to current state.
@@ -315,7 +297,7 @@ IB_DESIGNABLE
 /*!
     Determines whether snap back button is highlighted.
  */
-- (BOOL)isSnapBackButtonHighlighted;
+- (BOOL)isCancelButtonHighlighted;
 
 /*!
     Determines whetehr clear button is highlighted.
@@ -350,6 +332,13 @@ IB_DESIGNABLE
 @end
 
 
+@interface SRRecorderControl (Deprecated)
+
+@property (nonatomic, readonly, getter=isCancelButtonHighlighted) BOOL isSnapBackButtonHighlighted __attribute__((deprecated("", "isCancelButtonHighlighted")));
+
+@end
+
+
 @protocol SRRecorderControlDelegate <NSObject>
 
 @optional
@@ -374,7 +363,7 @@ IB_DESIGNABLE
 
     @param      aKeyCode Code of the pressed key.
 
-    @result     YES if recorder should bypass key code with given modifier flags despite settings like required modifier flags, allowed modifier flags.
+    @result     YES if recorder should bypass key code with given modifier flags despite control's configuration.
 
     @discussion Implementation of this method by the delegate is optional.
                 Normally, you wouldn't allow a user to record shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
@@ -403,7 +392,7 @@ IB_DESIGNABLE
 
     @see        SRValidator
  */
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut;
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut;
 
 /*!
     Tells the delegate that editing stopped for the specified shortcut recorder.
@@ -416,21 +405,4 @@ IB_DESIGNABLE
 
 @end
 
-
-FOUNDATION_STATIC_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b)
-{
-    if (a == b)
-        return YES;
-    else if (a && !b)
-        return NO;
-    else if (!a && b)
-        return NO;
-    else
-        return ([a[SRShortcutKeyCode] isEqual:b[SRShortcutKeyCode]] && [a[SRShortcutModifierFlagsKey] isEqual:b[SRShortcutModifierFlagsKey]]);
-}
-
-
-FOUNDATION_STATIC_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
-{
-    return @{SRShortcutKeyCode: @(aKeyCode), SRShortcutModifierFlagsKey: @(aModifierFlags)};
-}
+NS_ASSUME_NONNULL_END

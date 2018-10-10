@@ -2,7 +2,7 @@
 //  SRModifierFlagsTransformer.h
 //  ShortcutRecorder
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
+//  Copyright 2006-2018 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -12,26 +12,44 @@
 #import <Cocoa/Cocoa.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
-    Transforms mask of Cocoa modifier flags to string of unicode characters.
+    Transform Cocoa modifier flags into a string of unicode characters.
  */
+NS_SWIFT_NAME(ModifierFlagsTransformer)
 @interface SRModifierFlagsTransformer : NSValueTransformer
 
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings NS_DESIGNATED_INITIALIZER;
+/*!
+    Shared symbolic transformer.
+ */
+@property (class, readonly) SRModifierFlagsTransformer *sharedSymbolicTransformer;
 
 /*!
-    Determines whether modifier flags are transformed to unicode characters or to plain strings.
+    Shared literal transformer.
  */
-@property (readonly) BOOL usesPlainStrings;
+@property (class, readonly) SRModifierFlagsTransformer *sharedLiteralTransformer;
+
+- (instancetype)init:(BOOL)aIsLiteral NS_DESIGNATED_INITIALIZER;
 
 /*!
-     Returns the shared transformer.
+    Whether modifier flags are transformed into unicode characters or literal strings.
  */
-+ (instancetype)sharedTransformer;
-
-/*!
-     Returns the shared plain transformer.
- */
-+ (instancetype)sharedPlainTransformer;
+@property (readonly) BOOL isLiteral;
 
 @end
+
+
+@interface SRModifierFlagsTransformer (Deprecated)
+
++ (instancetype)sharedTransformer __attribute__((deprecated("", "sharedSymbolicTransformer")));
++ (instancetype)sharedPlainTransformer __attribute__((deprecated("", "sharedLiteralTransformer")));
+
+- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated("", "initWithPlainStrings:")));
+
+@property (readonly, getter=isLiteral) BOOL usesPlainStrings __attribute__((deprecated("", "isLiteral")));
+
+@end
+
+
+NS_ASSUME_NONNULL_END

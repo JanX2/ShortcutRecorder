@@ -2,7 +2,7 @@
 //  SRKeyCodeTransformer.h
 //  ShortcutRecorder
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
+//  Copyright 2006-2018 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -25,14 +25,14 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 @implementation SRKeyCodeTransformer
 
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII isLiteral:(BOOL)aIsLiteral
 {
     self = [super init];
 
     if (self)
     {
         _usesASCIICapableKeyboardInputSource = aUsesASCII;
-        _usesPlainStrings = aUsesPlainStrings;
+        _isLiteral = aIsLiteral;
     }
 
     return self;
@@ -40,57 +40,53 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 
 - (instancetype)init
 {
-    return [self initWithASCIICapableKeyboardInputSource:NO plainStrings:NO];
+    return [self initWithASCIICapableKeyboardInputSource:NO isLiteral:NO];
 }
 
 
 #pragma mark Methods
 
-+ (instancetype)sharedTransformer
++ (instancetype)sharedSymbolicTransformer
 {
     static dispatch_once_t OnceToken;
     static SRKeyCodeTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
-                                                               plainStrings:NO];
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:NO isLiteral:NO];
     });
     return Transformer;
 }
 
-+ (instancetype)sharedASCIITransformer
++ (instancetype)sharedSymbolicASCIITransformer
 {
     static dispatch_once_t OnceToken;
     static SRKeyCodeTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
-                                                               plainStrings:NO];
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:YES isLiteral:NO];
     });
     return Transformer;
 }
 
-+ (instancetype)sharedPlainTransformer
++ (instancetype)sharedLiteralTransformer
 {
     static dispatch_once_t OnceToken;
     static SRKeyCodeTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:NO
-                                                               plainStrings:YES];
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:NO isLiteral:YES];
     });
     return Transformer;
 }
 
-+ (SRKeyCodeTransformer *)sharedPlainASCIITransformer
++ (SRKeyCodeTransformer *)sharedLiteralASCIITransformer
 {
     static dispatch_once_t OnceToken;
     static SRKeyCodeTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:YES
-                                                               plainStrings:YES];
+        Transformer = [[self alloc] initWithASCIICapableKeyboardInputSource:YES isLiteral:YES];
     });
     return Transformer;
 }
 
-+ (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping
++ (NSDictionary *)specialKeyCodeToSymbolMapping
 {
     // Most of these keys are system constans.
     // Values for rest of the keys were given by setting key equivalents in IB.
@@ -140,7 +136,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     return Mapping;
 }
 
-+ (NSDictionary *)specialKeyCodesToPlainStringsMapping
++ (NSDictionary *)specialKeyCodeToLiteralMapping
 {
     static dispatch_once_t OnceToken;
     static NSDictionary *Mapping = nil;
@@ -236,6 +232,39 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 }
 
 
+#pragma mark Deprecated
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+
++ (instancetype)sharedTransformer
+{
+    return self.sharedSymbolicTransformer;
+}
+
++ (instancetype)sharedASCIITransformer
+{
+    return self.sharedSymbolicASCIITransformer;
+}
+
++ (instancetype)sharedPlainTransformer
+{
+    return self.sharedLiteralTransformer;
+}
+
++ (SRKeyCodeTransformer *)sharedPlainASCIITransformer
+{
+    return self.sharedLiteralASCIITransformer;
+}
+
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings
+{
+    return [self initWithASCIICapableKeyboardInputSource:aUsesASCII isLiteral:aUsesPlainStrings];
+}
+
+#pragma clang diagnostic pop
+
+
 #pragma mark NSValueTransformer
 
 + (BOOL)allowsReverseTransformation
@@ -266,7 +295,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     }
 
     if (![aValue isKindOfClass:[NSNumber class]])
-        return @"";
+        return nil;
 
     // Some key codes cannot be translated directly.
     NSString *unmappedString = [self transformedSpecialKeyCode:aValue withExplicitModifierFlags:anExplicitModifierFlags];
@@ -281,7 +310,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         TISInputSourceRef tisSource = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
 
         if (!tisSource)
-            return @"";
+            return nil;
 
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
@@ -291,7 +320,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         TISInputSourceRef tisSource = TISCopyCurrentKeyboardLayoutInputSource();
 
         if (!tisSource)
-            return @"";
+            return nil;
 
         layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
         CFRelease(tisSource);
@@ -302,7 +331,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
             tisSource = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
 
             if (!tisSource)
-                return @"";
+                return nil;
 
             layoutData = (CFDataRef)TISGetInputSourceProperty(tisSource, kTISPropertyUnicodeKeyLayoutData);
             CFRelease(tisSource);
@@ -310,7 +339,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     }
 
     if (!layoutData)
-        return @"";
+        return nil;
 
     const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
 
@@ -329,10 +358,16 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
                                   sizeof(chars) / sizeof(UniChar),
                                   &actualLength,
                                   chars);
+    // TODO: Log warning.
     if (err != noErr)
-        return @"";
+    {
+#ifdef DEBUG
+        NSLog(@"WARNING: Unable to translate key code (%d) and modifier flags (%lu).", aValue.unsignedShortValue, anImplicitModifierFlags.unsignedIntegerValue);
+#endif
+        return nil;
+    }
 
-    if (self.usesPlainStrings)
+    if (self.isLiteral)
         return [NSString stringWithCharacters:chars length:actualLength].uppercaseString;
     else
         return [NSString stringWithCharacters:chars length:actualLength];
@@ -342,16 +377,16 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
 {
     if (anExplicitModifierFlags.unsignedIntegerValue & NSShiftKeyMask && aKeyCode.unsignedShortValue == kVK_Tab)
     {
-        if (self.usesPlainStrings)
+        if (self.isLiteral)
             return _SRUnicharToString(SRKeyCodeGlyphTabLeft);
         else
             return _SRUnicharToString(NSBackTabCharacter);
     }
 
-    if (self.usesPlainStrings)
-        return [[self class] specialKeyCodesToPlainStringsMapping][aKeyCode];
+    if (self.isLiteral)
+        return self.class.specialKeyCodeToLiteralMapping[aKeyCode];
     else
-        return [[self class] specialKeyCodesToUnicodeCharactersMapping][aKeyCode];
+        return self.class.specialKeyCodeToSymbolMapping[aKeyCode];
 }
 
 @end
