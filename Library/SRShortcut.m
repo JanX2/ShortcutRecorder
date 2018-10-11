@@ -105,8 +105,8 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     return @{
         SRShortcutKeyKeyCode: @(self.keyCode),
         SRShortcutKeyModifierFlags: @(self.modifierFlags),
-        SRShortcutKeyCharacters: self.characters ? self.characters : [NSNull null],
-        SRShortcutKeyCharactersIgnoringModifiers: self.charactersIgnoringModifiers ? self.charactersIgnoringModifiers : [NSNull null]
+        SRShortcutKeyCharacters: self.characters ? self.characters : @"",
+        SRShortcutKeyCharactersIgnoringModifiers: self.charactersIgnoringModifiers ? self.charactersIgnoringModifiers : @""
     };
 }
 

@@ -16,4 +16,5 @@
 #import <ShortcutRecorder/SRModifierFlagsTransformer.h>
 #import <ShortcutRecorder/SRRecorderControl.h>
 #import <ShortcutRecorder/SRShortcut.h>
+#import <ShortcutRecorder/SRShortcutController.h>
 #import <ShortcutRecorder/SRValidator.h>

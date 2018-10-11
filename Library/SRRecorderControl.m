@@ -203,14 +203,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)setObjectValue:(SRShortcut *)newObjectValue
 {
-    if ([newObjectValue isEqual:_objectValue])
+    if (newObjectValue == _objectValue || [newObjectValue isEqual:_objectValue])
         return;
 
     [self willChangeValueForKey:@"objectValue"];
     // Cocoa KVO and KVC frequently uses NSNull as object substituation of nil.
     // SRRecorderControl expects either nil or valid object value, it's convenient
     // to handle NSNull here and convert it into nil.
-    if ((NSNull *)newObjectValue == [NSNull null])
+    if ((NSNull *)newObjectValue == NSNull.null)
         newObjectValue = nil;
     // Backward compatibility with Shortcut Recorder 2
     else if ([newObjectValue isKindOfClass:NSDictionary.class] && _objectValue == nil)
@@ -823,17 +823,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     NSDictionary* bindingInfo = [self infoForBinding:aBinding];
 
-    if(!bindingInfo || (id)bindingInfo == [NSNull null])
+    if(!bindingInfo || (id)bindingInfo == NSNull.null)
         return;
 
     NSObject *boundObject = bindingInfo[NSObservedObjectKey];
 
-    if(!boundObject || (id)boundObject == [NSNull null])
+    if(!boundObject || (id)boundObject == NSNull.null)
         [NSException raise:NSInternalInconsistencyException format:@"NSObservedObjectKey MUST NOT be nil for binding \"%@\"", aBinding];
 
     NSString* boundKeyPath = bindingInfo[NSObservedKeyPathKey];
 
-    if(!boundKeyPath || (id)boundKeyPath == [NSNull null])
+    if(!boundKeyPath || (id)boundKeyPath == NSNull.null)
         [NSException raise:NSInternalInconsistencyException format:@"NSObservedKeyPathKey MUST NOT be nil for binding \"%@\"", aBinding];
 
     NSDictionary* bindingOptions = bindingInfo[NSOptionsKey];
@@ -842,15 +842,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         NSValueTransformer* transformer = [bindingOptions valueForKey:NSValueTransformerBindingOption];
 
-        if(!transformer || (id)transformer == [NSNull null])
+        if(!transformer || (id)transformer == NSNull.null)
         {
             NSString* transformerName = [bindingOptions valueForKey:NSValueTransformerNameBindingOption];
 
-            if(transformerName && (id)transformerName != [NSNull null])
+            if(transformerName && (id)transformerName != NSNull.null)
                 transformer = [NSValueTransformer valueTransformerForName:transformerName];
         }
 
-        if(transformer && (id)transformer != [NSNull null])
+        if(transformer && (id)transformer != NSNull.null)
         {
             if([[transformer class] allowsReverseTransformation])
                 aValue = [transformer reverseTransformedValue:aValue];
