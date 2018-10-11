@@ -33,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
                     - NSValueTransformerNameBindingOption
                     Note that at that moment, this binding _is not_ multivalue.
 
+                The control conforms to NSEditor. If object bound to NSValueBinding
+                also conforms to NSEditorRegistration appropriate methods will be called.
+
                 Required height: 25 points
                 Recommended min width: 100 points
 
@@ -40,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 IB_DESIGNABLE
 NS_SWIFT_NAME(RecorderControl)
-@interface SRRecorderControl : NSView /* <NSAccessibility, NSNibLoading, NSKeyValueBindingCreation, NSToolTipOwner> */
+@interface SRRecorderControl : NSView /* <NSAccessibility, NSEditor, NSNibLoading, NSKeyValueBindingCreation, NSToolTipOwner> */
 {
     BOOL _isCompatibilityModeEnabled;
 }

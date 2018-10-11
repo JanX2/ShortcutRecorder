@@ -267,6 +267,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         }
     }
 
+    NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
+    if (bindingInfo)
+    {
+        id controller = bindingInfo[NSObservedObjectKey];
+        if ([controller respondsToSelector:@selector(objectDidBeginEditing:)])
+            [controller objectDidBeginEditing:self];
+    }
+
     [self willChangeValueForKey:@"isRecording"];
     _isRecording = YES;
     [self didChangeValueForKey:@"isRecording"];
@@ -274,6 +282,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self updateTrackingAreas];
     self.toolTip = SRLoc(@"Type shortcut");
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
+
     return YES;
 }
 
@@ -291,6 +300,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     if (!self.isRecording)
         return;
+
+    NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
+    if (bindingInfo)
+    {
+        id controller = bindingInfo[NSObservedObjectKey];
+        if ([controller respondsToSelector:@selector(objectDidEndEditing:)])
+            [controller objectDidEndEditing:self];
+    }
 
     [self willChangeValueForKey:@"isRecording"];
     _isRecording = NO;
@@ -967,6 +984,38 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
+#pragma mark NSEditor
+
+- (BOOL)commitEditing
+{
+    // Shortcuts recording is atomic (either all or nothing) and there are no pending changes.
+    [self discardEditing];
+    return YES;
+}
+
+- (void)commitEditingWithDelegate:(id)aDelegate didCommitSelector:(SEL)aDidCommitSelector contextInfo:(void *)aContextInfo
+{
+    // See AppKit's __NSSendCommitEditingSelector
+    NSInvocation *i = [NSInvocation invocationWithMethodSignature:[aDelegate methodSignatureForSelector:aDidCommitSelector]];
+    [i setSelector:aDidCommitSelector]
+    [i setArgument:self atIndex:2];
+    [i setArgument:@([self commitEditing]) atIndex:3];
+    [i setArgument:aContextInfo atIndex:4];
+    [i retainArguments];
+    [i performSelector:@selector(invokeWithTarget:) withObject:aDelegate afterDelay:0 inModes:@[NSRunLoopCommonModes]];
+}
+
+- (BOOL)commitEditingAndReturnError:(NSError **)outError
+{
+    return [self commitEditing];
+}
+
+- (void)discardEditing
+{
+    [self endRecording];
+}
+
+
 #pragma mark NSNibLoading
 
 - (void)prepareForInterfaceBuilder
@@ -977,7 +1026,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
-#pragma mark NSToolTipOwner
+#pragma mark NSViewToolTipOwner
 
 - (NSString *)view:(NSView *)aView stringForToolTip:(NSToolTipTag)aTag point:(NSPoint)aPoint userData:(void *)aData
 {
@@ -1447,6 +1496,19 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self exposeBinding:NSValueBinding];
         [self exposeBinding:NSEnabledBinding];
     }
+}
+
++ (BOOL)conformsToProtocol:(Protocol *)aProtocol
+{
+    if (@available(macOS 10.14, *))
+    {
+        if (aProtocol == NSProtocolFromString(@"NSViewToolTipOwner"))
+            return YES;
+        else if (aProtocol == NSProtocolFromString(@"NSEditor"))
+            return YES;
+    }
+
+    return [super conformsToProtocol:aProtocol];
 }
 
 - (Class)valueClassForBinding:(NSBindingName)aBinding
