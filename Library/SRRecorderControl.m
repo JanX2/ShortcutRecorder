@@ -995,12 +995,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)commitEditingWithDelegate:(id)aDelegate didCommitSelector:(SEL)aDidCommitSelector contextInfo:(void *)aContextInfo
 {
+    BOOL isEditingCommited = [self commitEditing];
     // See AppKit's __NSSendCommitEditingSelector
     NSInvocation *i = [NSInvocation invocationWithMethodSignature:[aDelegate methodSignatureForSelector:aDidCommitSelector]];
-    [i setSelector:aDidCommitSelector]
-    [i setArgument:self atIndex:2];
-    [i setArgument:@([self commitEditing]) atIndex:3];
-    [i setArgument:aContextInfo atIndex:4];
+    [i setSelector:aDidCommitSelector];
+    [i setArgument:&self atIndex:2];
+    [i setArgument:&isEditingCommited atIndex:3];
+    [i setArgument:&aContextInfo atIndex:4];
     [i retainArguments];
     [i performSelector:@selector(invokeWithTarget:) withObject:aDelegate afterDelay:0 inModes:@[NSRunLoopCommonModes]];
 }
