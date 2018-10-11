@@ -358,7 +358,6 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
                                   sizeof(chars) / sizeof(UniChar),
                                   &actualLength,
                                   chars);
-    // TODO: Log warning.
     if (err != noErr)
     {
 #ifdef DEBUG
