@@ -271,7 +271,7 @@
         MakeConstraint(self.alignmentGuide.bottomAnchor, self.controlView.bottomAnchor, 0.0, NSLayoutPriorityDefaultHigh, NSLayoutRelationEqual),
         SetConstraint(&_alignmentHeightConstraint, MakeEqConstraint(self.alignmentGuide.heightAnchor, nil)),
         SetConstraint(&_alignmentWidthConstraint, MakeGteConstraint(self.alignmentGuide.widthAnchor, nil)),
-        SetConstraint(&_alignmentSuggestedWidthConstraint, MakeConstraint(self.alignmentGuide.widthAnchor, nil, 0.0, NSLayoutPriorityDefaultHigh, NSLayoutRelationEqual)),
+        SetConstraint(&_alignmentSuggestedWidthConstraint, MakeConstraint(self.alignmentGuide.widthAnchor, nil, 0.0, NSLayoutPriorityDefaultLow, NSLayoutRelationEqual)),
 
         SetConstraint(&_backgroundTopConstraint, MakeEqConstraint(self.backgroundDrawingGuide.topAnchor, self.alignmentGuide.topAnchor)),
         SetConstraint(&_backgroundLeftConstraint, MakeEqConstraint(self.backgroundDrawingGuide.leftAnchor, self.alignmentGuide.leftAnchor)),
