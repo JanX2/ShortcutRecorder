@@ -34,6 +34,8 @@
 		BAC79C30216FD76000E45F23 /* PTHotKey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; };
 		BAC79C31216FD76000E45F23 /* PTHotKey.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BAE3063B1F80955700904E9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE3063A1F80955700904E9A /* Images.xcassets */; };
+		BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */; };
+		BAED062221FFEF72001E483B /* SRRecorderControlStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BAED4705217007C70008DA80 /* SRRecorderControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAED4704217007C70008DA80 /* SRRecorderControl.swift */; };
 		E273123A1349EDB500A84433 /* PTHotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -121,6 +123,8 @@
 		A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCodeTranslator.h; sourceTree = "<group>"; };
 		A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCodeTranslator.m; sourceTree = "<group>"; };
 		BA03E78E216A90A40008002D /* SRValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRValidatorTests.swift; sourceTree = "<group>"; };
+		BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRRecorderControlStyle.h; path = Library/SRRecorderControlStyle.h; sourceTree = "<group>"; };
+		BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRRecorderControlStyle.m; path = Library/SRRecorderControlStyle.m; sourceTree = "<group>"; };
 		BA722EAB216037BC00EFF192 /* HotKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotKey.h; sourceTree = "<group>"; };
 		BA722EAD216038F800EFF192 /* PTHotKey.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = PTHotKey.modulemap; sourceTree = "<group>"; };
 		BA722EAE21608FB600EFF192 /* SRShortcut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcut.h; path = Library/SRShortcut.h; sourceTree = "<group>"; };
@@ -132,6 +136,7 @@
 		BA722ED42162A4AA00EFF192 /* SRShortcutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutController.m; path = Library/SRShortcutController.m; sourceTree = "<group>"; };
 		BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutControllerTests.swift; sourceTree = "<group>"; };
 		BA722EF621640D2400EFF192 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		BA8C53D421FFED8D00B40164 /* Demo.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Demo.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BAC79C07216FCE8E00E45F23 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC79C09216FCE8E00E45F23 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BAC79C0E216FCE8F00E45F23 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -230,6 +235,8 @@
 				74C367110A246B4900B69171 /* SRCommon.m */,
 				0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */,
 				0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */,
+				BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */,
+				BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */,
 				74C3670E0A246B4900B69171 /* SRValidator.h */,
 				74C3670F0A246B4900B69171 /* SRValidator.m */,
 				BA722EAE21608FB600EFF192 /* SRShortcut.h */,
@@ -264,6 +271,7 @@
 		29B97314FDCFA39411CA2CEA /* ShortcutRecorder */ = {
 			isa = PBXGroup;
 			children = (
+				BA8C53D421FFED8D00B40164 /* Demo.playground */,
 				BAC79C08216FCE8E00E45F23 /* Demo */,
 				080E96DDFE201D6D7F000001 /* ShortcutRecorder */,
 				E2741AE71673CC3D00A139BD /* PTHotKey */,
@@ -369,6 +377,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				939839390DA4350B007F53F3 /* ShortcutRecorder.h in Headers */,
+				BAED062221FFEF72001E483B /* SRRecorderControlStyle.h in Headers */,
 				9398393B0DA4350B007F53F3 /* SRRecorderControl.h in Headers */,
 				E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */,
 				E2BE924D16ABEFE400827E8C /* SRKeyEquivalentTransformer.h in Headers */,
@@ -495,7 +504,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1000;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1010;
 				TargetAttributes = {
 					9398377F0DA42965007F53F3 = {
 						LastSwiftMigration = 1000;
@@ -610,6 +619,7 @@
 				939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */,
 				939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */,
 				BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */,
+				BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */,
 				939837990DA429EC007F53F3 /* SRValidator.m in Sources */,
 				9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */,
 				E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */,
@@ -730,7 +740,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 2.6;
@@ -751,7 +761,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 2.6;
@@ -907,6 +917,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "UI Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder.DemoUITests;
@@ -937,6 +948,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = "UI Tests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder.DemoUITests;
@@ -989,8 +1001,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-fstack-protector";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WARNING_CFLAGS = "-Wall";
@@ -1036,7 +1049,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_CFLAGS = "-fstack-protector";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1048,7 +1062,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1067,7 +1081,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;

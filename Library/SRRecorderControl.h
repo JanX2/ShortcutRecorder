@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import <ShortcutRecorder/SRCommon.h>
 #import <ShortcutRecorder/SRShortcut.h>
+#import <ShortcutRecorder/SRRecorderControlStyle.h>
 
 @protocol SRRecorderControlDelegate;
 
@@ -41,8 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
 
     @note See objectValue for Shortcut Recorder 2 compatibility notes.
  */
-IB_DESIGNABLE
+
 NS_SWIFT_NAME(RecorderControl)
+IB_DESIGNABLE
 @interface SRRecorderControl : NSView /* <NSAccessibility, NSEditor, NSNibLoading, NSKeyValueBindingCreation, NSToolTipOwner> */
 {
     BOOL _isCompatibilityModeEnabled;
@@ -130,6 +132,8 @@ NS_SWIFT_NAME(RecorderControl)
 */
 @property (nullable, nonatomic, copy) NSDictionary *dictionaryValue;
 
+@property (null_resettable, nonatomic) SRRecorderControlStyle *style;
+
 /*!
     Configures recording behavior of the control.
 
@@ -194,28 +198,6 @@ NS_SWIFT_NAME(RecorderControl)
 - (NSBezierPath *)controlShape;
 
 /*!
-    Returns rect for label with given attributes.
-
-    @param  aLabel Label for drawing.
-
-    @param  anAttributes A dictionary of NSAttributedString text attributes to be applied to the string.
- */
-- (NSRect)rectForLabel:(NSString *)aLabel withAttributes:(NSDictionary *)anAttributes;
-
-/*!
-    Returns rect of the snap back button in the receiver coordinates.
- */
-- (NSRect)snapBackButtonRect;
-
-/*!
-    Returns rect of the clear button in the receiver coordinates.
-
-    @discussion Returned rect will have empty width (other values will be valid) if button should not be drawn.
- */
-- (NSRect)clearButtonRect;
-
-
-/*!
     Returns label to be displayed by the receiver.
 
     @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
@@ -250,21 +232,6 @@ NS_SWIFT_NAME(RecorderControl)
  */
 - (NSDictionary *)labelAttributes;
 
-/*!
-    Returns attributes of label to be displayed by the receiver in normal mode.
- */
-- (NSDictionary *)normalLabelAttributes;
-
-/*!
-    Returns attributes of label to be displayed by the receiver in recording mode.
- */
-- (NSDictionary *)recordingLabelAttributes;
-
-/*!
-    Returns attributes of label to be displayed by the receiver in disabled mode.
- */
-- (NSDictionary *)disabledLabelAttributes;
-
 
 /*!
     Draws background of the receiver into current graphics context.
@@ -284,7 +251,7 @@ NS_SWIFT_NAME(RecorderControl)
 /*!
     Draws snap back button of the receiver into current graphics context.
  */
-- (void)drawSnapBackButton:(NSRect)aDirtyRect;
+- (void)drawCancelButton:(NSRect)aDirtyRect;
 
 /*!
     Draws clear button of the receiver into current graphics context.
@@ -306,6 +273,11 @@ NS_SWIFT_NAME(RecorderControl)
     Determines whetehr clear button is highlighted.
  */
 - (BOOL)isClearButtonHighlighted;
+
+/*!
+ Called when control's state changes in a way that may affect layout constraints.
+ */
+- (void)updateActiveConstraints;
 
 /*!
     Determines whether modifier flags are valid for key code according to the receiver settings.
@@ -342,6 +314,7 @@ NS_SWIFT_NAME(RecorderControl)
 @end
 
 
+NS_SWIFT_NAME(RecorderControlDelegate)
 @protocol SRRecorderControlDelegate <NSObject>
 
 @optional

@@ -1,0 +1,36 @@
+{
+	"Height": 25.0,
+	"LabelToCancel": 3.0,
+	"CancelToClear": 2.0,
+	"ButtonToAlignment": 1.0,
+	"BaselineFromTop": 0.0,
+    "BaselineOffsetFromBottom": 4.0,
+	"ShapeCornerRadius": {
+		"Width": 2.0,
+		"Height": 2.0
+	},
+	"AlignmentInsets": {
+		"Top": 1.0,
+		"Left": 1.0,
+		"Bottom": 2.0,
+		"Right": 1.0
+	},
+	"NormalLabelAttributes": {
+		"FontName": ".AppleSystemUIFont",
+		"FontSize": 13.0,
+		"FontColorCatalogName": "System",
+		"FontColorName": "controlTextColor",
+	},
+	"RecordingLabelAttributes": {
+		"FontName": ".AppleSystemUIFont",
+		"FontSize": 13.0,
+		"FontColorCatalogName": "System",
+		"FontColorName": "disabledControlTextColor",
+	},
+	"DisabledLabelAttributes": {
+		"FontName": ".AppleSystemUIFont",
+		"FontSize": 13.0,
+		"FontColorCatalogName": "System",
+		"FontColorName": "disabledControlTextColor",
+	}
+}
