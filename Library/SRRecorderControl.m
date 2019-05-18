@@ -844,6 +844,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)prepareForInterfaceBuilder
 {
+    [super prepareForInterfaceBuilder];
     self.objectValue = [SRShortcut shortcutWithCode:0
                                       modifierFlags:NSEventModifierFlagControl | NSEventModifierFlagOption | NSEventModifierFlagShift | NSEventModifierFlagCommand
                                          characters:@""
@@ -1018,6 +1019,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         // it should be called whenever geometry or apperance changes. Therefore it's a good place to set up tooltip rects.
         _cancelButtonToolTipTag = [self addToolTipRect:_cancelButtonTrackingArea.rect owner:self userData:NULL];
     }
+
+    [super updateTrackingAreas];
 }
 
 - (void)updateConstraints
