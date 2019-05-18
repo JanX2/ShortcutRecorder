@@ -67,8 +67,5 @@ NSString *SRLoc(NSString *aKey)
 
 NSImage *SRImage(NSString *anImageName)
 {
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
-        return [[NSImage alloc] initByReferencingURL:[SRBundle() URLForImageResource:anImageName]];
-    else
-        return [SRBundle() imageForResource:anImageName];
+    return [SRBundle() imageForResource:anImageName];
 }

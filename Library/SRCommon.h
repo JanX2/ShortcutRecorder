@@ -63,16 +63,16 @@ NS_INLINE NSEventModifierFlags SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
     NSEventModifierFlags cocoaFlags = 0;
 
     if (aCarbonFlags & cmdKey)
-        cocoaFlags |= NSCommandKeyMask;
+        cocoaFlags |= NSEventModifierFlagCommand;
 
     if (aCarbonFlags & optionKey)
-        cocoaFlags |= NSAlternateKeyMask;
+        cocoaFlags |= NSEventModifierFlagOption;
 
     if (aCarbonFlags & controlKey)
-        cocoaFlags |= NSControlKeyMask;
+        cocoaFlags |= NSEventModifierFlagControl;
 
     if (aCarbonFlags & shiftKey)
-        cocoaFlags |= NSShiftKeyMask;
+        cocoaFlags |= NSEventModifierFlagShift;
 
     return cocoaFlags;
 }
@@ -84,16 +84,16 @@ NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 {
     UInt32 carbonFlags = 0;
 
-    if (aCocoaFlags & NSCommandKeyMask)
+    if (aCocoaFlags & NSEventModifierFlagCommand)
         carbonFlags |= cmdKey;
 
-    if (aCocoaFlags & NSAlternateKeyMask)
+    if (aCocoaFlags & NSEventModifierFlagOption)
         carbonFlags |= optionKey;
 
-    if (aCocoaFlags & NSControlKeyMask)
+    if (aCocoaFlags & NSEventModifierFlagControl)
         carbonFlags |= controlKey;
 
-    if (aCocoaFlags & NSShiftKeyMask)
+    if (aCocoaFlags & NSEventModifierFlagShift)
         carbonFlags |= shiftKey;
 
     return carbonFlags;
