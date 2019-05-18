@@ -519,7 +519,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     [NSGraphicsContext saveGraphicsState];
     // Constant at the end compensates for drawing in the flipped graphics context.
-    labelFrame.origin.y = NSMaxY(labelFrame) - self.baselineOffsetFromBottom + 1.0 / self.window.backingScaleFactor;
+    labelFrame.origin.y = NSMaxY(labelFrame) - self.baselineOffsetFromBottom + 1.0 / self.backingScaleFactor;
     [label drawWithRect:labelFrame options:0 attributes:labelAttributes context:nil];
     [NSGraphicsContext restoreGraphicsState];
 }
@@ -685,6 +685,25 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)accessibilityDisplayOptionsDidChange:(NSNotification *)aNotification
 {
     [self.style controlAppearanceDidChange:aNotification];
+}
+
+- (CGFloat)backingScaleFactor
+{
+    CGFloat f = self.window.backingScaleFactor;
+
+    if (f == 0.0)
+    {
+        CGSize deviceSize = CGContextConvertSizeToDeviceSpace(NSGraphicsContext.currentContext.CGContext, NSMakeSize(1.0, 1.0));
+
+        if (deviceSize.height)
+            f = deviceSize.height;
+        else if (deviceSize.width)
+            f = deviceSize.width;
+        else
+            f = 1.0;
+    }
+
+    return f;
 }
 
 #pragma mark NSAccessibility
