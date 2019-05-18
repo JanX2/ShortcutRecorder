@@ -2,7 +2,7 @@
 //  SRValidator.h
 //  ShortcutRecorder
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
+//  Copyright 2006-2018 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -16,50 +16,78 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import <ShortcutRecorder/SRRecorderControl.h>
 
+
+NS_ASSUME_NONNULL_BEGIN
+
+NS_SWIFT_NAME(ValidatorDelegate)
 @protocol SRValidatorDelegate;
 
 /*!
-    Implements logic to check whether shortcut is taken by other parts of the application and system.
+    Validate shortcut by checking whether shortcut is taken by other parts of the application and system.
+
+    @discussion Implementation of SRRecorderControlDelegate/shortcutRecorder:canRecordShortcut: uses
+                the validateShortcut:error: method and presents error via NSErrorPresentation
+                of a given SRRecorderControl instance.
  */
-@interface SRValidator : NSObject
+NS_SWIFT_NAME(Validator)
+@interface SRValidator : NSObject <SRRecorderControlDelegate>
 
-@property (assign) NSObject<SRValidatorDelegate> *delegate;
+@property (nullable, weak) NSObject<SRValidatorDelegate> *delegate;
 
-- (instancetype)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithDelegate:(nullable NSObject<SRValidatorDelegate> *)aDelegate NS_DESIGNATED_INITIALIZER;
 
 /*!
-    Determines whether shortcut is taken.
+    Check whether shortcut is valid.
+
+    @result     YES if shortcut is valid.
 
     @discussion Key is checked in the following order:
-                1. If delegate implements shortcutValidator:isKeyCode:andFlagsTaken:reason:
+                1. Delegate's shortcutValidator:isShortcutValid:reason:
                 2. If delegate allows system-wide shortcuts are checked
                 3. If delegate allows application menu it checked
 
     @see        SRValidatorDelegate
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError **)outError;
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:));
 
 /*!
-    Determines whether shortcut is taken in delegate.
+    Check whether delegate allows the shortcut.
 
-    @discussion If delegate does not implement appropriate method, returns immediately.
+    @result     YES if shortcut is valid.
+
+    @discussion Defaults to YES if delegate does not implement the method.
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError **)outError;
+- (BOOL)validateShortcutAgainstDelegate:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
 
 /*!
-    Determines whether shortcut is taken by system-wide shortcuts.
+    Check whether shortcut is taken by system-wide shortcuts.
 
-    @discussion Does not check whether delegate allows or disallows checking in system shortcuts.
+    @result     YES if shortcut is valid.
+
+    @see SRValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError **)outError;
+- (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
 
 /*!
-    Determines whether shortcut is taken by application menu item.
+    Check whether shortcut is taken by a menu item.
 
-    @discussion Does not check whether delegate allows or disallows checking in application menu.
+    @result     YES if shortcut is valid.
+
+    @see SRValidatorDelegate/shortcutValidatorShouldCheckMenu:
  */
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError;
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:againstMenu:));
+
+@end
+
+
+@interface SRValidator(Deprecated)
+
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcut:error:"))) NS_SWIFT_UNAVAILABLE("validateShortcut(_:)");
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcutAgainstDelegate:error:"))) NS_SWIFT_UNAVAILABLE("validateShortcutAgainstDelegate(_:)");
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcutAgainstSystemShortcuts:error:"))) NS_SWIFT_UNAVAILABLE("Use validateShortcutAgainstSystemShortcuts(_:)");
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcut:againstMenu:error:"))) NS_SWIFT_UNAVAILABLE("Use validateShortcut(_:againstMenu:)");
 
 @end
 
@@ -69,7 +97,7 @@
 @optional
 
 /*!
-    Asks the delegate if aKeyCode and aFlags are valid.
+    Ask the delegate if shortcut is valid.
 
     @param      aValidator The validator that validates key code and flags.
 
@@ -83,7 +111,12 @@
 
     @discussion Implementation of this method by the delegate is optional. If it is not present, checking proceeds as if this method had returned YES.
  */
-- (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags reason:(NSString **)outReason;
+- (BOOL)shortcutValidator:(SRValidator *)aValidator isShortcutValid:(SRShortcut *)aShortcut reason:(NSString * _Nullable * _Nonnull)outReason;
+
+/*!
+    Same as -shortcutValidator:isShortcutValid:reason: but return value is flipped. I.e. YES means shortcut is invalid.
+ */
+- (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags reason:(NSString * _Nullable * _Nonnull)outReason __attribute__((deprecated("", "shortcutValidator:isShortcutValid:reason:")));
 
 /*!
     Asks the delegate whether validator should check key equivalents of app's menu items.
@@ -124,8 +157,10 @@
 @interface NSMenuItem (SRValidator)
 
 /*!
-    Returns full path to the menu item. E.g. "Window ➝ Zoom"
+    Full path to the menu item. E.g. "Window → Zoom"
  */
 - (NSString *)SR_path;
 
 @end
+
+NS_ASSUME_NONNULL_END

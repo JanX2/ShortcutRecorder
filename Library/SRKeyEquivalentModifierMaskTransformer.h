@@ -2,7 +2,7 @@
 //  SRKeyEquivalentModifierMaskTransformer.h
 //  ShortcutRecorder
 //
-//  Copyright 2012 Contributors. All rights reserved.
+//  Copyright 2012-2018 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -13,9 +13,15 @@
 
 
 /*!
-    Transform dictionary representation of shortcut into string suitable
-    for -setKeyEquivalentModifierMask: of NSButton and NSMenuItem.
+    Transform dictionary representation of a shortcut into a string suitable
+    for -setKeyEquivalentModifierMask: of Cocoa objects such as NSButton and NSMenuItem.
  */
+NS_SWIFT_NAME(KeyEquivalentModifierMaskTransformer)
 @interface SRKeyEquivalentModifierMaskTransformer : NSValueTransformer
+
+/*!
+    Shared transformer.
+ */
+@property (class, readonly) SRKeyEquivalentModifierMaskTransformer *sharedTransformer;
 
 @end

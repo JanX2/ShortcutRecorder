@@ -2,7 +2,7 @@
 //  SRKeyCodeTransformer.h
 //  ShortcutRecorder
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
+//  Copyright 2006-2018 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -17,123 +17,119 @@
 #import <Carbon/Carbon.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
-    Transforms key code into unicode character or plain string.
+    Transform a key code into a unicode symbol or a literal string.
  */
+NS_SWIFT_NAME(KeyCodeTransformer)
 @interface SRKeyCodeTransformer : NSValueTransformer
 
 /*!
-    Returns initialized key code transformer.
+    Shared symbolic transformer.
+ */
+@property (class, readonly) SRKeyCodeTransformer *sharedSymbolicTransformer;
+
+/*!
+    Shared symblic transformer configured to use only ASCII capable keyboard input source.
+ */
+@property (class, readonly) SRKeyCodeTransformer *sharedSymbolicASCIITransformer;
+
+/*!
+    Shared transformer configured to transform key codes to literal strings.
+ */
+@property (class, readonly) SRKeyCodeTransformer *sharedLiteralTransformer;
+
+/*!
+    Shared transformer configured to use only ASCII capable keyboard input source
+    to transform key codes to literal strings.
+ */
+@property (class, readonly) SRKeyCodeTransformer *sharedLiteralASCIITransformer;
+
+/*!
+    Mapping from special key codes to unicode symbols.
+ */
+@property (class, readonly) NSDictionary *specialKeyCodeToSymbolMapping;
+
+/*!
+    Mapping from special key codes to literal strings.
+ */
+@property (class, readonly) NSDictionary *specialKeyCodeToLiteralMapping;
+
+/*!
+    Return initialized key code transformer.
 
     @param      aUsesASCII Determines whether transformer uses only ASCII capable keyboard input source.
 
-    @param      aUsesPlainStrings Determines whether key codes without readable glyphs (e.g. F1...F19) are transformed to
-                to unicode characters (NSF1FunctionKey...NSF19FunctionKey) suitable for setting key equivalents
-                of Cocoa controls or to plain strings (@"F1"...@"F19") suitable for drawing, logging and accessibility.
+    @param      aIsLiteral Determines whether key codes without readable glyphs (e.g. F1...F19) are transformed to
+                to unicode symbols (NSF1FunctionKey...NSF19FunctionKey) suitable for setting key equivalents
+                of Cocoa controls or to literal strings (@"F1"...@"F19") suitable for drawing, logging and accessibility.
 
     @discussion This method is the designated initializer for SRKeyCodeTransformer.
  */
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII isLiteral:(BOOL)aIsLiteral NS_DESIGNATED_INITIALIZER;
 
 /*!
-    Determines whether transformer uses ASCII capable keyboard input source.
+    Whether transformer uses ASCII capable keyboard input source.
  */
 @property (readonly) BOOL usesASCIICapableKeyboardInputSource;
 
 /*!
-    Determines whether key codes without readable glyphs are transformed to unicode characters
-    suitable for setting keqEquivalents or to plain strings suitable for drawing, logging and accessibility.
+    Whether key codes without readable glyphs are transformed to unicode symbols
+    suitable for setting keqEquivalents or to literal strings suitable for drawing, logging and accessibility.
  */
-@property (readonly) BOOL usesPlainStrings;
+@property (readonly) BOOL isLiteral;
 
 /*!
-    Returns the shared transformer.
- */
-+ (instancetype)sharedTransformer;
-
-/*!
-    Returns the shared transformer configured to use only ASCII capable keyboard input source.
- */
-+ (instancetype)sharedASCIITransformer;
-
-/*!
-    Returns the shared transformer configured to transform key codes to plain strings.
- */
-+ (SRKeyCodeTransformer *)sharedPlainTransformer;
-
-/*!
-    Returns the shared transformer configured to use only ASCII capable keyboard input source
-            and to transform key codes to plain strings.
- */
-+ (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
-
-
-/*!
-    Returns mapping from special key codes to unicode characters.
- */
-+ (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping;
-
-/*!
-    Returns mapping from special key codes to plain strings.
- */
-+ (NSDictionary *)specialKeyCodesToPlainStringsMapping;
-
-/*!
-    Determines whether key code is special.
+    Whether key code is special.
 
     @param  aKeyCode Key code to be checked.
  */
 - (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
 
 /*!
-    Transforms given special key code into unicode character by taking into account modifier flags.
+    Transforms given special key code into unicode symbol by taking into account modifier flags.
  
     @discussion E.g. the key code 0x30 is transformed to ⇥. But if shift is pressed, it is transformed to ⇤.
  
-    @result     Unicode character or plain string. nil if not a special key code.
+    @result     Unicode symbol or literal string. nil if not a special key code.
 */
-- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)aModifierFlags;
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(nullable NSNumber *)aModifierFlags;
 
 /*!
-    Shorcut to [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
+    Same as [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
  */
-- (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags;
+- (nullable NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(nullable NSNumber *)aModifierFlags;
 
 /*!
-    Transfroms given key code into unicode character by taking into account modifier flags.
+    Transfrom given key code into unicode symbol by taking into account modifier flags.
  
     @param  aValue An instance of NSNumber (unsigned short) that represents key code.
  
     @param  anImplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents implicit modifier flags like opt in å.
  
     @param  anExplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents explicit modifier flags like shift in shift-⇤.
+
+    @throws NSInvalidArgumentException
+
+    @discussion If anImplicitModifierFlags and anExplicitModifierFlags share values, NSInvalidArgumentException is thrown.
  */
-- (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags;
+- (nullable NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(nullable NSNumber *)anImplicitModifierFlags explicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags;
 
 @end
 
 
-/*!
-    These constants represents drawable unicode characters for key codes that do not have
-    appropriate constants in Carbon and Cocoa.
- */
-typedef NS_ENUM(unichar, SRKeyCodeGlyph)
-{
-    SRKeyCodeGlyphTabRight = 0x21E5, // ⇥
-    SRKeyCodeGlyphTabLeft = 0x21E4, // ⇤
-    SRKeyCodeGlyphReturn = 0x2305, // ⌅
-    SRKeyCodeGlyphReturnR2L = 0x21A9, // ↩
-    SRKeyCodeGlyphDeleteLeft = 0x232B, // ⌫
-    SRKeyCodeGlyphDeleteRight = 0x2326, // ⌦
-    SRKeyCodeGlyphPadClear = 0x2327, // ⌧
-    SRKeyCodeGlyphLeftArrow = 0x2190, // ←
-    SRKeyCodeGlyphRightArrow = 0x2192, // →
-    SRKeyCodeGlyphUpArrow = 0x2191, // ↑
-    SRKeyCodeGlyphDownArrow = 0x2193, // ↓
-    SRKeyCodeGlyphPageDown = 0x21DF, // ⇟
-    SRKeyCodeGlyphPageUp = 0x21DE, // ⇞
-    SRKeyCodeGlyphNorthwestArrow = 0x2196, // ↖
-    SRKeyCodeGlyphSoutheastArrow = 0x2198, // ↘
-    SRKeyCodeGlyphEscape = 0x238B, // ⎋
-    SRKeyCodeGlyphSpace = 0x0020, // ' '
-};
+@interface SRKeyCodeTransformer(Deprecated)
+
++ (instancetype)sharedTransformer __attribute__((deprecated("", "sharedSymbolicTransformer")));
++ (instancetype)sharedASCIITransformer __attribute__((deprecated("", "sharedSymbolicASCIITransformer")));
++ (SRKeyCodeTransformer *)sharedPlainTransformer __attribute__((deprecated("", "sharedLiteralTransformer")));
++ (SRKeyCodeTransformer *)sharedPlainASCIITransformer __attribute__((deprecated("", "sharedLiteralASCIITransformer")));
+
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated("", "initWithASCIICapableKeyboardInputSource:isLiteral:")));
+
+@property (readonly, getter=isLiteral) BOOL usesPlainStrings __attribute__((deprecated("", "isLiteral")));
+
+@end
+
+NS_ASSUME_NONNULL_END

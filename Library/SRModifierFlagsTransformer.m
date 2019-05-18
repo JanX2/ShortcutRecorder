@@ -2,7 +2,7 @@
 //  SRModifierFlagsTransformer.m
 //  ShortcutRecorder
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
+//  Copyright 2006-2018 Contributors. All rights reserved.
 //
 //  License: BSD
 //
@@ -15,13 +15,13 @@
 
 @implementation SRModifierFlagsTransformer
 
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings
+- (instancetype)init:(BOOL)aIsLiteral
 {
     self = [super init];
 
     if (self)
     {
-        _usesPlainStrings = aUsesPlainStrings;
+        _isLiteral = aIsLiteral;
     }
 
     return self;
@@ -29,31 +29,54 @@
 
 - (instancetype)init
 {
-    return [self initWithPlainStrings:NO];
+    return [self init:NO];
 }
 
 
 #pragma mark Methods
 
-+ (instancetype)sharedTransformer
++ (instancetype)sharedSymbolicTransformer
 {
     static dispatch_once_t OnceToken;
     static SRModifierFlagsTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] initWithPlainStrings:NO];
+        Transformer = [[self alloc] init:NO];
     });
     return Transformer;
 }
 
-+ (instancetype)sharedPlainTransformer
++ (instancetype)sharedLiteralTransformer
 {
     static dispatch_once_t OnceToken;
     static SRModifierFlagsTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] initWithPlainStrings:YES];
+        Transformer = [[self alloc] init:YES];
     });
     return Transformer;
 }
+
+
+#pragma mark Deprecated
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+
++ (instancetype)sharedTransformer
+{
+    return self.sharedSymbolicTransformer;
+}
+
++ (instancetype)sharedPlainTransformer
+{
+    return self.sharedLiteralTransformer;
+}
+
+- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings
+{
+    return [self init:aUsesPlainStrings];
+}
+
+#pragma clang diagnostic pop
 
 
 #pragma mark NSValueTransformer
@@ -71,8 +94,8 @@
 - (NSString *)transformedValue:(NSNumber *)aValue
 {
     if (![aValue isKindOfClass:[NSNumber class]])
-        return nil;
-    else if (self.usesPlainStrings)
+        return [super transformedValue:aValue];
+    else if (self.isLiteral)
     {
         NSEventModifierFlags modifierFlags = aValue.unsignedIntegerValue;
         NSMutableString *s = [NSMutableString string];
