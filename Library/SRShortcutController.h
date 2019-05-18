@@ -14,6 +14,8 @@
 #import <ShortcutRecorder/SRShortcut.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
     Keys for the computed properties of controller's selection.
  */
@@ -40,9 +42,6 @@ extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathLiteralASCII
 extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicASCIIKeyCode;
 extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathLiteralModifierFlags;
 extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicModifierFlags;
-
-
-NS_ASSUME_NONNULL_BEGIN
 
 /*!
     Implementation of NSObjectController with additional computed properties.

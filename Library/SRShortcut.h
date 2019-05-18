@@ -11,6 +11,8 @@
 #import <Cocoa/Cocoa.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
     @enum SRShortcutKey
 
@@ -42,9 +44,6 @@ extern NSString *const SRShortcutKeyCode __attribute__((deprecated("", "SRShortc
 extern NSString *const SRShortcutModifierFlagsKey __attribute__((deprecated("", "SRShortcutKeyModifierFlags")));
 extern NSString *const SRShortcutCharacters __attribute__((deprecated("", "SRShortcutKeyCharacters")));
 extern NSString *const SRShortcutCharactersIgnoringModifiers __attribute__((deprecated("", "SRShortcutKeyCharactersIgnoringModifiers")));
-
-
-NS_ASSUME_NONNULL_BEGIN
 
 /*!
     Combination of a key code, modifier flags and optionally their characters
