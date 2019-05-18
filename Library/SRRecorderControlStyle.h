@@ -39,17 +39,17 @@ NS_SWIFT_NAME(RecorderControlStyling)
 /*!
  Label attributes for displaying when enabled.
  */
-@property (nullable, readonly) NSDictionary *normalLabelAttributes;
+@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *normalLabelAttributes;
 
 /*!
  Label attributes for displaying when recoding.
  */
-@property (nullable, readonly) NSDictionary *recordingLabelAttributes;
+@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *recordingLabelAttributes;
 
 /*!
  Label attributes for displaying when enabled.
  */
-@property (nullable, readonly) NSDictionary *disabledLabelAttributes;
+@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *disabledLabelAttributes;
 
 @property (nullable, readonly) NSImage *bezelNormalLeft;
 @property (nullable, readonly) NSImage *bezelNormalCenter;
