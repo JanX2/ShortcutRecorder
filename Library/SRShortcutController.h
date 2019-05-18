@@ -56,6 +56,7 @@ extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicModi
                     - selection.symbolicASCIIKeyCode
                     - selection.literalModifierFlags
                     - selection.symbolicModifierFlags
+
                 These properties are KVO compliant.
                 The following properties are also updated whenever kTISNotifySelectedKeyboardInputSourceChanged is posted:
                     - selection.keyEquivalent
@@ -63,6 +64,8 @@ extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicModi
                     - selection.symbolicKeyCode
                     - selection.literalASCIIKeyCode
                     - selection.selection.symbolicASCIIKeyCode
+
+    @note To add the controller in Interface Builder, add NSObjectController first and then specialize its class.
  */
 NS_SWIFT_NAME(ShortcutController)
 @interface SRShortcutController : NSObjectController
