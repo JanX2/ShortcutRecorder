@@ -21,22 +21,22 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NSString *SRShortcutKey NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(ShortcutKey);
 
 /*!
-    @see SRShortcut/code
+    @seealso SRShortcut/code
  */
 extern SRShortcutKey const SRShortcutKeyKeyCode;
 
 /*!
-    @see SRShortcut/modifierFlags
+    @seealso SRShortcut/modifierFlags
  */
 extern SRShortcutKey const SRShortcutKeyModifierFlags;
 
 /*!
-    @see SRShortcut/characters
+    @seealso SRShortcut/characters
  */
 extern SRShortcutKey const SRShortcutKeyCharacters;
 
 /*!
-    @see SRShortcut/charactersIgnoringModifiers
+    @seealso SRShortcut/charactersIgnoringModifiers
  */
 extern SRShortcutKey const SRShortcutKeyCharactersIgnoringModifiers;
 
@@ -57,7 +57,7 @@ NS_SWIFT_NAME(Shortcut)
 @interface SRShortcut : NSObject <NSCopying, NSSecureCoding>
 
 /*!
-    @see SRShortcut/initWithCode:modifierFlags:characters:charactersIgnoringModifiers:
+    @seealso SRShortcut/initWithCode:modifierFlags:characters:charactersIgnoringModifiers:
  */
 + (instancetype)shortcutWithCode:(unsigned short)aKeyCode
                    modifierFlags:(NSEventModifierFlags)aModifierFlags
@@ -78,7 +78,7 @@ NS_SWIFT_NAME(Shortcut)
 
     @note Compatible with Shortcut Recorder 2 shortcuts.
 
-    @see SRShortcutKey
+    @seealso SRShortcutKey
  */
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary;
 
@@ -133,7 +133,7 @@ NS_SWIFT_NAME(Shortcut)
 /*!
     Dictionary representation of the shortcut. Compatible with ShortcutRecorer 2
 
-    @see SRShortcutKey
+    @seealso SRShortcutKey
  */
 @property (nonatomic, readonly, copy) NSDictionary<SRShortcutKey, id> *dictionaryRepresentation;
 
@@ -149,7 +149,7 @@ NS_SWIFT_NAME(Shortcut)
 /*!
     Compare the shortcut to a dictionary representation.
 
-    @see dictionaryRepresentation
+    @seealso dictionaryRepresentation
  */
 - (BOOL)isEqualToDictionary:(NSDictionary<SRShortcutKey, id> *)aDictionary NS_SWIFT_NAME(isEqual(dictionary:));
 
@@ -161,7 +161,7 @@ NS_SWIFT_NAME(Shortcut)
 /*!
     Dictionary-like access to properties.
 
-    @see SRShortcutKey
+    @seealso SRShortcutKey
  */
 - (nullable id)objectForKeyedSubscript:(SRShortcutKey)aKey;
 

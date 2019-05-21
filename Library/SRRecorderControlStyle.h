@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  Styling is responsible for providing resources and metrics to draw SRRecorderControl.
 
- @see controlAppearanceDidChange:
+ @seealso controlAppearanceDidChange:
  */
 NS_SWIFT_NAME(RecorderControlStyling)
 @protocol SRRecorderControlStyling
@@ -27,12 +27,12 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (nonatomic, nullable, weak) SRRecorderControl *controlView;
 
 /*!
- @see NSView/allowsVibrancy
+ @seealso NSView/allowsVibrancy
  */
 @property (readonly) BOOL allowsVibrancy;
 
 /*!
- @see NSView/opaque
+ @seealso NSView/opaque
  */
 @property (getter=isOpaque, readonly) BOOL opaque;
 
@@ -88,12 +88,12 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (readonly) NSEdgeInsets shapeInsets;
 
 /*!
- @see NSView/baselineOffsetFromBottom
+ @seealso NSView/baselineOffsetFromBottom
  */
 @property (readonly) CGFloat baselineOffsetFromBottom;
 
 /*!
- @see NSView/alignmentRectInsets
+ @seealso NSView/alignmentRectInsets
  */
 @property (readonly) NSEdgeInsets alignmentRectInsets;
 
@@ -186,12 +186,19 @@ NS_SWIFT_NAME(RecorderControlStyle)
 }
 
 /*!
- @see SRRecorderControlStyle/initWithPrefix:
+ @seealso SRRecorderControlStyle/initWithPrefix:
  */
 + (instancetype)styleWithPrefix:(NSString *)aPrefix;
 
 /*!
  Style will use a given prefix to locate files.
+
+ @param aPrefix Either a concrete (ends with "-") or a template (any other character)  prefix.
+
+ @discussion A template prefix is used to construct a lookup array by adding
+    various suffixes while a concrete prefix is used as is.
+
+ @seealso makeAppearancePrefixes
  */
 - (instancetype)initWithPrefix:(NSString *)aPrefix NS_DESIGNATED_INITIALIZER;
 

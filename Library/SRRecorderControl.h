@@ -137,11 +137,11 @@ IB_DESIGNABLE
 /*!
     Configures recording behavior of the control.
 
-    @param      newAllowedModifierFlags New allowed modifier flags.
+    @param newAllowedModifierFlags New allowed modifier flags.
 
-    @param      newRequiredModifierFlags New required modifier flags.
+    @param newRequiredModifierFlags New required modifier flags.
 
-    @param      newAllowsEmptyModifierFlags Determines whether empty modifier flags are allowed.
+    @param newAllowsEmptyModifierFlags Determines whether empty modifier flags are allowed.
 
     @discussion Flags are filtered using SRCocoaModifierFlagsMask. Flags does not affect object values set manually.
 
@@ -150,7 +150,7 @@ IB_DESIGNABLE
                 Throws NSInvalidArgumentException if either required flags are not allowed
                 or required flags are not empty and no modifier flags are allowed.
 
-    @see        SRRecorderControlDelegate
+    @seealso SRRecorderControlDelegate
  */
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
           requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
@@ -224,11 +224,11 @@ IB_DESIGNABLE
 /*!
     Returns attirbutes of label to be displayed by the receiver according to current state.
 
-    @see        normalLabelAttributes
+    @seealso normalLabelAttributes
 
-    @see        recordingLabelAttributes
+    @seealso recordingLabelAttributes
 
-    @see        disabledLabelAttributes
+    @seealso disabledLabelAttributes
  */
 - (NSDictionary *)labelAttributes;
 
@@ -282,15 +282,15 @@ IB_DESIGNABLE
 /*!
     Determines whether modifier flags are valid for key code according to the receiver settings.
 
-    @param      aModifierFlags Proposed modifier flags.
+    @param  aModifierFlags Proposed modifier flags.
 
-    @param      aKeyCode Code of the pressed key.
+    @param  aKeyCode Code of the pressed key.
 
-    @see    allowedModifierFlags
+    @seealso allowedModifierFlags
 
-    @see    allowsEmptyModifierFlags
+    @seealso allowsEmptyModifierFlags
 
-    @see    requiredModifierFlags
+    @seealso requiredModifierFlags
  */
 - (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
@@ -300,7 +300,7 @@ IB_DESIGNABLE
     @discussion This method makes it easier to propagate changes from a view
                 back to the model without overriding bind:toObject:withKeyPath:options:
  
-    @see        http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
+    @seealso http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
  */
 - (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
 
@@ -322,9 +322,9 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 /*!
     Asks the delegate if editing should begin in the specified shortcut recorder.
 
-    @param      aRecorder The shortcut recorder which editing is about to begin.
+    @param aRecorder The shortcut recorder which editing is about to begin.
 
-    @result     YES if an editing session should be initiated; otherwise, NO to disallow editing.
+    @result YES if an editing session should be initiated; otherwise, NO to disallow editing.
 
     @discussion Implementation of this method by the delegate is optional. If it is not present, editing proceeds as if this method had returned YES.
  */
@@ -333,47 +333,47 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 /*!
     Gives a delegate opportunity to bypass rules specified by allowed and required modifier flags.
 
-    @param      aRecorder The shortcut recorder for which editing ended.
+    @param aRecorder The shortcut recorder for which editing ended.
 
-    @param      aModifierFlags Proposed modifier flags.
+    @param aModifierFlags Proposed modifier flags.
 
-    @param      aKeyCode Code of the pressed key.
+    @param aKeyCode Code of the pressed key.
 
-    @result     YES if recorder should bypass key code with given modifier flags despite control's configuration.
+    @result YES if recorder should bypass key code with given modifier flags despite control's configuration.
 
     @discussion Implementation of this method by the delegate is optional.
                 Normally, you wouldn't allow a user to record shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
                 However, some keys were designed to be key shortcuts by itself. E.g. Functional keys. By implementing this method a delegate can allow
                 these special keys to be set without modifier flags even when the control is configured to disallow empty modifier flags.
 
-    @see    allowedModifierFlags
+    @seealso allowedModifierFlags
 
-    @see    allowsEmptyModifierFlags
+    @seealso allowsEmptyModifierFlags
 
-    @see    requiredModifierFlags
+    @seealso requiredModifierFlags
  */
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
     Asks the delegate if the shortcut can be set by the specified shortcut recorder.
 
-    @param      aRecorder The shortcut recorder which shortcut is beign to be recordered.
+    @param aRecorder The shortcut recorder which shortcut is beign to be recordered.
 
-    @param      aShortcut The Shortcut user typed.
+    @param  aShortcut The Shortcut user typed.
 
-    @result     YES if shortcut can be recordered. Otherwise NO.
+    @result YES if shortcut can be recordered. Otherwise NO.
 
     @discussion Implementation of this method by the delegate is optional. If it is not present, shortcut is recordered as if this method had returned YES.
                 You may implement this method to filter shortcuts that were already set by other recorders.
 
-    @see        SRValidator
+    @seealso SRValidator
  */
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut;
 
 /*!
     Tells the delegate that editing stopped for the specified shortcut recorder.
 
-    @param      aRecorder The shortcut recorder for which editing ended.
+    @param aRecorder The shortcut recorder for which editing ended.
 
     @discussion Implementation of this method by the delegate is optional.
  */

@@ -48,7 +48,7 @@ NS_SWIFT_NAME(Validator)
                 2. If delegate allows system-wide shortcuts are checked
                 3. If delegate allows application menu it checked
 
-    @see        SRValidatorDelegate
+    @seealso        SRValidatorDelegate
  */
 - (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:));
 
@@ -66,7 +66,7 @@ NS_SWIFT_NAME(Validator)
 
     @result     YES if shortcut is valid.
 
-    @see SRValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
+    @seealso SRValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
  */
 - (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
 
@@ -75,7 +75,7 @@ NS_SWIFT_NAME(Validator)
 
     @result     YES if shortcut is valid.
 
-    @see SRValidatorDelegate/shortcutValidatorShouldCheckMenu:
+    @seealso SRValidatorDelegate/shortcutValidatorShouldCheckMenu:
  */
 - (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:againstMenu:));
 
