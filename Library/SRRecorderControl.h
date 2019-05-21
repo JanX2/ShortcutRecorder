@@ -130,7 +130,7 @@ IB_DESIGNABLE
 /*!
     Dictionary representation of the shortcut.
 */
-@property (nullable, nonatomic, copy) NSDictionary *dictionaryValue;
+@property (nullable, nonatomic, copy) NSDictionary<SRShortcutKey, id> *dictionaryValue;
 
 @property (null_resettable, nonatomic) SRRecorderControlStyle *style;
 

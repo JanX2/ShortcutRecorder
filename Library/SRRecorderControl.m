@@ -191,12 +191,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
 }
 
-- (NSDictionary *)dictionaryValue
+- (NSDictionary<SRShortcutKey, id> *)dictionaryValue
 {
     return _objectValue.dictionaryRepresentation;
 }
 
-- (void)setDictionaryValue:(NSDictionary *)newDictionaryValue
+- (void)setDictionaryValue:(NSDictionary<SRShortcutKey, id> *)newDictionaryValue
 {
     self.objectValue = [SRShortcut shortcutWithDictionary:newDictionaryValue];
 }
