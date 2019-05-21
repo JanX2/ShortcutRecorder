@@ -453,7 +453,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect backgroundFrame = [self centerScanRect:self.style.backgroundDrawingGuide.frame];
 
-    if (![self needsToDrawRect:backgroundFrame])
+    if (NSIsEmptyRect(backgroundFrame) || ![self needsToDrawRect:backgroundFrame])
         return;
 
     NSImage *left = nil;
@@ -511,7 +511,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect labelFrame = self.style.labelDrawingGuide.frame;
 
-    if (![self needsToDrawRect:labelFrame])
+    if (NSIsEmptyRect(labelFrame) || ![self needsToDrawRect:labelFrame])
         return;
 
     NSString *label = self.label;
@@ -528,7 +528,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect cancelButtonFrame = [self centerScanRect:self.style.cancelButtonDrawingGuide.frame];
 
-    if (![self needsToDrawRect:cancelButtonFrame])
+    if (NSIsEmptyRect(cancelButtonFrame) || ![self needsToDrawRect:cancelButtonFrame])
         return;
 
     [NSGraphicsContext saveGraphicsState];
@@ -541,7 +541,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     NSRect clearButtonFrame = [self centerScanRect:self.style.clearButtonDrawingGuide.frame];
 
-    if (![self needsToDrawRect:clearButtonFrame])
+    if (NSIsEmptyRect(clearButtonFrame) || ![self needsToDrawRect:clearButtonFrame])
         return;
 
     [NSGraphicsContext saveGraphicsState];
