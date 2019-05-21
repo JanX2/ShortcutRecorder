@@ -181,7 +181,7 @@ NS_SWIFT_NAME(RecorderControlStyling)
 NS_SWIFT_NAME(RecorderControlStyle)
 @interface SRRecorderControlStyle : NSObject <SRRecorderControlStyling>
 {
-    NSArray<NSString *> *_appearancePrefixes;
+    NSArray<NSString *> *_lookupPrefixes;
     NSDictionary *_metrics;
 }
 
@@ -193,12 +193,15 @@ NS_SWIFT_NAME(RecorderControlStyle)
 /*!
  Style will use a given prefix to locate files.
 
- @param aPrefix Either a concrete (ends with "-") or a template (any other character)  prefix.
+ @param aPrefix Either a concrete (ends with "-") or a template (any other character) prefix.
 
- @discussion A template prefix is used to construct a lookup array by adding
+ @discussion A template prefix is used to construct a lookup table by adding
     various suffixes while a concrete prefix is used as is.
 
- @seealso makeAppearancePrefixes
+    The lookup table consists of the strings of the "prefix[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
+    prefixes ordered according to the environment.
+
+ @seealso makeLookupPrefixes
  */
 - (instancetype)initWithPrefix:(NSString *)aPrefix NS_DESIGNATED_INITIALIZER;
 
@@ -228,13 +231,12 @@ NS_SWIFT_NAME(RecorderControlStyle)
 - (NSDictionary *)loadMetrics;
 
 /*!
- Return look up prefixes, in order, for the current controlView's appearance.
+ Make new lookup prefixes, in order, for the current environment.
 
- @discussion Assets to be drawn depend on the system configuration (e.g. accessibility)
+ @discussion Order depends on the environment such as system configuration (e.g. accessibility)
     and controlView effective appearance.
-
  */
-- (NSArray<NSString *> *)makeAppearancePrefixes;
+- (NSArray<NSString *> *)makeLookupPrefixes;
 
 - (void)addConstraints;
 

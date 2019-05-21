@@ -70,7 +70,7 @@
 {
     NSImage *img = nil;
 
-    for (NSString *p in _appearancePrefixes)
+    for (NSString *p in _lookupPrefixes)
     {
         NSString *prefixedName = [NSString stringWithFormat:@"%@-%@", p, aName];
         img = SRImage(prefixedName);
@@ -96,7 +96,7 @@
 {
     NSData *data = nil;
 
-    for (NSString *p in _appearancePrefixes)
+    for (NSString *p in _lookupPrefixes)
     {
         NSString *prefixedName = [NSString stringWithFormat:@"%@-%@", p, @"metrics"];
         data = [[NSDataAsset alloc] initWithName:prefixedName bundle:SRBundle()].data;
@@ -124,80 +124,51 @@
 }
 
 
-- (NSArray<NSString *> *)makeAppearancePrefixes
+- (NSArray<NSString *> *)makeLookupPrefixes
 {
-    NSControlTint controlTint = NSColor.currentControlTint;
-    BOOL shouldIncreaseContrast = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast;
-    NSString *macOSAppearanceName = nil;
-
-    if (@available(macOS 10.14, *))
-    {
-        NSArray<NSAppearanceName> *a = @[
-           NSAppearanceNameAqua,
-           NSAppearanceNameDarkAqua,
-           NSAppearanceNameVibrantLight,
-           NSAppearanceNameVibrantDark
-        ];
-        macOSAppearanceName = [[self.controlView.effectiveAppearance bestMatchFromAppearancesWithNames:a] copy];
-    }
-    else
-    {
-        macOSAppearanceName = [self.controlView.effectiveAppearance.name copy];
-    }
+    if ([self.prefix hasSuffix:@"-"])
+        return @[[self.prefix substringToIndex:self.prefix.length - 1]];
 
     NSMutableArray *loadOrder = NSMutableArray.array;
 
-    __auto_type AddPrefixes = ^(NSString *detail) {
-        if (controlTint == NSBlueControlTint)
-        {
-            if (shouldIncreaseContrast)
-            {
-                [loadOrder addObject:[NSString stringWithFormat:@"%@-%@-blue-acc", self->_prefix, detail]];
-            }
+    NSArray *controlTintFragments = NSColor.currentControlTint == NSBlueControlTint ? @[@"-blue", @"-graphite", @""] : @[@"-graphite", @"-blue", @""];
+    NSArray *accFragments = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast ? @[@"-acc", @""] : @[@"", @"-acc"];
 
-            [loadOrder addObject:[NSString stringWithFormat:@"%@-%@-blue", self->_prefix, detail]];
-        }
-        else
-        {
-            if (shouldIncreaseContrast)
-            {
-                [loadOrder addObject:[NSString stringWithFormat:@"%@-%@-graphite-acc", self->_prefix, detail]];
-            }
+    NSAppearanceName macOSAppearanceName = self.controlView.effectiveAppearance.name.copy;
 
-            [loadOrder addObject:[NSString stringWithFormat:@"%@-%@-graphite", self->_prefix, detail]];
-        }
+    if (!macOSAppearanceName)
+        macOSAppearanceName = NSAppearance.currentAppearance.name;
 
-        if (shouldIncreaseContrast)
-        {
-            [loadOrder addObject:[NSString stringWithFormat:@"%@-%@-acc", self->_prefix, detail]];
-        }
+    if (!macOSAppearanceName)
+        macOSAppearanceName = NSAppearanceNameAqua;
 
-        [loadOrder addObject:[NSString stringWithFormat:@"%@-%@", self->_prefix, detail]];
-    };
+    NSArray *appearanceFragments = nil;
+
+    if (@available(macOS 10.14, *))
+    {
+        if ([macOSAppearanceName isEqualToString:NSAppearanceNameDarkAqua])
+            appearanceFragments = @[@"-darkaqua", @"-vibrantdark", @"-aqua", @"-vibrantlight", @""];
+    }
 
     if ([macOSAppearanceName isEqualToString:NSAppearanceNameVibrantLight])
-    {
-        AddPrefixes(@"vibrantlight");
-    }
+        appearanceFragments = @[@"-vibrantlight", @"-aqua", @"-vibrantdark", @"-darkaqua", @""];
     else if ([macOSAppearanceName isEqualToString:NSAppearanceNameVibrantDark])
-    {
-        AddPrefixes(@"vibrantdark");
-        AddPrefixes(@"darkaqua");
-    }
+        appearanceFragments = @[@"-vibrantdark", @"-darkaqua", @"-vibrantlight", @"-aqua", @""];
     else
+        appearanceFragments = @[@"-aqua", @"-vibrantlight", @"-darkaqua", @"-vibrantdark", @""];
+
+    for (NSString *appearance in appearanceFragments)
     {
-        if(@available(macOS 10.14, *))
+        for (NSString *tint in controlTintFragments)
         {
-            if ([macOSAppearanceName isEqualToString:NSAppearanceNameDarkAqua])
+            for (NSString *acc in accFragments)
             {
-                AddPrefixes(@"darkaqua");
+                [loadOrder addObject:[NSString stringWithFormat:@"%@%@%@%@", self->_prefix, appearance, tint, acc]];
             }
         }
     }
 
-    AddPrefixes(@"aqua");
-
-    return [loadOrder copy];
+    return loadOrder.copy;
 }
 
 
@@ -379,7 +350,7 @@
     [_controlView removeLayoutGuide:_clearButtonLayoutGuide];
 
     _controlView = newControlView;
-    _appearancePrefixes = nil;
+    _lookupPrefixes = nil;
     _metrics = nil;
 
     if (!_controlView)
@@ -395,11 +366,11 @@
 {
     NSAssert(self.controlView != nil, @"Style MUST be applied to a control first!");
 
-    NSArray<NSString *> *newAppearancePrefixes = [self makeAppearancePrefixes];
-    if ([_appearancePrefixes isEqual:newAppearancePrefixes])
+    NSArray<NSString *> *newLookupPrefixes = [self makeLookupPrefixes];
+    if ([_lookupPrefixes isEqual:newLookupPrefixes])
         return;
 
-    _appearancePrefixes = newAppearancePrefixes;
+    _lookupPrefixes = newLookupPrefixes;
 
     __auto_type UpdateImage = ^(NSString *imageName, NSString *propName, NSRect frame) {
         NSImage *newImage = [self loadImageNamed:imageName];

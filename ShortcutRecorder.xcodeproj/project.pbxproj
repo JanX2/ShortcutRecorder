@@ -33,6 +33,7 @@
 		BAC79C2D216FD76000E45F23 /* ShortcutRecorder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BAC79C30216FD76000E45F23 /* PTHotKey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; };
 		BAC79C31216FD76000E45F23 /* PTHotKey.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BAE0CED522946B4500DD65C5 /* SRRecorderControlStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */; };
 		BAE3063B1F80955700904E9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE3063A1F80955700904E9A /* Images.xcassets */; };
 		BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */; };
 		BAED062221FFEF72001E483B /* SRRecorderControlStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -144,6 +145,7 @@
 		BAC79C16216FCE8F00E45F23 /* UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC79C1A216FCE9000E45F23 /* DemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoUITests.swift; sourceTree = "<group>"; };
 		BAC79C1C216FCE9000E45F23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRRecorderControlStyleTests.swift; sourceTree = "<group>"; };
 		BAE3063A1F80955700904E9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		BAED4704217007C70008DA80 /* SRRecorderControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRRecorderControl.swift; sourceTree = "<group>"; };
 		E273122E1349EC9000A84433 /* PTHotKey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PTHotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -317,6 +319,7 @@
 				BA722ED02161625100EFF192 /* SRShortcutTests.swift */,
 				BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */,
 				BAED4704217007C70008DA80 /* SRRecorderControl.swift */,
+				BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */,
 				BA722EF621640D2400EFF192 /* Utility.swift */,
 			);
 			path = "Unit Tests";
@@ -632,6 +635,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAE0CED522946B4500DD65C5 /* SRRecorderControlStyleTests.swift in Sources */,
 				BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */,
 				BA722ED12161625100EFF192 /* SRShortcutTests.swift in Sources */,
 				BA722EF721640D2400EFF192 /* Utility.swift in Sources */,
