@@ -896,6 +896,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return self.style.isOpaque;
 }
 
+- (BOOL)allowsVibrancy
+{
+    return self.style.allowsVibrancy;
+}
+
 - (BOOL)isFlipped
 {
     return YES;
