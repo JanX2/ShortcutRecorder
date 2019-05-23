@@ -304,6 +304,13 @@ IB_DESIGNABLE
  */
 - (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
 
+/*!
+ Schedules performSelector to notify style that view's appearance did change.
+
+ @discussion Repeated invocation within the iteration of the run loop are coalesced.
+ */
+- (void)scheduleControlViewAppearanceDidChange:(nullable id)aReason;
+
 @end
 
 

@@ -30,6 +30,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 @implementation SRRecorderControl
 {
+    SRRecorderControlStyle *_style;
+    NSInvocation *_notifyStyle;
+
     NSTrackingArea *_mainButtonTrackingArea;
     NSTrackingArea *_cancelButtonTrackingArea;
     NSTrackingArea *_clearButtonTrackingArea;
@@ -64,6 +67,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     _cancelButtonToolTipTag = NSIntegerMax;
 
+    _notifyStyle = [NSInvocation invocationWithMethodSignature:[SRRecorderControlStyle instanceMethodSignatureForSelector:@selector(recorderControlAppearanceDidChange:)]];
+    _notifyStyle.selector = @selector(recorderControlAppearanceDidChange:);
+
     self.translatesAutoresizingMaskIntoConstraints = NO;
 
     [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
@@ -86,6 +92,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     [NSNotificationCenter.defaultCenter removeObserver:self];
     [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self];
+    [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
 }
 
 
@@ -679,12 +686,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)controlTintDidChange:(NSNotification *)aNotification
 {
-    [self.style controlAppearanceDidChange:aNotification];
+    [self scheduleControlViewAppearanceDidChange:aNotification];
 }
 
 - (void)accessibilityDisplayOptionsDidChange:(NSNotification *)aNotification
 {
-    [self.style controlAppearanceDidChange:aNotification];
+    [self scheduleControlViewAppearanceDidChange:aNotification];
 }
 
 - (CGFloat)backingScaleFactor
@@ -704,6 +711,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
 
     return f;
+}
+
+- (void)scheduleControlViewAppearanceDidChange:(nullable id)aReason
+{
+    if (_notifyStyle == nil || _style == nil)
+        // recorderControlAppearanceDidChange: is called whenever _style is created.
+        return;
+
+    [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
+    [_notifyStyle setArgument:&aReason atIndex:2];
+    [_notifyStyle performSelector:@selector(invokeWithTarget:) withObject:_style afterDelay:0.0];
 }
 
 #pragma mark NSAccessibility
@@ -1077,13 +1095,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)viewDidChangeBackingProperties
 {
     [super viewDidChangeBackingProperties];
-    [self.style controlAppearanceDidChange:nil];
+    [self scheduleControlViewAppearanceDidChange:nil];
 }
 
 - (void)viewDidChangeEffectiveAppearance
 {
     [super viewDidChangeEffectiveAppearance];
-    [self.style controlAppearanceDidChange:nil];
+    [self scheduleControlViewAppearanceDidChange:nil];
 }
 
 
