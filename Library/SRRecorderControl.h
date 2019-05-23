@@ -42,7 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 
     @note See objectValue for Shortcut Recorder 2 compatibility notes.
  */
-
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
 @interface SRRecorderControl : NSView /* <NSAccessibility, NSEditor, NSNibLoading, NSKeyValueBindingCreation, NSToolTipOwner> */
@@ -125,14 +124,14 @@ IB_DESIGNABLE
                 enter the compatibility mode where objectValue and NSValueBinding accessors will
                 accept and return instances of NSDictionary.
  */
-@property (nullable, nonatomic, copy) SRShortcut *objectValue;
+@property (nonatomic, nullable, copy) SRShortcut *objectValue;
 
 /*!
     Dictionary representation of the shortcut.
 */
-@property (nullable, nonatomic, copy) NSDictionary<SRShortcutKey, id> *dictionaryValue;
+@property (nonatomic, nullable, copy) NSDictionary<SRShortcutKey, id> *dictionaryValue;
 
-@property (null_resettable, nonatomic) SRRecorderControlStyle *style;
+@property (nonatomic, null_resettable, copy) SRRecorderControlStyle *style;
 
 /*!
     Configures recording behavior of the control.

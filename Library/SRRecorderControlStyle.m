@@ -426,6 +426,8 @@
     if (!data)
         data = [[NSDataAsset alloc] initWithName:@"metrics"].data;
 
+    NSAssert(data != nil, @"Missing metrics!");
+
     NSError *error = nil;
     NSDictionary *d = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     if (!d)
@@ -488,7 +490,12 @@
         return value;
     };
 
-    __auto_type MakeConstraint = ^(NSLayoutAnchor * _Nonnull firstItem, NSLayoutAnchor * _Nullable secondItem, CGFloat constant, NSLayoutPriority priority, NSLayoutRelation relation) {
+    __auto_type MakeConstraint = ^(NSLayoutAnchor * _Nonnull firstItem,
+                                   NSLayoutAnchor * _Nullable secondItem,
+                                   CGFloat constant,
+                                   NSLayoutPriority priority,
+                                   NSLayoutRelation relation)
+    {
         NSLayoutConstraint *c = nil;
 
         if (secondItem)
@@ -508,7 +515,8 @@
         }
         else
         {
-            NSAssert([firstItem isKindOfClass:NSLayoutDimension.class], @"Only dimensional anchors allow constant constraints.");
+            NSAssert([firstItem isKindOfClass:NSLayoutDimension.class],
+                     @"Only dimensional anchors allow constant constraints.");
 
             switch (relation)
             {
