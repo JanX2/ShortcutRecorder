@@ -475,13 +475,13 @@
 
 - (void)addConstraints
 {
-    [self.controlView addLayoutGuide:self.alignmentGuide];
-    [self.controlView addLayoutGuide:self.backgroundDrawingGuide];
-    [self.controlView addLayoutGuide:self.labelDrawingGuide];
-    [self.controlView addLayoutGuide:self.cancelButtonDrawingGuide];
-    [self.controlView addLayoutGuide:self.clearButtonDrawingGuide];
-    [self.controlView addLayoutGuide:self.cancelButtonLayoutGuide];
-    [self.controlView addLayoutGuide:self.clearButtonLayoutGuide];
+    [self.recorderControl addLayoutGuide:self.alignmentGuide];
+    [self.recorderControl addLayoutGuide:self.backgroundDrawingGuide];
+    [self.recorderControl addLayoutGuide:self.labelDrawingGuide];
+    [self.recorderControl addLayoutGuide:self.cancelButtonDrawingGuide];
+    [self.recorderControl addLayoutGuide:self.clearButtonDrawingGuide];
+    [self.recorderControl addLayoutGuide:self.cancelButtonLayoutGuide];
+    [self.recorderControl addLayoutGuide:self.clearButtonLayoutGuide];
 
     __auto_type SetConstraint = ^(NSLayoutConstraint * __strong *var, NSLayoutConstraint *value) {
         *var = value;
@@ -537,10 +537,10 @@
     };
 
     _alwaysConstraints = @[
-        MakeEqConstraint(self.alignmentGuide.topAnchor, self.controlView.topAnchor),
-        MakeEqConstraint(self.alignmentGuide.leftAnchor, self.controlView.leftAnchor),
-        MakeEqConstraint(self.alignmentGuide.rightAnchor, self.controlView.rightAnchor),
-        MakeConstraint(self.alignmentGuide.bottomAnchor, self.controlView.bottomAnchor, 0.0, NSLayoutPriorityDefaultHigh, NSLayoutRelationEqual),
+        MakeEqConstraint(self.alignmentGuide.topAnchor, self.recorderControl.topAnchor),
+        MakeEqConstraint(self.alignmentGuide.leftAnchor, self.recorderControl.leftAnchor),
+        MakeEqConstraint(self.alignmentGuide.rightAnchor, self.recorderControl.rightAnchor),
+        MakeConstraint(self.alignmentGuide.bottomAnchor, self.recorderControl.bottomAnchor, 0.0, NSLayoutPriorityDefaultHigh, NSLayoutRelationEqual),
         SetConstraint(&_alignmentHeightConstraint, MakeEqConstraint(self.alignmentGuide.heightAnchor, nil)),
         SetConstraint(&_alignmentWidthConstraint, MakeGteConstraint(self.alignmentGuide.widthAnchor, nil)),
         SetConstraint(&_alignmentSuggestedWidthConstraint, MakeConstraint(self.alignmentGuide.widthAnchor, nil, 0.0, NSLayoutPriorityDefaultLow, NSLayoutRelationEqual)),
@@ -597,10 +597,11 @@
         MakeEqConstraint(self.clearButtonLayoutGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
         MakeEqConstraint(self.clearButtonLayoutGuide.trailingAnchor, self.clearButtonDrawingGuide.trailingAnchor),
     ];
+
+    self.recorderControl.needsUpdateConstraints = YES;
 }
 
 #pragma mark SRRecorderControlStyling
-@synthesize controlView = _controlView;
 @synthesize identifier = _identifier;
 @synthesize allowsVibrancy = _allowsVibrancy;
 @synthesize opaque = _opaque;
@@ -640,35 +641,37 @@
 @synthesize recordingWithNoValueConstraints = _recordingWithNoValueConstraints;
 @synthesize recordingWithValueConstraints = _recordingWithValueConstraints;
 
-- (void)setControlView:(SRRecorderControl *)newControlView
+- (void)prepareForRecorderControl:(SRRecorderControl *)aControl
 {
-    if (newControlView == _controlView)
+    if (aControl == _recorderControl)
         return;
 
-    [_controlView removeLayoutGuide:_alignmentGuide];
-    [_controlView removeLayoutGuide:_labelDrawingGuide];
-    [_controlView removeLayoutGuide:_cancelButtonDrawingGuide];
-    [_controlView removeLayoutGuide:_clearButtonDrawingGuide];
-    [_controlView removeLayoutGuide:_cancelButtonLayoutGuide];
-    [_controlView removeLayoutGuide:_clearButtonLayoutGuide];
+    [_recorderControl removeLayoutGuide:_alignmentGuide];
+    [_recorderControl removeLayoutGuide:_labelDrawingGuide];
+    [_recorderControl removeLayoutGuide:_cancelButtonDrawingGuide];
+    [_recorderControl removeLayoutGuide:_clearButtonDrawingGuide];
+    [_recorderControl removeLayoutGuide:_cancelButtonLayoutGuide];
+    [_recorderControl removeLayoutGuide:_clearButtonLayoutGuide];
 
-    _controlView = newControlView;
+    [self willChangeValueForKey:@"recorderControl"];
+    _recorderControl = aControl;
+    [self didChangeValueForKey:@"recorderControl"];
+
+    _recorderControl = aControl;
     _lookupPrefixes = nil;
     _metrics = nil;
 
-    if (!_controlView)
+    if (!_recorderControl)
         return;
 
     [self addConstraints];
-    [self controlAppearanceDidChange:nil];
+    [self recorderControlAppearanceDidChange:nil];
 
-    _controlView.needsDisplay = YES;
+    _recorderControl.needsDisplay = YES;
 }
 
-- (void)controlAppearanceDidChange:(nullable id)aReason
+- (void)recorderControlAppearanceDidChange:(nullable id)aReason
 {
-    NSAssert(self.controlView != nil, @"Style MUST be applied to a control first!");
-
     NSArray<NSString *> *newLookupPrefixes = [self makeLookupPrefixes];
     if ([_lookupPrefixes isEqual:newLookupPrefixes])
         return;
@@ -686,10 +689,10 @@
         [self setValue:newImage forKey:propName];
 
         if (!NSIsEmptyRect(frame))
-            [self.controlView setNeedsDisplayInRect:frame];
+            [self.recorderControl setNeedsDisplayInRect:frame];
     };
 
-    NSRect controlBounds = self.controlView.bounds;
+    NSRect controlBounds = self.recorderControl.bounds;
 
     UpdateImage(@"bezel-normal-left", @"bezelNormalLeft", controlBounds);
     UpdateImage(@"bezel-normal-center", @"bezelNormalCenter", controlBounds);
@@ -740,7 +743,7 @@
     if (!NSEqualSizes(newShapeCornerRadius, self.shapeCornerRadius))
     {
         [self setValue:[NSValue valueWithSize:newShapeCornerRadius] forKey:@"shapeCornerRadius"];
-        [self.controlView noteFocusRingMaskChanged];
+        [self.recorderControl noteFocusRingMaskChanged];
     }
 
     NSEdgeInsets newShapeInsets = NSEdgeInsetsMake([_metrics[@"Shape"][@"Insets"][@"Top"] floatValue],
@@ -750,7 +753,7 @@
     if (!NSEdgeInsetsEqual(newShapeInsets, self.shapeInsets))
     {
         [self setValue:[NSValue valueWithEdgeInsets:newShapeInsets] forKey:@"shapeInsets"];
-        [self.controlView noteFocusRingMaskChanged];
+        [self.recorderControl noteFocusRingMaskChanged];
     }
 
     CGFloat newBaselineOffsetFromBottom = [_metrics[@"BaselineOffsetFromBottom"] floatValue];

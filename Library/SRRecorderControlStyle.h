@@ -165,6 +165,11 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (readonly) NSArray<NSLayoutConstraint *> *recordingWithValueConstraints;
 
 /*!
+ Called before style is applied to the specified control.
+ */
+- (void)prepareForRecorderControl:(SRRecorderControl *)aControl;
+
+/*!
  Update images according to the current appearance settings.
 
  @discussion Called when:
@@ -173,12 +178,12 @@ NS_SWIFT_NAME(RecorderControlStyling)
     - System's accessibility settings
     - Effective appearance of aControl
 
- @see NSView/viewDidChangeBackingProperties
- @see NSControlTintDidChangeNotification
- @see NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
- @see NSView/viewDidChangeEffectiveAppearance
+ @seealso NSView/viewDidChangeBackingProperties
+ @seealso NSControlTintDidChangeNotification
+ @seealso NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
+ @seealso NSView/viewDidChangeEffectiveAppearance
  */
-- (void)controlAppearanceDidChange:(nullable id)aReason;
+- (void)recorderControlAppearanceDidChange:(nullable id)aReason;
 
 @end
 
@@ -312,10 +317,7 @@ NS_SWIFT_NAME(RecorderControlStyle)
 
 - (instancetype)init NS_UNAVAILABLE;
 
-/*!
- Prefix the style was initialized with.
- */
-@property (readonly) NSString *prefix;
+@property (nullable, weak, readonly) SRRecorderControl *recorderControl;
 
 /*!
  Load image with a given name with respect to the lookup table.
