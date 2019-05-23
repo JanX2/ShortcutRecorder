@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
  @seealso controlAppearanceDidChange:
  */
 NS_SWIFT_NAME(RecorderControlStyling)
-@protocol SRRecorderControlStyling
+@protocol SRRecorderControlStyling <NSCopying>
 
 /*!
  Unique identifier of the style.

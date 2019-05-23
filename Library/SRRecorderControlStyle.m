@@ -517,4 +517,24 @@
     _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)aZone
+{
+    return [[self.class alloc] initWithIdentifier:self.identifier];
+}
+
+
+#pragma mark NSObject
+
+- (BOOL)isEqual:(SRRecorderControlStyle *)anObject
+{
+    return [anObject isKindOfClass:SRRecorderControlStyle.class] && [self.identifier isEqual:anObject.identifier];
+}
+
+- (NSUInteger)hash
+{
+    return self.identifier.hash;
+}
+
 @end
