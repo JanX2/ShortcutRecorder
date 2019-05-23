@@ -13,6 +13,316 @@
 #import "SRRecorderControlStyle.h"
 
 
+@implementation SRRecorderControlStyleLookupOption
+
++ (NSSet<NSNumber *> *)supportedAppearences
+{
+    static NSSet<NSNumber *> *S = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        S = [NSSet setWithObjects:
+             @(SRRecorderControlStyleLookupOptionAppearanceNone),
+             @(SRRecorderControlStyleLookupOptionAppearanceAqua),
+             @(SRRecorderControlStyleLookupOptionAppearanceDarkAqua),
+             @(SRRecorderControlStyleLookupOptionAppearanceVibrantLight),
+             @(SRRecorderControlStyleLookupOptionAppearanceVibrantDark),
+             nil];
+    });
+    return S;
+}
+
++ (NSSet<NSNumber *> *)supportedTints
+{
+    static NSSet<NSNumber *> *S = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        S = [NSSet setWithObjects:
+             @(SRRecorderControlStyleLookupOptionTintNone),
+             @(SRRecorderControlStyleLookupOptionTintBlue),
+             @(SRRecorderControlStyleLookupOptionTintGraphite),
+             nil];
+    });
+    return S;
+}
+
++ (NSSet<NSNumber *> *)supportedAccessibilities
+{
+    static NSSet<NSNumber *> *S = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        S = [NSSet setWithObjects:
+             @(SRRecorderControlStyleLookupOptionAccessibilityNone),
+             @(SRRecorderControlStyleLookupOptionAccessibilityHighContrast),
+             nil];
+    });
+    return S;
+}
+
++ (NSSet<NSAppearanceName> *)supportedSystemAppearences
+{
+    static NSSet<NSAppearanceName> *S = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        S = [NSMutableSet setWithObjects:
+             NSAppearanceNameAqua,
+             NSAppearanceNameVibrantLight,
+             NSAppearanceNameVibrantDark,
+             nil];
+
+        if (@available(macOS 10.14, *))
+            [(NSMutableSet *)S addObject:NSAppearanceNameDarkAqua];
+
+        S = S.copy;
+    });
+    return S;
+}
+
++ (NSArray<SRRecorderControlStyleLookupOption *> *)allOptions
+{
+    static NSArray<SRRecorderControlStyleLookupOption *> *A = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        A = NSMutableArray.array;
+
+        for (NSNumber *appearance in self.supportedAppearences)
+        {
+            for (NSNumber *tint in self.supportedTints)
+            {
+                for (NSNumber *acc in self.supportedAccessibilities)
+                {
+                    SRRecorderControlStyleLookupOption *o = [[SRRecorderControlStyleLookupOption alloc] initWithAppearance:appearance.unsignedIntegerValue
+                                                                                                                      tint:tint.unsignedIntegerValue
+                                                                                                             accessibility:acc.unsignedIntegerValue];
+                    [(NSMutableArray *)A addObject:o];
+                }
+            }
+        }
+
+        A = A.copy;
+    });
+    return A;
+}
+
++ (SRRecorderControlStyleLookupOptionAppearance)appearanceForSystemAppearanceName:(NSAppearanceName)aSystemAppearance
+{
+    static NSDictionary<NSAppearanceName, NSNumber *> *Map = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Map = @{
+            NSAppearanceNameAqua: @(SRRecorderControlStyleLookupOptionAppearanceAqua),
+            NSAppearanceNameVibrantLight: @(SRRecorderControlStyleLookupOptionAppearanceVibrantLight),
+            NSAppearanceNameVibrantDark: @(SRRecorderControlStyleLookupOptionAppearanceVibrantDark)
+        }.mutableCopy;
+
+        if (@available(macOS 10.14, *))
+            [(NSMutableDictionary *)Map setObject:@(SRRecorderControlStyleLookupOptionAppearanceDarkAqua) forKey:NSAppearanceNameDarkAqua];
+
+        NSAssert([[NSSet setWithArray:Map.allKeys] isEqualToSet:self.supportedSystemAppearences], @"Map is missing keys.");
+    });
+    return Map[aSystemAppearance].unsignedIntegerValue;
+}
+
++ (SRRecorderControlStyleLookupOptionTint)tintForSystemTint:(NSControlTint)aSystemTint
+{
+    static NSDictionary<NSNumber *, NSNumber *> *Map = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Map = @{
+            @(NSBlueControlTint): @(SRRecorderControlStyleLookupOptionTintBlue),
+            @(NSGraphiteControlTint): @(SRRecorderControlStyleLookupOptionTintGraphite),
+        };
+    });
+    return Map[@(aSystemTint)].unsignedIntegerValue;
+}
+
+- (instancetype)initWithAppearance:(SRRecorderControlStyleLookupOptionAppearance)anAppearance
+                              tint:(SRRecorderControlStyleLookupOptionTint)aTint
+                     accessibility:(SRRecorderControlStyleLookupOptionAccessibility)anAccessibility
+{
+    NSAssert(anAppearance >= SRRecorderControlStyleLookupOptionAppearanceNone && anAppearance < SRRecorderControlStyleLookupOptionAppearanceMax,
+             @"anAppearance is outside of allowed range.");
+    NSAssert(aTint >= SRRecorderControlStyleLookupOptionTintNone && aTint < SRRecorderControlStyleLookupOptionTintMax,
+             @"aTint is outside of allowed range.");
+    NSAssert((anAccessibility & ~SRRecorderControlStyleLookupOptionAccessibilityMask) == 0,
+             @"anAccessibility is outside of allowed range.");
+
+    self = [super init];
+
+    if (self)
+    {
+        _appearance = anAppearance;
+        _tint = aTint;
+        _accessibility = anAccessibility;
+    }
+
+    return self;
+}
+
+- (instancetype)init
+{
+    return [self initWithAppearance:SRRecorderControlStyleLookupOptionAppearanceNone
+                               tint:SRRecorderControlStyleLookupOptionTintBlue
+                      accessibility:SRRecorderControlStyleLookupOptionAccessibilityNone];
+}
+
+- (NSString *)stringRepresentation
+{
+    NSString *appearance = nil;
+    NSString *tint = nil;
+    NSString *acc = nil;
+
+    switch (self.appearance)
+    {
+        case SRRecorderControlStyleLookupOptionAppearanceDarkAqua:
+            appearance = @"-darkaqua";
+            break;
+        case SRRecorderControlStyleLookupOptionAppearanceAqua:
+            appearance = @"-aqua";
+            break;
+        case SRRecorderControlStyleLookupOptionAppearanceVibrantDark:
+            appearance = @"-vibrantdark";
+            break;
+        case SRRecorderControlStyleLookupOptionAppearanceVibrantLight:
+            appearance = @"-vibrantlight";
+            break;
+        default:
+            appearance = @"";
+            break;
+    }
+
+    switch (self.tint)
+    {
+        case SRRecorderControlStyleLookupOptionTintBlue:
+            tint = @"-blue";
+            break;
+        case SRRecorderControlStyleLookupOptionTintGraphite:
+            tint = @"-graphite";
+            break;
+        default:
+            tint = @"";
+            break;
+    }
+
+    switch (self.accessibility)
+    {
+        case SRRecorderControlStyleLookupOptionAccessibilityHighContrast:
+            acc = @"-acc";
+            break;
+        default:
+            acc = @"";
+            break;
+    }
+
+    return [NSString stringWithFormat:@"%@%@%@", appearance, tint, acc];
+}
+
+- (NSComparisonResult)compare:(SRRecorderControlStyleLookupOption *)anOption
+             relativeToOption:(SRRecorderControlStyleLookupOption *)anEffectiveOption
+{
+    static NSDictionary<NSNumber *, NSArray<NSNumber *> *> *AppearanceOrderMap = nil;
+    static NSDictionary<NSNumber *, NSArray<NSNumber *> *> *TintOrderMap = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        AppearanceOrderMap = @{
+            @(SRRecorderControlStyleLookupOptionAppearanceAqua): @[@(SRRecorderControlStyleLookupOptionAppearanceAqua),
+                                                       @(SRRecorderControlStyleLookupOptionAppearanceVibrantLight),
+                                                       @(SRRecorderControlStyleLookupOptionAppearanceDarkAqua),
+                                                       @(SRRecorderControlStyleLookupOptionAppearanceVibrantDark),
+                                                       @(SRRecorderControlStyleLookupOptionAppearanceNone)],
+            @(SRRecorderControlStyleLookupOptionAppearanceDarkAqua): @[@(SRRecorderControlStyleLookupOptionAppearanceDarkAqua),
+                                                           @(SRRecorderControlStyleLookupOptionAppearanceVibrantDark),
+                                                           @(SRRecorderControlStyleLookupOptionAppearanceAqua),
+                                                           @(SRRecorderControlStyleLookupOptionAppearanceVibrantLight),
+                                                           @(SRRecorderControlStyleLookupOptionAppearanceNone)],
+            @(SRRecorderControlStyleLookupOptionAppearanceVibrantLight): @[@(SRRecorderControlStyleLookupOptionAppearanceVibrantLight),
+                                                               @(SRRecorderControlStyleLookupOptionAppearanceAqua),
+                                                               @(SRRecorderControlStyleLookupOptionAppearanceVibrantDark),
+                                                               @(SRRecorderControlStyleLookupOptionAppearanceDarkAqua),
+                                                               @(SRRecorderControlStyleLookupOptionAppearanceNone)],
+            @(SRRecorderControlStyleLookupOptionAppearanceVibrantDark): @[@(SRRecorderControlStyleLookupOptionAppearanceVibrantDark),
+                                                              @(SRRecorderControlStyleLookupOptionAppearanceDarkAqua),
+                                                              @(SRRecorderControlStyleLookupOptionAppearanceVibrantLight),
+                                                              @(SRRecorderControlStyleLookupOptionAppearanceAqua),
+                                                              @(SRRecorderControlStyleLookupOptionAppearanceNone)]
+        };
+
+        TintOrderMap = @{
+            @(SRRecorderControlStyleLookupOptionTintBlue): @[@(SRRecorderControlStyleLookupOptionTintBlue),
+                                                 @(SRRecorderControlStyleLookupOptionTintGraphite),
+                                                 @(SRRecorderControlStyleLookupOptionTintNone)],
+            @(SRRecorderControlStyleLookupOptionTintGraphite): @[@(SRRecorderControlStyleLookupOptionTintGraphite),
+                                                     @(SRRecorderControlStyleLookupOptionTintBlue),
+                                                     @(SRRecorderControlStyleLookupOptionTintNone)]
+        };
+    });
+
+    __auto_type CompareAppearances = ^(SRRecorderControlStyleLookupOptionAppearance a, SRRecorderControlStyleLookupOptionAppearance b) {
+        NSArray<NSNumber *> *order = AppearanceOrderMap[@(anEffectiveOption.appearance)];
+
+        NSUInteger aIndex = [order indexOfObject:@(a)];
+        NSUInteger bIndex = [order indexOfObject:@(b)];
+
+        if (aIndex < bIndex)
+            return NSOrderedAscending;
+        else if (aIndex > bIndex)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    };
+
+    __auto_type CompareTints = ^(SRRecorderControlStyleLookupOptionTint a, SRRecorderControlStyleLookupOptionTint b) {
+        NSArray<NSNumber *> *order = TintOrderMap[@(anEffectiveOption.tint)];
+
+        NSUInteger aIndex = [order indexOfObject:@(a)];
+        NSUInteger bIndex = [order indexOfObject:@(b)];
+
+        if (aIndex < bIndex)
+            return NSOrderedAscending;
+        else if (aIndex > bIndex)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    };
+
+    __auto_type CompareAccessibilitites = ^(SRRecorderControlStyleLookupOptionAccessibility a, SRRecorderControlStyleLookupOptionAccessibility b) {
+        // How many bits match.
+        int aSimilarity = __builtin_popcountl(a & anEffectiveOption.accessibility);
+        int bSimilarity = __builtin_popcountl(b & anEffectiveOption.accessibility);
+
+        // How many bits mismatch.
+        int aDissimilarity = __builtin_popcountl(a & ~anEffectiveOption.accessibility);
+        int bDissimilarity = __builtin_popcountl(b & ~anEffectiveOption.accessibility);
+
+        if (aSimilarity > bSimilarity)
+            return NSOrderedAscending;
+        else if (aSimilarity < bSimilarity)
+            return NSOrderedDescending;
+        else if (aDissimilarity < bDissimilarity)
+            return NSOrderedAscending;
+        else if (aDissimilarity > bDissimilarity)
+            return NSOrderedDescending;
+        else
+            return NSOrderedSame;
+    };
+
+    if (self.appearance != anOption.appearance)
+        return CompareAppearances(self.appearance, anOption.appearance);
+    else if (self.tint != anOption.tint)
+        return CompareTints(self.tint, anOption.tint);
+    else if (self.accessibility != anOption.accessibility)
+        return CompareAccessibilitites(self.accessibility, anOption.accessibility);
+    else
+        return NSOrderedSame;
+}
+
+- (NSString *)description
+{
+    return [self stringRepresentation];
+}
+
+@end
+
+
 @implementation SRRecorderControlStyle
 {
     NSLayoutConstraint *_backgroundTopConstraint;
@@ -124,54 +434,44 @@
     return d;
 }
 
-
 - (NSArray<NSString *> *)makeLookupPrefixes
 {
     if ([self.identifier hasSuffix:@"-"])
         return @[[self.identifier substringToIndex:self.identifier.length - 1]];
 
-    NSMutableArray *loadOrder = NSMutableArray.array;
-
-    NSArray *controlTintFragments = NSColor.currentControlTint == NSBlueControlTint ? @[@"-blue", @"-graphite", @""] : @[@"-graphite", @"-blue", @""];
-    NSArray *accFragments = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast ? @[@"-acc", @""] : @[@"", @"-acc"];
-
-    NSAppearanceName macOSAppearanceName = self.controlView.effectiveAppearance.name.copy;
-
-    if (!macOSAppearanceName)
-        macOSAppearanceName = NSAppearance.currentAppearance.name;
-
-    if (!macOSAppearanceName)
-        macOSAppearanceName = NSAppearanceNameAqua;
-
-    NSArray *appearanceFragments = nil;
+    NSAppearanceName effectiveSystemAppearance = nil;
 
     if (@available(macOS 10.14, *))
-    {
-        if ([macOSAppearanceName isEqualToString:NSAppearanceNameDarkAqua])
-            appearanceFragments = @[@"-darkaqua", @"-vibrantdark", @"-aqua", @"-vibrantlight", @""];
-    }
+        effectiveSystemAppearance = [self.recorderControl.effectiveAppearance bestMatchFromAppearancesWithNames:SRRecorderControlStyleLookupOption.supportedSystemAppearences.allObjects];
 
-    if ([macOSAppearanceName isEqualToString:NSAppearanceNameVibrantLight])
-        appearanceFragments = @[@"-vibrantlight", @"-aqua", @"-vibrantdark", @"-darkaqua", @""];
-    else if ([macOSAppearanceName isEqualToString:NSAppearanceNameVibrantDark])
-        appearanceFragments = @[@"-vibrantdark", @"-darkaqua", @"-vibrantlight", @"-aqua", @""];
-    else
-        appearanceFragments = @[@"-aqua", @"-vibrantlight", @"-darkaqua", @"-vibrantdark", @""];
+    if (!effectiveSystemAppearance)
+        effectiveSystemAppearance = NSAppearance.currentAppearance.name;
 
-    for (NSString *appearance in appearanceFragments)
-    {
-        for (NSString *tint in controlTintFragments)
-        {
-            for (NSString *acc in accFragments)
-            {
-                [loadOrder addObject:[NSString stringWithFormat:@"%@%@%@%@", self->_prefix, appearance, tint, acc]];
-            }
-        }
-    }
+    if (!effectiveSystemAppearance || ![SRRecorderControlStyleLookupOption.supportedSystemAppearences containsObject:effectiveSystemAppearance])
+        effectiveSystemAppearance = NSAppearanceNameAqua;
 
-    return loadOrder.copy;
+    SRRecorderControlStyleLookupOptionAppearance effectiveAppearance = [SRRecorderControlStyleLookupOption appearanceForSystemAppearanceName:effectiveSystemAppearance];
+    SRRecorderControlStyleLookupOptionTint effectiveTint = [SRRecorderControlStyleLookupOption tintForSystemTint:NSColor.currentControlTint];
+    SRRecorderControlStyleLookupOptionAccessibility effectiveAccessibility = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast ? SRRecorderControlStyleLookupOptionAccessibilityHighContrast : SRRecorderControlStyleLookupOptionAccessibilityNone;
+    SRRecorderControlStyleLookupOption *effectiveOption = [[SRRecorderControlStyleLookupOption alloc] initWithAppearance:effectiveAppearance
+                                                                                                                    tint:effectiveTint
+                                                                                                           accessibility:effectiveAccessibility];
+
+    return [self makeLookupPrefixesRelativeToOption:effectiveOption];
 }
 
+- (NSArray<NSString *> *)makeLookupPrefixesRelativeToOption:(SRRecorderControlStyleLookupOption *)anOption
+{
+    NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleLookupOption *a, SRRecorderControlStyleLookupOption *b)
+    {
+        return [a compare:b relativeToOption:anOption];
+    };
+    NSArray *options = [SRRecorderControlStyleLookupOption.allOptions sortedArrayWithOptions:NSSortStable usingComparator:cmp];
+    NSMutableArray<NSString *> *loadOrder = [NSMutableArray arrayWithCapacity:options.count];
+    for (SRRecorderControlStyleLookupOption *o in options)
+        [loadOrder addObject:[NSString stringWithFormat:@"%@%@", self.identifier, o.stringRepresentation]];
+    return loadOrder.copy;
+}
 
 - (void)addConstraints
 {

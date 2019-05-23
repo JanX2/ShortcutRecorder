@@ -184,7 +184,100 @@ NS_SWIFT_NAME(RecorderControlStyling)
 
 
 /*!
- Load style from files.
+ @seealso SRRecorderControlStyleLookupOption/appearance
+ */
+typedef NS_ENUM(NSUInteger, SRRecorderControlStyleLookupOptionAppearance)
+{
+    SRRecorderControlStyleLookupOptionAppearanceNone = 0,
+    SRRecorderControlStyleLookupOptionAppearanceAqua,
+    SRRecorderControlStyleLookupOptionAppearanceVibrantLight,
+    SRRecorderControlStyleLookupOptionAppearanceDarkAqua,
+    SRRecorderControlStyleLookupOptionAppearanceVibrantDark,
+
+    SRRecorderControlStyleLookupOptionAppearanceMax
+} NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Appearance);
+
+
+/*!
+ @seealso SRRecorderControlStyleLookupOption/tint
+ */
+typedef NS_ENUM(NSUInteger, SRRecorderControlStyleLookupOptionTint)
+{
+    SRRecorderControlStyleLookupOptionTintNone = 0,
+    SRRecorderControlStyleLookupOptionTintBlue,
+    SRRecorderControlStyleLookupOptionTintGraphite,
+
+    SRRecorderControlStyleLookupOptionTintMax
+} NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Tint);
+
+
+/*!
+ @seealso SRRecorderControlStyleLookupOption/accessibility
+ */
+typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleLookupOptionAccessibility)
+{
+    SRRecorderControlStyleLookupOptionAccessibilityNone = 0,
+    SRRecorderControlStyleLookupOptionAccessibilityHighContrast = 1 << 0,
+
+    SRRecorderControlStyleLookupOptionAccessibilityMask = SRRecorderControlStyleLookupOptionAccessibilityHighContrast
+} NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Accessibility);
+
+
+/*!
+ Intermediate object that represents a given option for ordering.
+
+ @seealso SRRecorderControlStyle/makeLookupPrefixesRelativeToOption:
+ */
+NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
+@interface SRRecorderControlStyleLookupOption: NSObject
+@property (readonly) SRRecorderControlStyleLookupOptionAppearance appearance;
+@property (readonly) SRRecorderControlStyleLookupOptionTint tint;
+@property (readonly) SRRecorderControlStyleLookupOptionAccessibility accessibility;
+@property (nonatomic, readonly) NSString *stringRepresentation;
+
+- (instancetype)initWithAppearance:(SRRecorderControlStyleLookupOptionAppearance)anAppearance
+                              tint:(SRRecorderControlStyleLookupOptionTint)aTint
+                     accessibility:(SRRecorderControlStyleLookupOptionAccessibility)anAccessibility NS_DESIGNATED_INITIALIZER;
+
+/*!
+ Compare options against similarity to the effective options.
+
+ @discussion If the receiver is closer to the effective version, returns NSOrderedAscending.
+ */
+- (NSComparisonResult)compare:(SRRecorderControlStyleLookupOption *)anOption
+             relativeToOption:(SRRecorderControlStyleLookupOption *)anEffectiveOption;
+
+@end
+
+
+@interface SRRecorderControlStyleLookupOption (SRUtility)
+@property (class, readonly) NSSet<NSAppearanceName> *supportedSystemAppearences;
+@property (class, readonly) NSSet<NSNumber *> *supportedAppearences;
+@property (class, readonly) NSSet<NSNumber *> *supportedTints;
+@property (class, readonly) NSSet<NSNumber *> *supportedAccessibilities;
+@property (class, readonly) NSArray<SRRecorderControlStyleLookupOption *> *allOptions NS_SWIFT_NAME(all);
+
+/*!
+ Map system's appearance name to SR's appearance.
+
+ @seealso supportedSystemAppearences
+ */
++ (SRRecorderControlStyleLookupOptionAppearance)appearanceForSystemAppearanceName:(NSAppearanceName)aSystemAppearance;
+
+/*!
+ Map system's control tint into SR's tint.
+ */
++ (SRRecorderControlStyleLookupOptionTint)tintForSystemTint:(NSControlTint)aSystemTint;
+
+@end
+
+
+/*!
+ Load style from resources.
+
+ @discussion Searches for resources in:
+                1. ShortcutRecorder Framework
+                2. Main application bundle
  */
 NS_SWIFT_NAME(RecorderControlStyle)
 @interface SRRecorderControlStyle : NSObject <SRRecorderControlStyling>
@@ -209,6 +302,10 @@ NS_SWIFT_NAME(RecorderControlStyle)
     The lookup table consists of the strings of the "prefix[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
     prefixes ordered according to the environment.
 
+    Style implements equality based on prefix that determines the set of resources it represents.
+    I.e. styles with the same prefix that belong to different views and, optionally, resolve
+    into different lookup tables are still equal.
+
  @seealso makeLookupPrefixes
  */
 - (instancetype)initWithIdentifier:(NSString *)anIdentifier NS_DESIGNATED_INITIALIZER;
@@ -221,20 +318,12 @@ NS_SWIFT_NAME(RecorderControlStyle)
 @property (readonly) NSString *prefix;
 
 /*!
- Load image with a given name with respect to the load order.
-
- @discussion Image is looked up in the following locations:
-    1. ShortcutRecorder Framework
-    2. Main application bundle
+ Load image with a given name with respect to the lookup table.
  */
 - (NSImage *)loadImageNamed:(NSString *)aName;
 
 /*!
- Load metrics with respect to the load order.
-
- @discussion Similarly to -loadImageNamed:, metrics file is looked up in the following locations:
-     1. ShortcutRecorder Framework
-     2. Main application bundle
+ Load metrics with respect to the lookup table.
  */
 - (NSDictionary *)loadMetrics;
 
@@ -243,9 +332,21 @@ NS_SWIFT_NAME(RecorderControlStyle)
 
  @discussion Order depends on the environment such as system configuration (e.g. accessibility)
     and controlView effective appearance.
+
+ @seealso makeLookupPrefixesRelativeToOption:
  */
 - (NSArray<NSString *> *)makeLookupPrefixes;
 
+/*!
+ Make new lookup prefixes in order by similarity to the given option.
+
+ @param anOption The ideal option. Distance from a given option to the ideal determines order.
+ */
+- (NSArray<NSString *> *)makeLookupPrefixesRelativeToOption:(SRRecorderControlStyleLookupOption *)anOption NS_SWIFT_NAME(makeLookupPrefixes(relativeTo:));
+
+/*!
+ Add style's constraints to the control view.
+ */
 - (void)addConstraints;
 
 @end
