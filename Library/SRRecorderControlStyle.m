@@ -59,6 +59,7 @@
         _clearButtonDrawingGuide = [NSLayoutGuide new];
         _cancelButtonLayoutGuide = [NSLayoutGuide new];
         _clearButtonLayoutGuide = [NSLayoutGuide new];
+        _intrinsicContentSize = NSMakeSize(NSViewNoIntrinsicMetric, NSViewNoIntrinsicMetric);
     }
 
     return self;
@@ -326,6 +327,7 @@
 @synthesize shapeInsets = _shapeInsets;
 @synthesize baselineOffsetFromBottom = _baselineOffsetFromBottom;
 @synthesize alignmentRectInsets = _alignmentRectInsets;
+@synthesize intrinsicContentSize = _intrinsicContentSize;
 @synthesize alignmentGuide = _alignmentGuide;
 @synthesize backgroundDrawingGuide = _backgroundDrawingGuide;
 @synthesize labelDrawingGuide = _labelDrawingGuide;
@@ -515,6 +517,13 @@
     CGFloat maxExpectedLabelWidth = [SRLoc(@"Click to record shortcut") sizeWithAttributes:self.normalLabelAttributes].width;
     CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
     _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
+
+    NSSize newIntrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant + self.alignmentRectInsets.left + self.alignmentRectInsets.right, [_metrics[@"MinSize"][@"Height"] floatValue]);
+    if (!NSEqualSizes(newIntrinsicContentSize, self.intrinsicContentSize))
+    {
+        [self setValue:[NSValue valueWithSize:newIntrinsicContentSize] forKey:@"intrinsicContentSize"];
+        [self.recorderControl invalidateIntrinsicContentSize];
+    }
 }
 
 #pragma mark NSCopying

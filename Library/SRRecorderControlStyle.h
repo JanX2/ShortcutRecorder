@@ -101,6 +101,11 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (readonly) NSEdgeInsets alignmentRectInsets;
 
 /*!
+ @seealso NSView/intrinsicContentSize
+ */
+@property (readonly) NSSize intrinsicContentSize;
+
+/*!
  Frame that applies alignment insets to view's bounds.
  */
 @property (readonly) NSLayoutGuide *alignmentGuide;

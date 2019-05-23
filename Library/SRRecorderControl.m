@@ -957,6 +957,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return self.style.alignmentRectInsets;
 }
 
+- (NSSize)intrinsicContentSize
+{
+    return self.style.intrinsicContentSize;
+}
+
 - (CGFloat)baselineOffsetFromBottom
 {
     return self.style.baselineOffsetFromBottom;
