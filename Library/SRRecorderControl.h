@@ -157,6 +157,13 @@ IB_DESIGNABLE
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
 
 /*!
+ Return default style for the control.
+
+ @seealso SRRecorderControlStyle/defaultStyle
+ */
+- (SRRecorderControlStyle *)makeDefaultStyle;
+
+/*!
     Called to initialize internal state after either initWithFrame or awakeFromNib is called.
  */
 - (void)_initInternalState;

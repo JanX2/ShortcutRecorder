@@ -82,7 +82,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
                                    forOrientation:NSLayoutConstraintOrientationVertical];
 
-    self.style = nil;
     self.toolTip = SRLoc(@"Click to record shortcut");
     // TODO: seems to be unnecessary
     [self updateTrackingAreas];
@@ -97,6 +96,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 
 #pragma mark Properties
+@dynamic style;
 
 + (BOOL)automaticallyNotifiesObserversOfObjectValue
 {
@@ -208,20 +208,39 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     self.objectValue = [SRShortcut shortcutWithDictionary:newDictionaryValue];
 }
 
+- (SRRecorderControlStyle *)style
+{
+    if (_style == nil)
+    {
+        _style = [self makeDefaultStyle];
+        [_style prepareForRecorderControl:self];
+    }
+
+    return _style;
+}
+
 - (void)setStyle:(SRRecorderControlStyle *)newStyle
 {
     if (newStyle == nil)
-    {
-        if (@available(macOS 10.14, *))
-            newStyle = [SRRecorderControlStyle styleWithPrefix:@"sr-mojave"];
-        else
-            newStyle = [SRRecorderControlStyle styleWithPrefix:@"sr-yosemite"];
-    }
+        newStyle = [self makeDefaultStyle];
+    else if (newStyle == _style)
+        return;
+    else
+        newStyle = newStyle.copy;
+
+    if (_style != nil)
+        [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
 
     _style = newStyle;
-    _style.controlView = self;
+    [_style prepareForRecorderControl:self];
+}
 
-    [self updateActiveConstraints];
+- (SRRecorderControlStyle *)makeDefaultStyle
+{
+    if (@available(macOS 10.14, *))
+        return [SRRecorderControlStyle styleWithIdentifier:@"sr-mojave"];
+    else
+        return [SRRecorderControlStyle styleWithIdentifier:@"sr-yosemite"];
 }
 
 
@@ -313,7 +332,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)updateActiveConstraints
 {
-    [NSLayoutConstraint activateConstraints:_style.alwaysConstraints];
+    [NSLayoutConstraint activateConstraints:self.style.alwaysConstraints];
 
     if (self.isRecording && _objectValue)
     {
