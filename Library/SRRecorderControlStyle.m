@@ -817,7 +817,7 @@
     _cancelToClearConstraint.constant = -[_metrics[@"CancelToClear"] floatValue];
 
     CGFloat maxExpectedLeadingLabelOffset = _alignmentToLabelConstraint.constant;
-    CGFloat maxExpectedLabelWidth = [SRLoc(@"Click to record shortcut") sizeWithAttributes:self.normalLabelAttributes].width;
+    CGFloat maxExpectedLabelWidth = ceilf([SRLoc(@"Click to record shortcut") sizeWithAttributes:self.normalLabelAttributes].width);
     CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
     _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
 
