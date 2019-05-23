@@ -176,7 +176,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         newObjectValue = [SRShortcut shortcutWithDictionary:(NSDictionary *)newObjectValue];
     }
 
-    _objectValue = [newObjectValue copy];
+    _objectValue = newObjectValue.copy;
     [self didChangeValueForKey:@"objectValue"];
 
     if (_isCompatibilityModeEnabled)

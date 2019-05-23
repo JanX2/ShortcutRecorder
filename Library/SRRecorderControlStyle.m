@@ -471,7 +471,7 @@
         NSColor *fontColor = [NSColor colorWithCatalogName:json[@"FontColorCatalogName"] colorName:json[@"FontColorName"]];
 
         return @{
-            NSParagraphStyleAttributeName: [p copy],
+            NSParagraphStyleAttributeName: p.copy,
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: fontColor
         };

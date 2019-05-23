@@ -90,8 +90,8 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     {
         _keyCode = aKeyCode;
         _modifierFlags = aModifierFlags & SRCocoaModifierFlagsMask;
-        _characters = [aCharacters copy];
-        _charactersIgnoringModifiers = [aCharactersIgnoringModifiers copy];
+        _characters = aCharacters.copy;
+        _charactersIgnoringModifiers = aCharactersIgnoringModifiers.copy;
     }
 
     return self;
