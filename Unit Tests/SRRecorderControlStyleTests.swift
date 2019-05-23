@@ -11,8 +11,8 @@ import ShortcutRecorder
 
 
 class SRRecorderControlStyleTests: XCTestCase {
-    func testTemplatePrefix() {
-        let style = RecorderControlStyle(prefix: "sr-test")
+    func testTemplateIdentifier() {
+        let style = RecorderControlStyle(identifier: "sr-test")
         var prefixes = style.makeLookupPrefixes()
 
         func testAndRemove(_ p: String) {
@@ -62,8 +62,8 @@ class SRRecorderControlStyleTests: XCTestCase {
         XCTAssertTrue(prefixes.isEmpty)
     }
 
-    func testConcreteLookupPrefix() {
-        let style = RecorderControlStyle(prefix: "sr-test-")
+    func testConcreteLookupIdentifier() {
+        let style = RecorderControlStyle(identifier: "sr-test-")
         var prefixes = style.makeLookupPrefixes()
         XCTAssertEqual(prefixes.count, 1)
         XCTAssertEqual(prefixes[0], "sr-test")

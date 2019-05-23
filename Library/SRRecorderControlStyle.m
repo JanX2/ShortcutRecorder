@@ -36,16 +36,16 @@
     NSLayoutConstraint *_cancelToClearConstraint;
 }
 
-+ (instancetype)styleWithPrefix:(NSString *)aPrefix
++ (instancetype)styleWithIdentifier:(NSString *)anIdentifier
 {
-    return [[self alloc] initWithPrefix:aPrefix];
+    return [[self alloc] initWithIdentifier:anIdentifier];
 }
 
-- (instancetype)initWithPrefix:(NSString *)aPrefix
+- (instancetype)initWithIdentifier:(NSString *)anIdentifier
 {
     if (self = [super init])
     {
-        _prefix = [aPrefix copy];
+        _identifier = anIdentifier.copy;
         _allowsVibrancy = NO;
         _opaque = NO;
         _alwaysConstraints = @[];
@@ -126,8 +126,8 @@
 
 - (NSArray<NSString *> *)makeLookupPrefixes
 {
-    if ([self.prefix hasSuffix:@"-"])
-        return @[[self.prefix substringToIndex:self.prefix.length - 1]];
+    if ([self.identifier hasSuffix:@"-"])
+        return @[[self.identifier substringToIndex:self.identifier.length - 1]];
 
     NSMutableArray *loadOrder = NSMutableArray.array;
 
@@ -300,6 +300,7 @@
 
 #pragma mark SRRecorderControlStyling
 @synthesize controlView = _controlView;
+@synthesize identifier = _identifier;
 @synthesize allowsVibrancy = _allowsVibrancy;
 @synthesize opaque = _opaque;
 @synthesize normalLabelAttributes = _normalLabelAttributes;

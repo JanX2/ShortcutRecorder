@@ -24,7 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
 NS_SWIFT_NAME(RecorderControlStyling)
 @protocol SRRecorderControlStyling
 
-@property (nonatomic, nullable, weak) SRRecorderControl *controlView;
+/*!
+ Unique identifier of the style.
+ */
+@property (readonly) NSString *identifier;
 
 /*!
  @seealso NSView/allowsVibrancy
@@ -186,14 +189,14 @@ NS_SWIFT_NAME(RecorderControlStyle)
 }
 
 /*!
- @seealso SRRecorderControlStyle/initWithPrefix:
+ @seealso initWithIdentifier:
  */
-+ (instancetype)styleWithPrefix:(NSString *)aPrefix;
++ (instancetype)styleWithIdentifier:(NSString *)anIdentifier;
 
 /*!
- Style will use a given prefix to locate files.
+ Style will use a given identifier to locate resources.
 
- @param aPrefix Either a concrete (ends with "-") or a template (any other character) prefix.
+ @param anIdentifier Either a concrete (ends with "-") or a template (any other character) prefix.
 
  @discussion A template prefix is used to construct a lookup table by adding
     various suffixes while a concrete prefix is used as is.
@@ -203,7 +206,7 @@ NS_SWIFT_NAME(RecorderControlStyle)
 
  @seealso makeLookupPrefixes
  */
-- (instancetype)initWithPrefix:(NSString *)aPrefix NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithIdentifier:(NSString *)anIdentifier NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 
