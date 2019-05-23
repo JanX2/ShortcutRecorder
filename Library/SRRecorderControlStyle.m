@@ -315,6 +315,33 @@
         return NSOrderedSame;
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)aZone
+{
+    return self;
+}
+
+#pragma mark NSObject
+
+- (BOOL)isEqual:(SRRecorderControlStyleLookupOption *)anObject
+{
+    if ([super isEqual:anObject])
+        return YES;
+
+    if (![anObject isKindOfClass:self.class])
+        return NO;
+
+    return self.appearance == anObject.appearance && self.tint == anObject.tint && self.accessibility == anObject.accessibility;
+}
+
+- (NSUInteger)hash
+{
+    int tintOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleLookupOptionTintMax);
+    int appearanceOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleLookupOptionAppearanceMax);
+    return self.tint | (self.appearance << tintOffset) | (self.accessibility << (tintOffset + appearanceOffset));
+}
+
 - (NSString *)description
 {
     return [self stringRepresentation];
@@ -849,7 +876,13 @@
 
 - (BOOL)isEqual:(SRRecorderControlStyle *)anObject
 {
-    return [anObject isKindOfClass:SRRecorderControlStyle.class] && [self.identifier isEqual:anObject.identifier];
+    if ([super isEqual:anObject])
+        return YES;
+
+    if (![anObject isKindOfClass:self.class])
+        return [anObject isKindOfClass:self.class];
+
+    return [self.identifier isEqual:anObject.identifier];
 }
 
 - (NSUInteger)hash

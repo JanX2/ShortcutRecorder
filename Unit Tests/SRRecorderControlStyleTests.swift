@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Foundation
 
 import ShortcutRecorder
 
@@ -67,5 +68,46 @@ class SRRecorderControlStyleTests: XCTestCase {
         var prefixes = style.makeLookupPrefixes()
         XCTAssertEqual(prefixes.count, 1)
         XCTAssertEqual(prefixes[0], "sr-test")
+    }
+}
+
+
+class SRRecorderControlStyleLookupOptionTests: XCTestCase {
+    func testAll() {
+        let options = RecorderControlStyle.LookupOption.all
+        let uniqueOptions = Set(options)
+        XCTAssertEqual(options.count, uniqueOptions.count)
+
+        let optionStrings = (options as NSArray).value(forKeyPath: #keyPath(RecorderControlStyle.LookupOption.stringRepresentation)) as! [String]
+        let uniqueOptionStrings = Set(optionStrings)
+        XCTAssertEqual(optionStrings.count, uniqueOptionStrings.count)
+    }
+
+    func testEquality() {
+        let o1 = RecorderControlStyle.LookupOption(appearance: .aqua, tint: .blue, accessibility: .highContrast)
+        let o2 = o1.copy() as! RecorderControlStyle.LookupOption
+        XCTAssertEqual(o1, o2)
+    }
+
+    func testSystemAppearancesMap() {
+        for a in RecorderControlStyle.LookupOption.supportedSystemAppearences {
+            RecorderControlStyle.LookupOption.appearance(forSystemAppearanceName: a)
+        }
+    }
+
+    func testSupportedAppearances() {
+        var allEnumCases = Set<NSNumber>()
+        for i in 0..<RecorderControlStyle.LookupOption.Appearance.max.rawValue {
+            allEnumCases.insert(NSNumber(value: i))
+        }
+        XCTAssertEqual(RecorderControlStyle.LookupOption.supportedAppearences, allEnumCases)
+    }
+
+    func testSupportedTints() {
+        var allEnumCases = Set<NSNumber>()
+        for i in 0..<RecorderControlStyle.LookupOption.Tint.max.rawValue {
+            allEnumCases.insert(NSNumber(value: i))
+        }
+        XCTAssertEqual(RecorderControlStyle.LookupOption.supportedTints, allEnumCases)
     }
 }

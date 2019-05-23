@@ -234,33 +234,16 @@ typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleLookupOptionAccessibility)
  @seealso SRRecorderControlStyle/makeLookupPrefixesRelativeToOption:
  */
 NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
-@interface SRRecorderControlStyleLookupOption: NSObject
-@property (readonly) SRRecorderControlStyleLookupOptionAppearance appearance;
-@property (readonly) SRRecorderControlStyleLookupOptionTint tint;
-@property (readonly) SRRecorderControlStyleLookupOptionAccessibility accessibility;
-@property (nonatomic, readonly) NSString *stringRepresentation;
-
-- (instancetype)initWithAppearance:(SRRecorderControlStyleLookupOptionAppearance)anAppearance
-                              tint:(SRRecorderControlStyleLookupOptionTint)aTint
-                     accessibility:(SRRecorderControlStyleLookupOptionAccessibility)anAccessibility NS_DESIGNATED_INITIALIZER;
-
-/*!
- Compare options against similarity to the effective options.
-
- @discussion If the receiver is closer to the effective version, returns NSOrderedAscending.
- */
-- (NSComparisonResult)compare:(SRRecorderControlStyleLookupOption *)anOption
-             relativeToOption:(SRRecorderControlStyleLookupOption *)anEffectiveOption;
-
-@end
-
-
-@interface SRRecorderControlStyleLookupOption (SRUtility)
+@interface SRRecorderControlStyleLookupOption: NSObject <NSCopying>
 @property (class, readonly) NSSet<NSAppearanceName> *supportedSystemAppearences;
 @property (class, readonly) NSSet<NSNumber *> *supportedAppearences;
 @property (class, readonly) NSSet<NSNumber *> *supportedTints;
 @property (class, readonly) NSSet<NSNumber *> *supportedAccessibilities;
-@property (class, readonly) NSArray<SRRecorderControlStyleLookupOption *> *allOptions NS_SWIFT_NAME(all);
+
+@property (readonly) SRRecorderControlStyleLookupOptionAppearance appearance;
+@property (readonly) SRRecorderControlStyleLookupOptionTint tint;
+@property (readonly) SRRecorderControlStyleLookupOptionAccessibility accessibility;
+@property (nonatomic, readonly) NSString *stringRepresentation;
 
 /*!
  Map system's appearance name to SR's appearance.
@@ -273,6 +256,23 @@ NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
  Map system's control tint into SR's tint.
  */
 + (SRRecorderControlStyleLookupOptionTint)tintForSystemTint:(NSControlTint)aSystemTint;
+
+/*!
+ All possible values of the option.
+ */
+@property (class, readonly) NSArray<SRRecorderControlStyleLookupOption *> *allOptions NS_SWIFT_NAME(all);
+
+- (instancetype)initWithAppearance:(SRRecorderControlStyleLookupOptionAppearance)anAppearance
+                              tint:(SRRecorderControlStyleLookupOptionTint)aTint
+                     accessibility:(SRRecorderControlStyleLookupOptionAccessibility)anAccessibility NS_DESIGNATED_INITIALIZER;
+
+/*!
+ Compare options against similarity to the effective options.
+
+ @discussion If the receiver is closer to the effective version, returns NSOrderedAscending.
+ */
+- (NSComparisonResult)compare:(SRRecorderControlStyleLookupOption *)anOption
+             relativeToOption:(SRRecorderControlStyleLookupOption *)anEffectiveOption;
 
 @end
 
