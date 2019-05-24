@@ -228,7 +228,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     if (newStyle == nil)
         newStyle = [self makeDefaultStyle];
-    else if (newStyle == _style)
+    else if ([newStyle isEqual:_style])
         return;
     else
         newStyle = newStyle.copy;
