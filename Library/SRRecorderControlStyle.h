@@ -208,7 +208,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleLookupOptionAppearance)
     SRRecorderControlStyleLookupOptionAppearanceDarkAqua,
     SRRecorderControlStyleLookupOptionAppearanceVibrantDark,
 
-    SRRecorderControlStyleLookupOptionAppearanceMax
+    SRRecorderControlStyleLookupOptionAppearanceMax NS_SWIFT_UNAVAILABLE("")
 } NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Appearance);
 
 
@@ -221,7 +221,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleLookupOptionTint)
     SRRecorderControlStyleLookupOptionTintBlue,
     SRRecorderControlStyleLookupOptionTintGraphite,
 
-    SRRecorderControlStyleLookupOptionTintMax
+    SRRecorderControlStyleLookupOptionTintMax NS_SWIFT_UNAVAILABLE("")
 } NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Tint);
 
 
@@ -233,7 +233,7 @@ typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleLookupOptionAccessibility)
     SRRecorderControlStyleLookupOptionAccessibilityNone = 0,
     SRRecorderControlStyleLookupOptionAccessibilityHighContrast = 1 << 0,
 
-    SRRecorderControlStyleLookupOptionAccessibilityMask = SRRecorderControlStyleLookupOptionAccessibilityHighContrast
+    SRRecorderControlStyleLookupOptionAccessibilityMask NS_SWIFT_UNAVAILABLE("") = SRRecorderControlStyleLookupOptionAccessibilityHighContrast
 } NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Accessibility);
 
 
