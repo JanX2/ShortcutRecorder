@@ -17,6 +17,8 @@
 #import <Carbon/Carbon.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
     Mask representing subset of Cocoa modifier flags suitable for shortcuts.
  */
@@ -107,16 +109,18 @@ NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 
     @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
 */
-NSBundle * _Nonnull SRBundle(void);
+NSBundle * SRBundle(void);
 
 
 /*!
-    Convenient method to get localized string from the framework bundle.
+    Convenience method to get localized string from the framework bundle.
  */
 NSString * _Nullable SRLoc(NSString * _Nullable aKey);
 
 
 /*!
-    Convenient method to get image from the framework bundle.
+    Convenience method to get image from the framework bundle.
  */
 NSImage * _Nullable SRImage(NSString * _Nullable anImageName);
+
+NS_ASSUME_NONNULL_END
