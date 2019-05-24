@@ -103,6 +103,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return NO;
 }
 
++ (NSSet<NSString *> *)keyPathsForValuesAffectingDictionaryValue
+{
+    return [NSSet setWithObject:@"objectValue"];
+}
+
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
           requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags
