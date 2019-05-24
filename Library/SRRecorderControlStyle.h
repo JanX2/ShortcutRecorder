@@ -198,65 +198,63 @@ NS_SWIFT_NAME(RecorderControlStyling)
 
 
 /*!
- @seealso SRRecorderControlStyleLookupOption/appearance
+ @seealso SRRecorderControlStyleComponents/appearance
  */
-typedef NS_ENUM(NSUInteger, SRRecorderControlStyleLookupOptionAppearance)
+typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
 {
-    SRRecorderControlStyleLookupOptionAppearanceNone = 0,
-    SRRecorderControlStyleLookupOptionAppearanceAqua,
-    SRRecorderControlStyleLookupOptionAppearanceVibrantLight,
-    SRRecorderControlStyleLookupOptionAppearanceDarkAqua,
-    SRRecorderControlStyleLookupOptionAppearanceVibrantDark,
+    SRRecorderControlStyleComponentsAppearanceNone = 0,
+    SRRecorderControlStyleComponentsAppearanceAqua,
+    SRRecorderControlStyleComponentsAppearanceVibrantLight,
+    SRRecorderControlStyleComponentsAppearanceDarkAqua,
+    SRRecorderControlStyleComponentsAppearanceVibrantDark,
 
-    SRRecorderControlStyleLookupOptionAppearanceMax NS_SWIFT_UNAVAILABLE("")
-} NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Appearance);
+    SRRecorderControlStyleComponentsAppearanceMax NS_SWIFT_UNAVAILABLE("")
+} NS_SWIFT_NAME(SRRecorderControlStyleComponents.Appearance);
 
 
 /*!
- @seealso SRRecorderControlStyleLookupOption/tint
+ @seealso SRRecorderControlStyleComponents/tint
  */
-typedef NS_ENUM(NSUInteger, SRRecorderControlStyleLookupOptionTint)
+typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
 {
-    SRRecorderControlStyleLookupOptionTintNone = 0,
-    SRRecorderControlStyleLookupOptionTintBlue,
-    SRRecorderControlStyleLookupOptionTintGraphite,
+    SRRecorderControlStyleComponentsTintNone = 0,
+    SRRecorderControlStyleComponentsTintBlue,
+    SRRecorderControlStyleComponentsTintGraphite,
 
-    SRRecorderControlStyleLookupOptionTintMax NS_SWIFT_UNAVAILABLE("")
-} NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Tint);
+    SRRecorderControlStyleComponentsTintMax NS_SWIFT_UNAVAILABLE("")
+} NS_SWIFT_NAME(SRRecorderControlStyleComponents.Tint);
 
 
 /*!
- @seealso SRRecorderControlStyleLookupOption/accessibility
+ @seealso SRRecorderControlStyleComponents/accessibility
  */
-typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleLookupOptionAccessibility)
+typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleComponentsAccessibility)
 {
-    SRRecorderControlStyleLookupOptionAccessibilityNone = 0,
-    SRRecorderControlStyleLookupOptionAccessibilityHighContrast = 1 << 0,
+    SRRecorderControlStyleComponentsAccessibilityNone = 0,
+    SRRecorderControlStyleComponentsAccessibilityHighContrast = 1 << 0,
 
-    SRRecorderControlStyleLookupOptionAccessibilityMask NS_SWIFT_UNAVAILABLE("") = SRRecorderControlStyleLookupOptionAccessibilityHighContrast
-} NS_SWIFT_NAME(SRRecorderControlStyleLookupOption.Accessibility);
+    SRRecorderControlStyleComponentsAccessibilityMask NS_SWIFT_UNAVAILABLE("") = SRRecorderControlStyleComponentsAccessibilityHighContrast
+} NS_SWIFT_NAME(SRRecorderControlStyleComponents.Accessibility);
 
 
 /*!
- Intermediate object that represents a given option for ordering.
-
- @seealso SRRecorderControlStyle/makeLookupPrefixesRelativeToOption:
+ Components of the style that determine lookup order.
  */
-NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
-@interface SRRecorderControlStyleLookupOption: NSObject <NSCopying>
+NS_SWIFT_NAME(RecorderControlStyle.Components)
+@interface SRRecorderControlStyleComponents: NSObject <NSCopying>
 @property (class, readonly) NSSet<NSAppearanceName> *supportedSystemAppearences;
 @property (class, readonly) NSSet<NSNumber *> *supportedAppearences;
 @property (class, readonly) NSSet<NSNumber *> *supportedTints;
 @property (class, readonly) NSSet<NSNumber *> *supportedAccessibilities;
 
 /*!
- Current lookup option based on the system settings.
+ Current components based on the system settings.
  */
-@property (class, readonly) SRRecorderControlStyleLookupOption *currentLookupOption NS_SWIFT_NAME(current);
+@property (class, readonly) SRRecorderControlStyleComponents *currentComponents NS_SWIFT_NAME(current);
 
-@property (readonly) SRRecorderControlStyleLookupOptionAppearance appearance;
-@property (readonly) SRRecorderControlStyleLookupOptionTint tint;
-@property (readonly) SRRecorderControlStyleLookupOptionAccessibility accessibility;
+@property (readonly) SRRecorderControlStyleComponentsAppearance appearance;
+@property (readonly) SRRecorderControlStyleComponentsTint tint;
+@property (readonly) SRRecorderControlStyleComponentsAccessibility accessibility;
 @property (nonatomic, readonly) NSString *stringRepresentation;
 
 /*!
@@ -264,31 +262,31 @@ NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
 
  @seealso supportedSystemAppearences
  */
-+ (SRRecorderControlStyleLookupOptionAppearance)appearanceForSystemAppearanceName:(NSAppearanceName)aSystemAppearance;
++ (SRRecorderControlStyleComponentsAppearance)appearanceForSystemAppearanceName:(NSAppearanceName)aSystemAppearance;
 
 /*!
  Map system's control tint into SR's tint.
  */
-+ (SRRecorderControlStyleLookupOptionTint)tintForSystemTint:(NSControlTint)aSystemTint;
++ (SRRecorderControlStyleComponentsTint)tintForSystemTint:(NSControlTint)aSystemTint;
 
-+ (SRRecorderControlStyleLookupOption *)currentLookupOptionForView:(nullable NSView *)aView;
-
-/*!
- All possible values of the option.
- */
-@property (class, readonly) NSArray<SRRecorderControlStyleLookupOption *> *allOptions NS_SWIFT_NAME(all);
-
-- (instancetype)initWithAppearance:(SRRecorderControlStyleLookupOptionAppearance)anAppearance
-                              tint:(SRRecorderControlStyleLookupOptionTint)aTint
-                     accessibility:(SRRecorderControlStyleLookupOptionAccessibility)anAccessibility NS_DESIGNATED_INITIALIZER;
++ (SRRecorderControlStyleComponents *)currentComponentsForView:(nullable NSView *)aView;
 
 /*!
- Compare options against similarity to the effective options.
-
- @discussion If the receiver is closer to the effective version, returns NSOrderedAscending.
+ All possible components.
  */
-- (NSComparisonResult)compare:(SRRecorderControlStyleLookupOption *)anOption
-             relativeToOption:(SRRecorderControlStyleLookupOption *)anEffectiveOption;
+@property (class, readonly) NSArray<SRRecorderControlStyleComponents *> *allComponents NS_SWIFT_NAME(all);
+
+- (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
+                              tint:(SRRecorderControlStyleComponentsTint)aTint
+                     accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility NS_DESIGNATED_INITIALIZER;
+
+/*!
+ Compare components against the effective ideal.
+
+ @discussion If the receiver is closer to the ideal, returns NSOrderedAscending.
+ */
+- (NSComparisonResult)compare:(SRRecorderControlStyleComponents *)anOtherComponents
+         relativeToComponents:(SRRecorderControlStyleComponents *)anIdealComponents;
 
 @end
 
@@ -324,22 +322,22 @@ NS_SWIFT_NAME(RecorderControlStyle)
  @seealso effectiveComponents
  */
 - (instancetype)initWithIdentifier:(nullable NSString *)anIdentifier
-                        components:(nullable SRRecorderControlStyleLookupOption *)aComponents NS_DESIGNATED_INITIALIZER;
+                        components:(nullable SRRecorderControlStyleComponents *)aComponents NS_DESIGNATED_INITIALIZER;
 
 @property (nullable, weak, readonly) SRRecorderControl *recorderControl;
 
 /*!
  Custom components that override system settings.
  */
-@property (nullable, copy) SRRecorderControlStyleLookupOption *components;
+@property (nullable, copy) SRRecorderControlStyleComponents *components;
 
 /*!
  Currently effective components used to order lookup prefixes.
  */
-@property (readonly) SRRecorderControlStyleLookupOption *effectiveComponents;
+@property (readonly) SRRecorderControlStyleComponents *effectiveComponents;
 
 /*!
- Load image with a given name with respect to the lookup table.
+ Load image with a given name with respect to the lookup prefixes.
  */
 - (NSImage *)loadImageNamed:(NSString *)aName;
 
