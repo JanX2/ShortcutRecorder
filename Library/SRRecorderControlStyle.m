@@ -729,7 +729,7 @@
 
 - (void)prepareForRemoval
 {
-    NSAssert(_recorderControl == nil, @"Style was not applied properly.");
+    NSAssert(_recorderControl != nil, @"Style was not applied properly.");
 
     [_recorderControl removeLayoutGuide:_alignmentGuide];
     [_recorderControl removeLayoutGuide:_backgroundDrawingGuide];
