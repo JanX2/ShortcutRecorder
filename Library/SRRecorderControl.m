@@ -228,9 +228,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     else
         newStyle = newStyle.copy;
 
-    if (_style != nil)
-        [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
-
+    [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
+    [_style prepareForRemoval];
     _style = newStyle;
     [_style prepareForRecorderControl:self];
 }

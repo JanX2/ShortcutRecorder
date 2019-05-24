@@ -678,15 +678,7 @@
 
 - (void)prepareForRecorderControl:(SRRecorderControl *)aControl
 {
-    if (aControl == _recorderControl)
-        return;
-
-    [_recorderControl removeLayoutGuide:_alignmentGuide];
-    [_recorderControl removeLayoutGuide:_labelDrawingGuide];
-    [_recorderControl removeLayoutGuide:_cancelButtonDrawingGuide];
-    [_recorderControl removeLayoutGuide:_clearButtonDrawingGuide];
-    [_recorderControl removeLayoutGuide:_cancelButtonLayoutGuide];
-    [_recorderControl removeLayoutGuide:_clearButtonLayoutGuide];
+    NSAssert(_recorderControl == nil, @"Style was not removed properly.");
 
     [self willChangeValueForKey:@"recorderControl"];
     _recorderControl = aControl;
@@ -703,6 +695,23 @@
     [self recorderControlAppearanceDidChange:nil];
 
     _recorderControl.needsDisplay = YES;
+}
+
+- (void)prepareForRemoval
+{
+    NSAssert(_recorderControl == nil, @"Style was not applied properly.");
+
+    [_recorderControl removeLayoutGuide:_alignmentGuide];
+    [_recorderControl removeLayoutGuide:_backgroundDrawingGuide];
+    [_recorderControl removeLayoutGuide:_labelDrawingGuide];
+    [_recorderControl removeLayoutGuide:_cancelButtonDrawingGuide];
+    [_recorderControl removeLayoutGuide:_clearButtonDrawingGuide];
+    [_recorderControl removeLayoutGuide:_cancelButtonLayoutGuide];
+    [_recorderControl removeLayoutGuide:_clearButtonLayoutGuide];
+
+    [self willChangeValueForKey:@"recorderControl"];
+    _recorderControl = nil;
+    [self didChangeValueForKey:@"recorderControl"];
 }
 
 - (void)recorderControlAppearanceDidChange:(nullable id)aReason

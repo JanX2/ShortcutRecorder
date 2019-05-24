@@ -166,8 +166,17 @@ NS_SWIFT_NAME(RecorderControlStyling)
 
 /*!
  Called before style is applied to the specified control.
+
+ @discussion Use this method to locate and cache resources, set up observers and install constraints.
  */
 - (void)prepareForRecorderControl:(SRRecorderControl *)aControl;
+
+/*!
+ Called just before style is removed from the control it was added to.
+
+ @discussion Use this method to free allocated resources, remove observers and remove constraints.
+ */
+- (void)prepareForRemoval;
 
 /*!
  Update images according to the current appearance settings.
