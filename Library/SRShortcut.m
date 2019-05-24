@@ -127,16 +127,14 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 #pragma mark Equality
 
-- (BOOL)isEqual:(id)anObject
+- (BOOL)isEqualToShortcut:(SRShortcut *)aShortcut
 {
-    if (!anObject)
-        return NO;
-    else if ([super isEqual:anObject])
+    if (aShortcut == self)
         return YES;
-    else if ([anObject isKindOfClass:SRShortcut.class])
-        return ((SRShortcut *)anObject).keyCode == self.keyCode && ((SRShortcut *)anObject).modifierFlags == self.modifierFlags;
-    else
+    else if (![aShortcut isKindOfClass:SRShortcut.class])
         return NO;
+    else
+        return (aShortcut.keyCode == self.keyCode && aShortcut.modifierFlags == self.modifierFlags);
 }
 
 - (BOOL)isEqualToDictionary:(NSDictionary<SRShortcutKey, id> *)aDictionary
@@ -153,12 +151,6 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(self.keyCode, self.modifierFlags, aKeyEquivalent, aModifierFlags);
 #pragma clang diagnostic pop
-}
-
-- (NSUInteger)hash
-{
-    // SRCocoaModifierFlagsMask leaves enough bits for key code
-    return (self.modifierFlags & SRCocoaModifierFlagsMask) | self.keyCode;
 }
 
 
@@ -214,6 +206,24 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 
 #pragma mark NSObject
+
+- (BOOL)isEqual:(NSObject *)anObject
+{
+    if ([super isEqual:anObject])
+        return YES;
+    else if (!anObject)
+        return NO;
+    else if ([self isKindOfClass:anObject.class] && [anObject isKindOfClass:SRShortcut.class])
+        return [self isEqualToShortcut:(SRShortcut *)anObject];
+    else
+        return [self SR_isMostSpecializedEqual:anObject];
+}
+
+- (NSUInteger)hash
+{
+    // SRCocoaModifierFlagsMask leaves enough bits for key code
+    return (self.modifierFlags & SRCocoaModifierFlagsMask) | self.keyCode;
+}
 
 - (NSString *)description
 {

@@ -123,4 +123,55 @@ NSString * _Nullable SRLoc(NSString * _Nullable aKey);
  */
 NSImage * _Nullable SRImage(NSString * _Nullable anImageName);
 
+
+@interface NSObject (SRCommon)
+
+/*!
+ Uses -isEqual: of the most specialized class of the same hierarchy to maintain transitivity and associativity.
+
+ In the first class that overrides -isEqual:
+
+ - (BOOL)isEqualTo<Class>:(<Class> *)anObject
+ {
+     if (anObject == self)
+         return YES;
+     else if (![anObject isKindOfClass:<Class>.class])
+         return NO
+     else
+         return <memberwise comparison>;
+ }
+
+ - (BOOL)isEqual:(NSObject *)anObject
+ {
+     if ([super isEqual:anObject])
+         return YES;
+     else if (!anObject)
+         return NO;
+     else if ([self isKindOfClass:anObject.class] && [anObject isKindOfClass:<Class>.class])
+         return [self isEqualTo<Class>:(<Class> *)anObject];
+     else
+         return [self SR_isMostSpecializedEqual:anObject];
+ }
+
+ In subsequent subclasses of the root class that extend equality test:
+
+ - (BOOL)isEqualTo<Class>:(<Class> *)anObject
+ {
+     if (anObject == self)
+         return YES;
+     else if (![anObject isKindOfClass:<Class>.class])
+         return NO
+     else if (![super isEqualTo<Class>:anObject])
+         return NO
+     else
+         return <memberwise comparison>;
+ }
+
+ @note Identity and -isKindOfClass: checks are only necessary if -isEqualTo<Class>: can be called outside of -isEqual:
+       and guard against misuse. You may drop them if you can guarantee that no code calls it.
+ */
+- (BOOL)SR_isMostSpecializedEqual:(nullable NSObject *)anObject;
+
+@end
+
 NS_ASSUME_NONNULL_END

@@ -147,6 +147,13 @@ NS_SWIFT_NAME(Shortcut)
 - (NSString *)readableStringRepresentation:(BOOL)isASCII NS_SWIFT_NAME(readableStringRepresentation(isASCII:));
 
 /*!
+ Compare the shortcut to another shortcut.
+
+ @discussion Override to compare properties of the receiver against another shortcut only.
+ */
+- (BOOL)isEqualToShortcut:(SRShortcut *)aShortcut;
+
+/*!
     Compare the shortcut to a dictionary representation.
 
     @seealso dictionaryRepresentation

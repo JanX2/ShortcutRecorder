@@ -69,3 +69,35 @@ NSImage *SRImage(NSString *anImageName)
 {
     return [SRBundle() imageForResource:anImageName];
 }
+
+
+@implementation NSObject (SRCommon)
+
+- (BOOL)SR_isMostSpecializedEqual:(NSObject *)anObject
+{
+    if (anObject == self)
+        return YES;
+    else if (!anObject)
+        return NO;
+
+    NSObject *parent = nil;
+    NSObject *child = nil;
+
+    if ([self isKindOfClass:anObject.class])
+    {
+        parent = anObject;
+        child = self;
+    }
+    else if ([anObject isKindOfClass:self.class])
+    {
+        parent = self;
+        child = anObject;
+    }
+    else
+        return NO;
+
+    return [child isEqual:parent];
+
+}
+
+@end
