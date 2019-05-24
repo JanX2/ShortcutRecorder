@@ -135,6 +135,35 @@
     return Map[@(aSystemTint)].unsignedIntegerValue;
 }
 
++ (SRRecorderControlStyleLookupOption *)currentLookupOption
+{
+    return [self currentLookupOptionForView:nil];
+}
+
++ (SRRecorderControlStyleLookupOption *)currentLookupOptionForView:(NSView *)aView
+{
+    NSAppearanceName effectiveSystemAppearance = nil;
+
+    if (@available(macOS 10.14, *))
+        effectiveSystemAppearance = [aView.effectiveAppearance bestMatchFromAppearancesWithNames:SRRecorderControlStyleLookupOption.supportedSystemAppearences.allObjects];
+    else
+        effectiveSystemAppearance = aView.effectiveAppearance.name;
+
+    if (!effectiveSystemAppearance)
+        effectiveSystemAppearance = NSAppearance.currentAppearance.name;
+
+    if (!effectiveSystemAppearance || ![SRRecorderControlStyleLookupOption.supportedSystemAppearences containsObject:effectiveSystemAppearance])
+        effectiveSystemAppearance = NSAppearanceNameAqua;
+
+    SRRecorderControlStyleLookupOptionAppearance effectiveAppearance = [SRRecorderControlStyleLookupOption appearanceForSystemAppearanceName:effectiveSystemAppearance];
+    SRRecorderControlStyleLookupOptionTint effectiveTint = [SRRecorderControlStyleLookupOption tintForSystemTint:NSColor.currentControlTint];
+    SRRecorderControlStyleLookupOptionAccessibility effectiveAccessibility = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast ? SRRecorderControlStyleLookupOptionAccessibilityHighContrast : SRRecorderControlStyleLookupOptionAccessibilityNone;
+
+    return [[SRRecorderControlStyleLookupOption alloc] initWithAppearance:effectiveAppearance
+                                                                     tint:effectiveTint
+                                                            accessibility:effectiveAccessibility];
+}
+
 - (instancetype)initWithAppearance:(SRRecorderControlStyleLookupOptionAppearance)anAppearance
                               tint:(SRRecorderControlStyleLookupOptionTint)aTint
                      accessibility:(SRRecorderControlStyleLookupOptionAccessibility)anAccessibility
@@ -373,16 +402,27 @@
     NSLayoutConstraint *_cancelToClearConstraint;
 }
 
-+ (instancetype)styleWithIdentifier:(NSString *)anIdentifier
+- (instancetype)init
 {
-    return [[self alloc] initWithIdentifier:anIdentifier];
+    return [self initWithIdentifier:nil components:nil];
 }
 
-- (instancetype)initWithIdentifier:(NSString *)anIdentifier
+- (instancetype)initWithIdentifier:(NSString *)anIdentifier components:(SRRecorderControlStyleLookupOption *)aComponents
 {
     if (self = [super init])
     {
-        _identifier = anIdentifier.copy;
+        if (anIdentifier)
+            _identifier = anIdentifier.copy;
+        else
+        {
+            if (@available(macOS 10.14, *))
+                _identifier = @"sr-mojave";
+            else
+                _identifier = @"sr-yosemite";
+        }
+
+        _components = aComponents.copy;
+
         _allowsVibrancy = NO;
         _opaque = NO;
         _alwaysConstraints = @[];
@@ -400,6 +440,18 @@
     }
 
     return self;
+}
+
+#pragma mark Properties
+
+- (SRRecorderControlStyleLookupOption *)effectiveComponents
+{
+    // Intentional access via instance variable: subclasses should
+    // override effectiveComponents for purely computed values.
+    if (_components)
+        return _components;
+    else
+        return [SRRecorderControlStyleLookupOption currentLookupOptionForView:self.recorderControl];
 }
 
 #pragma mark Methods
@@ -468,38 +520,16 @@
     if ([self.identifier hasSuffix:@"-"])
         return @[[self.identifier substringToIndex:self.identifier.length - 1]];
 
-    NSAppearanceName effectiveSystemAppearance = nil;
-
-    if (@available(macOS 10.14, *))
-        effectiveSystemAppearance = [self.recorderControl.effectiveAppearance bestMatchFromAppearancesWithNames:SRRecorderControlStyleLookupOption.supportedSystemAppearences.allObjects];
-
-    if (!effectiveSystemAppearance)
-        effectiveSystemAppearance = NSAppearance.currentAppearance.name;
-
-    if (!effectiveSystemAppearance || ![SRRecorderControlStyleLookupOption.supportedSystemAppearences containsObject:effectiveSystemAppearance])
-        effectiveSystemAppearance = NSAppearanceNameAqua;
-
-    SRRecorderControlStyleLookupOptionAppearance effectiveAppearance = [SRRecorderControlStyleLookupOption appearanceForSystemAppearanceName:effectiveSystemAppearance];
-    SRRecorderControlStyleLookupOptionTint effectiveTint = [SRRecorderControlStyleLookupOption tintForSystemTint:NSColor.currentControlTint];
-    SRRecorderControlStyleLookupOptionAccessibility effectiveAccessibility = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast ? SRRecorderControlStyleLookupOptionAccessibilityHighContrast : SRRecorderControlStyleLookupOptionAccessibilityNone;
-    SRRecorderControlStyleLookupOption *effectiveOption = [[SRRecorderControlStyleLookupOption alloc] initWithAppearance:effectiveAppearance
-                                                                                                                    tint:effectiveTint
-                                                                                                           accessibility:effectiveAccessibility];
-
-    return [self makeLookupPrefixesRelativeToOption:effectiveOption];
-}
-
-- (NSArray<NSString *> *)makeLookupPrefixesRelativeToOption:(SRRecorderControlStyleLookupOption *)anOption
-{
-    NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleLookupOption *a, SRRecorderControlStyleLookupOption *b)
-    {
-        return [a compare:b relativeToOption:anOption];
+    SRRecorderControlStyleLookupOption *components = self.effectiveComponents;
+    // TODO: cache for effective components.
+    NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleLookupOption *a, SRRecorderControlStyleLookupOption *b) {
+        return [a compare:b relativeToOption:components];
     };
     NSArray *options = [SRRecorderControlStyleLookupOption.allOptions sortedArrayWithOptions:NSSortStable usingComparator:cmp];
-    NSMutableArray<NSString *> *loadOrder = [NSMutableArray arrayWithCapacity:options.count];
+    NSMutableArray<NSString *> *lookupPrefixes = [NSMutableArray arrayWithCapacity:options.count];
     for (SRRecorderControlStyleLookupOption *o in options)
-        [loadOrder addObject:[NSString stringWithFormat:@"%@%@", self.identifier, o.stringRepresentation]];
-    return loadOrder.copy;
+        [lookupPrefixes addObject:[NSString stringWithFormat:@"%@%@", self.identifier, o.stringRepresentation]];
+    return lookupPrefixes.copy;
 }
 
 - (void)addConstraints

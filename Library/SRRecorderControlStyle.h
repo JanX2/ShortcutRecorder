@@ -249,6 +249,11 @@ NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
 @property (class, readonly) NSSet<NSNumber *> *supportedTints;
 @property (class, readonly) NSSet<NSNumber *> *supportedAccessibilities;
 
+/*!
+ Current lookup option based on the system settings.
+ */
+@property (class, readonly) SRRecorderControlStyleLookupOption *currentLookupOption NS_SWIFT_NAME(current);
+
 @property (readonly) SRRecorderControlStyleLookupOptionAppearance appearance;
 @property (readonly) SRRecorderControlStyleLookupOptionTint tint;
 @property (readonly) SRRecorderControlStyleLookupOptionAccessibility accessibility;
@@ -265,6 +270,8 @@ NS_SWIFT_NAME(RecorderControlStyle.LookupOption)
  Map system's control tint into SR's tint.
  */
 + (SRRecorderControlStyleLookupOptionTint)tintForSystemTint:(NSControlTint)aSystemTint;
+
++ (SRRecorderControlStyleLookupOption *)currentLookupOptionForView:(nullable NSView *)aView;
 
 /*!
  All possible values of the option.
@@ -301,32 +308,35 @@ NS_SWIFT_NAME(RecorderControlStyle)
 }
 
 /*!
- @seealso initWithIdentifier:
- */
-+ (instancetype)styleWithIdentifier:(NSString *)anIdentifier;
-
-/*!
- Style will use a given identifier to locate resources.
+ Style that uses a given identifier to locate resources in the framework and application bundles.
 
  @param anIdentifier Either a concrete (ends with "-") or a template (any other character) prefix.
+    If nil, default for the current version of macOS is picked.
 
- @discussion A template prefix is used to construct a lookup table by adding
-    various suffixes while a concrete prefix is used as is.
+ @param aComponents Style components that override current system settings.
 
-    The lookup table consists of the strings of the "prefix[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
-    prefixes ordered according to the environment.
+ @discussion A template prefix is used to construct lookup prefixes that depend on effective appearance
+             while a concrete prefix is used as is.
 
-    Style implements equality based on prefix that determines the set of resources it represents.
-    I.e. styles with the same prefix that belong to different views and, optionally, resolve
-    into different lookup tables are still equal.
+             Each lookup prefix has a format of "identifier[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
 
  @seealso makeLookupPrefixes
+ @seealso effectiveComponents
  */
-- (instancetype)initWithIdentifier:(NSString *)anIdentifier NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithIdentifier:(nullable NSString *)anIdentifier
+                        components:(nullable SRRecorderControlStyleLookupOption *)aComponents NS_DESIGNATED_INITIALIZER;
 
 @property (nullable, weak, readonly) SRRecorderControl *recorderControl;
+
+/*!
+ Custom components that override system settings.
+ */
+@property (nullable, copy) SRRecorderControlStyleLookupOption *components;
+
+/*!
+ Currently effective components used to order lookup prefixes.
+ */
+@property (readonly) SRRecorderControlStyleLookupOption *effectiveComponents;
 
 /*!
  Load image with a given name with respect to the lookup table.
@@ -334,26 +344,16 @@ NS_SWIFT_NAME(RecorderControlStyle)
 - (NSImage *)loadImageNamed:(NSString *)aName;
 
 /*!
- Load metrics with respect to the lookup table.
+ Load metrics with respect to the lookup prefixes.
  */
 - (NSDictionary *)loadMetrics;
 
 /*!
- Make new lookup prefixes, in order, for the current environment.
+ Make new lookup prefixes, in order, for the currently effective components.
 
- @discussion Order depends on the environment such as system configuration (e.g. accessibility)
-    and controlView effective appearance.
-
- @seealso makeLookupPrefixesRelativeToOption:
+ @seealso effectiveComponents
  */
 - (NSArray<NSString *> *)makeLookupPrefixes;
-
-/*!
- Make new lookup prefixes in order by similarity to the given option.
-
- @param anOption The ideal option. Distance from a given option to the ideal determines order.
- */
-- (NSArray<NSString *> *)makeLookupPrefixesRelativeToOption:(SRRecorderControlStyleLookupOption *)anOption NS_SWIFT_NAME(makeLookupPrefixes(relativeTo:));
 
 /*!
  Add style's constraints to the control view.

@@ -241,12 +241,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (SRRecorderControlStyle *)makeDefaultStyle
 {
-    if (@available(macOS 10.14, *))
-        return [SRRecorderControlStyle styleWithIdentifier:@"sr-mojave"];
-    else
-        return [SRRecorderControlStyle styleWithIdentifier:@"sr-yosemite"];
+    return [SRRecorderControlStyle new];
 }
-
 
 #pragma mark Methods
 
