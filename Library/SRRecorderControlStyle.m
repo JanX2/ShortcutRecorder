@@ -812,18 +812,18 @@
         [self setValue:[NSValue valueWithEdgeInsets:newAlignmentRectInsets] forKey:@"alignmentRectInsets"];
     }
 
-    NSSize newShapeCornerRadius = NSMakeSize([_metrics[@"Shape"][@"CornerRadius"][@"Width"] floatValue],
-                                             [_metrics[@"Shape"][@"CornerRadius"][@"Height"] floatValue]);
+    NSSize newShapeCornerRadius = NSMakeSize([_metrics[@"FocusRingCornerRadius"][@"Width"] floatValue],
+                                             [_metrics[@"FocusRingRadius"][@"Height"] floatValue]);
     if (!NSEqualSizes(newShapeCornerRadius, self.shapeCornerRadius))
     {
         [self setValue:[NSValue valueWithSize:newShapeCornerRadius] forKey:@"shapeCornerRadius"];
         [self.recorderControl noteFocusRingMaskChanged];
     }
 
-    NSEdgeInsets newShapeInsets = NSEdgeInsetsMake([_metrics[@"Shape"][@"Insets"][@"Top"] floatValue],
-                                                   [_metrics[@"Shape"][@"Insets"][@"Left"] floatValue],
-                                                   [_metrics[@"Shape"][@"Insets"][@"Bottom"] floatValue],
-                                                   [_metrics[@"Shape"][@"Insets"][@"Right"] floatValue]);
+    NSEdgeInsets newShapeInsets = NSEdgeInsetsMake([_metrics[@"FocusRingInsets"][@"Top"] floatValue],
+                                                   [_metrics[@"FocusRingInsets"][@"Left"] floatValue],
+                                                   [_metrics[@"FocusRingInsets"][@"Bottom"] floatValue],
+                                                   [_metrics[@"FocusRingInsets"][@"Right"] floatValue]);
     if (!NSEdgeInsetsEqual(newShapeInsets, self.shapeInsets))
     {
         [self setValue:[NSValue valueWithEdgeInsets:newShapeInsets] forKey:@"shapeInsets"];
