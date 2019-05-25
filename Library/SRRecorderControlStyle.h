@@ -202,7 +202,7 @@ NS_SWIFT_NAME(RecorderControlStyling)
  */
 typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
 {
-    SRRecorderControlStyleComponentsAppearanceNone = 0,
+    SRRecorderControlStyleComponentsAppearanceUnspecified = 0,
     SRRecorderControlStyleComponentsAppearanceAqua,
     SRRecorderControlStyleComponentsAppearanceVibrantLight,
     SRRecorderControlStyleComponentsAppearanceDarkAqua,
@@ -217,7 +217,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
  */
 typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
 {
-    SRRecorderControlStyleComponentsTintNone = 0,
+    SRRecorderControlStyleComponentsTintUnspecified = 0,
     SRRecorderControlStyleComponentsTintBlue,
     SRRecorderControlStyleComponentsTintGraphite,
 
@@ -230,10 +230,11 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
  */
 typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleComponentsAccessibility)
 {
-    SRRecorderControlStyleComponentsAccessibilityNone = 0,
-    SRRecorderControlStyleComponentsAccessibilityHighContrast = 1 << 0,
+    SRRecorderControlStyleComponentsAccessibilityUnspecified = 0,
+    SRRecorderControlStyleComponentsAccessibilityNone = 1 << 0,
+    SRRecorderControlStyleComponentsAccessibilityHighContrast = 1 << 1,
 
-    SRRecorderControlStyleComponentsAccessibilityMask NS_SWIFT_UNAVAILABLE("") = SRRecorderControlStyleComponentsAccessibilityHighContrast
+    SRRecorderControlStyleComponentsAccessibilityMask NS_SWIFT_UNAVAILABLE("") = SRRecorderControlStyleComponentsAccessibilityNone | SRRecorderControlStyleComponentsAccessibilityHighContrast
 } NS_SWIFT_NAME(SRRecorderControlStyleComponents.Accessibility);
 
 
@@ -333,6 +334,8 @@ NS_SWIFT_NAME(RecorderControlStyle)
 
 /*!
  Currently effective components used to order lookup prefixes.
+
+ @discussion Neither component has the unspecified value.
  */
 @property (readonly) SRRecorderControlStyleComponents *effectiveComponents;
 

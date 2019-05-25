@@ -21,7 +21,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         S = [NSSet setWithObjects:
-             @(SRRecorderControlStyleComponentsAppearanceNone),
+             @(SRRecorderControlStyleComponentsAppearanceUnspecified),
              @(SRRecorderControlStyleComponentsAppearanceAqua),
              @(SRRecorderControlStyleComponentsAppearanceDarkAqua),
              @(SRRecorderControlStyleComponentsAppearanceVibrantLight),
@@ -37,7 +37,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         S = [NSSet setWithObjects:
-             @(SRRecorderControlStyleComponentsTintNone),
+             @(SRRecorderControlStyleComponentsTintUnspecified),
              @(SRRecorderControlStyleComponentsTintBlue),
              @(SRRecorderControlStyleComponentsTintGraphite),
              nil];
@@ -51,7 +51,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         S = [NSSet setWithObjects:
-             @(SRRecorderControlStyleComponentsAccessibilityNone),
+             @(SRRecorderControlStyleComponentsAccessibilityUnspecified),
              @(SRRecorderControlStyleComponentsAccessibilityHighContrast),
              nil];
     });
@@ -168,9 +168,9 @@
                               tint:(SRRecorderControlStyleComponentsTint)aTint
                      accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
 {
-    NSAssert(anAppearance >= SRRecorderControlStyleComponentsAppearanceNone && anAppearance < SRRecorderControlStyleComponentsAppearanceMax,
+    NSAssert(anAppearance >= SRRecorderControlStyleComponentsAppearanceUnspecified && anAppearance < SRRecorderControlStyleComponentsAppearanceMax,
              @"anAppearance is outside of allowed range.");
-    NSAssert(aTint >= SRRecorderControlStyleComponentsTintNone && aTint < SRRecorderControlStyleComponentsTintMax,
+    NSAssert(aTint >= SRRecorderControlStyleComponentsTintUnspecified && aTint < SRRecorderControlStyleComponentsTintMax,
              @"aTint is outside of allowed range.");
     NSAssert((anAccessibility & ~SRRecorderControlStyleComponentsAccessibilityMask) == 0,
              @"anAccessibility is outside of allowed range.");
@@ -189,9 +189,9 @@
 
 - (instancetype)init
 {
-    return [self initWithAppearance:SRRecorderControlStyleComponentsAppearanceNone
-                               tint:SRRecorderControlStyleComponentsTintBlue
-                      accessibility:SRRecorderControlStyleComponentsAccessibilityNone];
+    return [self initWithAppearance:SRRecorderControlStyleComponentsAppearanceUnspecified
+                               tint:SRRecorderControlStyleComponentsTintUnspecified
+                      accessibility:SRRecorderControlStyleComponentsAccessibilityUnspecified];
 }
 
 - (NSString *)stringRepresentation
@@ -257,31 +257,31 @@
                                                        @(SRRecorderControlStyleComponentsAppearanceVibrantLight),
                                                        @(SRRecorderControlStyleComponentsAppearanceDarkAqua),
                                                        @(SRRecorderControlStyleComponentsAppearanceVibrantDark),
-                                                       @(SRRecorderControlStyleComponentsAppearanceNone)],
+                                                       @(SRRecorderControlStyleComponentsAppearanceUnspecified)],
             @(SRRecorderControlStyleComponentsAppearanceDarkAqua): @[@(SRRecorderControlStyleComponentsAppearanceDarkAqua),
                                                            @(SRRecorderControlStyleComponentsAppearanceVibrantDark),
                                                            @(SRRecorderControlStyleComponentsAppearanceAqua),
                                                            @(SRRecorderControlStyleComponentsAppearanceVibrantLight),
-                                                           @(SRRecorderControlStyleComponentsAppearanceNone)],
+                                                           @(SRRecorderControlStyleComponentsAppearanceUnspecified)],
             @(SRRecorderControlStyleComponentsAppearanceVibrantLight): @[@(SRRecorderControlStyleComponentsAppearanceVibrantLight),
                                                                @(SRRecorderControlStyleComponentsAppearanceAqua),
                                                                @(SRRecorderControlStyleComponentsAppearanceVibrantDark),
                                                                @(SRRecorderControlStyleComponentsAppearanceDarkAqua),
-                                                               @(SRRecorderControlStyleComponentsAppearanceNone)],
+                                                               @(SRRecorderControlStyleComponentsAppearanceUnspecified)],
             @(SRRecorderControlStyleComponentsAppearanceVibrantDark): @[@(SRRecorderControlStyleComponentsAppearanceVibrantDark),
                                                               @(SRRecorderControlStyleComponentsAppearanceDarkAqua),
                                                               @(SRRecorderControlStyleComponentsAppearanceVibrantLight),
                                                               @(SRRecorderControlStyleComponentsAppearanceAqua),
-                                                              @(SRRecorderControlStyleComponentsAppearanceNone)]
+                                                              @(SRRecorderControlStyleComponentsAppearanceUnspecified)]
         };
 
         TintOrderMap = @{
             @(SRRecorderControlStyleComponentsTintBlue): @[@(SRRecorderControlStyleComponentsTintBlue),
                                                  @(SRRecorderControlStyleComponentsTintGraphite),
-                                                 @(SRRecorderControlStyleComponentsTintNone)],
+                                                 @(SRRecorderControlStyleComponentsTintUnspecified)],
             @(SRRecorderControlStyleComponentsTintGraphite): @[@(SRRecorderControlStyleComponentsTintGraphite),
                                                      @(SRRecorderControlStyleComponentsTintBlue),
-                                                     @(SRRecorderControlStyleComponentsTintNone)]
+                                                     @(SRRecorderControlStyleComponentsTintUnspecified)]
         };
     });
 
@@ -448,10 +448,10 @@
 {
     // Intentional access via instance variable: subclasses should
     // override effectiveComponents for purely computed values.
-    if (_components)
-        return _components;
-    else
-        return [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
+    __auto_type current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
+    return [[SRRecorderControlStyleComponents alloc] initWithAppearance:_components.appearance || current.appearance
+                                                                   tint:_components.tint || current.tint
+                                                          accessibility:_components.accessibility || current.accessibility];
 }
 
 #pragma mark Methods
