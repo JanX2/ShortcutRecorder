@@ -226,6 +226,19 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
 
 
 /*!
+ @seealso SRRecorderControlStyleComponents/layoutDirection
+ */
+typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
+{
+    SRRecorderControlStyleComponentsLayoutDirectionUnspecified = 0,
+    SRRecorderControlStyleComponentsLayoutDirectionLeftToRight = NSUserInterfaceLayoutDirectionLeftToRight,
+    SRRecorderControlStyleComponentsLayoutDirectionRightToLeft = NSUserInterfaceLayoutDirectionRightToLeft,
+
+    SRRecorderControlStyleComponentsLayoutDirectionMax NS_SWIFT_UNAVAILABLE("")
+} NS_SWIFT_NAME(SRRecorderControlStyleComponents.LayoutDirection);
+
+
+/*!
  @seealso SRRecorderControlStyleComponents/accessibility
  */
 typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleComponentsAccessibility)
@@ -256,6 +269,7 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 @property (readonly) SRRecorderControlStyleComponentsAppearance appearance;
 @property (readonly) SRRecorderControlStyleComponentsTint tint;
 @property (readonly) SRRecorderControlStyleComponentsAccessibility accessibility;
+@property (readonly) SRRecorderControlStyleComponentsLayoutDirection layoutDirection;
 @property (nonatomic, readonly) NSString *stringRepresentation;
 
 /*!
@@ -279,7 +293,8 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
                               tint:(SRRecorderControlStyleComponentsTint)aTint
-                     accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility NS_DESIGNATED_INITIALIZER;
+                     accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
+                   layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection NS_DESIGNATED_INITIALIZER;
 
 /*!
  Compare components against the effective ideal.

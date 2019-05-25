@@ -167,13 +167,16 @@
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
                               tint:(SRRecorderControlStyleComponentsTint)aTint
                      accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
+                   layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection
 {
     NSAssert(anAppearance >= SRRecorderControlStyleComponentsAppearanceUnspecified && anAppearance < SRRecorderControlStyleComponentsAppearanceMax,
-             @"anAppearance is outside of allowed range.");
+             @"anAppearance is outside of the allowed range.");
     NSAssert(aTint >= SRRecorderControlStyleComponentsTintUnspecified && aTint < SRRecorderControlStyleComponentsTintMax,
-             @"aTint is outside of allowed range.");
+             @"aTint is outside of the allowed range.");
     NSAssert((anAccessibility & ~SRRecorderControlStyleComponentsAccessibilityMask) == 0,
-             @"anAccessibility is outside of allowed range.");
+             @"anAccessibility is outside of the allowed range.");
+    NSAssert(aDirection >= SRRecorderControlStyleComponentsLayoutDirectionUnspecified && aTint < SRRecorderControlStyleComponentsLayoutDirectionMax,
+             @"aDirection is outside of the allowed range.");
 
     self = [super init];
 
@@ -182,6 +185,7 @@
         _appearance = anAppearance;
         _tint = aTint;
         _accessibility = anAccessibility;
+        _layoutDirection = aDirection;
     }
 
     return self;
@@ -191,7 +195,8 @@
 {
     return [self initWithAppearance:SRRecorderControlStyleComponentsAppearanceUnspecified
                                tint:SRRecorderControlStyleComponentsTintUnspecified
-                      accessibility:SRRecorderControlStyleComponentsAccessibilityUnspecified];
+                      accessibility:SRRecorderControlStyleComponentsAccessibilityUnspecified
+                    layoutDirection:SRRecorderControlStyleComponentsLayoutDirectionUnspecified];
 }
 
 - (NSString *)stringRepresentation
@@ -199,6 +204,7 @@
     NSString *appearance = nil;
     NSString *tint = nil;
     NSString *acc = nil;
+    NSString *direction = nil;
 
     switch (self.appearance)
     {
@@ -214,7 +220,7 @@
         case SRRecorderControlStyleComponentsAppearanceVibrantLight:
             appearance = @"-vibrantlight";
             break;
-        default:
+        case SRRecorderControlStyleComponentsAppearanceUnspecified:
             appearance = @"";
             break;
     }
@@ -227,7 +233,7 @@
         case SRRecorderControlStyleComponentsTintGraphite:
             tint = @"-graphite";
             break;
-        default:
+        case SRRecorderControlStyleComponentsTintUnspecified:
             tint = @"";
             break;
     }
@@ -242,7 +248,20 @@
             break;
     }
 
-    return [NSString stringWithFormat:@"%@%@%@", appearance, tint, acc];
+    switch (self.layoutDirection)
+    {
+        case SRRecorderControlStyleComponentsLayoutDirectionLeftToRight:
+            direction = @"-ltr";
+            break;
+        case SRRecorderControlStyleComponentsLayoutDirectionRightToLeft:
+            direction = @"-rtl";
+            break;
+        case SRRecorderControlStyleComponentsLayoutDirectionUnspecified:
+            direction = @"";
+            break;
+    }
+
+    return [NSString stringWithFormat:@"%@%@%@%@", appearance, tint, acc, direction];
 }
 
 - (NSComparisonResult)compare:(SRRecorderControlStyleComponents *)anOtherComponents
@@ -250,6 +269,7 @@
 {
     static NSDictionary<NSNumber *, NSArray<NSNumber *> *> *AppearanceOrderMap = nil;
     static NSDictionary<NSNumber *, NSArray<NSNumber *> *> *TintOrderMap = nil;
+    static NSDictionary<NSNumber *, NSArray<NSNumber *> *> *DirectionOrderMap = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         AppearanceOrderMap = @{
@@ -283,11 +303,16 @@
                                                      @(SRRecorderControlStyleComponentsTintBlue),
                                                      @(SRRecorderControlStyleComponentsTintUnspecified)]
         };
+
+        DirectionOrderMap = @{
+            @(SRRecorderControlStyleComponentsLayoutDirectionLeftToRight): @[@(SRRecorderControlStyleComponentsLayoutDirectionLeftToRight),
+                                                                             @(SRRecorderControlStyleComponentsLayoutDirectionRightToLeft)],
+            @(SRRecorderControlStyleComponentsLayoutDirectionRightToLeft): @[@(SRRecorderControlStyleComponentsLayoutDirectionRightToLeft),
+                                                                             @(SRRecorderControlStyleComponentsLayoutDirectionLeftToRight)]
+        };
     });
 
-    __auto_type CompareAppearances = ^(SRRecorderControlStyleComponentsAppearance a, SRRecorderControlStyleComponentsAppearance b) {
-        NSArray<NSNumber *> *order = AppearanceOrderMap[@(anIdealComponents.appearance)];
-
+    __auto_type CompareEnum = ^(NSUInteger a, NSUInteger b, NSArray<NSNumber *> *order) {
         NSUInteger aIndex = [order indexOfObject:@(a)];
         NSUInteger bIndex = [order indexOfObject:@(b)];
 
@@ -299,28 +324,14 @@
             return NSOrderedSame;
     };
 
-    __auto_type CompareTints = ^(SRRecorderControlStyleComponentsTint a, SRRecorderControlStyleComponentsTint b) {
-        NSArray<NSNumber *> *order = TintOrderMap[@(anIdealComponents.tint)];
-
-        NSUInteger aIndex = [order indexOfObject:@(a)];
-        NSUInteger bIndex = [order indexOfObject:@(b)];
-
-        if (aIndex < bIndex)
-            return NSOrderedAscending;
-        else if (aIndex > bIndex)
-            return NSOrderedDescending;
-        else
-            return NSOrderedSame;
-    };
-
-    __auto_type CompareAccessibilitites = ^(SRRecorderControlStyleComponentsAccessibility a, SRRecorderControlStyleComponentsAccessibility b) {
+    __auto_type CompareOptions = ^(NSUInteger a, NSUInteger b, NSUInteger ideal) {
         // How many bits match.
-        int aSimilarity = __builtin_popcountl(a & anIdealComponents.accessibility);
-        int bSimilarity = __builtin_popcountl(b & anIdealComponents.accessibility);
+        int aSimilarity = __builtin_popcountl(a & ideal);
+        int bSimilarity = __builtin_popcountl(b & ideal);
 
         // How many bits mismatch.
-        int aDissimilarity = __builtin_popcountl(a & ~anIdealComponents.accessibility);
-        int bDissimilarity = __builtin_popcountl(b & ~anIdealComponents.accessibility);
+        int aDissimilarity = __builtin_popcountl(a & ~ideal);
+        int bDissimilarity = __builtin_popcountl(b & ~ideal);
 
         if (aSimilarity > bSimilarity)
             return NSOrderedAscending;
@@ -335,11 +346,21 @@
     };
 
     if (self.appearance != anOtherComponents.appearance)
-        return CompareAppearances(self.appearance, anOtherComponents.appearance);
-    else if (self.tint != anOtherComponents.tint)
-        return CompareTints(self.tint, anOtherComponents.tint);
+        return CompareEnum(self.appearance,
+                           anOtherComponents.appearance,
+                           AppearanceOrderMap[@(anIdealComponents.appearance)]);
     else if (self.accessibility != anOtherComponents.accessibility)
-        return CompareAccessibilitites(self.accessibility, anOtherComponents.accessibility);
+        return CompareOptions(self.accessibility,
+                              anOtherComponents.accessibility,
+                              anIdealComponents.accessibility);
+    else if (self.layoutDirection != anOtherComponents.layoutDirection)
+        return CompareEnum(self.layoutDirection,
+                           anOtherComponents.layoutDirection,
+                           AppearanceOrderMap[@(anIdealComponents.layoutDirection)]);
+    else if (self.tint != anOtherComponents.tint)
+        return CompareEnum(self.tint,
+                           anOtherComponents.tint,
+                           AppearanceOrderMap[@(anIdealComponents.tint)]);
     else
         return NSOrderedSame;
 }
