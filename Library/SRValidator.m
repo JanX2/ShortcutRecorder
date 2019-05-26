@@ -43,7 +43,7 @@
 
 #pragma mark Methods
 
-- (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError **)outError
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     if (![self validateShortcutAgainstDelegate:aShortcut error:outError])
         return NO;
@@ -63,7 +63,7 @@
         return YES;
 }
 
-- (BOOL)validateShortcutAgainstDelegate:(SRShortcut *)aShortcut error:(NSError **)outError
+- (BOOL)validateShortcutAgainstDelegate:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     if (self.delegate)
     {
@@ -108,7 +108,7 @@
     return YES;
 }
 
-- (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError **)outError
+- (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     CFArrayRef s = NULL;
     OSStatus err = CopySymbolicHotKeys(&s);
@@ -166,7 +166,7 @@
     return YES;
 }
 
-- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError **)outError
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * __autoreleasing *)outError
 {
     for (NSMenuItem *menuItem in aMenu.itemArray)
     {
@@ -237,22 +237,22 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError **)outError;
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError;
 {
     return ![self validateShortcut:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] error:outError];
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError
 {
     return ![self validateShortcutAgainstDelegate:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] error:outError];
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError
 {
     return ![self validateShortcutAgainstSystemShortcuts:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] error:outError];
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError **)outError
+- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError * __autoreleasing *)outError
 {
     return ![self validateShortcut:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] againstMenu:aMenu error:outError];
 }

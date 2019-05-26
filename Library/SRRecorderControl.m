@@ -866,7 +866,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [i performSelector:@selector(invokeWithTarget:) withObject:aDelegate afterDelay:0 inModes:@[NSRunLoopCommonModes]];
 }
 
-- (BOOL)commitEditingAndReturnError:(NSError **)outError
+- (BOOL)commitEditingAndReturnError:(NSError * __autoreleasing *)outError
 {
     return [self commitEditing];
 }
