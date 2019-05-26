@@ -13,6 +13,8 @@
 //      Andy Kim
 //      Ilya Kulakov
 
+#import <objc/runtime.h>
+
 #import "SRCommon.h"
 
 
@@ -73,31 +75,29 @@ NSImage *SRImage(NSString *anImageName)
 
 @implementation NSObject (SRCommon)
 
-- (BOOL)SR_isMostSpecializedEqual:(NSObject *)anObject
+- (BOOL)SR_isEqual:(nullable NSObject *)anObject usingSelector:(SEL)aSelector ofCommonAncestor:(Class)anAncestor
 {
+    typedef BOOL (*IsEqualTo)(id, SEL, id);
+
     if (anObject == self)
         return YES;
     else if (!anObject)
         return NO;
-
-    NSObject *parent = nil;
-    NSObject *child = nil;
-
-    if ([self isKindOfClass:anObject.class])
-    {
-        parent = anObject;
-        child = self;
-    }
+    else if ([self isKindOfClass:anObject.class])
+        return ((IsEqualTo)[self methodForSelector:aSelector])(self, aSelector, anObject);
     else if ([anObject isKindOfClass:self.class])
+        return ((IsEqualTo)[anObject methodForSelector:aSelector])(anObject, aSelector, self);
+    else if ([anObject isKindOfClass:anAncestor])
     {
-        parent = self;
-        child = anObject;
+        NSAssert([self isKindOfClass:anAncestor], @"Receiver must be an instance of the specified ancestor.");
+        IsEqualTo selfImp = (IsEqualTo)[self methodForSelector:aSelector];
+        IsEqualTo objectImp = (IsEqualTo)[anObject methodForSelector:aSelector];
+
+        if (selfImp == objectImp)
+            return selfImp(self, aSelector, anObject);
     }
-    else
-        return NO;
 
-    return [child isEqual:parent];
-
+    return NO;
 }
 
 @end

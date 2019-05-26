@@ -209,14 +209,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 - (BOOL)isEqual:(NSObject *)anObject
 {
-    if ([super isEqual:anObject])
-        return YES;
-    else if (!anObject)
-        return NO;
-    else if ([self isKindOfClass:anObject.class] && [anObject isKindOfClass:SRShortcut.class])
-        return [self isEqualToShortcut:(SRShortcut *)anObject];
-    else
-        return [self SR_isMostSpecializedEqual:anObject];
+    return [self SR_isEqual:anObject usingSelector:@selector(isEqualToShortcut:) ofCommonAncestor:SRShortcut.class];
 }
 
 - (NSUInteger)hash
