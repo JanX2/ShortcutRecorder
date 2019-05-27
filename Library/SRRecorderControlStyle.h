@@ -305,8 +305,7 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 
  @seealso supportedSystemAppearences
  */
-
-+ (SRRecorderControlStyleComponents *)currentComponentsForView:(nullable NSView *)aView;
++ (SRRecorderControlStyleComponents *)currentComponentsForView:(nullable NSView *)aView NS_SWIFT_NAME(current(for:));
 
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
                               tint:(SRRecorderControlStyleComponentsTint)aTint
