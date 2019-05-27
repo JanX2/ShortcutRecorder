@@ -231,8 +231,8 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
 typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
 {
     SRRecorderControlStyleComponentsLayoutDirectionUnspecified = 0,
-    SRRecorderControlStyleComponentsLayoutDirectionLeftToRight = NSUserInterfaceLayoutDirectionLeftToRight,
-    SRRecorderControlStyleComponentsLayoutDirectionRightToLeft = NSUserInterfaceLayoutDirectionRightToLeft,
+    SRRecorderControlStyleComponentsLayoutDirectionLeftToRight = 1,
+    SRRecorderControlStyleComponentsLayoutDirectionRightToLeft = 2,
 
     SRRecorderControlStyleComponentsLayoutDirectionMax NS_SWIFT_UNAVAILABLE("")
 } NS_SWIFT_NAME(SRRecorderControlStyleComponents.LayoutDirection);
