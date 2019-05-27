@@ -350,7 +350,7 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 - (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject;
 
 /*!
- Compare components against the effective ideal.
+ Compare components against the ideal.
 
  @discussion If the receiver is closer to the ideal, returns NSOrderedAscending.
              If anOtherComponents is closer, returns NSOrderedDescending.
@@ -380,9 +380,11 @@ NS_SWIFT_NAME(RecorderControlStyle)
  Style that uses a given identifier to locate resources in the framework and application bundles.
 
  @param anIdentifier Either a concrete (ends with "-") or a template (any other character) prefix.
-    If nil, default for the current version of macOS is picked.
+                     If nil, default for the current version of macOS is picked.
+                     Defaults to the best available for the system
 
- @param aComponents Style components that override current system settings.
+ @param aComponents Custom components that override current system settings.
+                    Defaults to unspecified to allow fallthrough.
 
  @discussion A template prefix is used to construct lookup prefixes that depend on effective appearance
              while a concrete prefix is used as is.
@@ -400,7 +402,7 @@ NS_SWIFT_NAME(RecorderControlStyle)
 /*!
  Custom components that override system settings.
  */
-@property (readonly) SRRecorderControlStyleComponents *components;
+@property (readonly) SRRecorderControlStyleComponents *preferredComponents;
 
 /*!
  Currently effective components used to order lookup prefixes.

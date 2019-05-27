@@ -480,9 +480,9 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         }
 
         if (aComponents)
-            _components = aComponents.copy;
+            _preferredComponents = aComponents.copy;
         else
-            _components = [SRRecorderControlStyleComponents new];
+            _preferredComponents = [SRRecorderControlStyleComponents new];
 
         _allowsVibrancy = NO;
         _opaque = NO;
@@ -511,22 +511,22 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     // override effectiveComponents for purely computed values.
     SRRecorderControlStyleComponents *current = nil;
 
-    if (!_components.appearance || !_components.tint || _components.accessibility || !_components.layoutDirection)
+    if (!_preferredComponents.appearance || !_preferredComponents.tint || _preferredComponents.accessibility || !_preferredComponents.layoutDirection)
         current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
 
-    __auto_type appearance = _components.appearance;
+    __auto_type appearance = _preferredComponents.appearance;
     if (!appearance)
         appearance = current.appearance ? current.appearance : SRRecorderControlStyleComponentsAppearanceAqua;
 
-    __auto_type tint = _components.tint;
+    __auto_type tint = _preferredComponents.tint;
     if (!tint)
         tint = current.tint ? current.tint : SRRecorderControlStyleComponentsTintBlue;
 
-    __auto_type accessibility = _components.accessibility;
+    __auto_type accessibility = _preferredComponents.accessibility;
     if (!accessibility)
         accessibility = current.accessibility;
 
-    __auto_type layoutDirection = _components.layoutDirection;
+    __auto_type layoutDirection = _preferredComponents.layoutDirection;
     if (!layoutDirection)
         layoutDirection = current.layoutDirection ? current.layoutDirection : SRRecorderControlStyleComponentsLayoutDirectionLeftToRight;
 
@@ -989,7 +989,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 - (instancetype)copyWithZone:(NSZone *)aZone
 {
-    return [[self.class alloc] initWithIdentifier:self.identifier components:self.components];
+    return [[self.class alloc] initWithIdentifier:self.identifier components:self.preferredComponents];
 }
 
 @end

@@ -960,8 +960,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (superValue)
         return superValue.integerValue;
 
-    if (self.style.components.layoutDirection != SRRecorderControlStyleComponentsLayoutDirectionUnspecified)
-        return SRRecorderControlStyleComponentsLayoutDirectionToSystem(self.style.components.layoutDirection);
+    if (self.style.preferredComponents.layoutDirection != SRRecorderControlStyleComponentsLayoutDirectionUnspecified)
+        return SRRecorderControlStyleComponentsLayoutDirectionToSystem(self.style.preferredComponents.layoutDirection);
     else
         return super.userInterfaceLayoutDirection;
 }
