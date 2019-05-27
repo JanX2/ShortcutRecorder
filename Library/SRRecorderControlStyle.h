@@ -292,7 +292,7 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 /*!
  Current components based on the system settings.
  */
-@property (class, readonly) SRRecorderControlStyleComponents *currentComponents NS_SWIFT_NAME(current);
+@property (class, nonatomic, readonly) SRRecorderControlStyleComponents *currentComponents NS_SWIFT_NAME(current);
 
 @property (readonly) SRRecorderControlStyleComponentsAppearance appearance;
 @property (readonly) SRRecorderControlStyleComponentsTint tint;
