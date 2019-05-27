@@ -12,7 +12,8 @@
 //      Jamie Kirkpatrick
 //      Ilya Kulakov
 
-#include <limits.h>
+#import <limits.h>
+#import <objc/runtime.h>
 
 #import "SRRecorderControl.h"
 #import "SRKeyCodeTransformer.h"
@@ -946,6 +947,23 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (BOOL)isFlipped
 {
     return YES;
+}
+
+- (NSUserInterfaceLayoutDirection)userInterfaceLayoutDirection
+{
+    // NSView uses associated objects to track whether default value was overridden.
+    // Here the lookup order is altered in the following way
+    //     1. View's own value
+    //     2. Style's value
+    //     3. View's default value that falls back to NSWindow and then NSApp
+    NSNumber *superValue = objc_getAssociatedObject(self, @selector(userInterfaceLayoutDirection));
+    if (superValue)
+        return superValue.integerValue;
+
+    if (self.style.components.layoutDirection != SRRecorderControlStyleComponentsLayoutDirectionUnspecified)
+        return SRRecorderControlStyleComponentsLayoutDirectionToSystem(self.style.components.layoutDirection);
+    else
+        return super.userInterfaceLayoutDirection;
 }
 
 - (void)layout
