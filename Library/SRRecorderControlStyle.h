@@ -295,9 +295,18 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 @property (class, nonatomic, readonly) SRRecorderControlStyleComponents *currentComponents NS_SWIFT_NAME(current);
 
 @property (readonly) SRRecorderControlStyleComponentsAppearance appearance;
-@property (readonly) SRRecorderControlStyleComponentsTint tint;
 @property (readonly) SRRecorderControlStyleComponentsAccessibility accessibility;
 @property (readonly) SRRecorderControlStyleComponentsLayoutDirection layoutDirection;
+@property (readonly) SRRecorderControlStyleComponentsTint tint;
+
+/*!
+ String representation for the lookup prefixes.
+
+ @discussion Format: [-{aqua, vibrantlight, vibrantdark, darkaqua}][-acc][-{ltr, rtl}][-{blue, graphite}]
+             Fragments are optional and are not included if the corresponding value is either None or Unspecified.
+
+ @seealso SRRecorderControlStyle/makeLookupPrefixes
+ */
 @property (nonatomic, readonly) NSString *stringRepresentation;
 
 /*!

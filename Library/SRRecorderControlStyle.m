@@ -177,18 +177,9 @@ SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponents
         case SRRecorderControlStyleComponentsAppearanceUnspecified:
             appearance = @"";
             break;
-    }
 
-    switch (self.tint)
-    {
-        case SRRecorderControlStyleComponentsTintBlue:
-            tint = @"-blue";
-            break;
-        case SRRecorderControlStyleComponentsTintGraphite:
-            tint = @"-graphite";
-            break;
-        case SRRecorderControlStyleComponentsTintUnspecified:
-            tint = @"";
+        default:
+            NSAssert(NO, @"Unexpected appearance.");
             break;
     }
 
@@ -197,8 +188,13 @@ SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponents
         case SRRecorderControlStyleComponentsAccessibilityHighContrast:
             acc = @"-acc";
             break;
-        default:
+        case SRRecorderControlStyleComponentsAccessibilityNone:
+        case SRRecorderControlStyleComponentsAccessibilityUnspecified:
             acc = @"";
+            break;
+
+        default:
+            NSAssert(NO, @"Unexpected appearance.");
             break;
     }
 
@@ -213,9 +209,30 @@ SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponents
         case SRRecorderControlStyleComponentsLayoutDirectionUnspecified:
             direction = @"";
             break;
+
+        default:
+            NSAssert(NO, @"Unexpected appearance.");
+            break;
     }
 
-    return [NSString stringWithFormat:@"%@%@%@%@", appearance, tint, acc, direction];
+    switch (self.tint)
+    {
+        case SRRecorderControlStyleComponentsTintBlue:
+            tint = @"-blue";
+            break;
+        case SRRecorderControlStyleComponentsTintGraphite:
+            tint = @"-graphite";
+            break;
+        case SRRecorderControlStyleComponentsTintUnspecified:
+            tint = @"";
+            break;
+
+        default:
+            NSAssert(NO, @"Unexpected appearance.");
+            break;
+    }
+
+    return [NSString stringWithFormat:@"%@%@%@%@", appearance, acc, direction, tint];
 }
 
 - (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject
