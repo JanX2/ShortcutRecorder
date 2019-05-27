@@ -977,7 +977,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
     _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
 
-    NSSize newIntrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant + self.alignmentRectInsets.left + self.alignmentRectInsets.right, [_metrics[@"MinSize"][@"Height"] floatValue]);
+    NSSize newIntrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant, _alignmentHeightConstraint.constant);
     if (!NSEqualSizes(newIntrinsicContentSize, self.intrinsicContentSize))
     {
         [self setValue:[NSValue valueWithSize:newIntrinsicContentSize] forKey:@"intrinsicContentSize"];
