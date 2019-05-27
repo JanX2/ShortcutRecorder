@@ -243,7 +243,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
  */
 typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleComponentsAccessibility)
 {
-    SRRecorderControlStyleComponentsAccessibilityUnspecified = 0,
+    SRRecorderControlStyleComponentsAccessibilityUnspecified NS_SWIFT_UNAVAILABLE("") = 0,
     SRRecorderControlStyleComponentsAccessibilityNone = 1 << 0,
     SRRecorderControlStyleComponentsAccessibilityHighContrast = 1 << 1,
 
