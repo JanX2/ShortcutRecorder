@@ -296,6 +296,8 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
                      accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
                    layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection NS_DESIGNATED_INITIALIZER;
 
+- (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject;
+
 /*!
  Compare components against the effective ideal.
 

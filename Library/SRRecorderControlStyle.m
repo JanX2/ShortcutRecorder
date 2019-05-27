@@ -264,6 +264,19 @@
     return [NSString stringWithFormat:@"%@%@%@%@", appearance, tint, acc, direction];
 }
 
+- (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject
+{
+    if (anObject == self)
+        return YES;
+    else if (![anObject isKindOfClass:SRRecorderControlStyleComponents.class])
+        return NO;
+    else
+        return self.appearance == anObject.appearance &&
+            self.accessibility == anObject.accessibility &&
+            self.layoutDirection == anObject.layoutDirection &&
+            self.tint == anObject.tint;
+}
+
 - (NSComparisonResult)compare:(SRRecorderControlStyleComponents *)anOtherComponents
          relativeToComponents:(SRRecorderControlStyleComponents *)anIdealComponents
 {
@@ -376,20 +389,18 @@
 
 - (BOOL)isEqual:(SRRecorderControlStyleComponents *)anObject
 {
-    if ([super isEqual:anObject])
-        return YES;
-
-    if (![anObject isKindOfClass:self.class])
-        return NO;
-
-    return self.appearance == anObject.appearance && self.tint == anObject.tint && self.accessibility == anObject.accessibility;
+    return [self SR_isEqual:anObject usingSelector:@selector(isEqualToComponents:) ofCommonAncestor:SRRecorderControlStyleComponents.class];
 }
 
 - (NSUInteger)hash
 {
     int tintOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsTintMax);
+    int layoutDirectionOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsLayoutDirectionMax);
     int appearanceOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsAppearanceMax);
-    return self.tint | (self.appearance << tintOffset) | (self.accessibility << (tintOffset + appearanceOffset));
+    return self.tint |
+        (self.layoutDirection << tintOffset) |
+        (self.appearance << (tintOffset + layoutDirectionOffset)) |
+        (self.accessibility << (tintOffset + layoutDirectionOffset + appearanceOffset));
 }
 
 - (NSString *)description
