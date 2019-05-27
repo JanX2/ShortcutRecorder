@@ -438,7 +438,10 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                           explicitModifierFlags:@(_objectValue.modifierFlags)
                                         forView:self];
 
-    return [NSString stringWithFormat:@"%@%@", flags, code];
+    if (self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+        return [NSString stringWithFormat:@"%@%@", code, flags];
+    else
+        return [NSString stringWithFormat:@"%@%@", flags, code];
 }
 
 - (NSString *)accessibilityStringValue
