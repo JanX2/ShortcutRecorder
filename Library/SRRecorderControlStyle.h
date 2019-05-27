@@ -212,7 +212,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
 } NS_SWIFT_NAME(SRRecorderControlStyleComponents.Appearance);
 
 /*!
- Make appearance from macOS's NSAppearance.name
+ Return appearance from system's appearance.
 
  @discussion If system's appearance is not recognized unspecified is returned.
 
@@ -220,6 +220,14 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
  */
 SRRecorderControlStyleComponentsAppearance SRRecorderControlStyleComponentsAppearanceFromSystem(NSAppearanceName aSystemAppearanceName)
 NS_SWIFT_NAME(SRRecorderControlStyleComponentsAppearance.init(fromSystem:));
+
+/*!
+ Return system's appearance name for SRRecorderControlStyleComponentsAppearance.
+
+ @throws NSInvalidArgumentException If given value does not have system's counterpart.
+ */
+NSAppearanceName SRRecorderControlStyleComponentsAppearanceToSystem(SRRecorderControlStyleComponentsAppearance anAppearance)
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsAppearance(toSystem:));
 
 
 /*!
@@ -236,7 +244,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
 
 
 /*!
- Make tint for macOS's NSControlTint
+ Return tint for system's NSControlTint
 
  @discussion If system's tint is not recognized unspecified is returned.
 
@@ -244,6 +252,15 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
  */
 SRRecorderControlStyleComponentsTint SRRecorderControlStyleComponentsTintFromSystem(NSControlTint aSystemTint)
 NS_SWIFT_NAME(SRRecorderControlStyleComponentsTint.init(fromSystem:));
+
+
+/*!
+ Return system's tint for SRRecorderControlStyleComponentsTint.
+
+ @throws NSInvalidArgumentException If given value does not have system's counterpart.
+ */
+NSControlTint SRRecorderControlStyleComponentsTintToSystem(SRRecorderControlStyleComponentsTint aTint)
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsTint(toSystem:));
 
 
 /*!
@@ -260,7 +277,7 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
 
 
 /*!
- Make layout direction for macOS's NSUserInterfaceLayoutDirection
+ Return layout direction for system's NSUserInterfaceLayoutDirection
 
  @discussion If system's layout direction is not recognized unspecified is returned.
 
@@ -268,6 +285,15 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
  */
 SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionFromSystem(NSUserInterfaceLayoutDirection aSystemLayoutDirection)
 NS_SWIFT_NAME(SRRecorderControlStyleComponentsLayoutDirection.init(fromSystem:));
+
+
+/*!
+ Return system's layout direction for SRRecorderControlStyleComponentsLayoutDirection.
+
+ @throws NSInvalidArgumentException If given value does not have system's counterpart.
+ */
+NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionToSystem(SRRecorderControlStyleComponentsLayoutDirection aLayoutDirection)
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsLayoutDirection(toSystem:));
 
 
 /*!

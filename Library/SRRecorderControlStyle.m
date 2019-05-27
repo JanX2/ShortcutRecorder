@@ -50,6 +50,29 @@ SRRecorderControlStyleComponentsAppearance SRRecorderControlStyleComponentsAppea
 }
 
 
+NSAppearanceName SRRecorderControlStyleComponentsAppearanceToSystem(SRRecorderControlStyleComponentsAppearance anAppearance)
+{
+    switch (anAppearance)
+    {
+        case SRRecorderControlStyleComponentsAppearanceAqua:
+            return NSAppearanceNameAqua;
+        case SRRecorderControlStyleComponentsAppearanceVibrantLight:
+            return NSAppearanceNameVibrantLight;
+        case SRRecorderControlStyleComponentsAppearanceVibrantDark:
+            return NSAppearanceNameVibrantDark;
+        case SRRecorderControlStyleComponentsAppearanceDarkAqua:
+        {
+            if (@available(macOS 10.14, *))
+                return NSAppearanceNameDarkAqua;
+        }
+        case SRRecorderControlStyleComponentsAppearanceUnspecified:
+        default:
+            [NSException raise:NSInvalidArgumentException format:@"%lu cannot be represented as NSAppearanceName", anAppearance];
+            __builtin_unreachable();
+    }
+}
+
+
 SRRecorderControlStyleComponentsTint SRRecorderControlStyleComponentsTintFromSystem(NSControlTint aSystemTint)
 {
     switch (aSystemTint)
@@ -64,6 +87,22 @@ SRRecorderControlStyleComponentsTint SRRecorderControlStyleComponentsTintFromSys
 }
 
 
+NSControlTint SRRecorderControlStyleComponentsTintToSystem(SRRecorderControlStyleComponentsTint aTint)
+{
+    switch (aTint) {
+        case SRRecorderControlStyleComponentsTintBlue:
+            return NSBlueControlTint;
+            break;
+        case SRRecorderControlStyleComponentsTintGraphite:
+            return NSGraphiteControlTint;
+        case SRRecorderControlStyleComponentsTintUnspecified:
+        default:
+            [NSException raise:NSInvalidArgumentException format:@"%lu cannot be represented as NSControlTint", aTint];
+            __builtin_unreachable();
+    }
+}
+
+
 SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionFromSystem(NSUserInterfaceLayoutDirection aSystemLayoutDirection)
 {
     switch (aSystemLayoutDirection)
@@ -74,6 +113,22 @@ SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponents
             return SRRecorderControlStyleComponentsLayoutDirectionRightToLeft;
         default:
             return SRRecorderControlStyleComponentsLayoutDirectionUnspecified;
+    }
+}
+
+
+NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionToSystem(SRRecorderControlStyleComponentsLayoutDirection aLayoutDirection)
+{
+    switch (aLayoutDirection)
+    {
+        case SRRecorderControlStyleComponentsLayoutDirectionLeftToRight:
+            return NSUserInterfaceLayoutDirectionLeftToRight;
+        case SRRecorderControlStyleComponentsLayoutDirectionRightToLeft:
+            return NSUserInterfaceLayoutDirectionRightToLeft;
+        case SRRecorderControlStyleComponentsLayoutDirectionUnspecified:
+        default:
+            [NSException raise:NSInvalidArgumentException format:@"%lu cannot be represented as NSUserInterfaceLayoutDirection", aLayoutDirection];
+            __builtin_unreachable();
     }
 }
 
