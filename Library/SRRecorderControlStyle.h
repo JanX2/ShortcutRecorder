@@ -211,6 +211,16 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
     SRRecorderControlStyleComponentsAppearanceMax NS_SWIFT_UNAVAILABLE("")
 } NS_SWIFT_NAME(SRRecorderControlStyleComponents.Appearance);
 
+/*!
+ Make appearance from macOS's NSAppearance.name
+
+ @discussion If system's appearance is not recognized unspecified is returned.
+
+ @seealso NSAppearance/name
+ */
+SRRecorderControlStyleComponentsAppearance SRRecorderControlStyleComponentsAppearanceFromSystem(NSAppearanceName aSystemAppearanceName)
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsAppearance.init(fromSystem:));
+
 
 /*!
  @seealso SRRecorderControlStyleComponents/tint
@@ -226,6 +236,17 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsTint)
 
 
 /*!
+ Make tint for macOS's NSControlTint
+
+ @discussion If system's tint is not recognized unspecified is returned.
+
+ @seealso NSControlTint
+ */
+SRRecorderControlStyleComponentsTint SRRecorderControlStyleComponentsTintFromSystem(NSControlTint aSystemTint)
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsTint.init(fromSystem:));
+
+
+/*!
  @seealso SRRecorderControlStyleComponents/layoutDirection
  */
 typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
@@ -236,6 +257,17 @@ typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsLayoutDirection)
 
     SRRecorderControlStyleComponentsLayoutDirectionMax NS_SWIFT_UNAVAILABLE("")
 } NS_SWIFT_NAME(SRRecorderControlStyleComponents.LayoutDirection);
+
+
+/*!
+ Make layout direction for macOS's NSUserInterfaceLayoutDirection
+
+ @discussion If system's layout direction is not recognized unspecified is returned.
+
+ @seealso NSUserInterfaceLayoutDirection
+ */
+SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionFromSystem(NSUserInterfaceLayoutDirection aSystemLayoutDirection)
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsLayoutDirection.init(fromSystem:));
 
 
 /*!
@@ -256,10 +288,6 @@ typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleComponentsAccessibility)
  */
 NS_SWIFT_NAME(RecorderControlStyle.Components)
 @interface SRRecorderControlStyleComponents: NSObject <NSCopying>
-@property (class, readonly) NSSet<NSAppearanceName> *supportedSystemAppearences;
-@property (class, readonly) NSSet<NSNumber *> *supportedAppearences;
-@property (class, readonly) NSSet<NSNumber *> *supportedTints;
-@property (class, readonly) NSSet<NSNumber *> *supportedAccessibilities;
 
 /*!
  Current components based on the system settings.
@@ -277,19 +305,8 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 
  @seealso supportedSystemAppearences
  */
-+ (SRRecorderControlStyleComponentsAppearance)appearanceForSystemAppearanceName:(NSAppearanceName)aSystemAppearance;
-
-/*!
- Map system's control tint into SR's tint.
- */
-+ (SRRecorderControlStyleComponentsTint)tintForSystemTint:(NSControlTint)aSystemTint;
 
 + (SRRecorderControlStyleComponents *)currentComponentsForView:(nullable NSView *)aView;
-
-/*!
- All possible components.
- */
-@property (class, readonly) NSArray<SRRecorderControlStyleComponents *> *allComponents NS_SWIFT_NAME(all);
 
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
                               tint:(SRRecorderControlStyleComponentsTint)aTint

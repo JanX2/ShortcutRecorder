@@ -13,97 +13,7 @@
 #import "SRRecorderControlStyle.h"
 
 
-@implementation SRRecorderControlStyleComponents
-
-+ (NSSet<NSNumber *> *)supportedAppearences
-{
-    static NSSet<NSNumber *> *S = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        S = [NSSet setWithObjects:
-             @(SRRecorderControlStyleComponentsAppearanceUnspecified),
-             @(SRRecorderControlStyleComponentsAppearanceAqua),
-             @(SRRecorderControlStyleComponentsAppearanceDarkAqua),
-             @(SRRecorderControlStyleComponentsAppearanceVibrantLight),
-             @(SRRecorderControlStyleComponentsAppearanceVibrantDark),
-             nil];
-    });
-    return S;
-}
-
-+ (NSSet<NSNumber *> *)supportedTints
-{
-    static NSSet<NSNumber *> *S = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        S = [NSSet setWithObjects:
-             @(SRRecorderControlStyleComponentsTintUnspecified),
-             @(SRRecorderControlStyleComponentsTintBlue),
-             @(SRRecorderControlStyleComponentsTintGraphite),
-             nil];
-    });
-    return S;
-}
-
-+ (NSSet<NSNumber *> *)supportedAccessibilities
-{
-    static NSSet<NSNumber *> *S = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        S = [NSSet setWithObjects:
-             @(SRRecorderControlStyleComponentsAccessibilityUnspecified),
-             @(SRRecorderControlStyleComponentsAccessibilityHighContrast),
-             nil];
-    });
-    return S;
-}
-
-+ (NSSet<NSAppearanceName> *)supportedSystemAppearences
-{
-    static NSSet<NSAppearanceName> *S = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        S = [NSMutableSet setWithObjects:
-             NSAppearanceNameAqua,
-             NSAppearanceNameVibrantLight,
-             NSAppearanceNameVibrantDark,
-             nil];
-
-        if (@available(macOS 10.14, *))
-            [(NSMutableSet *)S addObject:NSAppearanceNameDarkAqua];
-
-        S = S.copy;
-    });
-    return S;
-}
-
-+ (NSArray<SRRecorderControlStyleComponents *> *)allComponents
-{
-    static NSArray<SRRecorderControlStyleComponents *> *A = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        A = NSMutableArray.array;
-
-        for (NSNumber *appearance in self.supportedAppearences)
-        {
-            for (NSNumber *tint in self.supportedTints)
-            {
-                for (NSNumber *acc in self.supportedAccessibilities)
-                {
-                    SRRecorderControlStyleComponents *o = [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance.unsignedIntegerValue
-                                                                                                                      tint:tint.unsignedIntegerValue
-                                                                                                             accessibility:acc.unsignedIntegerValue];
-                    [(NSMutableArray *)A addObject:o];
-                }
-            }
-        }
-
-        A = A.copy;
-    });
-    return A;
-}
-
-+ (SRRecorderControlStyleComponentsAppearance)appearanceForSystemAppearanceName:(NSAppearanceName)aSystemAppearance
+SRRecorderControlStyleComponentsAppearance SRRecorderControlStyleComponentsAppearanceFromSystem(NSAppearanceName aSystemAppearanceName)
 {
     static NSDictionary<NSAppearanceName, NSNumber *> *Map = nil;
     static dispatch_once_t onceToken;
@@ -116,24 +26,59 @@
 
         if (@available(macOS 10.14, *))
             [(NSMutableDictionary *)Map setObject:@(SRRecorderControlStyleComponentsAppearanceDarkAqua) forKey:NSAppearanceNameDarkAqua];
-
-        NSAssert([[NSSet setWithArray:Map.allKeys] isEqualToSet:self.supportedSystemAppearences], @"Map is missing keys.");
     });
-    return Map[aSystemAppearance].unsignedIntegerValue;
+
+    NSNumber *appearance = Map[aSystemAppearanceName];
+
+
+    if (@available(macOS 10.14, *))
+    {
+        if (!appearance)
+        {
+            NSAppearance *systemAppearance = [NSAppearance appearanceNamed:aSystemAppearanceName];
+            aSystemAppearanceName = [systemAppearance bestMatchFromAppearancesWithNames:Map.allKeys];
+
+            if (aSystemAppearanceName)
+                appearance = Map[aSystemAppearanceName];
+        }
+    }
+
+    if (appearance)
+        return appearance.unsignedIntegerValue;
+    else
+        return SRRecorderControlStyleComponentsAppearanceUnspecified;
 }
 
-+ (SRRecorderControlStyleComponentsTint)tintForSystemTint:(NSControlTint)aSystemTint
+
+SRRecorderControlStyleComponentsTint SRRecorderControlStyleComponentsTintFromSystem(NSControlTint aSystemTint)
 {
-    static NSDictionary<NSNumber *, NSNumber *> *Map = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        Map = @{
-            @(NSBlueControlTint): @(SRRecorderControlStyleComponentsTintBlue),
-            @(NSGraphiteControlTint): @(SRRecorderControlStyleComponentsTintGraphite),
-        };
-    });
-    return Map[@(aSystemTint)].unsignedIntegerValue;
+    switch (aSystemTint)
+    {
+        case NSBlueControlTint:
+            return SRRecorderControlStyleComponentsTintBlue;
+        case NSGraphiteControlTint:
+            return SRRecorderControlStyleComponentsTintGraphite;
+        default:
+            return SRRecorderControlStyleComponentsTintUnspecified;
+    }
 }
+
+
+SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionFromSystem(NSUserInterfaceLayoutDirection aSystemLayoutDirection)
+{
+    switch (aSystemLayoutDirection)
+    {
+        case NSUserInterfaceLayoutDirectionLeftToRight:
+            return SRRecorderControlStyleComponentsLayoutDirectionLeftToRight;
+        case NSUserInterfaceLayoutDirectionRightToLeft:
+            return SRRecorderControlStyleComponentsLayoutDirectionRightToLeft;
+        default:
+            return SRRecorderControlStyleComponentsLayoutDirectionUnspecified;
+    }
+}
+
+
+@implementation SRRecorderControlStyleComponents
 
 + (SRRecorderControlStyleComponents *)currentComponents
 {
@@ -144,24 +89,31 @@
 {
     NSAppearanceName effectiveSystemAppearance = nil;
 
-    if (@available(macOS 10.14, *))
-        effectiveSystemAppearance = [aView.effectiveAppearance bestMatchFromAppearancesWithNames:SRRecorderControlStyleComponents.supportedSystemAppearences.allObjects];
-    else
+    if (aView)
         effectiveSystemAppearance = aView.effectiveAppearance.name;
-
-    if (!effectiveSystemAppearance)
+    else
         effectiveSystemAppearance = NSAppearance.currentAppearance.name;
 
-    if (!effectiveSystemAppearance || ![SRRecorderControlStyleComponents.supportedSystemAppearences containsObject:effectiveSystemAppearance])
-        effectiveSystemAppearance = NSAppearanceNameAqua;
+    __auto_type appearance = SRRecorderControlStyleComponentsAppearanceFromSystem(effectiveSystemAppearance);
+    __auto_type tint = SRRecorderControlStyleComponentsTintFromSystem(NSColor.currentControlTint);
+    __auto_type accessibility = SRRecorderControlStyleComponentsAccessibilityUnspecified;
 
-    SRRecorderControlStyleComponentsAppearance effectiveAppearance = [SRRecorderControlStyleComponents appearanceForSystemAppearanceName:effectiveSystemAppearance];
-    SRRecorderControlStyleComponentsTint effectiveTint = [SRRecorderControlStyleComponents tintForSystemTint:NSColor.currentControlTint];
-    SRRecorderControlStyleComponentsAccessibility effectiveAccessibility = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast ? SRRecorderControlStyleComponentsAccessibilityHighContrast : SRRecorderControlStyleComponentsAccessibilityNone;
+    if (NSWorkspace.sharedWorkspace.accessibilityDisplayShouldIncreaseContrast)
+        accessibility = SRRecorderControlStyleComponentsAccessibilityHighContrast;
+    else
+        accessibility = SRRecorderControlStyleComponentsAccessibilityNone;
 
-    return [[SRRecorderControlStyleComponents alloc] initWithAppearance:effectiveAppearance
-                                                                     tint:effectiveTint
-                                                            accessibility:effectiveAccessibility];
+    __auto_type layoutDirection = SRRecorderControlStyleComponentsLayoutDirectionUnspecified;
+
+    if (aView)
+        layoutDirection = SRRecorderControlStyleComponentsLayoutDirectionFromSystem(aView.userInterfaceLayoutDirection);
+    else
+        layoutDirection = SRRecorderControlStyleComponentsLayoutDirectionFromSystem(NSApp.userInterfaceLayoutDirection);
+
+    return [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
+                                                                   tint:tint
+                                                          accessibility:accessibility
+                                                        layoutDirection:layoutDirection];
 }
 
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
@@ -480,10 +432,31 @@
 {
     // Intentional access via instance variable: subclasses should
     // override effectiveComponents for purely computed values.
-    __auto_type current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
-    return [[SRRecorderControlStyleComponents alloc] initWithAppearance:_components.appearance || current.appearance
-                                                                   tint:_components.tint || current.tint
-                                                          accessibility:_components.accessibility || current.accessibility];
+    SRRecorderControlStyleComponents *current = nil;
+
+    if (!_components.appearance || !_components.tint || _components.accessibility || !_components.layoutDirection)
+        current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
+
+    __auto_type appearance = _components.appearance;
+    if (!appearance)
+        appearance = current.appearance ? current.appearance : SRRecorderControlStyleComponentsAppearanceAqua;
+
+    __auto_type tint = _components.tint;
+    if (!tint)
+        tint = current.tint ? current.tint : SRRecorderControlStyleComponentsTintBlue;
+
+    __auto_type accessibility = _components.accessibility;
+    if (!accessibility)
+        accessibility = current.accessibility;
+
+    __auto_type layoutDirection = _components.layoutDirection;
+    if (!layoutDirection)
+        layoutDirection = current.layoutDirection ? current.layoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
+
+    return [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
+                                                                   tint:tint
+                                                          accessibility:accessibility
+                                                        layoutDirection:layoutDirection];
 }
 
 #pragma mark Methods
