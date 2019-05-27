@@ -745,7 +745,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
     [_notifyStyle setArgument:&aReason atIndex:2];
-    [_notifyStyle performSelector:@selector(invokeWithTarget:) withObject:_style afterDelay:0.0];
+    [_notifyStyle performSelector:@selector(invokeWithTarget:) withObject:_style afterDelay:0.0 inModes:@[NSRunLoopCommonModes]];
 }
 
 #pragma mark NSAccessibility
