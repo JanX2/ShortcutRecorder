@@ -479,7 +479,10 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                 _identifier = @"sr-yosemite";
         }
 
-        _components = aComponents.copy;
+        if (aComponents)
+            _components = aComponents.copy;
+        else
+            _components = [SRRecorderControlStyleComponents new];
 
         _allowsVibrancy = NO;
         _opaque = NO;

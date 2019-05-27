@@ -400,7 +400,7 @@ NS_SWIFT_NAME(RecorderControlStyle)
 /*!
  Custom components that override system settings.
  */
-@property (nullable, copy) SRRecorderControlStyleComponents *components;
+@property (readonly) SRRecorderControlStyleComponents *components;
 
 /*!
  Currently effective components used to order lookup prefixes.
