@@ -327,6 +327,8 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
  Compare components against the effective ideal.
 
  @discussion If the receiver is closer to the ideal, returns NSOrderedAscending.
+             If anOtherComponents is closer, returns NSOrderedDescending.
+             Otherwise, NSOrderedSame.
  */
 - (NSComparisonResult)compare:(SRRecorderControlStyleComponents *)anOtherComponents
          relativeToComponents:(SRRecorderControlStyleComponents *)anIdealComponents;
