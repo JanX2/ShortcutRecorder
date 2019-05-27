@@ -287,18 +287,29 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     return [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:nil];
 }
 
-- (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+- (NSString *)transformedValue:(NSNumber *)aValue
+     withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags
+         explicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+{
+    return [self transformedValue:aValue
+        withImplicitModifierFlags:anImplicitModifierFlags
+            explicitModifierFlags:anExplicitModifierFlags
+                          forView:nil];
+}
+
+- (NSString *)transformedValue:(NSNumber *)aValue
+     withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags
+         explicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+                       forView:(nullable NSView *)aView
 {
     if (anImplicitModifierFlags.unsignedIntegerValue & anExplicitModifierFlags.unsignedIntegerValue & SRCocoaModifierFlagsMask)
-    {
         [NSException raise:NSInvalidArgumentException format:@"anImplicitModifierFlags and anExplicitModifierFlags MUST NOT have common elements"];
-    }
 
     if (![aValue isKindOfClass:[NSNumber class]])
         return nil;
 
     // Some key codes cannot be translated directly.
-    NSString *unmappedString = [self transformedSpecialKeyCode:aValue withExplicitModifierFlags:anExplicitModifierFlags];
+    NSString *unmappedString = [self transformedSpecialKeyCode:aValue withExplicitModifierFlags:anExplicitModifierFlags forView:aView];
 
     if (unmappedString)
         return unmappedString;
@@ -361,7 +372,8 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
     if (err != noErr)
     {
 #ifdef DEBUG
-        NSLog(@"WARNING: Unable to translate key code (%d) and modifier flags (%lu).", aValue.unsignedShortValue, anImplicitModifierFlags.unsignedIntegerValue);
+        NSLog(@"WARNING: Unable to translate key code (%d) and modifier flags (%lu).", aValue.unsignedShortValue,
+              anImplicitModifierFlags.unsignedIntegerValue);
 #endif
         return nil;
     }
@@ -372,14 +384,37 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
         return [NSString stringWithCharacters:chars length:actualLength];
 }
 
-- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode
+              withExplicitModifierFlags:(NSNumber *)anExplicitModifierFlags
 {
-    if (anExplicitModifierFlags.unsignedIntegerValue & NSShiftKeyMask && aKeyCode.unsignedShortValue == kVK_Tab)
+    return [self transformedSpecialKeyCode:aKeyCode withExplicitModifierFlags:anExplicitModifierFlags forView:nil];
+}
+
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode
+              withExplicitModifierFlags:(NSNumber *)anExplicitModifierFlags
+                                forView:(NSView *)aView
+{
+    __auto_type layoutDirection = aView ? aView.userInterfaceLayoutDirection : NSApp.userInterfaceLayoutDirection;
+
+    if (aKeyCode.unsignedShortValue == kVK_Tab)
     {
-        if (self.isLiteral)
-            return _SRUnicharToString(SRKeyCodeGlyphTabLeft);
+        if (((anExplicitModifierFlags.unsignedIntegerValue & NSShiftKeyMask) &&
+             layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft) ||
+            ((anExplicitModifierFlags.unsignedIntegerValue & NSShiftKeyMask) == 0 &&
+             layoutDirection == NSUserInterfaceLayoutDirectionLeftToRight))
+        {
+            if (self.isLiteral)
+                return _SRUnicharToString(SRKeyCodeGlyphTabRight);
+            else
+                return _SRUnicharToString(NSTabCharacter);
+        }
         else
-            return _SRUnicharToString(NSBackTabCharacter);
+        {
+            if (self.isLiteral)
+                return _SRUnicharToString(SRKeyCodeGlyphTabLeft);
+            else
+                return _SRUnicharToString(NSBackTabCharacter);
+        }
     }
 
     if (self.isLiteral)

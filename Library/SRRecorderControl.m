@@ -435,7 +435,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     NSString *code = [transformer transformedValue:@(_objectValue.keyCode)
                       withImplicitModifierFlags:nil
-                          explicitModifierFlags:@(_objectValue.modifierFlags)];
+                          explicitModifierFlags:@(_objectValue.modifierFlags)
+                                        forView:self];
 
     return [NSString stringWithFormat:@"%@%@", flags, code];
 }

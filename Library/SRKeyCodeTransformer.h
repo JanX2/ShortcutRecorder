@@ -67,7 +67,8 @@ NS_SWIFT_NAME(KeyCodeTransformer)
 
     @discussion This method is the designated initializer for SRKeyCodeTransformer.
  */
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII isLiteral:(BOOL)aIsLiteral NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII
+                                              isLiteral:(BOOL)aIsLiteral NS_DESIGNATED_INITIALIZER;
 
 /*!
     Whether transformer uses ASCII capable keyboard input source.
@@ -88,21 +89,37 @@ NS_SWIFT_NAME(KeyCodeTransformer)
 - (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
 
 /*!
-    Transforms given special key code into unicode symbol by taking into account modifier flags.
- 
+ @seealso transformedSpecialKeyCode:withExplicitModifierFlags:forView:
+ */
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode
+              withExplicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags;
+
+/*!
+    Transforms given special key code into unicode symbol by taking into account modifier flags and view settings.
+
     @discussion E.g. the key code 0x30 is transformed to ⇥. But if shift is pressed, it is transformed to ⇤.
- 
+
     @result     Unicode symbol or literal string. nil if not a special key code.
 */
-- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(nullable NSNumber *)aModifierFlags;
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode
+              withExplicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags
+                                forView:(nullable NSView *)aView;
 
 /*!
-    Same as [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
+    Same as [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:nil]
  */
-- (nullable NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(nullable NSNumber *)aModifierFlags;
+- (nullable NSString *)transformedValue:(NSNumber *)aValue
+                      withModifierFlags:(nullable NSNumber *)aModifierFlags;
 
 /*!
-    Transfrom given key code into unicode symbol by taking into account modifier flags.
+ @seealso transformedValue:withImplicitModifierFlags:explicitModifierFlags:forView:
+ */
+- (nullable NSString *)transformedValue:(NSNumber *)aValue
+              withImplicitModifierFlags:(nullable NSNumber *)anImplicitModifierFlags
+                  explicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags;
+
+/*!
+    Transfrom given key code into unicode symbol by taking into account modifier flags and view settings.
  
     @param  aValue An instance of NSNumber (unsigned short) that represents key code.
  
@@ -110,11 +127,16 @@ NS_SWIFT_NAME(KeyCodeTransformer)
  
     @param  anExplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents explicit modifier flags like shift in shift-⇤.
 
+    @param  aView Optional view whose settings are being considered.
+
     @throws NSInvalidArgumentException
 
     @discussion If anImplicitModifierFlags and anExplicitModifierFlags share values, NSInvalidArgumentException is thrown.
  */
-- (nullable NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(nullable NSNumber *)anImplicitModifierFlags explicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags;
+- (nullable NSString *)transformedValue:(NSNumber *)aValue
+              withImplicitModifierFlags:(nullable NSNumber *)anImplicitModifierFlags
+                  explicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags
+                                forView:(nullable NSView *)aView;
 
 @end
 
