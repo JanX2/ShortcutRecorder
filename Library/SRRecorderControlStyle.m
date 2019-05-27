@@ -528,9 +528,9 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         layoutDirection = current.layoutDirection ? current.layoutDirection : SRRecorderControlStyleComponentsLayoutDirectionLeftToRight;
 
     return [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
-                                                                   tint:tint
                                                           accessibility:accessibility
-                                                        layoutDirection:layoutDirection];
+                                                        layoutDirection:layoutDirection
+                                                                   tint:tint];
 }
 
 #pragma mark Methods
