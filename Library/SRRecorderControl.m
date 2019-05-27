@@ -69,6 +69,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     _notifyStyle = [NSInvocation invocationWithMethodSignature:[SRRecorderControlStyle instanceMethodSignatureForSelector:@selector(recorderControlAppearanceDidChange:)]];
     _notifyStyle.selector = @selector(recorderControlAppearanceDidChange:);
+    [_notifyStyle retainArguments];
 
     self.translatesAutoresizingMaskIntoConstraints = NO;
 
