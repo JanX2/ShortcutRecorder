@@ -221,10 +221,10 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
     [super awakeFromNib];
 
     NSDictionary *contentBindingInfo = [self infoForBinding:NSContentObjectBinding];
-    [self.control bind:NSValueBinding
-              toObject:contentBindingInfo[NSObservedObjectKey]
-           withKeyPath:contentBindingInfo[NSObservedKeyPathKey]
-               options:[contentBindingInfo[NSOptionsKey] dictionaryWithValuesForKeys:@[NSValueTransformerBindingOption, NSValueTransformerNameBindingOption]]
+    [self.recorderControl bind:NSValueBinding
+                      toObject:contentBindingInfo[NSObservedObjectKey]
+                   withKeyPath:contentBindingInfo[NSObservedKeyPathKey]
+                       options:[contentBindingInfo[NSOptionsKey] dictionaryWithValuesForKeys:@[NSValueTransformerBindingOption, NSValueTransformerNameBindingOption]]
     ];
 }
 

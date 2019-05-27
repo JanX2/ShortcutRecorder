@@ -96,7 +96,7 @@ NS_SWIFT_NAME(ShortcutController)
 
     @note Only meaningful when instances of SRShortcutController created inside Interface Builder files.
  */
-@property (weak) IBOutlet SRRecorderControl *control;
+@property (weak) IBOutlet SRRecorderControl *recorderControl;
 
 @end
 
