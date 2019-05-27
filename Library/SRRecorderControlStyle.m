@@ -111,15 +111,15 @@ SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponents
         layoutDirection = SRRecorderControlStyleComponentsLayoutDirectionFromSystem(NSApp.userInterfaceLayoutDirection);
 
     return [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
-                                                                   tint:tint
                                                           accessibility:accessibility
-                                                        layoutDirection:layoutDirection];
+                                                        layoutDirection:layoutDirection
+                                                                   tint:tint];
 }
 
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
-                              tint:(SRRecorderControlStyleComponentsTint)aTint
                      accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
                    layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection
+                              tint:(SRRecorderControlStyleComponentsTint)aTint
 {
     NSAssert(anAppearance >= SRRecorderControlStyleComponentsAppearanceUnspecified && anAppearance < SRRecorderControlStyleComponentsAppearanceMax,
              @"anAppearance is outside of the allowed range.");
@@ -148,9 +148,9 @@ SRRecorderControlStyleComponentsLayoutDirection SRRecorderControlStyleComponents
 - (instancetype)init
 {
     return [self initWithAppearance:SRRecorderControlStyleComponentsAppearanceUnspecified
-                               tint:SRRecorderControlStyleComponentsTintUnspecified
                       accessibility:SRRecorderControlStyleComponentsAccessibilityUnspecified
-                    layoutDirection:SRRecorderControlStyleComponentsLayoutDirectionUnspecified];
+                    layoutDirection:SRRecorderControlStyleComponentsLayoutDirectionUnspecified
+                               tint:SRRecorderControlStyleComponentsTintUnspecified];
 }
 
 - (NSString *)stringRepresentation

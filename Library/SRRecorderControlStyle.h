@@ -310,16 +310,16 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 @property (nonatomic, readonly) NSString *stringRepresentation;
 
 /*!
- Map system's appearance name to SR's appearance.
+ Current components based on the system and view settings.
 
- @seealso supportedSystemAppearences
+ @param aView Optional view whose settings are being considered.
  */
 + (SRRecorderControlStyleComponents *)currentComponentsForView:(nullable NSView *)aView NS_SWIFT_NAME(current(for:));
 
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
-                              tint:(SRRecorderControlStyleComponentsTint)aTint
                      accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
-                   layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection NS_DESIGNATED_INITIALIZER;
+                   layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection
+                              tint:(SRRecorderControlStyleComponentsTint)aTintNS_DESIGNATED_INITIALIZER;
 
 - (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject;
 
