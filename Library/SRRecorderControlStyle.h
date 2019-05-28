@@ -330,8 +330,6 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 
  @discussion Format: [-{aqua, vibrantlight, vibrantdark, darkaqua}][-acc][-{ltr, rtl}][-{blue, graphite}]
              Fragments are optional and are not included if the corresponding value is either None or Unspecified.
-
- @seealso SRRecorderControlStyle/makeLookupPrefixes
  */
 @property (nonatomic, readonly) NSString *stringRepresentation;
 
@@ -362,40 +360,48 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 @end
 
 
+@class SRRecorderControlStyle;
+
+
+/*!
+ Locate and cache style resources.
+ */
+NS_SWIFT_NAME(SRRecorderControlStyle.ResourceLoader)
+@interface SRRecorderControlStyleResourceLoader : NSObject
+
+/*!
+ Load info for the style.
+ */
+- (NSDictionary<NSString *, NSObject *> *)infoForStyle:(SRRecorderControlStyle *)aStyle;
+
+/*!
+ Make new lookup prefixes, in order, for the currently effective components.
+
+ @seealso RecorderControlStyle/effectiveComponents
+ */
+- (NSArray<NSString *> *)lookupPrefixesForStyle:(SRRecorderControlStyle *)aStyle;
+
+/*!
+ Load image with a given name with respect to effective components.
+ */
+- (NSImage *)imageNamed:(NSString *)aName forStyle:(SRRecorderControlStyle *)aStyle;
+
+@end
+
+
 /*!
  Load style from resources.
 
  @discussion Searches for resources in:
                 1. ShortcutRecorder Framework
                 2. Main application bundle
+
+ @seealso SRRecorderControlStyleResourceLoader
  */
 NS_SWIFT_NAME(RecorderControlStyle)
 @interface SRRecorderControlStyle : NSObject <SRRecorderControlStyling>
-{
-    NSArray<NSString *> *_lookupPrefixes;
-    NSDictionary *_metrics;
-}
 
-/*!
- Style that uses a given identifier to locate resources in the framework and application bundles.
-
- @param anIdentifier Either a concrete (ends with "-") or a template (any other character) prefix.
-                     If nil, default for the current version of macOS is picked.
-                     Defaults to the best available for the system
-
- @param aComponents Custom components that override current system settings.
-                    Defaults to unspecified to allow fallthrough.
-
- @discussion A template prefix is used to construct lookup prefixes that depend on effective appearance
-             while a concrete prefix is used as is.
-
-             Each lookup prefix has a format of "identifier[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
-
- @seealso makeLookupPrefixes
- @seealso effectiveComponents
- */
-- (instancetype)initWithIdentifier:(nullable NSString *)anIdentifier
-                        components:(nullable SRRecorderControlStyleComponents *)aComponents NS_DESIGNATED_INITIALIZER;
+@property (class, readonly) SRRecorderControlStyleResourceLoader *resourceLoader;
 
 @property (nullable, weak, readonly) SRRecorderControl *recorderControl;
 
@@ -412,21 +418,20 @@ NS_SWIFT_NAME(RecorderControlStyle)
 @property (readonly) SRRecorderControlStyleComponents *effectiveComponents;
 
 /*!
- Load image with a given name with respect to the lookup prefixes.
- */
-- (NSImage *)loadImageNamed:(NSString *)aName;
+ Style that uses a given identifier to locate resources in the framework and application bundles.
 
-/*!
- Load metrics with respect to the lookup prefixes.
- */
-- (NSDictionary *)loadMetrics;
+ @param anIdentifier If nil, default for the current version of macOS is picked.
+                     Defaults to the best available for the system
 
-/*!
- Make new lookup prefixes, in order, for the currently effective components.
+ @param aComponents Custom components that override current system settings.
+                    Defaults to unspecified to allow fallthrough.
+
+ @discussion Each lookup prefix has a format of "identifier[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
 
  @seealso effectiveComponents
  */
-- (NSArray<NSString *> *)makeLookupPrefixes;
+- (instancetype)initWithIdentifier:(nullable NSString *)anIdentifier
+                        components:(nullable SRRecorderControlStyleComponents *)aComponents NS_DESIGNATED_INITIALIZER;
 
 /*!
  Add style's constraints to the control view.

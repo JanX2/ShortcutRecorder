@@ -437,8 +437,356 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @end
 
 
+@implementation SRRecorderControlStyleResourceLoader
+{
+    NSCache *_cache;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+
+    if (self)
+    {
+        _cache = [NSCache new];
+        _cache.name = @"SRRecorderControlStyleResourceLoader";
+    }
+
+    return self;
+}
+
+- (NSDictionary<NSString *, NSObject *> *)infoForStyle:(SRRecorderControlStyle *)aStyle
+{
+    typedef id (^Transformer)(id anObject, NSString *aKey);
+    typedef void (^Verifier)(id anObject, NSString *aKey);
+
+    __auto_type VerifyIsType = ^(NSObject *anObject, NSString *aKey, Class aType) {
+        if (![anObject isKindOfClass:aType])
+            [NSException raise:NSInternalInconsistencyException
+                        format:@"%@: expected %@ but got %@", aKey, NSStringFromClass(aType), NSStringFromClass(anObject.class)];
+    };
+
+    __auto_type VerifyNumberInInterval = ^(NSNumber *anObject, NSString *aKey, NSNumber *aMin, NSNumber *aMax) {
+        VerifyIsType(anObject, aKey, NSNumber.class);
+
+        if ([anObject compare:aMax] != NSOrderedAscending)
+            [NSException raise:NSInternalInconsistencyException format:@"%@: value >= %@", aKey, aMax];
+
+        if ([anObject compare:aMin] == NSOrderedAscending)
+            [NSException raise:NSInternalInconsistencyException format:@"%@: value < %@", aKey, aMin];
+    };
+
+    __auto_type VerifyNumberWithMask = ^(NSNumber *anObject, NSString *aKey, NSUInteger aMask) {
+        if (!anObject)
+            return;
+
+        VerifyIsType(anObject, aKey, NSNumber.class);
+
+        if ((anObject.unsignedIntegerValue & ~aMask) != 0)
+            [NSException raise:NSInternalInconsistencyException format:@"%@: value must be with mask %lu", aKey, aMask];
+    };
+
+    __auto_type VerifyDictionaryHasKey = ^(NSDictionary *anObject, NSString *aKey, NSString *aSubKey) {
+        if (!anObject[aSubKey])
+            [NSException raise:NSInternalInconsistencyException format:@"%@: missing %@", aKey, aSubKey];
+    };
+
+    Verifier VerifyIsArray = ^(NSArray *anObject, NSString *aKey) {
+        VerifyIsType(anObject, aKey, NSArray.class);
+    };
+
+    Verifier VerifyIsDictionary = ^(NSDictionary *anObject, NSString *aKey) {
+        VerifyIsType(anObject, aKey, NSDictionary.class);
+    };
+
+    Verifier VerifyIsNumber = ^(NSNumber *anObject, NSString *aKey) {
+        VerifyIsType(anObject, aKey, NSNumber.class);
+    };
+
+    Verifier VerifyIsString = ^(NSString *anObject, NSString *aKey) {
+        VerifyIsType(anObject, aKey, NSString.class);
+    };
+
+    Verifier VerifyIsComponents = ^(NSDictionary *anObject, NSString *aKey) {
+        VerifyIsDictionary(anObject, aKey);
+
+        if (anObject[@"appearance"])
+            VerifyNumberInInterval(anObject[@"appearance"],
+                                   [NSString stringWithFormat:@"%@.appearance", aKey],
+                                   @(SRRecorderControlStyleComponentsAppearanceUnspecified),
+                                   @(SRRecorderControlStyleComponentsAppearanceMax));
+
+        if (anObject[@"accessibility"])
+            VerifyNumberWithMask(anObject[@"accessibility"],
+                                 [NSString stringWithFormat:@"%@.accessibility", aKey],
+                                 SRRecorderControlStyleComponentsAccessibilityMask);
+
+        if (anObject[@"layoutDirection"])
+            VerifyNumberInInterval(anObject[@"layoutDirection"],
+                                   [NSString stringWithFormat:@"%@.layoutDirection", aKey],
+                                   @(SRRecorderControlStyleComponentsLayoutDirectionUnspecified),
+                                   @(SRRecorderControlStyleComponentsLayoutDirectionMax));
+
+        if (anObject[@"tint"])
+            VerifyNumberInInterval(anObject[@"tint"],
+                                   [NSString stringWithFormat:@"%@.tint", aKey],
+                                   @(SRRecorderControlStyleComponentsTintUnspecified),
+                                   @(SRRecorderControlStyleComponentsTintMax));
+    };
+
+    Verifier VerifyIsSize = ^(NSDictionary *anObject, NSString *aKey) {
+        VerifyIsDictionary(anObject, aKey);
+
+        if (anObject.count != 2)
+            [NSException raise:NSInternalInconsistencyException format:@"%@: unexpected keys", aKey];
+
+        VerifyDictionaryHasKey(anObject, aKey, @"width");
+        VerifyIsNumber(anObject[@"width"], [NSString stringWithFormat:@"%@.width", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"height");
+        VerifyIsNumber(anObject[@"height"], [NSString stringWithFormat:@"%@.height", aKey]);
+    };
+
+    Verifier VerifyIsEdgeInsets = ^(NSDictionary *anObject, NSString *aKey) {
+        VerifyIsDictionary(anObject, aKey);
+
+        if (anObject.count != 4)
+            [NSException raise:NSInternalInconsistencyException format:@"%@: unexpected keys", aKey];
+
+        VerifyDictionaryHasKey(anObject, aKey, @"top");
+        VerifyIsNumber(anObject[@"top"], [NSString stringWithFormat:@"%@.top", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"left");
+        VerifyIsNumber(anObject[@"left"], [NSString stringWithFormat:@"%@.left", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"bottom");
+        VerifyIsNumber(anObject[@"bottom"], [NSString stringWithFormat:@"%@.bottom", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"right");
+        VerifyIsNumber(anObject[@"right"], [NSString stringWithFormat:@"%@.right", aKey]);
+    };
+
+    Verifier VerifyIsLabelAttributes = ^(NSDictionary *anObject, NSString *aKey) {
+        VerifyIsDictionary(anObject, aKey);
+
+        if (anObject.count != 4)
+            [NSException raise:NSInternalInconsistencyException format:@"%@: unexpected keys", aKey];
+
+        VerifyDictionaryHasKey(anObject, aKey, @"fontName");
+        VerifyIsString(anObject[@"fontName"], [NSString stringWithFormat:@"%@.fontName", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"fontSize");
+        VerifyIsNumber(anObject[@"fontSize"], [NSString stringWithFormat:@"%@.fontSize", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"fontColorCatalogName");
+        VerifyIsString(anObject[@"fontColorCatalogName"], [NSString stringWithFormat:@"%@.fontColorCatalogName", aKey]);
+
+        VerifyDictionaryHasKey(anObject, aKey, @"fontColorName");
+        VerifyIsString(anObject[@"fontColorName"], [NSString stringWithFormat:@"%@.fontColorName", aKey]);
+    };
+
+    Transformer TransformComponents = ^(NSDictionary<NSString *, NSNumber *> *anObject, NSString *aKey) {
+        return [[SRRecorderControlStyleComponents alloc] initWithAppearance:anObject[@"appearance"].unsignedIntegerValue
+                                                              accessibility:anObject[@"accessibility"].unsignedIntegerValue
+                                                            layoutDirection:anObject[@"layoutDirection"].unsignedIntegerValue
+                                                                       tint:anObject[@"tint"].unsignedIntegerValue];
+    };
+
+    Transformer TransformSize = ^(NSDictionary<NSString *, NSNumber *> *anObject, NSString *aKey) {
+        return [NSValue valueWithSize:NSMakeSize(anObject[@"width"].doubleValue, anObject[@"height"].doubleValue)];
+    };
+
+    Transformer TransformEdgeInsets = ^(NSDictionary<NSString *, NSNumber *> *anObject, NSString *aKey) {
+        return [NSValue valueWithEdgeInsets:NSEdgeInsetsMake(anObject[@"top"].doubleValue,
+                                                             anObject[@"left"].doubleValue,
+                                                             anObject[@"bottom"].doubleValue,
+                                                             anObject[@"right"].doubleValue)];
+    };
+
+    Transformer TransformLabelAttributes = ^(NSDictionary<NSString *, id> *anObject, NSString *aKey) {
+        NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
+        p.alignment = NSTextAlignmentCenter;
+        p.lineBreakMode = NSLineBreakByTruncatingMiddle;
+
+        NSFont *font = [NSFont fontWithName:anObject[@"fontName"] size:[anObject[@"fontSize"] doubleValue]];
+        NSColor *fontColor = [NSColor colorWithCatalogName:anObject[@"fontColorCatalogName"] colorName:anObject[@"fontColorName"]];
+
+        return @{
+            NSParagraphStyleAttributeName: p.copy,
+            NSFontAttributeName: font,
+            NSForegroundColorAttributeName: fontColor
+        };
+    };
+
+    __auto_type Get = ^(NSDictionary *aSource, NSString *aKey, Verifier aVerifier, Transformer aTransformer) {
+        id value = aSource[aKey];
+
+        if (aVerifier)
+            aVerifier(value, aKey);
+
+        if (aTransformer)
+            value = aTransformer(value, aKey);
+
+        return value;
+    };
+
+    __auto_type Set = ^(NSMutableDictionary *aDestination, NSDictionary *aSource, NSString *aKey, Verifier aVerifier, Transformer aTransformer) {
+        aDestination[aKey] = Get(aSource, aKey, aVerifier, aTransformer);
+    };
+
+    @synchronized (self)
+    {
+        NSDictionary *info = [_cache objectForKey:aStyle.identifier];
+
+        if (!info)
+        {
+            NSString *resourceName = [NSString stringWithFormat:@"%@-info", aStyle.identifier];
+            NSData *data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
+
+            if (!data)
+                data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
+
+            if (!data)
+                [NSException raise:NSInternalInconsistencyException format:@"Missing %@", resourceName];
+
+            NSError *error = nil;
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            if (!json)
+                [NSException raise:NSInternalInconsistencyException
+                            format:@"%@ is an invalid JSON: %@", resourceName, error.localizedFailureReason];
+
+            NSMutableDictionary *infoInProgress = NSMutableDictionary.dictionary;
+
+            Set(infoInProgress, json, @"supportedComponents", VerifyIsArray, ^(NSArray *anObject, NSString *aKey) {
+                NSMutableArray *components = [NSMutableArray arrayWithCapacity:anObject.count];
+
+                [anObject enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    NSString *subkey = [NSString stringWithFormat:@"%@.[%lu]", aKey, idx];
+                    VerifyIsComponents(obj, subkey);
+                    [components addObject:TransformComponents(obj, subkey)];
+                }];
+
+                [components addObject:[SRRecorderControlStyleComponents new]];
+
+                return (NSArray *)components.copy;
+            });
+
+            Set(infoInProgress, json, @"metrics", VerifyIsDictionary, ^(NSDictionary *anObject, NSString *aKey) {
+                NSMutableDictionary *metricsInProgress = [NSMutableDictionary dictionaryWithCapacity:anObject.count];
+
+                Set(metricsInProgress, anObject, @"minSize", VerifyIsSize, TransformSize);
+                Set(metricsInProgress, anObject, @"labelToCancel", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"cancelToClear", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"buttonToAlignment", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"baselineFromTop", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"alignmentToLabel", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"labelToAlignment", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"baselineOffsetFromBottom", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"focusRingCornerRadius", VerifyIsSize, TransformSize);
+                Set(metricsInProgress, anObject, @"focusRingInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
+                Set(metricsInProgress, anObject, @"alignmentInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
+                Set(metricsInProgress, anObject, @"normalLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
+                Set(metricsInProgress, anObject, @"recordingLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
+                Set(metricsInProgress, anObject, @"disabledLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
+
+                return (NSDictionary *)metricsInProgress.copy;
+            });
+
+            info = infoInProgress.copy;
+            [_cache setObject:info forKey:aStyle.identifier];
+        }
+
+        return info;
+    }
+}
+
+- (NSArray<NSString *> *)lookupPrefixesForStyle:(SRRecorderControlStyle *)aStyle
+{
+    @synchronized (self)
+    {
+        NSArray *key = @[aStyle.identifier, aStyle.effectiveComponents];
+        NSArray *lookupPrefixes = [_cache objectForKey:key];
+
+        if (!lookupPrefixes)
+        {
+            SRRecorderControlStyleComponents *effectiveComponents = aStyle.effectiveComponents;
+            NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleComponents *a, SRRecorderControlStyleComponents *b) {
+                return [a compare:b relativeToComponents:effectiveComponents];
+            };
+            __auto_type supportedComponents = (NSArray<SRRecorderControlStyleComponents *> *)[self infoForStyle:aStyle][@"supportedComponents"];
+            supportedComponents = [supportedComponents sortedArrayWithOptions:NSSortStable usingComparator:cmp];
+            lookupPrefixes = [NSMutableArray arrayWithCapacity:supportedComponents.count];
+
+            for (SRRecorderControlStyleComponents *c in supportedComponents)
+                [(NSMutableArray *)lookupPrefixes addObject:[NSString stringWithFormat:@"%@%@", aStyle.identifier, c.stringRepresentation]];
+
+            lookupPrefixes = lookupPrefixes.copy;
+            [_cache setObject:lookupPrefixes forKey:key];
+        }
+
+        return lookupPrefixes;
+    }
+}
+
+- (NSImage *)imageNamed:(NSString *)aName forStyle:(SRRecorderControlStyle *)aStyle
+{
+    @synchronized (self)
+    {
+        NSArray *key = @[aStyle.identifier, aStyle.effectiveComponents, aName];
+        NSArray *imageNameCache = [_cache objectForKey:key];
+        NSImage *image = nil;
+
+        if (!imageNameCache)
+        {
+            NSString *imageName = nil;
+            BOOL usesSRImage = YES;
+
+            for (NSString *p in [self lookupPrefixesForStyle:aStyle])
+            {
+                imageName = [NSString stringWithFormat:@"%@-%@", p, aName];
+
+                image = SRImage(imageName);
+                if (image)
+                {
+                    usesSRImage = YES;
+                    break;
+                }
+
+                image = [NSImage imageNamed:imageName];
+                if (image)
+                {
+                    usesSRImage = NO;
+                    break;
+                }
+            }
+
+            if (!image)
+                [NSException raise:NSInternalInconsistencyException format:@"Missing image named %@", aName];
+
+            [_cache setObject:@[imageName, @(usesSRImage)] forKey:key];
+        }
+        else
+        {
+            NSString *imageName = imageNameCache[0];
+            BOOL usesSRImage = [imageNameCache[1] boolValue];
+
+            if (usesSRImage)
+                image = SRImage(imageName);
+            else
+                image = [NSImage imageNamed:imageName];
+        }
+
+        return image;
+    }
+}
+
+@end
+
+
 @implementation SRRecorderControlStyle
 {
+    NSArray<NSString *> *_currentLookupPrefixes;
+
     NSLayoutConstraint *_backgroundTopConstraint;
     NSLayoutConstraint *_backgroundLeftConstraint;
     NSLayoutConstraint *_backgroundBottomConstraint;
@@ -505,30 +853,38 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 #pragma mark Properties
 
++ (SRRecorderControlStyleResourceLoader *)resourceLoader
+{
+    static SRRecorderControlStyleResourceLoader *Loader = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Loader = [SRRecorderControlStyleResourceLoader new];
+    });
+    return Loader;
+}
+
 - (SRRecorderControlStyleComponents *)effectiveComponents
 {
-    // Intentional access via instance variable: subclasses should
-    // override effectiveComponents for purely computed values.
-    SRRecorderControlStyleComponents *current = nil;
+    if (_preferredComponents.appearance && _preferredComponents.accessibility && _preferredComponents.layoutDirection && _preferredComponents.tint)
+        return _preferredComponents.copy;
 
-    if (!_preferredComponents.appearance || !_preferredComponents.tint || _preferredComponents.accessibility || !_preferredComponents.layoutDirection)
-        current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
+    SRRecorderControlStyleComponents *current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
 
     __auto_type appearance = _preferredComponents.appearance;
     if (!appearance)
         appearance = current.appearance ? current.appearance : SRRecorderControlStyleComponentsAppearanceAqua;
 
-    __auto_type tint = _preferredComponents.tint;
-    if (!tint)
-        tint = current.tint ? current.tint : SRRecorderControlStyleComponentsTintBlue;
-
     __auto_type accessibility = _preferredComponents.accessibility;
     if (!accessibility)
-        accessibility = current.accessibility;
+        accessibility = current.accessibility ? current.accessibility : SRRecorderControlStyleComponentsAccessibilityNone;
 
     __auto_type layoutDirection = _preferredComponents.layoutDirection;
     if (!layoutDirection)
         layoutDirection = current.layoutDirection ? current.layoutDirection : SRRecorderControlStyleComponentsLayoutDirectionLeftToRight;
+
+    __auto_type tint = _preferredComponents.tint;
+    if (!tint)
+        tint = current.tint ? current.tint : SRRecorderControlStyleComponentsTintBlue;
 
     return [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
                                                           accessibility:accessibility
@@ -537,82 +893,6 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 }
 
 #pragma mark Methods
-
-- (NSImage *)loadImageNamed:(NSString *)aName
-{
-    NSImage *img = nil;
-
-    for (NSString *p in _lookupPrefixes)
-    {
-        NSString *prefixedName = [NSString stringWithFormat:@"%@-%@", p, aName];
-        img = SRImage(prefixedName);
-
-        // Allow loading from the main bundle.
-        if (!img)
-            img = [NSImage imageNamed:prefixedName];
-
-        if (img)
-            break;
-    }
-
-    if (!img)
-        img = SRImage(aName);
-
-    if (!img)
-        img = [NSImage imageNamed:aName];
-
-    return img;
-}
-
-- (NSDictionary *)loadMetrics
-{
-    NSData *data = nil;
-
-    for (NSString *p in _lookupPrefixes)
-    {
-        NSString *prefixedName = [NSString stringWithFormat:@"%@-%@", p, @"metrics"];
-        data = [[NSDataAsset alloc] initWithName:prefixedName bundle:SRBundle()].data;
-
-        // Allow loading from the main bundle.
-        if (!data)
-            data = [[NSDataAsset alloc] initWithName:prefixedName].data;
-
-        if (data)
-            break;
-    }
-
-    if (!data)
-        data = [[NSDataAsset alloc] initWithName:@"metrics" bundle:SRBundle()].data;
-
-    if (!data)
-        data = [[NSDataAsset alloc] initWithName:@"metrics"].data;
-
-    NSAssert(data != nil, @"Missing metrics!");
-
-    NSError *error = nil;
-    NSDictionary *d = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (!d)
-        [NSException raise:NSInternalInconsistencyException format:@"%@", error.localizedFailureReason];
-
-    return d;
-}
-
-- (NSArray<NSString *> *)makeLookupPrefixes
-{
-    if ([self.identifier hasSuffix:@"-"])
-        return @[[self.identifier substringToIndex:self.identifier.length - 1]];
-
-    SRRecorderControlStyleComponents *components = self.effectiveComponents;
-    // TODO: cache for effective components.
-    NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleComponents *a, SRRecorderControlStyleComponents *b) {
-        return [a compare:b relativeToComponents:components];
-    };
-    NSArray *allComponents = [SRRecorderControlStyleComponents.allComponents sortedArrayWithOptions:NSSortStable usingComparator:cmp];
-    NSMutableArray<NSString *> *lookupPrefixes = [NSMutableArray arrayWithCapacity:allComponents.count];
-    for (SRRecorderControlStyleComponents *c in allComponents)
-        [lookupPrefixes addObject:[NSString stringWithFormat:@"%@%@", self.identifier, c.stringRepresentation]];
-    return lookupPrefixes.copy;
-}
 
 - (void)addConstraints
 {
@@ -796,10 +1076,6 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     _recorderControl = aControl;
     [self didChangeValueForKey:@"recorderControl"];
 
-    _recorderControl = aControl;
-    _lookupPrefixes = nil;
-    _metrics = nil;
-
     if (!_recorderControl)
         return;
 
@@ -828,14 +1104,12 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 - (void)recorderControlAppearanceDidChange:(nullable id)aReason
 {
-    NSArray<NSString *> *newLookupPrefixes = [self makeLookupPrefixes];
-    if ([_lookupPrefixes isEqual:newLookupPrefixes])
+    __auto_type newLookupPrefixes = [self.class.resourceLoader lookupPrefixesForStyle:self];
+    if ([newLookupPrefixes isEqual:_currentLookupPrefixes])
         return;
 
-    _lookupPrefixes = newLookupPrefixes;
-
     __auto_type UpdateImage = ^(NSString *imageName, NSString *propName, NSRect frame) {
-        NSImage *newImage = [self loadImageNamed:imageName];
+        NSImage *newImage = [self.class.resourceLoader imageNamed:imageName forStyle:self];
 
         NSAssert(newImage != nil, @"Missing image for %@!", imageName);
 
@@ -877,112 +1151,47 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     _clearButtonWidthConstraint.constant = self.clearButton.size.width;
     _clearButtonHeightConstraint.constant = self.clearButton.size.height;
 
-    NSDictionary *newMetrics = [self loadMetrics];
-    if ([newMetrics isEqual:_metrics])
+    if (!_currentLookupPrefixes)
     {
-        return;
-    }
+        __auto_type metrics = (NSDictionary *)[self.class.resourceLoader infoForStyle:self][@"metrics"];
 
-    _metrics = newMetrics;
+        _alignmentRectInsets = [metrics[@"alignmentInsets"] edgeInsetsValue];
+        _shapeCornerRadius = [metrics[@"focusRingCornerRadius"] sizeValue];
+        _shapeInsets = [metrics[@"focusRingInsets"] edgeInsetsValue];
+        _baselineOffsetFromBottom = [metrics[@"baselineOffsetFromBottom"] doubleValue];
+        _normalLabelAttributes = metrics[@"normalLabelAttributes"];
+        _recordingLabelAttributes = metrics[@"recordingLabelAttributes"];
+        _disabledLabelAttributes = metrics[@"disabledLabelAttributes"];
 
-    NSEdgeInsets newAlignmentRectInsets = NSEdgeInsetsMake([_metrics[@"AlignmentInsets"][@"Top"] floatValue],
-                                                           [_metrics[@"AlignmentInsets"][@"Left"] floatValue],
-                                                           [_metrics[@"AlignmentInsets"][@"Bottom"] floatValue],
-                                                           [_metrics[@"AlignmentInsets"][@"Right"] floatValue]);
-    if (!NSEdgeInsetsEqual(newAlignmentRectInsets, self.alignmentRectInsets))
-    {
-        [self setValue:[NSValue valueWithEdgeInsets:newAlignmentRectInsets] forKey:@"alignmentRectInsets"];
-    }
+        NSSize minSize = [metrics[@"minSize"] sizeValue];
+        _alignmentWidthConstraint.constant = fdim(minSize.width, _alignmentRectInsets.left + _alignmentRectInsets.right);
+        _alignmentHeightConstraint.constant = fdim(minSize.height, _alignmentRectInsets.top + _alignmentRectInsets.bottom);
 
-    NSSize newShapeCornerRadius = NSMakeSize([_metrics[@"FocusRingCornerRadius"][@"Width"] floatValue],
-                                             [_metrics[@"FocusRingRadius"][@"Height"] floatValue]);
-    if (!NSEqualSizes(newShapeCornerRadius, self.shapeCornerRadius))
-    {
-        [self setValue:[NSValue valueWithSize:newShapeCornerRadius] forKey:@"shapeCornerRadius"];
+        _backgroundTopConstraint.constant = -_alignmentRectInsets.top;
+        _backgroundLeftConstraint.constant = -_alignmentRectInsets.left;
+        _backgroundBottomConstraint.constant = _alignmentRectInsets.bottom;
+        _backgroundRightConstraint.constant = _alignmentRectInsets.right;
+
+        _alignmentToLabelConstraint.constant = [metrics[@"alignmentToLabel"] doubleValue];
+        _labelToAlignmentConstraint.constant = -[metrics[@"labelToAlignment"] doubleValue];
+        _labelToCancelConstraint.constant = -[metrics[@"labelToCancel"] doubleValue];
+        _cancelToAlignmentConstraint.constant = -[metrics[@"buttonToAlignment"] doubleValue];
+        _clearToAlignmentConstraint.constant = -[metrics[@"buttonToAlignment"] doubleValue];
+        _cancelToClearConstraint.constant = -[metrics[@"cancelToClear"] doubleValue];
+
+        CGFloat maxExpectedLeadingLabelOffset = _alignmentToLabelConstraint.constant;
+        CGFloat maxExpectedLabelWidth = ceilf([SRLoc(@"Click to record shortcut") sizeWithAttributes:_normalLabelAttributes].width);
+        CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
+        _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
+
+        _intrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant, _alignmentHeightConstraint.constant);
+
         [self.recorderControl noteFocusRingMaskChanged];
-    }
-
-    NSEdgeInsets newShapeInsets = NSEdgeInsetsMake([_metrics[@"FocusRingInsets"][@"Top"] floatValue],
-                                                   [_metrics[@"FocusRingInsets"][@"Left"] floatValue],
-                                                   [_metrics[@"FocusRingInsets"][@"Bottom"] floatValue],
-                                                   [_metrics[@"FocusRingInsets"][@"Right"] floatValue]);
-    if (!NSEdgeInsetsEqual(newShapeInsets, self.shapeInsets))
-    {
-        [self setValue:[NSValue valueWithEdgeInsets:newShapeInsets] forKey:@"shapeInsets"];
-        [self.recorderControl noteFocusRingMaskChanged];
-    }
-
-    CGFloat newBaselineOffsetFromBottom = [_metrics[@"BaselineOffsetFromBottom"] floatValue];
-    if (newBaselineOffsetFromBottom != _baselineOffsetFromBottom)
-    {
-        [self setValue:@(newBaselineOffsetFromBottom) forKey:@"baselineOffsetFromBottom"];
-    }
-
-    __auto_type ParseAttrs = ^(NSDictionary *json) {
-        if (!json)
-            return (NSDictionary *)nil;
-
-        NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
-        p.alignment = NSTextAlignmentCenter;
-        p.lineBreakMode = NSLineBreakByTruncatingMiddle;
-
-        NSFont *font = [NSFont fontWithName:json[@"FontName"] size:[json[@"FontSize"] floatValue]];
-        NSColor *fontColor = [NSColor colorWithCatalogName:json[@"FontColorCatalogName"] colorName:json[@"FontColorName"]];
-
-        return @{
-            NSParagraphStyleAttributeName: p.copy,
-            NSFontAttributeName: font,
-            NSForegroundColorAttributeName: fontColor
-        };
-    };
-
-    NSDictionary *normal = ParseAttrs(_metrics[@"NormalLabelAttributes"]);
-    if (!normal)
-        [NSException raise:NSGenericException format:@"The NormalLabelAttributes key is missing."];
-
-    NSDictionary *recording = ParseAttrs(_metrics[@"RecordingLabelAttributes"]);
-    if (!recording)
-        recording = normal;
-
-    NSDictionary *disabled = ParseAttrs(_metrics[@"DisabledLabelAttributes"]);
-    if (!disabled)
-        disabled = normal;
-
-    if (![normal isEqual:self.normalLabelAttributes])
-        [self setValue:normal forKey:@"normalLabelAttributes"];
-
-    if (![recording isEqual:self.recordingLabelAttributes])
-        [self setValue:recording forKey:@"recordingLabelAttributes"];
-
-    if (![disabled isEqual:self.disabledLabelAttributes])
-        [self setValue:disabled forKey:@"disabledLabelAttributes"];
-
-    _alignmentHeightConstraint.constant = fdim([_metrics[@"MinSize"][@"Height"] floatValue], self.alignmentRectInsets.top + self.alignmentRectInsets.bottom);
-    _alignmentWidthConstraint.constant = fdim([_metrics[@"MinSize"][@"Width"] floatValue], self.alignmentRectInsets.left + self.alignmentRectInsets.right);
-
-    _backgroundTopConstraint.constant = -self.alignmentRectInsets.top;
-    _backgroundLeftConstraint.constant = -self.alignmentRectInsets.left;
-    _backgroundBottomConstraint.constant = self.alignmentRectInsets.bottom;
-    _backgroundRightConstraint.constant = self.alignmentRectInsets.right;
-
-    _alignmentToLabelConstraint.constant = [_metrics[@"AlignmentToLabel"] floatValue];
-    _labelToAlignmentConstraint.constant = -[_metrics[@"LabelToAlignment"] floatValue];
-    _labelToCancelConstraint.constant = -[_metrics[@"LabelToCancel"] floatValue];
-    _cancelToAlignmentConstraint.constant = -[_metrics[@"ButtonToAlignment"] floatValue];
-    _clearToAlignmentConstraint.constant = -[_metrics[@"ButtonToAlignment"] floatValue];
-    _cancelToClearConstraint.constant = -[_metrics[@"CancelToClear"] floatValue];
-
-    CGFloat maxExpectedLeadingLabelOffset = _alignmentToLabelConstraint.constant;
-    CGFloat maxExpectedLabelWidth = ceilf([SRLoc(@"Click to record shortcut") sizeWithAttributes:self.normalLabelAttributes].width);
-    CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
-    _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
-
-    NSSize newIntrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant, _alignmentHeightConstraint.constant);
-    if (!NSEqualSizes(newIntrinsicContentSize, self.intrinsicContentSize))
-    {
-        [self setValue:[NSValue valueWithSize:newIntrinsicContentSize] forKey:@"intrinsicContentSize"];
         [self.recorderControl invalidateIntrinsicContentSize];
+        self.recorderControl.needsDisplay = YES;
     }
+
+    _currentLookupPrefixes = newLookupPrefixes;
 }
 
 #pragma mark NSCopying
