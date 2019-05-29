@@ -58,11 +58,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)_initInternalState
 {
+    self.enabled = YES;
     _allowsEmptyModifierFlags = NO;
     _drawsASCIIEquivalentOfShortcut = YES;
     _allowsEscapeToCancelRecording = YES;
     _allowsDeleteToClearShortcutAndEndRecording = YES;
-    _enabled = YES;
     _allowedModifierFlags = SRCocoaModifierFlagsMask;
     _requiredModifierFlags = 0;
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
@@ -147,20 +147,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self didChangeValueForKey:@"allowedModifierFlags"];
     [self didChangeValueForKey:@"requiredModifierFlags"];
     [self didChangeValueForKey:@"allowsEmptyModifierFlags"];
-}
-
-- (void)setEnabled:(BOOL)newEnabled
-{
-    if (newEnabled == _enabled)
-        return;
-
-    _enabled = newEnabled;
-    self.needsDisplay = YES;
-
-    if (!_enabled)
-        [self endRecording];
-
-    [self noteFocusRingMaskChanged];
 }
 
 - (SRShortcut *)objectValue
@@ -327,6 +313,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
         [self.delegate shortcutRecorderDidEndRecording:self];
+
+    [self sendAction:self.action to:self.target];
 }
 
 
@@ -420,30 +408,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
 
     return label;
-}
-
-- (NSString *)stringValue
-{
-    if (!_objectValue)
-        return nil;
-
-    NSString *flags = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:@(_objectValue.modifierFlags)];
-    SRKeyCodeTransformer *transformer = nil;
-
-    if (self.drawsASCIIEquivalentOfShortcut)
-        transformer = SRKeyCodeTransformer.sharedLiteralASCIITransformer;
-    else
-        transformer = SRKeyCodeTransformer.sharedLiteralTransformer;
-
-    NSString *code = [transformer transformedValue:@(_objectValue.keyCode)
-                      withImplicitModifierFlags:nil
-                          explicitModifierFlags:@(_objectValue.modifierFlags)
-                                        forView:self];
-
-    if (self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
-        return [NSString stringWithFormat:@"%@%@", code, flags];
-    else
-        return [NSString stringWithFormat:@"%@%@", flags, code];
 }
 
 - (NSString *)accessibilityStringValue
@@ -927,6 +891,55 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 
+#pragma mark NSControl
+@dynamic enabled;
+
++ (Class)cellClass
+{
+    return nil;
+}
+
+- (NSAttributedString *)attributedStringValue
+{
+    return [[NSAttributedString alloc] initWithString:self.stringValue];
+}
+
+- (NSString *)stringValue
+{
+    if (!_objectValue)
+        return @"";
+
+    NSString *flags = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:@(_objectValue.modifierFlags)];
+    SRKeyCodeTransformer *transformer = nil;
+
+    if (self.drawsASCIIEquivalentOfShortcut)
+        transformer = SRKeyCodeTransformer.sharedLiteralASCIITransformer;
+    else
+        transformer = SRKeyCodeTransformer.sharedLiteralTransformer;
+
+    NSString *code = [transformer transformedValue:@(_objectValue.keyCode)
+                         withImplicitModifierFlags:nil
+                             explicitModifierFlags:@(_objectValue.modifierFlags)
+                                           forView:self];
+
+    if (self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+        return [NSString stringWithFormat:@"%@%@", code, flags];
+    else
+        return [NSString stringWithFormat:@"%@%@", flags, code];
+}
+
+- (BOOL)isHighlighted
+{
+    return [self isMainButtonHighlighted];
+}
+
+- (BOOL)abortEditing
+{
+    [self endRecording];
+    return NO;
+}
+
+
 #pragma mark NSView
 
 + (BOOL)requiresConstraintBasedLayout
@@ -1151,7 +1164,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)acceptsFirstResponder
 {
-    return self.enabled;
+    return self.enabled && !self.refusesFirstResponder;
 }
 
 - (BOOL)becomeFirstResponder
@@ -1348,16 +1361,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                                                            characters:anEvent.characters
                                           charactersIgnoringModifiers:anEvent.charactersIgnoringModifiers];
 
+            BOOL canRecordShortcut = YES;
             if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
+                canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue];
+            else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
+                canRecordShortcut = [self.delegate control:self isValidObject:newObjectValue];
+
+            if (!canRecordShortcut)
             {
-                if (![self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue])
-                {
-                    // We acutally handled key equivalent, because client likely performs some action
-                    // to represent an error (e.g. beep and error dialog).
-                    // Do not end editing, because if client do not use additional window to show an error
-                    // first responder will not change. Allow a user to make another attempt.
-                    return YES;
-                }
+                // Do not end editing and allow the client to make another attempt.
+                return YES;
             }
 
             [self endRecordingWithObjectValue:newObjectValue];

@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
-@interface SRRecorderControl : NSView /* <NSAccessibility, NSEditor, NSNibLoading, NSKeyValueBindingCreation, NSToolTipOwner> */
+@interface SRRecorderControl : NSControl <NSEditor, NSViewToolTipOwner> /* <NSAccessibility, NSNibLoading, NSKeyValueBindingCreation> */
 {
     BOOL _isCompatibilityModeEnabled;
 }
@@ -106,16 +106,9 @@ IB_DESIGNABLE
 @property IBInspectable BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
-    Determines whether control enabled and can be edited or not.
-
-    @discussion Defaults to YES.
- */
-@property (nonatomic, getter=isEnabled) IBInspectable BOOL enabled;
-
-/*!
     Determines whether recording is in process.
  */
-@property (nonatomic, readonly) BOOL isRecording;
+@property (readonly) BOOL isRecording;
 
 /*!
     The value of the receiver.
@@ -124,7 +117,7 @@ IB_DESIGNABLE
                 enter the compatibility mode where objectValue and NSValueBinding accessors will
                 accept and return instances of NSDictionary.
  */
-@property (nonatomic, nullable, copy) SRShortcut *objectValue;
+@property (nullable, copy) SRShortcut *objectValue;
 
 /*!
     Dictionary representation of the shortcut.
@@ -216,11 +209,6 @@ IB_DESIGNABLE
     @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
  */
 - (NSString *)accessibilityLabel;
-
-/*!
-    Returns string representation of object value.
- */
-- (nullable NSString *)stringValue;
 
 /*!
     Returns string representation of object value for accessibility.
@@ -320,6 +308,41 @@ IB_DESIGNABLE
 @end
 
 
+@interface SRRecorderControl(/*NSControl*/)
+
+@property (readonly) NSAttributedString *attributedStringValue;
+
+@property (readonly) NSString *stringValue;
+
+/*!
+ Determines whether control enabled and can be edited or not.
+
+ @discussion Defaults to YES.
+ */
+@property (getter=isEnabled) IBInspectable BOOL enabled;
+
+/*!
+ @seealso isMainButtonHighlighted
+ */
+@property (getter=isHighlighted, readonly) BOOL highlighted;
+
+/*!
+ There is no cell class and cell.
+
+ @return Always nil.
+ */
++ (Class)cellClass;
+
+/*!
+ Same as endRecording.
+
+ @return Always NO since there is no field editor.
+ */
+- (BOOL)abortEditing;
+
+@end
+
+
 @interface SRRecorderControl (Deprecated)
 
 @property (nonatomic, readonly, getter=isCancelButtonHighlighted) BOOL isSnapBackButtonHighlighted __attribute__((deprecated("", "isCancelButtonHighlighted")));
@@ -328,7 +351,7 @@ IB_DESIGNABLE
 
 
 NS_SWIFT_NAME(RecorderControlDelegate)
-@protocol SRRecorderControlDelegate <NSObject>
+@protocol SRRecorderControlDelegate <NSObject, NSControlTextEditingDelegate>
 
 @optional
 
