@@ -372,7 +372,7 @@ NS_SWIFT_NAME(SRRecorderControlStyle.ResourceLoader)
 /*!
  Load info for the style.
  */
-- (NSDictionary<NSString *, NSObject *> *)infoForStyle:(SRRecorderControlStyle *)aStyle;
+- (NSDictionary<NSString *, __kindof NSObject *> *)infoForStyle:(SRRecorderControlStyle *)aStyle;
 
 /*!
  Make new lookup prefixes, in order, for the currently effective components.
