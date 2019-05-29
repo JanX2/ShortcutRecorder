@@ -209,7 +209,7 @@
 
 #pragma mark SRRecorderControlDelegate
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut
+- (BOOL)recorderControl:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut
 {
     NSError *error = nil;
     BOOL isValid = [self validateShortcut:aShortcut error:&error];

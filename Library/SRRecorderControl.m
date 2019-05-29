@@ -50,13 +50,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self)
     {
-        [self _initInternalState];
+        [self initInternalState];
     }
 
     return self;
 }
 
-- (void)_initInternalState
+- (void)initInternalState
 {
     self.enabled = YES;
     _allowsEmptyModifierFlags = NO;
@@ -85,8 +85,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                                    forOrientation:NSLayoutConstraintOrientationVertical];
 
     self.toolTip = SRLoc(@"Click to record shortcut");
-    // TODO: seems to be unnecessary
-    [self updateTrackingAreas];
 }
 
 - (void)dealloc
@@ -96,9 +94,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
 }
 
-
 #pragma mark Properties
 @dynamic style;
+
++ (BOOL)automaticallyNotifiesObserversOfValue
+{
+    return NO;
+}
 
 + (BOOL)automaticallyNotifiesObserversOfObjectValue
 {
@@ -106,6 +108,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 }
 
 + (NSSet<NSString *> *)keyPathsForValuesAffectingDictionaryValue
+{
+    return [NSSet setWithObject:@"objectValue"];
+}
+
++ (NSSet<NSString *> *)keyPathsForValuesAffectingStringValue
+{
+    return [NSSet setWithObject:@"objectValue"];
+}
+
++ (NSSet<NSString *> *)keyPathsForValuesAffectingAccessibilityStringValue
 {
     return [NSSet setWithObject:@"objectValue"];
 }
@@ -201,6 +213,19 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     self.objectValue = [SRShortcut shortcutWithDictionary:newDictionaryValue];
 }
 
+- (id)value
+{
+    return self.objectValue;
+}
+
+- (void)setValue:(id)newValue
+{
+    if (NSIsControllerMarker(newValue))
+        [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
+
+    self.objectValue = newValue;
+}
+
 - (SRRecorderControlStyle *)style
 {
     if (_style == nil)
@@ -227,12 +252,120 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [_style prepareForRecorderControl:self];
 }
 
+- (NSBezierPath *)focusRingShape
+{
+    NSRect alignmentFrame = self.style.alignmentGuide.frame;
+    NSEdgeInsets insets = self.style.focusRingInsets;
+    NSSize cornerRadius = self.style.focusRingCornerRadius;
+
+    alignmentFrame.origin.x += insets.left;
+    alignmentFrame.origin.y += insets.top;
+    alignmentFrame.size.width = fdim(alignmentFrame.size.width, insets.left + insets.right);
+    alignmentFrame.size.height = fdim(alignmentFrame.size.height, insets.top + insets.bottom);
+    return [NSBezierPath bezierPathWithRoundedRect:alignmentFrame xRadius:cornerRadius.width yRadius:cornerRadius.height];
+}
+
+- (BOOL)isMainButtonHighlighted
+{
+    if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag)
+    {
+        NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
+                                           fromView:nil];
+        return [self mouse:locationInView inRect:self.bounds];
+    }
+    else
+        return NO;
+}
+
+- (BOOL)isCancelButtonHighlighted
+{
+    if (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag)
+    {
+        NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
+                                           fromView:nil];
+        return [self mouse:locationInView inRect:self.style.cancelButtonLayoutGuide.frame];
+    }
+    else
+        return NO;
+}
+
+- (BOOL)isClearButtonHighlighted
+{
+    if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag)
+    {
+        NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
+                                           fromView:nil];
+        return [self mouse:locationInView inRect:self.self.style.clearButtonLayoutGuide.frame];
+    }
+    else
+        return NO;
+}
+
+- (NSString *)drawingLabel
+{
+    NSString *label = nil;
+
+    if (self.isRecording)
+    {
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+
+        if (modifierFlags)
+            label = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:@(modifierFlags)];
+        else
+            label = self.stringValue;
+
+        if (!label.length)
+            label = SRLoc(@"Type shortcut");
+    }
+    else
+    {
+        label = self.stringValue;
+
+        if (!label.length)
+            label = SRLoc(@"Click to record shortcut");
+    }
+
+    return label;
+}
+
+- (NSString *)accessibilityStringValue
+{
+    if (!_objectValue)
+        return nil;
+
+    NSString *f = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:@(_objectValue.modifierFlags)];
+    NSString *c = nil;
+
+    if (self.drawsASCIIEquivalentOfShortcut)
+        c = [SRKeyCodeTransformer.sharedLiteralASCIITransformer transformedValue:@(_objectValue.keyCode)];
+    else
+        c = [SRKeyCodeTransformer.sharedLiteralTransformer transformedValue:@(_objectValue.keyCode)];
+
+    if (f.length > 0)
+        return [NSString stringWithFormat:@"%@-%@", f, c];
+    else
+        return [NSString stringWithFormat:@"%@", c];
+}
+
+- (NSDictionary *)drawingLabelAttributes
+{
+    if (self.enabled)
+    {
+        if (self.isRecording)
+            return self.style.recordingLabelAttributes;
+        else
+            return self.style.normalLabelAttributes;
+    }
+    else
+        return self.style.disabledLabelAttributes;
+}
+
+#pragma mark Methods
+
 - (SRRecorderControlStyle *)makeDefaultStyle
 {
     return [SRRecorderControlStyle new];
 }
-
-#pragma mark Methods
 
 - (BOOL)beginRecording
 {
@@ -244,13 +377,20 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     self.needsDisplay = YES;
 
-    if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
+    BOOL shouldBeginRecording = YES;
+
+    if ([self.delegate respondsToSelector:@selector(recorderControlShouldBeginRecording:)])
+        shouldBeginRecording = [self.delegate recorderControlShouldBeginRecording:self];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
+    else if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
+        shouldBeginRecording = [self.delegate shortcutRecorderShouldBeginRecording:self];
+#pragma clang diagnostic pop
+
+    if (!shouldBeginRecording)
     {
-        if (![self.delegate shortcutRecorderShouldBeginRecording:self])
-        {
-            NSBeep();
-            return NO;
-        }
+        NSBeep();
+        return NO;
     }
 
     NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
@@ -311,14 +451,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (self.window.firstResponder == self && !self.canBecomeKeyView)
         [self.window makeFirstResponder:nil];
 
-    if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
+    if ([self.delegate respondsToSelector:@selector(recorderControlDidEndRecording:)])
+        [self.delegate recorderControlDidEndRecording:self];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
+    else if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
         [self.delegate shortcutRecorderDidEndRecording:self];
+#pragma clang diagnostic pop
 
     [self sendAction:self.action to:self.target];
 }
-
-
-#pragma mark -
 
 - (void)updateActiveConstraints
 {
@@ -343,107 +485,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [NSLayoutConstraint activateConstraints:self.style.displayingConstraints];
     }
 }
-
-- (NSBezierPath *)controlShape
-{
-    NSRect alignmentFrame = self.style.alignmentGuide.frame;
-    NSEdgeInsets shapeInsets = self.style.shapeInsets;
-    NSSize shapeCornerRadius = self.style.shapeCornerRadius;
-
-    alignmentFrame.origin.x += shapeInsets.left;
-    alignmentFrame.origin.y += shapeInsets.top;
-    alignmentFrame.size.width = fdim(alignmentFrame.size.width, shapeInsets.left + shapeInsets.right);
-    alignmentFrame.size.height = fdim(alignmentFrame.size.height, shapeInsets.top + shapeInsets.bottom);
-    return [NSBezierPath bezierPathWithRoundedRect:alignmentFrame xRadius:shapeCornerRadius.width yRadius:shapeCornerRadius.height];
-}
-
-
-#pragma mark -
-
-- (NSString *)label
-{
-    NSString *label = nil;
-
-    if (self.isRecording)
-    {
-        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-
-        if (modifierFlags)
-            label = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:@(modifierFlags)];
-        else
-            label = self.stringValue;
-
-        if (!label.length)
-            label = SRLoc(@"Type shortcut");
-    }
-    else
-    {
-        label = self.stringValue;
-
-        if (!label.length)
-            label = SRLoc(@"Click to record shortcut");
-    }
-
-    return label;
-}
-
-- (NSString *)accessibilityLabel
-{
-    NSString *label = nil;
-
-    if (self.isRecording)
-    {
-        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-        label = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:@(modifierFlags)];
-
-        if (!label.length)
-            label = SRLoc(@"Type shortcut");
-    }
-    else
-    {
-        label = self.accessibilityStringValue;
-
-        if (!label.length)
-            label = SRLoc(@"Click to record shortcut");
-    }
-
-    return label;
-}
-
-- (NSString *)accessibilityStringValue
-{
-    if (!_objectValue)
-        return nil;
-
-    NSString *f = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:@(_objectValue.modifierFlags)];
-    NSString *c = nil;
-
-    if (self.drawsASCIIEquivalentOfShortcut)
-        c = [SRKeyCodeTransformer.sharedLiteralASCIITransformer transformedValue:@(_objectValue.keyCode)];
-    else
-        c = [SRKeyCodeTransformer.sharedLiteralTransformer transformedValue:@(_objectValue.keyCode)];
-
-    if (f.length > 0)
-        return [NSString stringWithFormat:@"%@-%@", f, c];
-    else
-        return [NSString stringWithFormat:@"%@", c];
-}
-
-- (NSDictionary *)labelAttributes
-{
-    if (self.enabled)
-    {
-        if (self.isRecording)
-            return self.style.recordingLabelAttributes;
-        else
-            return self.style.normalLabelAttributes;
-    }
-    else
-        return self.style.disabledLabelAttributes;
-}
-
-
-#pragma mark -
 
 - (void)drawBackground:(NSRect)aDirtyRect
 {
@@ -510,8 +551,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (NSIsEmptyRect(labelFrame) || ![self needsToDrawRect:labelFrame])
         return;
 
-    NSString *label = self.label;
-    NSDictionary *labelAttributes = self.labelAttributes;
+    NSString *label = self.drawingLabel;
+    NSDictionary *labelAttributes = self.drawingLabelAttributes;
 
     [NSGraphicsContext saveGraphicsState];
     // Constant at the end compensates for drawing in the flipped graphics context.
@@ -546,53 +587,26 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [NSGraphicsContext restoreGraphicsState];
 }
 
-#pragma mark -
-
-- (BOOL)isMainButtonHighlighted
-{
-    if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag)
-    {
-        NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
-                                           fromView:nil];
-        return [self mouse:locationInView inRect:self.bounds];
-    }
-    else
-        return NO;
-}
-
-- (BOOL)isCancelButtonHighlighted
-{
-    if (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag)
-    {
-        NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
-                                           fromView:nil];
-        return [self mouse:locationInView inRect:self.style.cancelButtonLayoutGuide.frame];
-    }
-    else
-        return NO;
-}
-
-- (BOOL)isClearButtonHighlighted
-{
-    if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag)
-    {
-        NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
-                                           fromView:nil];
-        return [self mouse:locationInView inRect:self.self.style.clearButtonLayoutGuide.frame];
-    }
-    else
-        return NO;
-}
-
 - (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
 
-    if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)] &&
-        [self.delegate shortcutRecorder:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode])
-    {
+    BOOL allowModifierFlags = NO;
+
+    if ([self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        allowModifierFlags = [self.delegate recorderControl:self
+                    shouldUnconditionallyAllowModifierFlags:aModifierFlags
+                                                 forKeyCode:aKeyCode];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
+    else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        allowModifierFlags = [self.delegate shortcutRecorder:self
+                     shouldUnconditionallyAllowModifierFlags:aModifierFlags
+                                                  forKeyCode:aKeyCode];
+#pragma clang diagnostic pop
+
+    if (allowModifierFlags)
         return YES;
-    }
     else if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
         return NO;
     else if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
@@ -602,9 +616,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     else
         return YES;
 }
-
-
-#pragma mark -
 
 - (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding
 {
@@ -653,26 +664,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [boundObject setValue:aValue forKeyPath:boundKeyPath];
 }
 
-+ (BOOL)automaticallyNotifiesObserversOfValue
-{
-    return NO;
-}
-
-- (void)setValue:(id)newValue
-{
-    if (NSIsControllerMarker(newValue))
-        [NSException raise:NSInternalInconsistencyException format:@"SRRecorderControl's NSValueBinding does not support controller value markers."];
-
-    self.objectValue = newValue;
-}
-
-- (id)value
-{
-    return self.objectValue;
-}
-
-#pragma mark -
-
 - (void)controlTintDidChange:(NSNotification *)aNotification
 {
     [self scheduleControlViewAppearanceDidChange:aNotification];
@@ -718,6 +709,29 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (BOOL)accessibilityIsIgnored
 {
     return NO;
+}
+
+- (NSString *)accessibilityLabel
+{
+    NSString *label = nil;
+
+    if (self.isRecording)
+    {
+        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        label = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:@(modifierFlags)];
+
+        if (!label.length)
+            label = SRLoc(@"Type shortcut");
+    }
+    else
+    {
+        label = self.accessibilityStringValue;
+
+        if (!label.length)
+            label = SRLoc(@"Click to record shortcut");
+    }
+
+    return label;
 }
 
 - (NSArray *)accessibilityAttributeNames
@@ -813,7 +827,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self clearAndEndRecording];
 }
 
-
 #pragma mark NSEditor
 
 - (BOOL)commitEditing
@@ -846,7 +859,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self endRecording];
 }
 
-
 #pragma mark NSNibLoading
 
 - (void)prepareForInterfaceBuilder
@@ -858,7 +870,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                         charactersIgnoringModifiers:@"a"];
 }
 
-
 #pragma mark NSViewToolTipOwner
 
 - (NSString *)view:(NSView *)aView stringForToolTip:(NSToolTipTag)aTag point:(NSPoint)aPoint userData:(void *)aData
@@ -868,7 +879,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     else
         return [super view:aView stringForToolTip:aTag point:aPoint userData:aData];
 }
-
 
 #pragma mark NSCoding
 
@@ -884,15 +894,16 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self)
     {
-        [self _initInternalState];
+        [self initInternalState];
     }
 
     return self;
 }
 
-
 #pragma mark NSControl
 @dynamic enabled;
+@synthesize refusesFirstResponder = refusesFirstResponder;
+@synthesize tag = _tag;
 
 + (Class)cellClass
 {
@@ -930,7 +941,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)isHighlighted
 {
-    return [self isMainButtonHighlighted];
+    return self.isMainButtonHighlighted;
 }
 
 - (BOOL)abortEditing
@@ -938,7 +949,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self endRecording];
     return NO;
 }
-
 
 #pragma mark NSView
 
@@ -1019,13 +1029,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)drawFocusRingMask
 {
     if (self.enabled && self.window.firstResponder == self)
-        [self.controlShape fill];
+        [self.focusRingShape fill];
 }
 
 - (NSRect)focusRingMaskBounds
 {
     if (self.enabled && self.window.firstResponder == self)
-        return self.controlShape.bounds;
+        return self.focusRingShape.bounds;
     else
         return NSZeroRect;
 }
@@ -1362,8 +1372,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                                           charactersIgnoringModifiers:anEvent.charactersIgnoringModifiers];
 
             BOOL canRecordShortcut = YES;
-            if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
+
+            if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
+                canRecordShortcut = [self.delegate recorderControl:self canRecordShortcut:newObjectValue];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
+            else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
                 canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue];
+#pragma clang diagnostic pop
             else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
                 canRecordShortcut = [self.delegate control:self isValidObject:newObjectValue];
 
@@ -1405,36 +1421,20 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (self == [SRRecorderControl class])
     {
         [self exposeBinding:NSValueBinding];
-        [self exposeBinding:NSEnabledBinding];
     }
-}
-
-+ (BOOL)conformsToProtocol:(Protocol *)aProtocol
-{
-    if (@available(macOS 10.14, *))
-    {
-        if (aProtocol == NSProtocolFromString(@"NSViewToolTipOwner"))
-            return YES;
-        else if (aProtocol == NSProtocolFromString(@"NSEditor"))
-            return YES;
-    }
-
-    return [super conformsToProtocol:aProtocol];
 }
 
 - (Class)valueClassForBinding:(NSBindingName)aBinding
 {
     if ([aBinding isEqualToString:NSValueBinding])
         return SRShortcut.class;
-    else if ([aBinding isEqualToString:NSEnabledBinding])
-        return NSNumber.class;
     else
         return [super valueClassForBinding:aBinding];
 }
 
 - (NSArray<NSAttributeDescription *> *)optionDescriptionsForBinding:(NSBindingName)aBinding
 {
-    if ([aBinding isEqualToString:NSValueBinding] || [aBinding isEqualToString:NSEnabledBinding])
+    if ([aBinding isEqualToString:NSValueBinding])
     {
         NSAttributeDescription *valueTransformer = [NSAttributeDescription new];
         valueTransformer.name = NSValueTransformerBindingOption;

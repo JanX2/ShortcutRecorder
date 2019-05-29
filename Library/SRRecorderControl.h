@@ -23,24 +23,27 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
-    An SRRecorderControl object is a control (but not a subclass of NSControl) that allows you to record shortcuts.
+ SRRecorderControl is a control that can record keyboard shortcuts.
 
-    @discussion In addition to NSView bindings, exposes:
-                NSValueBinding. This binding supports 2 options:
-                    - NSValueTransformerBindingOption
-                    - NSValueTransformerNameBindingOption
-                NSEnabledBinding. This binding supports 2 options:
-                    - NSValueTransformerBindingOption
-                    - NSValueTransformerNameBindingOption
-                    Note that at that moment, this binding _is not_ multivalue.
+ @discussion
+ NSValueBinding is supported with the following options:
+ - NSValueTransformerBindingOption
+ - NSValueTransformerNameBindingOption
+ This binding is not a multivalue.
 
-                The control conforms to NSEditor. If object bound to NSValueBinding
-                also conforms to NSEditorRegistration appropriate methods will be called.
+ The control conforms to NSEditor. If object bound to NSValueBinding
+ also conforms to NSEditorRegistration appropriate methods will be called.
 
-                Required height: 25 points
-                Recommended min width: 100 points
+ NSControl
+ - There is no cell
+ - The value can only be changed via objectValue other value setters are ignored
+ - Text formatting is ignored, override -drawingLabel instead
+ - There is no NSText field editor; -abortEditing is an alias for -endRecording
+ - Target/Action is respected and a notification is sent when recording ends
+ - The -refusesFirstResponder property is respected
+ - Considers delegate's -control:isValidObject:
 
-    @note See objectValue for Shortcut Recorder 2 compatibility notes.
+ @note See objectValue for Shortcut Recorder 2 compatibility notes.
  */
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
@@ -50,302 +53,275 @@ IB_DESIGNABLE
 }
 
 /*!
-    The receiver’s delegate.
+ Called by a designated initializer to set up internal state.
+ */
+- (void)initInternalState;
 
-    @discussion A recorder control delegate responds to editing-related messages. You can use to to prevent editing
-                in some cases or to validate typed shortcuts.
+#pragma mark Behavior
+
+/*!
+ The receiver’s delegate.
+
+ @seealso SRRecorderControlDelegate
  */
 @property (nullable, weak) IBOutlet NSObject<SRRecorderControlDelegate> *delegate;
 
 /*!
-    Returns an integer bit field indicating allowed modifier flags.
+ Return an integer bit field indicating allowed modifier flags.
 
-    @discussion Defaults to SRCocoaModifierFlagsMask.
+ @discussion Defaults to SRCocoaModifierFlagsMask.
  */
 @property (readonly) IBInspectable NSEventModifierFlags allowedModifierFlags;
 
 /*!
-    Returns an integer bit field indicating required modifier flags.
+ Return an integer bit field indicating required modifier flags.
 
-    @discussion Defaults to 0.
+ @discussion Defaults to 0.
  */
 @property (readonly) IBInspectable NSEventModifierFlags requiredModifierFlags;
 
 /*!
-    Determines whether shortcuts without modifier flags are allowed.
+ Whether shortcuts without modifier flags are allowed.
 
-    @discussion Defaults to NO.
+ @discussion Defaults to NO.
  */
 @property (readonly) IBInspectable BOOL allowsEmptyModifierFlags;
 
 /*!
-    Determines whether the control reinterpret key code and modifier flags
-    using ASCII capable input source.
+ Whether the control reinterpret key code and modifier flags using ASCII capable input source.
 
-    @discussion Defaults to YES.
-                If not set, the same key code may be draw differently depending on current input source.
-                E.g. with US English input source key code 0x0 is interpreted as "a",
-                however with Russian input source, it's interpreted as "ф".
+ @discussion
+ Defaults to YES.
+ If not set, the same key code may draw differently depending on current input source.
+ E.g. with US English input source key code 0x0 is interpreted as "a",
+ but with Russian input source it's interpreted as "ф".
  */
 @property IBInspectable BOOL drawsASCIIEquivalentOfShortcut;
 
 /*!
-    Determines whether Escape is used to cancel recording.
+ Whether Escape is used to cancel recording.
 
-    @discussion Defaults to YES.
-                If set, Escape without modifier flags cannot be recorded as shortcut.
+ @discussion
+ Defaults to YES.
+ If set, Escape cannot be recorded without modifier flags.
  */
 @property IBInspectable BOOL allowsEscapeToCancelRecording;
 
 /*!
-    Determines whether delete (or forward delete) is used to remove current shortcut and end recording.
+ Whether delete (or forward delete) is used to remove current shortcut and end recording.
 
-    @discussion Defaults to YES.
-                If set, neither Delete nor Forward Delete without modifier flags can be recorded as shortcut.
+ @discussion
+ Defaults to YES.
+ If set, neither Delete nor Forward Delete can be recorded without modifier flags.
  */
 @property IBInspectable BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
-    Determines whether recording is in process.
- */
-@property (readonly) BOOL isRecording;
+ Configure allowed and required modifier flags for user interaction.
 
-/*!
-    The value of the receiver.
+ @param newAllowedModifierFlags New allowed modifier flags.
 
-    @discussion If the very first non-nil value is an instance of NSDictionary the control will
-                enter the compatibility mode where objectValue and NSValueBinding accessors will
-                accept and return instances of NSDictionary.
- */
-@property (nullable, copy) SRShortcut *objectValue;
+ @param newRequiredModifierFlags New required modifier flags.
 
-/*!
-    Dictionary representation of the shortcut.
-*/
-@property (nonatomic, nullable, copy) NSDictionary<SRShortcutKey, id> *dictionaryValue;
+ @param newAllowsEmptyModifierFlags Determines whether empty modifier flags are allowed.
 
-@property (nonatomic, null_resettable, copy) SRRecorderControlStyle *style;
+ @discussion
+ These restrictions can be ignored in delegate's -recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:
 
-/*!
-    Configures recording behavior of the control.
+ @note Setting objectValue bypasses checks.
 
-    @param newAllowedModifierFlags New allowed modifier flags.
-
-    @param newRequiredModifierFlags New required modifier flags.
-
-    @param newAllowsEmptyModifierFlags Determines whether empty modifier flags are allowed.
-
-    @discussion Flags are filtered using SRCocoaModifierFlagsMask. Flags does not affect object values set manually.
-
-                These restrictions can be ignored if delegate implements shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode: and returns YES for given modifier flags and key code.
-
-                Throws NSInvalidArgumentException if either required flags are not allowed
-                or required flags are not empty and no modifier flags are allowed.
-
-    @seealso SRRecorderControlDelegate
+ @seealso SRRecorderControlDelegate
  */
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
           requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
 
 /*!
- Return default style for the control.
+ Check whether a given combination is valid.
 
- @seealso SRRecorderControlStyle/defaultStyle
+ @param  aModifierFlags Proposed modifier flags.
+
+ @param  aKeyCode Code of the pressed key.
+
+ @seealso allowedModifierFlags
+
+ @seealso allowsEmptyModifierFlags
+
+ @seealso requiredModifierFlags
  */
-- (SRRecorderControlStyle *)makeDefaultStyle;
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+
+#pragma mark State
 
 /*!
-    Called to initialize internal state after either initWithFrame or awakeFromNib is called.
+ @seealso NSControl/enabled
  */
-- (void)_initInternalState;
+@property (getter=isEnabled) IBInspectable BOOL enabled;
 
 /*!
-    Turns on the recording mode.
+ @seealso NSControl/refusesFirstResponder
+ */
+@property IBInspectable BOOL refusesFirstResponder;
 
-    @discussion You SHOULD not call this method directly.
+/*!
+ @seealso NSControl/tag
+ */
+@property IBInspectable NSInteger tag;
+
+/*!
+ Whether recording is currently in progress.
+ */
+@property (readonly) BOOL isRecording;
+
+/*!
+ Whether the control is being highlighted.
+ */
+@property (getter=isMainButtonHighlighted, readonly) BOOL mainButtonHighlighted;
+
+/*!
+ Whether the cancel button is being highlighted.
+ */
+@property (getter=isCancelButtonHighlighted, readonly) BOOL cancelButtonHighlighted;
+
+/*!
+ Whetehr the clear button is being highlighted.
+ */
+@property (getter=isClearButtonHighlighted, readonly) BOOL clearButtonHighlighted;
+
+/*!
+ Called when a user begins recording.
  */
 - (BOOL)beginRecording;
 
 /*!
-    Turns off the recording mode. Current object value is preserved.
-
-    @discussion You SHOULD not call this method directly.
+ Called when a user ends recording discarding intermediate value and preserving the current value.
  */
 - (void)endRecording;
 
 /*!
-    Clears object value and turns off the recording mode.
-
-    @discussion You SHOULD not call this method directly.
+ Called when a user ends recording discarding both intermediate and current values.
  */
 - (void)clearAndEndRecording;
 
 /*!
-    Designated method to end recording. Sets a given object value, updates bindings and turns off the recording mode.
-
-    @discussion You SHOULD not call this method directly.
+ Called when a user ends recording accepting new value.
  */
 - (void)endRecordingWithObjectValue:(nullable SRShortcut *)aShortcut;
 
+#pragma mark Value
 
 /*!
-    Returns shape of the control.
+ The value of the receiver.
 
-    @discussion Primarily used to draw appropriate focus ring.
+ @discussion
+ If the very first non-nil value is an instance of NSDictionary the control will
+ enter compatibility mode where objectValue and NSValueBinding accessors will
+ accept and return instances of NSDictionary.
+
+ @seealso SRShortcutKey
  */
-- (NSBezierPath *)controlShape;
+@property (nullable, copy) SRShortcut *objectValue;
 
 /*!
-    Returns label to be displayed by the receiver.
-
-    @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
+ Dictionary representation of the shortcut.
  */
-- (NSString *)label;
+@property (nullable, copy) NSDictionary<SRShortcutKey, __kindof NSObject *> *dictionaryValue;
 
 /*!
-    Returns label for accessibility.
-
-    @discussion Returned value depends on isRecording state objectValue and currenlty pressed keys and modifier flags.
+ String representation of object value for accessibility.
  */
-- (NSString *)accessibilityLabel;
+@property (nullable, readonly) NSString *accessibilityStringValue;
 
 /*!
-    Returns string representation of object value for accessibility.
+ A helper method to propagate view-driven changes back to model.
+
+ @discussion
+ This method makes it easier to propagate changes from a view
+ back to the model without overriding -bind:toObject:withKeyPath:options:
+
+ @seealso http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
  */
-- (nullable NSString *)accessibilityStringValue;
+- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
+
+#pragma mark Drawing
 
 /*!
-    Returns attirbutes of label to be displayed by the receiver according to current state.
+ Current style that determines drawing and layout.
 
-    @seealso normalLabelAttributes
-
-    @seealso recordingLabelAttributes
-
-    @seealso disabledLabelAttributes
+ @seealso SRRecorderControlStyle
  */
-- (NSDictionary *)labelAttributes;
-
+@property (null_resettable, copy) SRRecorderControlStyle *style;
 
 /*!
-    Draws background of the receiver into current graphics context.
+ Shape of the control for the focus ring.
+ */
+@property (copy, readonly) NSBezierPath *focusRingShape;
+
+/*!
+ Returns label to be displayed by the receiver.
+ */
+@property (copy, readonly) NSString *drawingLabel;
+
+/*!
+ Attirbutes for the drawingLabel.
+ */
+@property (copy, readonly) NSDictionary<NSAttributedStringKey, __kindof NSObject *> *drawingLabelAttributes;
+
+/*!
+ Called to make default style for the control.
+ */
+- (SRRecorderControlStyle *)makeDefaultStyle;
+
+/*!
+ Draw background of the control into the current graphics context.
  */
 - (void)drawBackground:(NSRect)aDirtyRect;
 
 /*!
-    Draws interior of the receiver into current graphics context.
+ Draw interior of the control into the current graphics context.
  */
 - (void)drawInterior:(NSRect)aDirtyRect;
 
 /*!
-    Draws label of the receiver into current graphics context.
+ Draw label into the current graphics context.
+
+ @seealso drawingLabel
+
+ @seealso drawingLabelAttributes
  */
 - (void)drawLabel:(NSRect)aDirtyRect;
 
 /*!
-    Draws snap back button of the receiver into current graphics context.
+ Draw the cancel button into the current graphics context.
  */
 - (void)drawCancelButton:(NSRect)aDirtyRect;
 
 /*!
-    Draws clear button of the receiver into current graphics context.
+ Draw the clear button into the current graphics context.
  */
 - (void)drawClearButton:(NSRect)aDirtyRect;
 
-
-/*!
-    Determines whether main button (representation of the receiver in normal mode) is highlighted.
- */
-- (BOOL)isMainButtonHighlighted;
-
-/*!
-    Determines whether snap back button is highlighted.
- */
-- (BOOL)isCancelButtonHighlighted;
-
-/*!
-    Determines whetehr clear button is highlighted.
- */
-- (BOOL)isClearButtonHighlighted;
-
 /*!
  Called when control's state changes in a way that may affect layout constraints.
+
+ @see style
  */
 - (void)updateActiveConstraints;
 
 /*!
-    Determines whether modifier flags are valid for key code according to the receiver settings.
-
-    @param  aModifierFlags Proposed modifier flags.
-
-    @param  aKeyCode Code of the pressed key.
-
-    @seealso allowedModifierFlags
-
-    @seealso allowsEmptyModifierFlags
-
-    @seealso requiredModifierFlags
- */
-- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
-
-/*!
-    A helper method to propagate view-driven changes back to model.
- 
-    @discussion This method makes it easier to propagate changes from a view
-                back to the model without overriding bind:toObject:withKeyPath:options:
- 
-    @seealso http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
- */
-- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
-
-/*!
  Schedules performSelector to notify style that view's appearance did change.
 
- @discussion Repeated invocation within the iteration of the run loop are coalesced.
+ @discussion
+ Repeated invocation within the iteration of the run loop are coalesced.
  */
 - (void)scheduleControlViewAppearanceDidChange:(nullable id)aReason;
 
 @end
 
 
-@interface SRRecorderControl(/*NSControl*/)
-
-@property (readonly) NSAttributedString *attributedStringValue;
-
-@property (readonly) NSString *stringValue;
-
-/*!
- Determines whether control enabled and can be edited or not.
-
- @discussion Defaults to YES.
- */
-@property (getter=isEnabled) IBInspectable BOOL enabled;
-
-/*!
- @seealso isMainButtonHighlighted
- */
-@property (getter=isHighlighted, readonly) BOOL highlighted;
-
-/*!
- There is no cell class and cell.
-
- @return Always nil.
- */
-+ (Class)cellClass;
-
-/*!
- Same as endRecording.
-
- @return Always NO since there is no field editor.
- */
-- (BOOL)abortEditing;
-
-@end
-
-
 @interface SRRecorderControl (Deprecated)
 
-@property (nonatomic, readonly, getter=isCancelButtonHighlighted) BOOL isSnapBackButtonHighlighted __attribute__((deprecated("", "isCancelButtonHighlighted")));
+@property (readonly, getter=isCancelButtonHighlighted) BOOL isSnapBackButtonHighlighted __attribute__((deprecated("", "isCancelButtonHighlighted")));
 
 @end
 
@@ -356,64 +332,66 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 @optional
 
 /*!
-    Asks the delegate if editing should begin in the specified shortcut recorder.
+ Ask the delegate if recording should begin.
 
-    @param aRecorder The shortcut recorder which editing is about to begin.
+ @param aControl The control where recording is about to begin.
 
-    @result YES if an editing session should be initiated; otherwise, NO to disallow editing.
-
-    @discussion Implementation of this method by the delegate is optional. If it is not present, editing proceeds as if this method had returned YES.
+ @return YES if recording can being; otherwise, NO.
  */
-- (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder;
+- (BOOL)recorderControlShouldBeginRecording:(SRRecorderControl *)aControl;
+
+- (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlShouldBeginRecording:")));
 
 /*!
-    Gives a delegate opportunity to bypass rules specified by allowed and required modifier flags.
+ Give the delegate the opportunity to bypass rules specified by allowed and required modifier flags.
 
-    @param aRecorder The shortcut recorder for which editing ended.
+ @param aControl The shortcut recorder for which editing ended.
 
-    @param aModifierFlags Proposed modifier flags.
+ @param aModifierFlags Proposed modifier flags.
 
-    @param aKeyCode Code of the pressed key.
+ @param aKeyCode Code of the pressed key.
 
-    @result YES if recorder should bypass key code with given modifier flags despite control's configuration.
+ @return YES if the control should ignore the rules; otherwise, NO.
 
-    @discussion Implementation of this method by the delegate is optional.
-                Normally, you wouldn't allow a user to record shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
-                However, some keys were designed to be key shortcuts by itself. E.g. Functional keys. By implementing this method a delegate can allow
-                these special keys to be set without modifier flags even when the control is configured to disallow empty modifier flags.
+ @discussion
+ Normally, you wouldn't allow a user to record a shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
+ However, some keys are designed to be key shortcuts by itself, e.g. functional keys.
+ By implementing this method the delegate can allow these special keys to be set without modifier flags
+ even when the control is configured to disallow empty modifier flags.
 
-    @seealso allowedModifierFlags
+ @seealso allowedModifierFlags
 
-    @seealso allowsEmptyModifierFlags
+ @seealso allowsEmptyModifierFlags
 
-    @seealso requiredModifierFlags
+ @seealso requiredModifierFlags
  */
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+- (BOOL)recorderControl:(SRRecorderControl *)aControl shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
 
 /*!
-    Asks the delegate if the shortcut can be set by the specified shortcut recorder.
+ Ask the delegate if the shortcut can be set.
 
-    @param aRecorder The shortcut recorder which shortcut is beign to be recordered.
+ @param aControl The control where shortcut was recorded.
 
-    @param  aShortcut The Shortcut user typed.
+ @param  aShortcut The shortcut that was recorded.
 
-    @result YES if shortcut can be recordered. Otherwise NO.
+ @return YES if the shortcut can be recoded; otherwise, NO.
 
-    @discussion Implementation of this method by the delegate is optional. If it is not present, shortcut is recordered as if this method had returned YES.
-                You may implement this method to filter shortcuts that were already set by other recorders.
-
-    @seealso SRValidator
+ @seealso SRValidator
  */
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut;
+- (BOOL)recorderControl:(SRRecorderControl *)aControl canRecordShortcut:(SRShortcut *)aShortcut;
+
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
 
 /*!
-    Tells the delegate that editing stopped for the specified shortcut recorder.
+ Notify the delegate that recording ended.
 
-    @param aRecorder The shortcut recorder for which editing ended.
-
-    @discussion Implementation of this method by the delegate is optional.
+ @param aControl The control where recording ended.
  */
-- (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder;
+- (void)recorderControlDidEndRecording:(SRRecorderControl *)aControl;
+
+- (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlDidEndRecording:")));
 
 @end
 

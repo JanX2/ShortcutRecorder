@@ -1051,8 +1051,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @synthesize cancelButtonPressed = _cancelButtonPressed;
 @synthesize clearButton = _clearButton;
 @synthesize clearButtonPressed = _clearButtonPressed;
-@synthesize shapeCornerRadius = _shapeCornerRadius;
-@synthesize shapeInsets = _shapeInsets;
+@synthesize focusRingCornerRadius = _focusRingCornerRadius;
+@synthesize focusRingInsets = _focusRingInsets;
 @synthesize baselineOffsetFromBottom = _baselineOffsetFromBottom;
 @synthesize alignmentRectInsets = _alignmentRectInsets;
 @synthesize intrinsicContentSize = _intrinsicContentSize;
@@ -1156,8 +1156,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         __auto_type metrics = (NSDictionary *)[self.class.resourceLoader infoForStyle:self][@"metrics"];
 
         _alignmentRectInsets = [metrics[@"alignmentInsets"] edgeInsetsValue];
-        _shapeCornerRadius = [metrics[@"focusRingCornerRadius"] sizeValue];
-        _shapeInsets = [metrics[@"focusRingInsets"] edgeInsetsValue];
+        _focusRingCornerRadius = [metrics[@"focusRingCornerRadius"] sizeValue];
+        _focusRingInsets = [metrics[@"focusRingInsets"] edgeInsetsValue];
         _baselineOffsetFromBottom = [metrics[@"baselineOffsetFromBottom"] doubleValue];
         _normalLabelAttributes = metrics[@"normalLabelAttributes"];
         _recordingLabelAttributes = metrics[@"recordingLabelAttributes"];

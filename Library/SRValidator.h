@@ -25,11 +25,7 @@ NS_SWIFT_NAME(ValidatorDelegate)
 @protocol SRValidatorDelegate;
 
 /*!
-    Validate shortcut by checking whether shortcut is taken by other parts of the application and system.
-
-    @discussion Implementation of SRRecorderControlDelegate/shortcutRecorder:canRecordShortcut: uses
-                the validateShortcut:error: method and presents error via NSErrorPresentation
-                of a given SRRecorderControl instance.
+ Validate shortcut by checking whether it is taken by other parts of the application and system.
  */
 NS_SWIFT_NAME(Validator)
 @interface SRValidator : NSObject <SRRecorderControlDelegate>
@@ -39,43 +35,44 @@ NS_SWIFT_NAME(Validator)
 - (instancetype)initWithDelegate:(nullable NSObject<SRValidatorDelegate> *)aDelegate NS_DESIGNATED_INITIALIZER;
 
 /*!
-    Check whether shortcut is valid.
+ Check whether shortcut is valid.
 
-    @result     YES if shortcut is valid.
+ @return YES if shortcut is valid.
 
-    @discussion Key is checked in the following order:
-                1. Delegate's shortcutValidator:isShortcutValid:reason:
-                2. If delegate allows system-wide shortcuts are checked
-                3. If delegate allows application menu it checked
+ @discussion
+ Key is checked in the following order:
+     1. Delegate's shortcutValidator:isShortcutValid:reason:
+     2. If delegate allows, system-wide shortcuts are checked
+     3. If delegate allows, application menu it checked
 
-    @seealso        SRValidatorDelegate
+ @seealso SRValidatorDelegate
  */
 - (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:));
 
 /*!
-    Check whether delegate allows the shortcut.
+ Check whether delegate allows the shortcut.
 
-    @result     YES if shortcut is valid.
+ @return YES if shortcut is valid.
 
-    @discussion Defaults to YES if delegate does not implement the method.
+ @discussion Defaults to YES if delegate does not implement the method.
  */
 - (BOOL)validateShortcutAgainstDelegate:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
 
 /*!
-    Check whether shortcut is taken by system-wide shortcuts.
+ Check whether shortcut is taken by system-wide shortcuts.
 
-    @result     YES if shortcut is valid.
+ @return YES if shortcut is valid.
 
-    @seealso SRValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
+ @seealso SRValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
  */
 - (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
 
 /*!
-    Check whether shortcut is taken by a menu item.
+ Check whether shortcut is taken by a menu item.
 
-    @result     YES if shortcut is valid.
+ @return YES if shortcut is valid.
 
-    @seealso SRValidatorDelegate/shortcutValidatorShouldCheckMenu:
+ @seealso SRValidatorDelegate/shortcutValidatorShouldCheckMenu:
  */
 - (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:againstMenu:));
 
@@ -97,19 +94,15 @@ NS_SWIFT_NAME(Validator)
 @optional
 
 /*!
-    Ask the delegate if shortcut is valid.
+ Ask the delegate if the shortcut is valid.
 
-    @param      aValidator The validator that validates key code and flags.
+ @param aValidator The validator that is validating the shortcut.
 
-    @param      aKeyCode Key code to validate.
+ @param aShortcut The shortcut to validate.
 
-    @param      aFlags Flags to validate.
+ @param outReason If the delegate decides that the shortcut is invalid, it may pass out an error message.
 
-    @param      outReason If delegate decides that shortcut is invalid, it may pass here an error message.
-
-    @result     YES if shortcut is valid. Otherwise NO.
-
-    @discussion Implementation of this method by the delegate is optional. If it is not present, checking proceeds as if this method had returned YES.
+ @return YES if shortcut is valid; otherwise, NO.
  */
 - (BOOL)shortcutValidator:(SRValidator *)aValidator isShortcutValid:(SRShortcut *)aShortcut reason:(NSString * _Nullable * _Nonnull)outReason;
 
@@ -119,35 +112,35 @@ NS_SWIFT_NAME(Validator)
 - (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags reason:(NSString * _Nullable * _Nonnull)outReason __attribute__((deprecated("", "shortcutValidator:isShortcutValid:reason:")));
 
 /*!
-    Asks the delegate whether validator should check key equivalents of app's menu items.
+ Ask the delegate whether validator should check key equivalents of app's menu items.
 
-    @param      aValidator The validator that going to check app's menu items.
+ @param aValidator The validator that is validating the shortcut.
 
-    @result     YES if validator should check key equivalents of app's menu items. Otherwise NO.
+ @return YES if the validator should check key equivalents of app's menu items; otherwise, NO.
 
-    @discussion Implementation of this method by the delegate is optional. If it is not present, checking proceeds as if this method had returned YES.
+ @discussion If it is not implemented, checking proceeds as if this method had returned YES.
  */
 - (BOOL)shortcutValidatorShouldCheckMenu:(SRValidator *)aValidator;
 
 /*!
-    Asks the delegate whether it should check system shortcuts.
+ Ask the delegate whether it should check system shortcuts.
 
-    @param      aValidator The validator that going to check system shortcuts.
+ @param aValidator The validator that is validating the shortcut.
 
-    @result     YES if validator should check system shortcuts. Otherwise NO.
+ @return YES if the validator should check system shortcuts; otherwise, NO.
 
-    @discussion Implementation of this method by the delegate is optional. If it is not present, checking proceeds as if this method had returned YES.
+ @discussion If it is not implemented, checking proceeds as if this method had returned YES.
  */
 - (BOOL)shortcutValidatorShouldCheckSystemShortcuts:(SRValidator *)aValidator;
 
 /*!
-    Asks the delegate whether it should use ASCII representation of key code when making error messages.
+ Ask the delegate whether it should use ASCII representation of a key code for error messages.
 
-    @param      aValidator The validator that is about to make an error message.
+ @param aValidator The validator that is validating the shortcut.
 
-    @result     YES if validator should use ASCII representation. Otherwise NO.
+ @return YES if the validator should use ASCII representation; otherwise, NO.
 
-    @discussion Implementation of this method by the delegate is optional. If it is not present, ASCII representation of key code is used.
+ @discussion If it is not implemented, ASCII representation of a key code is used.
  */
 - (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRValidator *)aValidator;
 

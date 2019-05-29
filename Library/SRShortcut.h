@@ -14,29 +14,29 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
-    @enum SRShortcutKey
+ @enum SRShortcutKey
 
-    @discussion Keys of the dictionary that represents shortcut.
+ @discussion Keys of the dictionary that represents shortcut.
  */
 typedef NSString *SRShortcutKey NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(ShortcutKey);
 
 /*!
-    @seealso SRShortcut/code
+ @seealso SRShortcut/code
  */
 extern SRShortcutKey const SRShortcutKeyKeyCode;
 
 /*!
-    @seealso SRShortcut/modifierFlags
+ @seealso SRShortcut/modifierFlags
  */
 extern SRShortcutKey const SRShortcutKeyModifierFlags;
 
 /*!
-    @seealso SRShortcut/characters
+ @seealso SRShortcut/characters
  */
 extern SRShortcutKey const SRShortcutKeyCharacters;
 
 /*!
-    @seealso SRShortcut/charactersIgnoringModifiers
+ @seealso SRShortcut/charactersIgnoringModifiers
  */
 extern SRShortcutKey const SRShortcutKeyCharactersIgnoringModifiers;
 
@@ -46,18 +46,18 @@ extern NSString *const SRShortcutCharacters __attribute__((deprecated("", "SRSho
 extern NSString *const SRShortcutCharactersIgnoringModifiers __attribute__((deprecated("", "SRShortcutKeyCharactersIgnoringModifiers")));
 
 /*!
-    Combination of a key code, modifier flags and optionally their characters
-    representation at the time of recording.
+ Combination of a key code, modifier flags and optionally their characters
+ representation at the time of recording.
 
-    @note KVC access is compatible with ShortcutRecorder 2
+ @note KVC access is compatible with ShortcutRecorder 2
 
-    @note Two shortcuts are considered equal if their code and modifier flags match.
+ @note Two shortcuts are considered equal if their code and modifier flags match.
  */
 NS_SWIFT_NAME(Shortcut)
 @interface SRShortcut : NSObject <NSCopying, NSSecureCoding>
 
 /*!
-    @seealso SRShortcut/initWithCode:modifierFlags:characters:charactersIgnoringModifiers:
+ @seealso SRShortcut/initWithCode:modifierFlags:characters:charactersIgnoringModifiers:
  */
 + (instancetype)shortcutWithCode:(unsigned short)aKeyCode
                    modifierFlags:(NSEventModifierFlags)aModifierFlags
@@ -65,35 +65,35 @@ NS_SWIFT_NAME(Shortcut)
      charactersIgnoringModifiers:(nullable NSString *)aCharactersIgnoringModifiers;
 
 /*!
-    Initialize the shortcut with a keyboard event.
+ Initialize the shortcut with a keyboard event.
 
-    @throws NSInvalidArgumentException
+ @throws NSInvalidArgumentException
 
-    @discussion NSInvalidArgumentException is thrown if event is not related to keyboard.
+ @discussion NSInvalidArgumentException is thrown if event is not related to keyboard.
  */
 + (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent;
 
 /*!
-    Initialize the shortcut with a dictionary.
+ Initialize the shortcut with a dictionary.
 
-    @note Compatible with Shortcut Recorder 2 shortcuts.
+ @note Compatible with Shortcut Recorder 2 shortcuts.
 
-    @seealso SRShortcutKey
+ @seealso SRShortcutKey
  */
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary;
 
 + (instancetype)new NS_UNAVAILABLE;
 
 /*!
-    Designated initializer.
+ Designated initializer.
 
-    @param aKeyCode A key code such as 0 ('a').
+ @param aKeyCode A key code such as 0 ('a').
 
-    @param aModifierFlags Modifier flags such as NSEventModifierFlagCommand.
+ @param aModifierFlags Modifier flags such as NSEventModifierFlagCommand.
 
-    @param aCharacters Representation of the key code with modifier flags.
+ @param aCharacters Representation of the key code with modifier flags.
 
-    @param aCharactersIgnoringModifiers Representation of the key code without modifier flags.
+ @param aCharactersIgnoringModifiers Representation of the key code without modifier flags.
  */
 - (instancetype)initWithCode:(unsigned short)aKeyCode
                modifierFlags:(NSEventModifierFlags)aModifierFlags
@@ -103,46 +103,46 @@ NS_SWIFT_NAME(Shortcut)
 - (instancetype)init NS_UNAVAILABLE;
 
 /*!
-    A key code such as 0 ('a').
+ A key code such as 0 ('a').
  */
 @property (readonly) unsigned short keyCode;
 
 /*!
-    Modifier flags such as NSEventModifierFlagCommand | NSEventModifierFlagOption.
+ Modifier flags such as NSEventModifierFlagCommand | NSEventModifierFlagOption.
  */
 @property (readonly) NSEventModifierFlags modifierFlags;
 
 /*!
-    Representation of the key code with modifier flags.
+ Representation of the key code with modifier flags.
 
-    @discussion Depends on system's locale and the active input source
-                at the time when shortcut was taken.
-                Does not participate in equality test.
+ @discussion
+ Depends on system's locale and the active input source at the time when shortcut was taken.
+ Does not participate in the equality test.
  */
 @property (nullable, readonly) NSString *characters;
 
 /*!
-    Representation of the key code without modifier flags.
+ Representation of the key code without modifier flags.
 
-    @discussion Depends on system's locale and the active input source
-                at the time when shortcut was taken.
-                Does not participate in equality test.
+ @discussion
+ Depends on system's locale and the active input source at the time when shortcut was taken.
+ Does not participate in the equality test.
  */
 @property (nullable, readonly) NSString *charactersIgnoringModifiers;
 
 /*!
-    Dictionary representation of the shortcut. Compatible with ShortcutRecorer 2
+ Dictionary representation of the shortcut. Compatible with ShortcutRecorer 2
 
-    @seealso SRShortcutKey
+ @seealso SRShortcutKey
  */
 @property (nonatomic, readonly, copy) NSDictionary<SRShortcutKey, id> *dictionaryRepresentation;
 
 /*!
-    Return readable representation of the shortcut for user dialogs or accessibility.
+ Return readable representation of the shortcut for user dialogs or accessibility.
 
-    @param isASCII: Same key code can refere to different characters depending on the input source.
-                    If isASCII is NO then the active input source is used. Otherwise ASCII input source is used.
-                    Use isASCII = YES for consistent results.
+ @param isASCII Same key code can refer to different characters depending on the input source.
+                If isASCII is NO then the active input source is used. If it's YES ASCII input source is used.
+                Pass YES for consistent results.
  */
 - (NSString *)readableStringRepresentation:(BOOL)isASCII NS_SWIFT_NAME(readableStringRepresentation(isASCII:));
 
@@ -154,28 +154,29 @@ NS_SWIFT_NAME(Shortcut)
 - (BOOL)isEqualToShortcut:(SRShortcut *)aShortcut;
 
 /*!
-    Compare the shortcut to a dictionary representation.
+ Compare the shortcut to a dictionary representation.
 
-    @seealso dictionaryRepresentation
+ @seealso dictionaryRepresentation
  */
 - (BOOL)isEqualToDictionary:(NSDictionary<SRShortcutKey, id> *)aDictionary NS_SWIFT_NAME(isEqual(dictionary:));
 
 /*!
-    Compare shortcut to Cocoa's key equivalent (e.g. NSMenuItem/keyEquivalent) and modifier flags.
+ Compare the shortcut to Cocoa's key equivalent (e.g. NSMenuItem/keyEquivalent) and modifier flags.
  */
-- (BOOL)isEqualToKeyEquivalent:(nullable NSString *)aKeyEquivalent withModifierFlags:(NSEventModifierFlags)aModifierFlags NS_SWIFT_NAME(isEqual(keyEquivalent:modifierFlags:));
+- (BOOL)isEqualToKeyEquivalent:(nullable NSString *)aKeyEquivalent
+             withModifierFlags:(NSEventModifierFlags)aModifierFlags NS_SWIFT_NAME(isEqual(keyEquivalent:modifierFlags:));
 
 /*!
-    Dictionary-like access to properties.
+ Dictionary-like access to properties.
 
-    @seealso SRShortcutKey
+ @seealso SRShortcutKey
  */
 - (nullable id)objectForKeyedSubscript:(SRShortcutKey)aKey;
 
 @end
 
 /*!
-    Check whether dictionary representations of shortcuts are equal (ShortcutRecorder 2).
+ Check whether dictionary representations of shortcuts are equal (ShortcutRecorder 2).
  */
 NS_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b) __attribute__((deprecated("", "SRShortcut/isEqual:")));
 NS_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b)
@@ -191,7 +192,7 @@ NS_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b)
 }
 
 /*!
-    Create ShortcutRecorder 2 shortcut.
+ Create ShortcutRecorder 2 shortcut.
  */
 NS_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode) __attribute__((deprecated("", "SRShortcut")));
 NS_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
@@ -201,24 +202,25 @@ NS_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifi
 
 
 /*!
-    Return string representation of a shortcut with modifier flags replaced with their localized
-    readable equivalents (e.g. ⌥ -> Option).
+ Return string representation of a shortcut with modifier flags replaced with their
+ localized readable equivalents (e.g. ⌥ -> Option).
  */
 NSString * _Nonnull SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode) __attribute__((deprecated("", "SRShortcut/readableStringRepresentation:")));
 
 
 /*!
-    Return string representation of a shortcut with modifier flags replaced with their localized
-    readable equivalents (e.g. ⌥ -> Option) and ASCII character for key code.
+ Return string representation of a shortcut with modifier flags replaced with their
+ localized readable equivalents (e.g. ⌥ -> Option) and ASCII character with a key code.
  */
 NSString * _Nonnull SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode) __attribute__((deprecated("", "SRShortcut/readableStringRepresentation:")));
 
 
 /*!
-    Check whether a given key code with modifier flags is equal to a key equivalent and key equivalent modifier flags
-    (e.g. from NSButton or NSMenuItem).
+ Check whether a given key code with modifier flags is equal to a key equivalent and key equivalent modifier flags
+ (e.g. from NSButton or NSMenuItem).
 
-    @discussion On macOS some key combinations can have "alternates". E.g. option-A can be represented both as "option-A" and "å".
+ @discussion
+ On macOS some key combinations can have "alternates". E.g. option-A can be represented both as "option-A" and "å".
  */
 BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
                                                      NSEventModifierFlags aKeyCodeFlags,

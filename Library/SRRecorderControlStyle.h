@@ -18,8 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*!
  Styling is responsible for providing resources and metrics to draw SRRecorderControl.
-
- @seealso controlAppearanceDidChange:
  */
 NS_SWIFT_NAME(RecorderControlStyling)
 @protocol SRRecorderControlStyling <NSCopying>
@@ -50,7 +48,7 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *recordingLabelAttributes;
 
 /*!
- Label attributes for displaying when enabled.
+ Label attributes for displaying when disabled.
  */
 @property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *disabledLabelAttributes;
 
@@ -77,18 +75,14 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (nullable, readonly) NSImage *clearButtonPressed;
 
 /*!
- Corner radius of control's shape.
-
- Used to draw focus ring.
+ Corner radius of the focus ring.
  */
-@property (readonly) NSSize shapeCornerRadius;
+@property (readonly) NSSize focusRingCornerRadius;
 
 /*!
- Shape insets relative to alignment frame.
-
- Used to draw focus ring.
+ Insets of the focus ring relative to the alignment frame.
  */
-@property (readonly) NSEdgeInsets shapeInsets;
+@property (readonly) NSEdgeInsets focusRingInsets;
 
 /*!
  @seealso NSView/baselineOffsetFromBottom
@@ -106,86 +100,96 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (readonly) NSSize intrinsicContentSize;
 
 /*!
- Frame that applies alignment insets to view's bounds.
+ The guide that applies alignment insets to view's bounds.
  */
 @property (readonly) NSLayoutGuide *alignmentGuide;
 
 /*!
- Frame from background bezel.
+ The guide to draw view's background.
  */
 @property (readonly) NSLayoutGuide *backgroundDrawingGuide;
 
 /*!
- Frame for label.
+ The guide to draw view's label.
  */
 @property (readonly) NSLayoutGuide *labelDrawingGuide;
 
 /*!
- Frame for the cancel button.
+ The guide to draw the cancel button.
+
+ Is valid only when either recordingWithNoValueConstraints or recordingWithValueConstraints are active.
+
+ @seealso recordingWithNoValueConstraints
+ @seealso recordingWithValueConstraints
  */
 @property (readonly) NSLayoutGuide *cancelButtonDrawingGuide;
 
 /*!
- Frame for the clear button
+ The guide to draw the clear button.
+
+ Is valid only when recordingWithValueConstraints are active.
+
+ @seealso recordingWithValueConstraints
  */
 @property (readonly) NSLayoutGuide *clearButtonDrawingGuide;
 
 /*!
- Frame for the cancel button with extra space for easier clicking.
+ The guide for the clickable area of the cancel button.
 
- Used to set up tracking areas.
+ Is valid only when either recordingWithNoValueConstraints or recordingWithValueConstraints are active.
+
+ @seealso recordingWithNoValueConstraints
+ @seealso recordingWithValueConstraints
  */
 @property (readonly) NSLayoutGuide *cancelButtonLayoutGuide;
 
 /*!
- Frame for the clear button with extra space for easier clicking.
+ The guide for the clickable area of the clear button.
 
- Used to set up tracking areas.
+ Is valid only when recordingWithValueConstraints are active.
+
+ @seealso recordingWithValueConstraints
  */
 @property (readonly) NSLayoutGuide *clearButtonLayoutGuide;
 
 /*!
- Constraints that should always be active.
+ Constraints that should be always active.
  */
 @property (readonly) NSArray<NSLayoutConstraint *> *alwaysConstraints;
 
 /*!
- Constraints for when not recording including the disabled state.
+ Constraints for not recording states.
  */
 @property (readonly) NSArray<NSLayoutConstraint *> *displayingConstraints;
 
 /*!
- Constraints for recording when there is no value and clear button should not be displayed.
+ Constraints for the recording state when there is no value and clear button should not be displayed.
  */
 @property (readonly) NSArray<NSLayoutConstraint *> *recordingWithNoValueConstraints;
 
 /*!
- Constraints for recording when there is value and clear button should be displayed.
+ Constraints for the recording state when there is a value and clear button should be displayed.
  */
 @property (readonly) NSArray<NSLayoutConstraint *> *recordingWithValueConstraints;
 
 /*!
- Called before style is applied to the specified control.
+ Called just before style is applied to the specified control.
 
- @discussion Use this method to locate and cache resources, set up observers and install constraints.
+ @discussion
+ Use this method to locate and cache resources, set up observers and install constraints.
  */
 - (void)prepareForRecorderControl:(SRRecorderControl *)aControl;
 
 /*!
  Called just before style is removed from the control it was added to.
 
- @discussion Use this method to free allocated resources, remove observers and remove constraints.
+ @discussion
+ Use this method to free allocated resources, remove observers and remove constraints.
  */
 - (void)prepareForRemoval;
 
 /*!
- Update images according to the current appearance settings.
-
- @discussion Called when:
-    - Backing scale factor of aControl's window
-    - System's color tint
-    - System's accessibility settings
-    - Effective appearance of aControl
+ Called when view's appearance settings are changed.
 
  @seealso NSView/viewDidChangeBackingProperties
  @seealso NSControlTintDidChangeNotification
@@ -331,7 +335,7 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
  @discussion Format: [-{aqua, vibrantlight, vibrantdark, darkaqua}][-acc][-{ltr, rtl}][-{blue, graphite}]
              Fragments are optional and are not included if the corresponding value is either None or Unspecified.
  */
-@property (nonatomic, readonly) NSString *stringRepresentation;
+@property (readonly) NSString *stringRepresentation;
 
 /*!
  Current components based on the system and view settings.
@@ -420,13 +424,11 @@ NS_SWIFT_NAME(RecorderControlStyle)
 /*!
  Style that uses a given identifier to locate resources in the framework and application bundles.
 
- @param anIdentifier If nil, default for the current version of macOS is picked.
-                     Defaults to the best available for the system
+ @param anIdentifier Identifier to locate the style.
+                     Defaults to the best available for the system in framework's bundle.
 
  @param aComponents Custom components that override current system settings.
-                    Defaults to unspecified to allow fallthrough.
-
- @discussion Each lookup prefix has a format of "identifier[-{aqua, darkaqua, vibrantlight, vibrantdark}][-{blue, graphite}][-acc]"
+                    Defaults to unspecified to allow complete fallthrough.
 
  @seealso effectiveComponents
  */

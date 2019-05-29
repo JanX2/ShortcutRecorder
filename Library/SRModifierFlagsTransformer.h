@@ -15,25 +15,25 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
-    Transform Cocoa modifier flags into a string of unicode characters.
+ Transform Cocoa modifier flags into a string of unicode characters.
  */
 NS_SWIFT_NAME(ModifierFlagsTransformer)
 @interface SRModifierFlagsTransformer : NSValueTransformer
 
 /*!
-    Shared symbolic transformer.
+ Shared symbolic transformer.
  */
 @property (class, readonly) SRModifierFlagsTransformer *sharedSymbolicTransformer;
 
 /*!
-    Shared literal transformer.
+ Shared literal transformer.
  */
 @property (class, readonly) SRModifierFlagsTransformer *sharedLiteralTransformer;
 
 - (instancetype)init:(BOOL)aIsLiteral NS_DESIGNATED_INITIALIZER;
 
 /*!
-    Whether modifier flags are transformed into unicode characters or literal strings.
+ Whether modifier flags are transformed into unicode characters or literal strings.
  */
 @property (readonly) BOOL isLiteral;
 
