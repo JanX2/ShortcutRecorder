@@ -340,8 +340,6 @@ NS_SWIFT_NAME(RecorderControlDelegate)
  */
 - (BOOL)recorderControlShouldBeginRecording:(SRRecorderControl *)aControl;
 
-- (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlShouldBeginRecording:")));
-
 /*!
  Give the delegate the opportunity to bypass rules specified by allowed and required modifier flags.
 
@@ -367,8 +365,6 @@ NS_SWIFT_NAME(RecorderControlDelegate)
  */
 - (BOOL)recorderControl:(SRRecorderControl *)aControl shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
-
 /*!
  Ask the delegate if the shortcut can be set.
 
@@ -382,14 +378,18 @@ NS_SWIFT_NAME(RecorderControlDelegate)
  */
 - (BOOL)recorderControl:(SRRecorderControl *)aControl canRecordShortcut:(SRShortcut *)aShortcut;
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
-
 /*!
  Notify the delegate that recording ended.
 
  @param aControl The control where recording ended.
  */
 - (void)recorderControlDidEndRecording:(SRRecorderControl *)aControl;
+
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
+
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
+
+- (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlShouldBeginRecording:")));
 
 - (void)shortcutRecorderDidEndRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlDidEndRecording:")));
 
