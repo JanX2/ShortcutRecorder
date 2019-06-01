@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <view id="DHz-dI-DIA">
+            <rect key="frame" x="0.0" y="0.0" width="440" height="177"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="CXp-Z8-7a0">
+                    <rect key="frame" x="20" y="61" width="400" height="96"/>
+                    <subviews>
+                        <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" placeholderIntrinsicWidth="165" placeholderIntrinsicHeight="24" translatesAutoresizingMaskIntoConstraints="NO" id="LNM-bl-qkj" customClass="ScaledRecorderControl" customModule="Demo" customModuleProvider="target">
+                            <rect key="frame" x="150" y="36" width="100" height="24"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="100" id="Dem-Gl-QcY"/>
+                                <constraint firstAttribute="height" constant="24" id="JfK-7Y-Ig9"/>
+                            </constraints>
+                        </customView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" secondItem="LNM-bl-qkj" secondAttribute="height" multiplier="4" id="3QD-qC-avu"/>
+                        <constraint firstItem="LNM-bl-qkj" firstAttribute="centerY" secondItem="CXp-Z8-7a0" secondAttribute="centerY" id="FTt-UK-YIN"/>
+                        <constraint firstItem="LNM-bl-qkj" firstAttribute="centerX" secondItem="CXp-Z8-7a0" secondAttribute="centerX" id="qDg-aK-gWm"/>
+                        <constraint firstAttribute="width" secondItem="LNM-bl-qkj" secondAttribute="width" multiplier="4" id="ujV-nc-nhl"/>
+                    </constraints>
+                </customView>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Mep-Bq-3Rd">
+                    <rect key="frame" x="172" y="21" width="89" height="18"/>
+                    <buttonCell key="cell" type="check" title="Dark Mode" bezelStyle="regularSquare" imagePosition="left" inset="2" id="TJj-jw-5yf">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9RL-DB-Fxh">
+                    <rect key="frame" x="265" y="21" width="66" height="18"/>
+                    <buttonCell key="cell" type="check" title="Vibrant" bezelStyle="regularSquare" imagePosition="left" inset="2" id="YhS-aG-ARt">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tHB-MQ-n56">
+                    <rect key="frame" x="18" y="17" width="94" height="25"/>
+                    <popUpButtonCell key="cell" type="push" title="Mojave" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" tag="14" inset="2" selectedItem="2jL-UA-6vf" id="QQo-wr-iRZ">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="menu"/>
+                        <menu key="menu" id="yRU-lf-tGT">
+                            <items>
+                                <menuItem title="Mojave" state="on" tag="14" id="2jL-UA-6vf"/>
+                                <menuItem title="Yosemite" tag="10" id="MRW-u6-dO5"/>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                </popUpButton>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wSL-9f-s5g">
+                    <rect key="frame" x="335" y="21" width="87" height="18"/>
+                    <buttonCell key="cell" type="check" title="Accessible" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Koc-Vo-TNK">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="wSL-9f-s5g" firstAttribute="leading" secondItem="9RL-DB-Fxh" secondAttribute="trailing" constant="8" symbolic="YES" id="62R-t7-8Yr"/>
+                <constraint firstItem="tHB-MQ-n56" firstAttribute="leading" secondItem="DHz-dI-DIA" secondAttribute="leading" constant="20" symbolic="YES" id="7Fk-Dy-DXU"/>
+                <constraint firstAttribute="trailing" secondItem="wSL-9f-s5g" secondAttribute="trailing" constant="20" id="8Jg-Lu-40g"/>
+                <constraint firstAttribute="trailing" secondItem="CXp-Z8-7a0" secondAttribute="trailing" constant="20" id="979-TI-jHU"/>
+                <constraint firstItem="CXp-Z8-7a0" firstAttribute="leading" secondItem="DHz-dI-DIA" secondAttribute="leading" constant="20" id="F2I-4B-9bP"/>
+                <constraint firstAttribute="bottom" secondItem="tHB-MQ-n56" secondAttribute="bottom" constant="20" symbolic="YES" id="Rk2-1c-Ik8"/>
+                <constraint firstItem="tHB-MQ-n56" firstAttribute="top" secondItem="CXp-Z8-7a0" secondAttribute="bottom" constant="20" id="heR-tH-sSm"/>
+                <constraint firstItem="CXp-Z8-7a0" firstAttribute="top" secondItem="DHz-dI-DIA" secondAttribute="top" constant="20" id="iqJ-0g-9UQ"/>
+                <constraint firstItem="Mep-Bq-3Rd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="tHB-MQ-n56" secondAttribute="trailing" constant="20" id="pJK-bM-TjR"/>
+                <constraint firstItem="wSL-9f-s5g" firstAttribute="firstBaseline" secondItem="9RL-DB-Fxh" secondAttribute="firstBaseline" id="qOW-Se-wF4"/>
+                <constraint firstItem="Mep-Bq-3Rd" firstAttribute="firstBaseline" secondItem="tHB-MQ-n56" secondAttribute="firstBaseline" id="vhE-bD-3pk"/>
+                <constraint firstItem="9RL-DB-Fxh" firstAttribute="firstBaseline" secondItem="Mep-Bq-3Rd" secondAttribute="firstBaseline" id="yNO-UZ-fji"/>
+                <constraint firstItem="9RL-DB-Fxh" firstAttribute="leading" secondItem="Mep-Bq-3Rd" secondAttribute="trailing" constant="8" symbolic="YES" id="yxX-Hh-vUT"/>
+            </constraints>
+        </view>
+    </objects>
+</document>

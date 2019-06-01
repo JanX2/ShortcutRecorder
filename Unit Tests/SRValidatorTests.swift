@@ -70,19 +70,19 @@ class SRValidatorTests: XCTestCase {
         }
 
         let v1 = FailingValidator()
-        try! v1.validateShortcut(makeShortcut())
+        try! v1.validateShortcut(Shortcut.default)
         XCTAssertEqual(v1.calls, ["delegate", "system", "menu"])
 
         let v2 = FailingValidator("delegate")
-        try? v2.validateShortcut(makeShortcut())
+        try? v2.validateShortcut(Shortcut.default)
         XCTAssertEqual(v2.calls, [])
 
         let v3 = FailingValidator("system")
-        try? v3.validateShortcut(makeShortcut())
+        try? v3.validateShortcut(Shortcut.default)
         XCTAssertEqual(v3.calls, ["delegate"])
 
         let v4 = FailingValidator("menu")
-        try? v4.validateShortcut(makeShortcut())
+        try? v4.validateShortcut(Shortcut.default)
         XCTAssertEqual(v4.calls, ["delegate", "system"])
     }
 
@@ -96,7 +96,7 @@ class SRValidatorTests: XCTestCase {
 
         let d = Delegate()
         let v = RecordingValidator(delegate: d)
-        XCTAssertThrowsError(try v.validateShortcutAgainstDelegate(makeShortcut()))
+        XCTAssertThrowsError(try v.validateShortcutAgainstDelegate(Shortcut.default))
     }
 
     func testSystemShortcutsFailure() {

@@ -213,6 +213,17 @@ class SRShortcutTests: XCTestCase {
         }
     }
 
+    func testSiblingSubclassEquality() {
+        class ASubclass: Shortcut {}
+        class BSubclass: Shortcut {}
+
+        let a = ASubclass.default
+        let b = BSubclass.default
+
+        XCTAssertEqual(a, b);
+        XCTAssertEqual(b, a);
+    }
+
     func testEncoding() {
         let s = NSKeyedUnarchiver.unarchiveObject(with: NSKeyedArchiver.archivedData(withRootObject: Shortcut.default))!
         XCTAssertEqual(s as! Shortcut, Shortcut.default)

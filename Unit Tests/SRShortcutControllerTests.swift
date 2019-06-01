@@ -14,7 +14,7 @@ import ShortcutRecorder
 
 class SRShortcutControllerTests: XCTestCase {
     func testInitialization() {
-        let c = ShortcutController(content: makeShortcut())
+        let c = ShortcutController(content: Shortcut.default)
         let selection = c.value(forKey: "selection") as! NSObject
         let shortcutDict: Dictionary = c.content!.dictionaryRepresentation
         let selectionDict = selection.dictionaryWithValues(forKeys: [
@@ -34,7 +34,7 @@ class SRShortcutControllerTests: XCTestCase {
             XCTAssertEqual(controllerValue, selectionValue)
         }
 
-        for content in [makeShortcut(), nil] {
+        for content in [Shortcut.default, nil] {
             let c = ShortcutController(content: content)
             compareKeys(c, .keyEquivalent, .keyEquivalent)
             compareKeys(c, .keyEquivalentModifierMask, .keyEquivalentModifierMask)
@@ -58,7 +58,7 @@ class SRShortcutControllerTests: XCTestCase {
         XCTAssertTrue((c.value(forKeyPath: ShortcutControllerKeyPath.literalModifierFlags.rawValue) as! NSObject).isEqual(NSNoSelectionMarker))
         XCTAssertTrue((c.value(forKeyPath: ShortcutControllerKeyPath.symbolicModifierFlags.rawValue) as! NSObject).isEqual(NSNoSelectionMarker))
 
-        c.content = makeShortcut()
+        c.content = Shortcut.default
         XCTAssertFalse((c.value(forKeyPath: ShortcutControllerKeyPath.keyEquivalent.rawValue) as! NSObject).isEqual(NSNoSelectionMarker))
         XCTAssertFalse((c.value(forKeyPath: ShortcutControllerKeyPath.keyEquivalentModifierMask.rawValue) as! NSObject).isEqual(NSNoSelectionMarker))
         XCTAssertFalse((c.value(forKeyPath: ShortcutControllerKeyPath.literalKeyCode.rawValue) as! NSObject).isEqual(NSNoSelectionMarker))
