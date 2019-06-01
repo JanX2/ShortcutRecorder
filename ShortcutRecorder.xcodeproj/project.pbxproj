@@ -33,7 +33,10 @@
 		BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */; };
 		BA722EF721640D2400EFF192 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA722EF621640D2400EFF192 /* Utility.swift */; };
 		BA8CFDF322A2645800C96F79 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = BA8CFDF222A2645800C96F79 /* LICENSE.md */; };
+		BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */; };
 		BA8CFE1022A2F17A00C96F79 /* ATTRIBUTION.md in Resources */ = {isa = PBXBuildFile; fileRef = BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */; };
+		BA8CFE1222A2F92000C96F79 /* SRShortcutFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */; };
 		BAC79C0A216FCE8E00E45F23 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC79C09216FCE8E00E45F23 /* App.swift */; };
 		BAC79C1B216FCE9000E45F23 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC79C1A216FCE9000E45F23 /* DemoUITests.swift */; };
 		BAC79C2C216FD76000E45F23 /* ShortcutRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
@@ -156,7 +159,10 @@
 		BA8C53D421FFED8D00B40164 /* Demo.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Demo.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BA8CFDF222A2645800C96F79 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
 		BA8CFDF422A26DAA00C96F79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutFormatter.h; path = Library/SRShortcutFormatter.h; sourceTree = "<group>"; };
+		BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutFormatter.m; path = Library/SRShortcutFormatter.m; sourceTree = "<group>"; };
 		BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ATTRIBUTION.md; sourceTree = SOURCE_ROOT; };
+		BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutFormatterTests.swift; sourceTree = "<group>"; };
 		BAC79C07216FCE8E00E45F23 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC79C09216FCE8E00E45F23 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BAC79C10216FCE8F00E45F23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -265,6 +271,8 @@
 				BA722EAF21608FB600EFF192 /* SRShortcut.m */,
 				BA722ED32162A4AA00EFF192 /* SRShortcutController.h */,
 				BA722ED42162A4AA00EFF192 /* SRShortcutController.m */,
+				BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */,
+				BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */,
 				74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */,
 				74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */,
 				E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */,
@@ -341,6 +349,7 @@
 				BA03E78E216A90A40008002D /* SRValidatorTests.swift */,
 				BA722ED02161625100EFF192 /* SRShortcutTests.swift */,
 				BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */,
+				BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */,
 				BAED4704217007C70008DA80 /* SRRecorderControlTests.swift */,
 				BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */,
 				BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */,
@@ -427,6 +436,7 @@
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
 				BA722EB021608FB600EFF192 /* SRShortcut.h in Headers */,
+				BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */,
 				BA722ED52162A4AA00EFF192 /* SRShortcutController.h in Headers */,
 				939839400DA4350B007F53F3 /* SRCommon.h in Headers */,
 			);
@@ -660,6 +670,7 @@
 			files = (
 				BA722EB121608FB600EFF192 /* SRShortcut.m in Sources */,
 				939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */,
+				BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */,
 				939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */,
 				BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */,
 				BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */,
@@ -676,6 +687,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BAE0CED522946B4500DD65C5 /* SRRecorderControlStyleTests.swift in Sources */,
+				BA8CFE1222A2F92000C96F79 /* SRShortcutFormatterTests.swift in Sources */,
 				BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */,
 				BA722ED12161625100EFF192 /* SRShortcutTests.swift in Sources */,
 				BA722EF721640D2400EFF192 /* Utility.swift in Sources */,
