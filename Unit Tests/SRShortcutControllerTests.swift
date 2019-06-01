@@ -139,8 +139,4 @@ class SRShortcutControllerTests: XCTestCase {
             XCTAssertTrue(o.isCalled)
         }
     }
-
-    func testComputedPropertiesUpdatedWithInputMethod() {
-        XCTAssertFalse(true);
-    }
 }

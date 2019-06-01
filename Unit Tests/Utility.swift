@@ -11,7 +11,7 @@ extension Shortcut {
     class var `default`: Shortcut
     {
         return self.init(code: 0,
-                         modifierFlags: .option,
+                         modifierFlags: [.option, .command],
                          characters: "å",
                          charactersIgnoringModifiers: "a")
     }

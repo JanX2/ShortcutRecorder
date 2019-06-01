@@ -97,12 +97,18 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 - (NSDictionary<SRShortcutKey, id> *)dictionaryRepresentation
 {
-    return @{
-        SRShortcutKeyKeyCode: @(self.keyCode),
-        SRShortcutKeyModifierFlags: @(self.modifierFlags),
-        SRShortcutKeyCharacters: self.characters ? self.characters : @"",
-        SRShortcutKeyCharactersIgnoringModifiers: self.charactersIgnoringModifiers ? self.charactersIgnoringModifiers : @""
-    };
+    NSMutableDictionary *d = [NSMutableDictionary dictionaryWithCapacity:4];
+
+    d[SRShortcutKeyKeyCode] = @(self.keyCode);
+    d[SRShortcutKeyModifierFlags] = @(self.modifierFlags);
+
+    if (self.characters)
+        d[SRShortcutKeyCharacters] = self.characters;
+
+    if (self.charactersIgnoringModifiers)
+        d[SRShortcutKeyCharactersIgnoringModifiers] = self.charactersIgnoringModifiers;
+
+    return d;
 }
 
 

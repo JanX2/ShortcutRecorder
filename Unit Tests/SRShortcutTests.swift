@@ -21,7 +21,7 @@ class SRShortcutTests: XCTestCase {
     func testInitialization() {
         let s = Shortcut.default
         XCTAssertEqual(s.keyCode, 0)
-        XCTAssertEqual(s.modifierFlags, .option)
+        XCTAssertEqual(s.modifierFlags, [.option, .command])
         XCTAssertEqual(s.characters, "å")
         XCTAssertEqual(s.charactersIgnoringModifiers, "a")
     }
@@ -47,7 +47,7 @@ class SRShortcutTests: XCTestCase {
     func testSubscription() {
         let s = Shortcut.default
         XCTAssertEqual(s[.keyCode] as! UInt16, 0)
-        XCTAssertEqual(NSEvent.ModifierFlags(rawValue: s[.modifierFlags] as! UInt), .option)
+        XCTAssertEqual(NSEvent.ModifierFlags(rawValue: s[.modifierFlags] as! UInt), [.option, .command])
         XCTAssertEqual(s[.characters] as! String, "å")
         XCTAssertEqual(s[.charactersIgnoringModifiers] as! String, "a")
     }
@@ -55,7 +55,7 @@ class SRShortcutTests: XCTestCase {
     func testKVC() {
         let s = Shortcut.default
         XCTAssertEqual(s.value(forKey: ShortcutKey.keyCode.rawValue) as! UInt16, 0)
-        XCTAssertEqual(NSEvent.ModifierFlags(rawValue: s.value(forKey: ShortcutKey.modifierFlags.rawValue) as! UInt), .option)
+        XCTAssertEqual(NSEvent.ModifierFlags(rawValue: s.value(forKey: ShortcutKey.modifierFlags.rawValue) as! UInt), [.option, .command])
         XCTAssertEqual(s.value(forKey: ShortcutKey.characters.rawValue) as! String, "å")
         XCTAssertEqual(s.value(forKey: ShortcutKey.charactersIgnoringModifiers.rawValue) as! String, "a")
     }
@@ -91,15 +91,11 @@ class SRShortcutTests: XCTestCase {
     func testDictionaryRepresentation() {
         let s1 = Shortcut(dictionary: [ShortcutKey.keyCode: 0])
         XCTAssertEqual(s1.dictionaryRepresentation as NSDictionary, [ShortcutKey.keyCode: 0,
-                                                                     ShortcutKey.modifierFlags: 0,
-                                                                     ShortcutKey.characters: NSNull(),
-                                                                     ShortcutKey.charactersIgnoringModifiers: NSNull()])
+                                                                     ShortcutKey.modifierFlags: 0])
 
         let s2 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])
         XCTAssertEqual(s2.dictionaryRepresentation as NSDictionary, [ShortcutKey.keyCode: 0,
-                                                                     ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
-                                                                     ShortcutKey.characters: NSNull(),
-                                                                     ShortcutKey.charactersIgnoringModifiers: NSNull()])
+                                                                     ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])
 
         let s3 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
                                        ShortcutKey.characters: "å", ShortcutKey.charactersIgnoringModifiers: "a"])
@@ -111,17 +107,19 @@ class SRShortcutTests: XCTestCase {
 
     func testEquality() {
         let s = Shortcut.default
+        let modifierFlags: NSEvent.ModifierFlags = [.option, .command]
+
         XCTAssertEqual(s, s)
         XCTAssertEqual(s, Shortcut.default)
         XCTAssertNotEqual(s, Shortcut(code: 0, modifierFlags: .command, characters: nil, charactersIgnoringModifiers: nil));
         XCTAssertTrue(s.isEqual(dictionary: [ShortcutKey.keyCode: 0,
-                                             ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
+                                             ShortcutKey.modifierFlags: modifierFlags.rawValue,
                                              ShortcutKey.characters: "å",
                                              ShortcutKey.charactersIgnoringModifiers: "a"]))
-        XCTAssertFalse(s.isEqual(dictionary: [ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
+        XCTAssertFalse(s.isEqual(dictionary: [ShortcutKey.modifierFlags: modifierFlags.rawValue,
                                               ShortcutKey.characters: "å",
                                               ShortcutKey.charactersIgnoringModifiers: "a"]))
-        XCTAssertTrue(s.isEqual(keyEquivalent: "a", modifierFlags: NSEvent.ModifierFlags.option));
+        XCTAssertTrue(s.isEqual(keyEquivalent: "a", modifierFlags: [NSEvent.ModifierFlags.option, NSEvent.ModifierFlags.command]));
         XCTAssertTrue(s.isEqual(keyEquivalent: "å", modifierFlags: []));
         XCTAssertFalse(s.isEqual(keyEquivalent: "b", modifierFlags: []));
     }

@@ -65,7 +65,7 @@ class SRRecorderControlTests: XCTestCase {
         XCTAssertFalse(c.acceptsFirstResponder)
     }
 
-    func testBindingAndModelChange() {
+    func testComaptibilityBindingAndModelChange() {
         let v = RecorderControl()
         v.bind(NSBindingName.value, to: NSUserDefaultsController.shared, withKeyPath: "values.shortcut", options: nil)
         let keyCode: UInt16 = 0
@@ -76,7 +76,7 @@ class SRRecorderControlTests: XCTestCase {
         XCTAssertEqual(v.objectValue![.modifierFlags] as! UInt, modifierFlags.rawValue)
     }
 
-    func testBindingAndViewChange() {
+    func testComaptibilityBindingAndViewChange() {
         let v = RecorderControl()
         v.bind(NSBindingName.value, to: NSUserDefaultsController.shared, withKeyPath: "values.shortcut", options: nil)
         let keyCode: UInt16 = 0

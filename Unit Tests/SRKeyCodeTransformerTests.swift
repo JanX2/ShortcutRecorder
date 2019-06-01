@@ -23,6 +23,6 @@ class SRKeyCodeTransformerTests: XCTestCase {
         c.objectValue = Shortcut(code: UInt16(kVK_Tab), modifierFlags: [], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertEqual(c.stringValue, "\u{21E4}")
         c.objectValue = Shortcut(code: UInt16(kVK_Tab), modifierFlags: [.shift], characters: nil, charactersIgnoringModifiers: nil)
-        XCTAssertEqual(c.stringValue, "⇧\u{21E5}")
+        XCTAssertEqual(c.stringValue, "\u{21E5}⇧")
     }
 }
