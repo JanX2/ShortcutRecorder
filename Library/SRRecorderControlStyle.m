@@ -415,7 +415,9 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 - (BOOL)isEqual:(SRRecorderControlStyleComponents *)anObject
 {
-    return [self SR_isEqual:anObject usingSelector:@selector(isEqualToComponents:) ofCommonAncestor:SRRecorderControlStyleComponents.class];
+    return [self SR_isEqual:anObject
+              usingSelector:@selector(isEqualToComponents:)
+           ofCommonAncestor:SRRecorderControlStyleComponents.class];
 }
 
 - (NSUInteger)hash
@@ -432,6 +434,57 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 - (NSString *)description
 {
     return [self stringRepresentation];
+}
+
+@end
+
+
+@interface SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey: NSObject
+@property NSString *identifier;
+@property SRRecorderControlStyleComponents *components;
+@end
+
+
+@implementation SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey
+
+- (NSUInteger)hash
+{
+    return (self.components.hash << 32) ^ self.identifier.hash;
+}
+
+- (BOOL)isEqual:(SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey *)anObject
+{
+    if (![anObject isKindOfClass:self.class])
+        return NO;
+
+    return [self.identifier isEqual:anObject.identifier] && [self.components isEqual:anObject.components];
+}
+
+@end
+
+
+@interface SRRecorderControlStyleResourceLoaderCacheImageKey: NSObject
+@property NSString *identifier;
+@property SRRecorderControlStyleComponents *components;
+@property NSString *name;
+@end
+
+
+@implementation SRRecorderControlStyleResourceLoaderCacheImageKey
+
+- (NSUInteger)hash
+{
+    return (self.components.hash << 32) ^ (self.name.hash << 32) ^ self.components.hash;
+}
+
+- (BOOL)isEqual:(SRRecorderControlStyleResourceLoaderCacheImageKey *)anObject
+{
+    if (![anObject isKindOfClass:self.class])
+        return NO;
+
+    return [self.identifier isEqual:anObject.identifier] &&
+        [self.components isEqual:anObject.components] &&
+        [self.name isEqual:anObject];
 }
 
 @end
@@ -705,7 +758,10 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 {
     @synchronized (self)
     {
-        NSArray *key = @[aStyle.identifier, aStyle.effectiveComponents];
+        __auto_type key = [SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey new];
+        key.identifier = aStyle.identifier.copy;
+        key.components = aStyle.effectiveComponents.copy;
+
         NSArray *lookupPrefixes = [_cache objectForKey:key];
 
         if (!lookupPrefixes)
@@ -733,7 +789,10 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 {
     @synchronized (self)
     {
-        NSArray *key = @[aStyle.identifier, aStyle.effectiveComponents, aName];
+        __auto_type key = [SRRecorderControlStyleResourceLoaderCacheImageKey new];
+        key.identifier = aStyle.identifier.copy;
+        key.components = aStyle.effectiveComponents.copy;
+        key.name = aName.copy;
         NSArray *imageNameCache = [_cache objectForKey:key];
         NSImage *image = nil;
 
