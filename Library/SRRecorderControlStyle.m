@@ -999,7 +999,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         MakeEqConstraint(self.cancelButtonLayoutGuide.topAnchor, self.alignmentGuide.topAnchor),
         MakeEqConstraint(self.cancelButtonLayoutGuide.leadingAnchor, self.cancelButtonDrawingGuide.leadingAnchor),
         MakeEqConstraint(self.cancelButtonLayoutGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.trailingAnchor, self.cancelButtonDrawingGuide.trailingAnchor),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.trailingAnchor, self.alignmentGuide.trailingAnchor),
     ];
 
     _recordingWithValueConstraints = @[
@@ -1023,7 +1023,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         MakeEqConstraint(self.clearButtonLayoutGuide.topAnchor, self.alignmentGuide.topAnchor),
         MakeEqConstraint(self.clearButtonLayoutGuide.leadingAnchor, self.clearButtonDrawingGuide.leadingAnchor),
         MakeEqConstraint(self.clearButtonLayoutGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
-        MakeEqConstraint(self.clearButtonLayoutGuide.trailingAnchor, self.clearButtonDrawingGuide.trailingAnchor),
+        MakeEqConstraint(self.clearButtonLayoutGuide.trailingAnchor, self.alignmentGuide.trailingAnchor),
     ];
 
     self.recorderControl.needsUpdateConstraints = YES;
