@@ -20,7 +20,7 @@
     "metrics": {
         "minSize": {
             "width": 11.0,
-            "height": 25.0
+            "height": 26.0
         },
         "labelToCancel": 3.0,
         "cancelToClear": 5.0,
@@ -43,7 +43,7 @@
         "alignmentInsets": {
             "top": 2.0,
             "left": 1.0,
-            "bottom": 2.0,
+            "bottom": 3.0,
             "right": 1.0
         },
         "normalLabelAttributes": {
