@@ -86,8 +86,16 @@ NS_SWIFT_NAME(RecorderControlStyling)
 
 /*!
  @seealso NSView/baselineOffsetFromBottom
+ @seealso baselineDrawingOffsetFromBottom
  */
-@property (readonly) CGFloat baselineOffsetFromBottom;
+@property (readonly) CGFloat baselineLayoutOffsetFromBottom;
+
+/*!
+ Unlike baselineLayoutOffsetFromBottom this is the true baseline where label is actually drawn.
+
+ @seealso baselineLayoutOffsetFromBottom
+ */
+@property (readonly) CGFloat baselineDrawingOffsetFromBottom;
 
 /*!
  @seealso NSView/alignmentRectInsets

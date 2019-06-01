@@ -681,7 +681,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                 Set(metricsInProgress, anObject, @"baselineFromTop", VerifyIsNumber, nil);
                 Set(metricsInProgress, anObject, @"alignmentToLabel", VerifyIsNumber, nil);
                 Set(metricsInProgress, anObject, @"labelToAlignment", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"baselineOffsetFromBottom", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"baselineLayoutOffsetFromBottom", VerifyIsNumber, nil);
+                Set(metricsInProgress, anObject, @"baselineDrawingOffsetFromBottom", VerifyIsNumber, nil);
                 Set(metricsInProgress, anObject, @"focusRingCornerRadius", VerifyIsSize, TransformSize);
                 Set(metricsInProgress, anObject, @"focusRingInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
                 Set(metricsInProgress, anObject, @"alignmentInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
@@ -1053,7 +1054,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @synthesize clearButtonPressed = _clearButtonPressed;
 @synthesize focusRingCornerRadius = _focusRingCornerRadius;
 @synthesize focusRingInsets = _focusRingInsets;
-@synthesize baselineOffsetFromBottom = _baselineOffsetFromBottom;
+@synthesize baselineLayoutOffsetFromBottom = _baselineLayoutOffsetFromBottom;
+@synthesize baselineDrawingOffsetFromBottom = _baselineDrawingOffsetFromBottom;
 @synthesize alignmentRectInsets = _alignmentRectInsets;
 @synthesize intrinsicContentSize = _intrinsicContentSize;
 @synthesize alignmentGuide = _alignmentGuide;
@@ -1158,7 +1160,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         _alignmentRectInsets = [metrics[@"alignmentInsets"] edgeInsetsValue];
         _focusRingCornerRadius = [metrics[@"focusRingCornerRadius"] sizeValue];
         _focusRingInsets = [metrics[@"focusRingInsets"] edgeInsetsValue];
-        _baselineOffsetFromBottom = [metrics[@"baselineOffsetFromBottom"] doubleValue];
+        _baselineLayoutOffsetFromBottom = [metrics[@"baselineLayoutOffsetFromBottom"] doubleValue];
+        _baselineDrawingOffsetFromBottom = [metrics[@"baselineDrawingOffsetFromBottom"] doubleValue];
         _normalLabelAttributes = metrics[@"normalLabelAttributes"];
         _recordingLabelAttributes = metrics[@"recordingLabelAttributes"];
         _disabledLabelAttributes = metrics[@"disabledLabelAttributes"];
