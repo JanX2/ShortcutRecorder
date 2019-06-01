@@ -32,6 +32,7 @@
 		BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */ = {isa = PBXBuildFile; fileRef = BA722ED42162A4AA00EFF192 /* SRShortcutController.m */; };
 		BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */; };
 		BA722EF721640D2400EFF192 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA722EF621640D2400EFF192 /* Utility.swift */; };
+		BA8CFDF322A2645800C96F79 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = BA8CFDF222A2645800C96F79 /* LICENSE.md */; };
 		BAC79C0A216FCE8E00E45F23 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC79C09216FCE8E00E45F23 /* App.swift */; };
 		BAC79C1B216FCE9000E45F23 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC79C1A216FCE9000E45F23 /* DemoUITests.swift */; };
 		BAC79C2C216FD76000E45F23 /* ShortcutRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
@@ -55,7 +56,6 @@
 		E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */; };
 		E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0809CDBADE0085E9ED /* PTKeyCombo.m */; };
 		E2741AC51673C79F00A139BD /* ShortcutRecorder.strings in Resources */ = {isa = PBXBuildFile; fileRef = E2741AC31673C79F00A139BD /* ShortcutRecorder.strings */; };
-		E2741ADF1673C83800A139BD /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = E2741ADE1673C83800A139BD /* LICENSE.txt */; };
 		E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */; };
 		E2BE924D16ABEFE400827E8C /* SRKeyEquivalentTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BE924B16ABEFE400827E8C /* SRKeyEquivalentTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -153,6 +153,7 @@
 		BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutControllerTests.swift; sourceTree = "<group>"; };
 		BA722EF621640D2400EFF192 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		BA8C53D421FFED8D00B40164 /* Demo.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Demo.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		BA8CFDF222A2645800C96F79 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
 		BAC79C07216FCE8E00E45F23 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC79C09216FCE8E00E45F23 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BAC79C10216FCE8F00E45F23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -190,7 +191,6 @@
 		E2741AD91673C7C600A139BD /* cs */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 		E2741ADA1673C7C800A139BD /* pt */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 		E2741ADB1673C7CA00A139BD /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/ShortcutRecorder.strings"; sourceTree = "<group>"; };
-		E2741ADE1673C83800A139BD /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E2741AE81673CCBA00A139BD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Library/Info.plist; sourceTree = "<group>"; };
 		E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PTHotKey+ShortcutRecorder.h"; sourceTree = "<group>"; };
 		E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PTHotKey+ShortcutRecorder.m"; sourceTree = "<group>"; };
@@ -304,9 +304,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BA8CFDF222A2645800C96F79 /* LICENSE.md */,
 				BA6FADC022A0308900B63E4B /* ShorcutRecorder.sketch */,
 				BAE3063A1F80955700904E9A /* Images.xcassets */,
-				E2741ADE1673C83800A139BD /* LICENSE.txt */,
 				E2741AC31673C79F00A139BD /* ShortcutRecorder.strings */,
 			);
 			path = Resources;
@@ -640,7 +640,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E2741AC51673C79F00A139BD /* ShortcutRecorder.strings in Resources */,
-				E2741ADF1673C83800A139BD /* LICENSE.txt in Resources */,
+				BA8CFDF322A2645800C96F79 /* LICENSE.md in Resources */,
 				BAE3063B1F80955700904E9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
