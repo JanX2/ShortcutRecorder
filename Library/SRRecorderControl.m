@@ -678,25 +678,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [self scheduleControlViewAppearanceDidChange:aNotification];
 }
 
-- (CGFloat)backingScaleFactor
-{
-    CGFloat f = self.window.backingScaleFactor;
-
-    if (f == 0.0)
-    {
-        CGSize deviceSize = CGContextConvertSizeToDeviceSpace(NSGraphicsContext.currentContext.CGContext, NSMakeSize(1.0, 1.0));
-
-        if (deviceSize.height)
-            f = deviceSize.height;
-        else if (deviceSize.width)
-            f = deviceSize.width;
-        else
-            f = 1.0;
-    }
-
-    return f;
-}
-
 - (void)scheduleControlViewAppearanceDidChange:(nullable id)aReason
 {
     if (_notifyStyle == nil || _style == nil)
