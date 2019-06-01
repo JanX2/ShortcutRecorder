@@ -1,12 +1,7 @@
 //
-//  SRRecorderControlStyle.h
-//  ShortcutRecorder.framework
+//  Copyright 2019 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2019 Contributors. All rights reserved.
-//  License: BSD
-//
-//  Contributors to this file:
-//      Ilya Kulakov
 
 #import <Foundation/Foundation.h>
 

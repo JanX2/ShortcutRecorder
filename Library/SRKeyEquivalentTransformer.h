@@ -1,13 +1,7 @@
 //
-//  SRKeyEquivalentTransformer.h
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2012-2018 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors to this file:
-//      Ilya Kulakov
 
 #import <Foundation/Foundation.h>
 

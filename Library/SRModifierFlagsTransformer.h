@@ -1,13 +1,7 @@
 //
-//  SRModifierFlagsTransformer.h
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2006-2018 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 

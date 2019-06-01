@@ -1,8 +1,6 @@
 //
-//  SRRecorderControlStyleTests.swift
-//  Unit Tests
-//
-//  Created by Ilya Kulakov on 5/21/19.
+//  Copyright 2019 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
 
 import XCTest

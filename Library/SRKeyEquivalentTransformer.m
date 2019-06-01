@@ -1,13 +1,7 @@
 //
-//  SRKeyEquivalentTransformer.m
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2012-2018 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      Ilya Kulakov
 
 #import "SRKeyEquivalentTransformer.h"
 #import "SRKeyCodeTransformer.h"

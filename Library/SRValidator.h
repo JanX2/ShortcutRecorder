@@ -1,18 +1,7 @@
 //
-//  SRValidator.h
-//  ShortcutRecorder
+//  Copyright 2006 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2006-2018 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      David Dauer
-//      Jesper
-//      Jamie Kirkpatrick
-//      Andy Kim
-//      Silvio Rizzi
-//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 

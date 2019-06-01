@@ -1,13 +1,7 @@
 //
-//  ShortcutRecorder.h
-//  ShortcutRecorder
-//  Copyright 2012-2018 Contributors. All rights reserved.
+//  Copyright 2006 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  License: BSD
-//
-//  Contributors to this file:
-//      Jesper
-//      Ilya Kulakov
 
 #import <ShortcutRecorder/SRCommon.h>
 #import <ShortcutRecorder/SRKeyCodeTransformer.h>

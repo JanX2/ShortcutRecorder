@@ -1,16 +1,7 @@
 //
-//  SRRecorderControl.h
-//  ShortcutRecorder
+//  Copyright 2006 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      David Dauer
-//      Jesper
-//      Jamie Kirkpatrick
-//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 #import <ShortcutRecorder/SRCommon.h>

@@ -1,12 +1,7 @@
 //
-//  SRShortcut.h
-//  ShortcutRecorder.framework
+//  Copyright 2018 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  Copyright 2018 Contributors. All rights reserved.
-//  License: BSD
-//
-//  Contributors to this file:
-//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 

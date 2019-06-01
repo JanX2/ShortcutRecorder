@@ -1,8 +1,6 @@
 //
-//  LayoutInspectorController.swift
-//  Demo
-//
-//  Created by Ilya Kulakov on 5/28/19.
+//  Copyright 2019 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
 
 import Cocoa

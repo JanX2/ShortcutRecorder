@@ -1,14 +1,7 @@
 //
-//  Utility.swift
-//  UnitTests
+//  Copyright 2018 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
-//  ShortcutRecorder.framework
-//
-//  Copyright 2018 Contributors. All rights reserved.
-//  License: BSD
-//
-//  Contributors to this file:
-//      Ilya Kulakov
 
 import Foundation
 import ShortcutRecorder

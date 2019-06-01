@@ -1,8 +1,6 @@
 //
-//  Settings.swift
-//  Demo
-//
-//  Created by Ilya Kulakov on 5/29/19.
+//  Copyright 2019 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
 
 import Foundation

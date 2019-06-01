@@ -1,8 +1,6 @@
 //
-//  AppDelegate.swift
-//  Demo
-//
-//  Created by Ilya Kulakov on 10/11/18.
+//  Copyright 2019 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
 
 import os

@@ -1,5 +1,9 @@
-/// Compile the ShortcutRecorder.framework target
-/// before running this playground.
+//
+//  Copyright 2019 ShortcutRecorder Contributors
+//  CC BY 3.0
+//
+
+// Compile the ShortcutRecorder.framework target first!
 
 import AppKit
 import PlaygroundSupport

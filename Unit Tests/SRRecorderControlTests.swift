@@ -1,8 +1,6 @@
 //
-//  SRRecorderControl.swift
-//  Unit Tests
-//
-//  Created by Ilya Kulakov on 10/11/18.
+//  Copyright 2018 ShortcutRecorder Contributors
+//  CC BY 3.0
 //
 
 import Cocoa
