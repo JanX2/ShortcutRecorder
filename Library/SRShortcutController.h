@@ -5,7 +5,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import<ShortcutRecorder/SRRecorderControl.h>
+#import <ShortcutRecorder/SRRecorderControl.h>
 #import <ShortcutRecorder/SRShortcut.h>
 
 

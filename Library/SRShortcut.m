@@ -227,6 +227,45 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 @end
 
 
+@implementation SRShortcut (Carbon)
+
+- (UInt32)carbonKeyCode
+{
+    return self.keyCode;
+}
+
+- (UInt32)carbonModifierFlags
+{
+    switch (self.carbonKeyCode)
+    {
+        case kVK_F1:
+        case kVK_F2:
+        case kVK_F3:
+        case kVK_F4:
+        case kVK_F5:
+        case kVK_F6:
+        case kVK_F7:
+        case kVK_F8:
+        case kVK_F9:
+        case kVK_F10:
+        case kVK_F11:
+        case kVK_F12:
+        case kVK_F13:
+        case kVK_F14:
+        case kVK_F15:
+        case kVK_F16:
+        case kVK_F17:
+        case kVK_F18:
+        case kVK_F19:
+        case kVK_F20:
+            return SRCocoaToCarbonFlags(self.modifierFlags) | NSFunctionKeyMask;
+        default:
+            return SRCocoaToCarbonFlags(self.modifierFlags);
+    }
+}
+
+@end
+
 
 NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
 {

@@ -23,7 +23,6 @@
 		BA6FADBA229F5A8B00B63E4B /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6FADB9229F5A8B00B63E4B /* Settings.swift */; };
 		BA6FADBC229F5ACD00B63E4B /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6FADBB229F5ACD00B63E4B /* Utility.swift */; };
 		BA6FADBE229F844D00B63E4B /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6FADBD229F844D00B63E4B /* Views.swift */; };
-		BA722EAC216037BC00EFF192 /* HotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = BA722EAB216037BC00EFF192 /* HotKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA722EB021608FB600EFF192 /* SRShortcut.h in Headers */ = {isa = PBXBuildFile; fileRef = BA722EAE21608FB600EFF192 /* SRShortcut.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA722EB121608FB600EFF192 /* SRShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = BA722EAF21608FB600EFF192 /* SRShortcut.m */; };
 		BA722ECA2161619200EFF192 /* ShortcutRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
@@ -37,12 +36,13 @@
 		BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */; };
 		BA8CFE1022A2F17A00C96F79 /* ATTRIBUTION.md in Resources */ = {isa = PBXBuildFile; fileRef = BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */; };
 		BA8CFE1222A2F92000C96F79 /* SRShortcutFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */; };
+		BA8CFE1522A30E1200C96F79 /* SRShortcutRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = BA8CFE1322A30E1200C96F79 /* SRShortcutRegistration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BA8CFE1622A30E1200C96F79 /* SRShortcutRegistration.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE1422A30E1200C96F79 /* SRShortcutRegistration.m */; };
+		BA8CFE1822A31CBE00C96F79 /* SRShortcutRegistrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE1722A31CBE00C96F79 /* SRShortcutRegistrationTests.swift */; };
 		BAC79C0A216FCE8E00E45F23 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC79C09216FCE8E00E45F23 /* App.swift */; };
 		BAC79C1B216FCE9000E45F23 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC79C1A216FCE9000E45F23 /* DemoUITests.swift */; };
 		BAC79C2C216FD76000E45F23 /* ShortcutRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; };
 		BAC79C2D216FD76000E45F23 /* ShortcutRecorder.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 939837800DA42965007F53F3 /* ShortcutRecorder.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BAC79C30216FD76000E45F23 /* PTHotKey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; };
-		BAC79C31216FD76000E45F23 /* PTHotKey.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E273122E1349EC9000A84433 /* PTHotKey.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BAE0CED522946B4500DD65C5 /* SRRecorderControlStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */; };
 		BAE0CEF12295ACEB00DD65C5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAE0CEF02295ACEB00DD65C5 /* Main.storyboard */; };
 		BAE0CF162295E82E00DD65C5 /* BindingsInspectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE0CF142295E82E00DD65C5 /* BindingsInspectorController.swift */; };
@@ -51,14 +51,6 @@
 		BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */; };
 		BAED062221FFEF72001E483B /* SRRecorderControlStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BAED4705217007C70008DA80 /* SRRecorderControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAED4704217007C70008DA80 /* SRRecorderControlTests.swift */; };
-		E273123A1349EDB500A84433 /* PTHotKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */ = {isa = PBXBuildFile; fileRef = A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E273123D1349EDB500A84433 /* PTKeyCombo.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E2A0709CDBADE0085E9ED /* PTKeyCombo.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E27312401349EDCA00A84433 /* PTHotKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0409CDBADE0085E9ED /* PTHotKey.m */; };
-		E27312411349EDCA00A84433 /* PTHotKeyCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0609CDBADE0085E9ED /* PTHotKeyCenter.m */; };
-		E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */ = {isa = PBXBuildFile; fileRef = A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */; };
-		E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E2A0809CDBADE0085E9ED /* PTKeyCombo.m */; };
 		E2741AC51673C79F00A139BD /* ShortcutRecorder.strings in Resources */ = {isa = PBXBuildFile; fileRef = E2741AC31673C79F00A139BD /* ShortcutRecorder.strings */; };
 		E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */; };
@@ -66,8 +58,6 @@
 		E2BE924E16ABEFE400827E8C /* SRKeyEquivalentTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BE924C16ABEFE400827E8C /* SRKeyEquivalentTransformer.m */; };
 		E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = E2BE925016ABF84100827E8C /* SRKeyEquivalentModifierMaskTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E2BE925316ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2BE925116ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m */; };
-		E2BE927C16AC052000827E8C /* PTHotKey+ShortcutRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E2BE927D16AC052600827E8C /* PTHotKey+ShortcutRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,13 +82,6 @@
 			remoteGlobalIDString = 9398377F0DA42965007F53F3;
 			remoteInfo = ShortcutRecorder.framework;
 		};
-		BAC79C32216FD76000E45F23 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E273122D1349EC9000A84433;
-			remoteInfo = PTHotKey.framework;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -108,7 +91,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BAC79C31216FD76000E45F23 /* PTHotKey.framework in Embed Frameworks */,
 				BAC79C2D216FD76000E45F23 /* ShortcutRecorder.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -119,12 +101,6 @@
 /* Begin PBXFileReference section */
 		0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRRecorderControl.h; path = Library/SRRecorderControl.h; sourceTree = "<group>"; };
 		0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRRecorderControl.m; path = Library/SRRecorderControl.m; sourceTree = "<group>"; };
-		0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTHotKey.h; sourceTree = "<group>"; };
-		0B8E2A0409CDBADE0085E9ED /* PTHotKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTHotKey.m; sourceTree = "<group>"; };
-		0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTHotKeyCenter.h; sourceTree = "<group>"; };
-		0B8E2A0609CDBADE0085E9ED /* PTHotKeyCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTHotKeyCenter.m; sourceTree = "<group>"; };
-		0B8E2A0709CDBADE0085E9ED /* PTKeyCombo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCombo.h; sourceTree = "<group>"; };
-		0B8E2A0809CDBADE0085E9ED /* PTKeyCombo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCombo.m; sourceTree = "<group>"; };
 		74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRKeyCodeTransformer.h; path = Library/SRKeyCodeTransformer.h; sourceTree = "<group>"; };
 		74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRKeyCodeTransformer.m; path = Library/SRKeyCodeTransformer.m; sourceTree = "<group>"; };
 		74C3670E0A246B4900B69171 /* SRValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRValidator.h; path = Library/SRValidator.h; sourceTree = "<group>"; };
@@ -133,8 +109,6 @@
 		74C367110A246B4900B69171 /* SRCommon.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SRCommon.m; path = Library/SRCommon.m; sourceTree = "<group>"; };
 		939837800DA42965007F53F3 /* ShortcutRecorder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShortcutRecorder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = Library/ShortcutRecorder.h; sourceTree = SOURCE_ROOT; };
-		A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTKeyCodeTranslator.h; sourceTree = "<group>"; };
-		A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PTKeyCodeTranslator.m; sourceTree = "<group>"; };
 		BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyCodeTransformerTests.swift; sourceTree = "<group>"; };
 		BA03E78E216A90A40008002D /* SRValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRValidatorTests.swift; sourceTree = "<group>"; };
 		BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRRecorderControlStyle.h; path = Library/SRRecorderControlStyle.h; sourceTree = "<group>"; };
@@ -145,8 +119,6 @@
 		BA6FADBB229F5ACD00B63E4B /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		BA6FADBD229F844D00B63E4B /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		BA6FADC022A0308900B63E4B /* ShorcutRecorder.sketch */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShorcutRecorder.sketch; sourceTree = "<group>"; };
-		BA722EAB216037BC00EFF192 /* HotKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotKey.h; sourceTree = "<group>"; };
-		BA722EAD216038F800EFF192 /* PTHotKey.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = PTHotKey.modulemap; sourceTree = "<group>"; };
 		BA722EAE21608FB600EFF192 /* SRShortcut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcut.h; path = Library/SRShortcut.h; sourceTree = "<group>"; };
 		BA722EAF21608FB600EFF192 /* SRShortcut.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcut.m; path = Library/SRShortcut.m; sourceTree = "<group>"; };
 		BA722EC52161619200EFF192 /* Unit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,6 +135,9 @@
 		BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutFormatter.m; path = Library/SRShortcutFormatter.m; sourceTree = "<group>"; };
 		BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ATTRIBUTION.md; sourceTree = SOURCE_ROOT; };
 		BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutFormatterTests.swift; sourceTree = "<group>"; };
+		BA8CFE1322A30E1200C96F79 /* SRShortcutRegistration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutRegistration.h; path = Library/SRShortcutRegistration.h; sourceTree = "<group>"; };
+		BA8CFE1422A30E1200C96F79 /* SRShortcutRegistration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutRegistration.m; path = Library/SRShortcutRegistration.m; sourceTree = "<group>"; };
+		BA8CFE1722A31CBE00C96F79 /* SRShortcutRegistrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutRegistrationTests.swift; sourceTree = "<group>"; };
 		BAC79C07216FCE8E00E45F23 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC79C09216FCE8E00E45F23 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BAC79C10216FCE8F00E45F23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -175,8 +150,6 @@
 		BAE0CF152295E82E00DD65C5 /* BindingsInspectorController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BindingsInspectorController.xib; sourceTree = "<group>"; };
 		BAE3063A1F80955700904E9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		BAED4704217007C70008DA80 /* SRRecorderControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRRecorderControlTests.swift; sourceTree = "<group>"; };
-		E273122E1349EC9000A84433 /* PTHotKey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PTHotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E273122F1349EC9000A84433 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = PTHotKey/Info.plist; sourceTree = SOURCE_ROOT; };
 		E2741AC41673C79F00A139BD /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 		E2741AC61673C7A400A139BD /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 		E2741AC71673C7A600A139BD /* el */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
@@ -201,8 +174,6 @@
 		E2741ADA1673C7C800A139BD /* pt */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/ShortcutRecorder.strings; sourceTree = "<group>"; };
 		E2741ADB1673C7CA00A139BD /* zh-Hant */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/ShortcutRecorder.strings"; sourceTree = "<group>"; };
 		E2741AE81673CCBA00A139BD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Library/Info.plist; sourceTree = "<group>"; };
-		E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PTHotKey+ShortcutRecorder.h"; sourceTree = "<group>"; };
-		E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PTHotKey+ShortcutRecorder.m"; sourceTree = "<group>"; };
 		E28113AB167B8A9D001E118E /* SRModifierFlagsTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRModifierFlagsTransformer.h; path = Library/SRModifierFlagsTransformer.h; sourceTree = "<group>"; };
 		E28113AC167B8A9D001E118E /* SRModifierFlagsTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRModifierFlagsTransformer.m; path = Library/SRModifierFlagsTransformer.m; sourceTree = "<group>"; };
 		E2BE924B16ABEFE400827E8C /* SRKeyEquivalentTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRKeyEquivalentTransformer.h; path = Library/SRKeyEquivalentTransformer.h; sourceTree = "<group>"; };
@@ -231,19 +202,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BAC79C30216FD76000E45F23 /* PTHotKey.framework in Frameworks */,
 				BAC79C2C216FD76000E45F23 /* ShortcutRecorder.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BAC79C13216FCE8F00E45F23 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E273122C1349EC9000A84433 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -269,6 +232,8 @@
 				74C3670F0A246B4900B69171 /* SRValidator.m */,
 				BA722EAE21608FB600EFF192 /* SRShortcut.h */,
 				BA722EAF21608FB600EFF192 /* SRShortcut.m */,
+				BA8CFE1322A30E1200C96F79 /* SRShortcutRegistration.h */,
+				BA8CFE1422A30E1200C96F79 /* SRShortcutRegistration.m */,
 				BA722ED32162A4AA00EFF192 /* SRShortcutController.h */,
 				BA722ED42162A4AA00EFF192 /* SRShortcutController.m */,
 				BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */,
@@ -290,7 +255,6 @@
 			isa = PBXGroup;
 			children = (
 				939837800DA42965007F53F3 /* ShortcutRecorder.framework */,
-				E273122E1349EC9000A84433 /* PTHotKey.framework */,
 				BA722EC52161619200EFF192 /* Unit Tests.xctest */,
 				BAC79C07216FCE8E00E45F23 /* Demo.app */,
 				BAC79C16216FCE8F00E45F23 /* UI Tests.xctest */,
@@ -304,7 +268,6 @@
 				BA8C53D421FFED8D00B40164 /* Demo.playground */,
 				BAC79C08216FCE8E00E45F23 /* Demo */,
 				080E96DDFE201D6D7F000001 /* ShortcutRecorder */,
-				E2741AE71673CC3D00A139BD /* PTHotKey */,
 				BA722EC62161619200EFF192 /* Unit Tests */,
 				BAC79C19216FCE9000E45F23 /* UI Tests */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -333,21 +296,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		BA10595C1689CEBF00A3DDF5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				E273122F1349EC9000A84433 /* Info.plist */,
-				BA722EAD216038F800EFF192 /* PTHotKey.modulemap */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		BA722EC62161619200EFF192 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
 				BA722ED22161626000EFF192 /* Supporting Files */,
 				BA03E78E216A90A40008002D /* SRValidatorTests.swift */,
 				BA722ED02161625100EFF192 /* SRShortcutTests.swift */,
+				BA8CFE1722A31CBE00C96F79 /* SRShortcutRegistrationTests.swift */,
 				BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */,
 				BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */,
 				BAED4704217007C70008DA80 /* SRRecorderControlTests.swift */,
@@ -400,26 +355,6 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		E2741AE71673CC3D00A139BD /* PTHotKey */ = {
-			isa = PBXGroup;
-			children = (
-				BA10595C1689CEBF00A3DDF5 /* Supporting Files */,
-				0B8E2A0309CDBADE0085E9ED /* PTHotKey.h */,
-				0B8E2A0409CDBADE0085E9ED /* PTHotKey.m */,
-				0B8E2A0509CDBADE0085E9ED /* PTHotKeyCenter.h */,
-				0B8E2A0609CDBADE0085E9ED /* PTHotKeyCenter.m */,
-				A1125B75104C8AF3005C6F7B /* PTKeyCodeTranslator.h */,
-				A1125B76104C8AF3005C6F7B /* PTKeyCodeTranslator.m */,
-				0B8E2A0709CDBADE0085E9ED /* PTKeyCombo.h */,
-				0B8E2A0809CDBADE0085E9ED /* PTKeyCombo.m */,
-				E279508E131A7498008AE1DA /* PTHotKey+ShortcutRecorder.h */,
-				E279508F131A7498008AE1DA /* PTHotKey+ShortcutRecorder.m */,
-				BA722EAB216037BC00EFF192 /* HotKey.h */,
-			);
-			path = PTHotKey;
-			sourceTree = SOURCE_ROOT;
-			usesTabs = 1;
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -435,23 +370,11 @@
 				E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */,
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
+				BA8CFE1522A30E1200C96F79 /* SRShortcutRegistration.h in Headers */,
 				BA722EB021608FB600EFF192 /* SRShortcut.h in Headers */,
 				BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */,
 				BA722ED52162A4AA00EFF192 /* SRShortcutController.h in Headers */,
 				939839400DA4350B007F53F3 /* SRCommon.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E27312291349EC9000A84433 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BA722EAC216037BC00EFF192 /* HotKey.h in Headers */,
-				E273123A1349EDB500A84433 /* PTHotKey.h in Headers */,
-				E273123B1349EDB500A84433 /* PTHotKeyCenter.h in Headers */,
-				E273123C1349EDB500A84433 /* PTKeyCodeTranslator.h in Headers */,
-				E273123D1349EDB500A84433 /* PTKeyCombo.h in Headers */,
-				E2BE927C16AC052000827E8C /* PTHotKey+ShortcutRecorder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,7 +430,6 @@
 			);
 			dependencies = (
 				BAC79C2F216FD76000E45F23 /* PBXTargetDependency */,
-				BAC79C33216FD76000E45F23 /* PBXTargetDependency */,
 			);
 			name = Demo;
 			productName = Demo;
@@ -531,23 +453,6 @@
 			productName = DemoUITests;
 			productReference = BAC79C16216FCE8F00E45F23 /* UI Tests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		E273122D1349EC9000A84433 /* PTHotKey.framework */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E27312381349EC9000A84433 /* Build configuration list for PBXNativeTarget "PTHotKey.framework" */;
-			buildPhases = (
-				E273122B1349EC9000A84433 /* Sources */,
-				E273122C1349EC9000A84433 /* Frameworks */,
-				E27312291349EC9000A84433 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = PTHotKey.framework;
-			productName = PTHotKey;
-			productReference = E273122E1349EC9000A84433 /* PTHotKey.framework */;
-			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -618,7 +523,6 @@
 			targets = (
 				BAC79C06216FCE8E00E45F23 /* Demo */,
 				9398377F0DA42965007F53F3 /* ShortcutRecorder.framework */,
-				E273122D1349EC9000A84433 /* PTHotKey.framework */,
 				BA722EC42161619200EFF192 /* Unit Tests */,
 				BAC79C15216FCE8F00E45F23 /* UI Tests */,
 			);
@@ -671,6 +575,7 @@
 				BA722EB121608FB600EFF192 /* SRShortcut.m in Sources */,
 				939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */,
 				BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */,
+				BA8CFE1622A30E1200C96F79 /* SRShortcutRegistration.m in Sources */,
 				939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */,
 				BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */,
 				BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */,
@@ -689,6 +594,7 @@
 				BAE0CED522946B4500DD65C5 /* SRRecorderControlStyleTests.swift in Sources */,
 				BA8CFE1222A2F92000C96F79 /* SRShortcutFormatterTests.swift in Sources */,
 				BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */,
+				BA8CFE1822A31CBE00C96F79 /* SRShortcutRegistrationTests.swift in Sources */,
 				BA722ED12161625100EFF192 /* SRShortcutTests.swift in Sources */,
 				BA722EF721640D2400EFF192 /* Utility.swift in Sources */,
 				BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */,
@@ -718,18 +624,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E273122B1349EC9000A84433 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E27312401349EDCA00A84433 /* PTHotKey.m in Sources */,
-				E27312411349EDCA00A84433 /* PTHotKeyCenter.m in Sources */,
-				E27312421349EDCA00A84433 /* PTKeyCodeTranslator.m in Sources */,
-				E27312431349EDCA00A84433 /* PTKeyCombo.m in Sources */,
-				E2BE927D16AC052600827E8C /* PTHotKey+ShortcutRecorder.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -747,11 +641,6 @@
 			isa = PBXTargetDependency;
 			target = 9398377F0DA42965007F53F3 /* ShortcutRecorder.framework */;
 			targetProxy = BAC79C2E216FD76000E45F23 /* PBXContainerItemProxy */;
-		};
-		BAC79C33216FD76000E45F23 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E273122D1349EC9000A84433 /* PTHotKey.framework */;
-			targetProxy = BAC79C32216FD76000E45F23 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1120,44 +1009,6 @@
 			};
 			name = Release;
 		};
-		E27312361349EC9000A84433 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1.6;
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = PTHotKey/Info.plist;
-				INSTALL_PATH = "@rpath";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MODULEMAP_FILE = PTHotKey/PTHotKey.modulemap;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.PTHotKey;
-				PRODUCT_NAME = PTHotKey;
-			};
-			name = Debug;
-		};
-		E27312371349EC9000A84433 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1.6;
-				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = PTHotKey/Info.plist;
-				INSTALL_PATH = "@rpath";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				MODULEMAP_FILE = PTHotKey/PTHotKey.modulemap;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.PTHotKey;
-				PRODUCT_NAME = PTHotKey;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1202,15 +1053,6 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E27312381349EC9000A84433 /* Build configuration list for PBXNativeTarget "PTHotKey.framework" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E27312361349EC9000A84433 /* Debug */,
-				E27312371349EC9000A84433 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

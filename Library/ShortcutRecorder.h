@@ -14,3 +14,4 @@
 #import <ShortcutRecorder/SRShortcutController.h>
 #import <ShortcutRecorder/SRValidator.h>
 #import <ShortcutRecorder/SRShortcutFormatter.h>
+#import <ShortcutRecorder/SRShortcutRegistration.h>

@@ -170,6 +170,19 @@ NS_SWIFT_NAME(Shortcut)
 
 @end
 
+
+/*!
+ Carbon versions of key code and modifier flags.
+ */
+@interface SRShortcut (Carbon)
+
+@property (readonly) UInt32 carbonKeyCode;
+
+@property (readonly) UInt32 carbonModifierFlags;
+
+@end
+
+
 /*!
  Check whether dictionary representations of shortcuts are equal (ShortcutRecorder 2).
  */
