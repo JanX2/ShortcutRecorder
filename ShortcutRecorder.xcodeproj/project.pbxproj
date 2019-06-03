@@ -73,7 +73,7 @@
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BAC79C06216FCE8E00E45F23;
-			remoteInfo = Demo;
+			remoteInfo = Inspector;
 		};
 		BAC79C2E216FD76000E45F23 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -138,7 +138,7 @@
 		BA8CFE1322A30E1200C96F79 /* SRShortcutRegistration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutRegistration.h; path = Library/SRShortcutRegistration.h; sourceTree = "<group>"; };
 		BA8CFE1422A30E1200C96F79 /* SRShortcutRegistration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutRegistration.m; path = Library/SRShortcutRegistration.m; sourceTree = "<group>"; };
 		BA8CFE1722A31CBE00C96F79 /* SRShortcutRegistrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutRegistrationTests.swift; sourceTree = "<group>"; };
-		BAC79C07216FCE8E00E45F23 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAC79C07216FCE8E00E45F23 /* Inspector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Inspector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC79C09216FCE8E00E45F23 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		BAC79C10216FCE8F00E45F23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BAC79C16216FCE8F00E45F23 /* UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -256,7 +256,7 @@
 			children = (
 				939837800DA42965007F53F3 /* ShortcutRecorder.framework */,
 				BA722EC52161619200EFF192 /* Unit Tests.xctest */,
-				BAC79C07216FCE8E00E45F23 /* Demo.app */,
+				BAC79C07216FCE8E00E45F23 /* Inspector.app */,
 				BAC79C16216FCE8F00E45F23 /* UI Tests.xctest */,
 			);
 			name = Products;
@@ -266,7 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				BA8C53D421FFED8D00B40164 /* Demo.playground */,
-				BAC79C08216FCE8E00E45F23 /* Demo */,
+				BAC79C08216FCE8E00E45F23 /* Inspector */,
 				080E96DDFE201D6D7F000001 /* ShortcutRecorder */,
 				BA722EC62161619200EFF192 /* Unit Tests */,
 				BAC79C19216FCE9000E45F23 /* UI Tests */,
@@ -321,7 +321,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		BAC79C08216FCE8E00E45F23 /* Demo */ = {
+		BAC79C08216FCE8E00E45F23 /* Inspector */ = {
 			isa = PBXGroup;
 			children = (
 				BAE0CF182295EC8700DD65C5 /* Resources */,
@@ -333,7 +333,7 @@
 				BA6FADBB229F5ACD00B63E4B /* Utility.swift */,
 				BAC79C10216FCE8F00E45F23 /* Info.plist */,
 			);
-			path = Demo;
+			path = Inspector;
 			sourceTree = "<group>";
 		};
 		BAC79C19216FCE9000E45F23 /* UI Tests */ = {
@@ -417,9 +417,9 @@
 			productReference = BA722EC52161619200EFF192 /* Unit Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		BAC79C06216FCE8E00E45F23 /* Demo */ = {
+		BAC79C06216FCE8E00E45F23 /* Inspector */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BAC79C1D216FCE9000E45F23 /* Build configuration list for PBXNativeTarget "Demo" */;
+			buildConfigurationList = BAC79C1D216FCE9000E45F23 /* Build configuration list for PBXNativeTarget "Inspector" */;
 			buildPhases = (
 				BAC79C03216FCE8E00E45F23 /* Sources */,
 				BAC79C04216FCE8E00E45F23 /* Frameworks */,
@@ -431,9 +431,9 @@
 			dependencies = (
 				BAC79C2F216FD76000E45F23 /* PBXTargetDependency */,
 			);
-			name = Demo;
-			productName = Demo;
-			productReference = BAC79C07216FCE8E00E45F23 /* Demo.app */;
+			name = Inspector;
+			productName = Inspector;
+			productReference = BAC79C07216FCE8E00E45F23 /* Inspector.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BAC79C15216FCE8F00E45F23 /* UI Tests */ = {
@@ -521,7 +521,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BAC79C06216FCE8E00E45F23 /* Demo */,
+				BAC79C06216FCE8E00E45F23 /* Inspector */,
 				9398377F0DA42965007F53F3 /* ShortcutRecorder.framework */,
 				BA722EC42161619200EFF192 /* Unit Tests */,
 				BAC79C15216FCE8F00E45F23 /* UI Tests */,
@@ -634,7 +634,7 @@
 		};
 		BAC79C18216FCE9000E45F23 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BAC79C06216FCE8E00E45F23 /* Demo */;
+			target = BAC79C06216FCE8E00E45F23 /* Inspector */;
 			targetProxy = BAC79C17216FCE9000E45F23 /* PBXContainerItemProxy */;
 		};
 		BAC79C2F216FD76000E45F23 /* PBXTargetDependency */ = {
@@ -801,11 +801,11 @@
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				INFOPLIST_FILE = Demo/Info.plist;
+				INFOPLIST_FILE = Inspector/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder.Inspector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -830,11 +830,11 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				INFOPLIST_FILE = Demo/Info.plist;
+				INFOPLIST_FILE = Inspector/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kulakov.ShortcutRecorder.Inspector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -873,7 +873,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Demo;
+				TEST_TARGET_NAME = Inspector;
 			};
 			name = Debug;
 		};
@@ -904,7 +904,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Demo;
+				TEST_TARGET_NAME = Inspector;
 			};
 			name = Release;
 		};
@@ -1030,7 +1030,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BAC79C1D216FCE9000E45F23 /* Build configuration list for PBXNativeTarget "Demo" */ = {
+		BAC79C1D216FCE9000E45F23 /* Build configuration list for PBXNativeTarget "Inspector" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BAC79C1E216FCE9000E45F23 /* Debug */,

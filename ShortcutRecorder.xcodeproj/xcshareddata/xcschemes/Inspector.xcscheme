@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BAC79C06216FCE8E00E45F23"
-               BuildableName = "Demo.app"
-               BlueprintName = "Demo"
+               BuildableName = "Inspector.app"
+               BlueprintName = "Inspector"
                ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BAC79C06216FCE8E00E45F23"
-            BuildableName = "Demo.app"
-            BlueprintName = "Demo"
+            BuildableName = "Inspector.app"
+            BlueprintName = "Inspector"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -77,8 +77,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BAC79C06216FCE8E00E45F23"
-            BuildableName = "Demo.app"
-            BlueprintName = "Demo"
+            BuildableName = "Inspector.app"
+            BlueprintName = "Inspector"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -106,8 +106,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BAC79C06216FCE8E00E45F23"
-            BuildableName = "Demo.app"
-            BlueprintName = "Demo"
+            BuildableName = "Inspector.app"
+            BlueprintName = "Inspector"
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

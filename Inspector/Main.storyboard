@@ -30,7 +30,7 @@
         <!--Bindings Inspector Controller-->
         <scene sceneID="4YF-Um-X74">
             <objects>
-                <viewController id="5jr-1B-i6u" customClass="BindingsInspectorController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController"/>
+                <viewController id="5jr-1B-i6u" customClass="BindingsInspectorController" customModule="Inspector" customModuleProvider="target" sceneMemberID="viewController"/>
                 <customObject id="piq-vs-IaE" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="272" y="-662"/>
@@ -60,7 +60,7 @@
         <!--Layout Inspector Controller-->
         <scene sceneID="glY-P3-1k2">
             <objects>
-                <viewController id="71r-Cx-7fC" customClass="LayoutInspectorController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController"/>
+                <viewController id="71r-Cx-7fC" customClass="LayoutInspectorController" customModule="Inspector" customModuleProvider="target" sceneMemberID="viewController"/>
                 <customObject id="R2N-T8-JJD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="272" y="-250"/>
@@ -160,7 +160,7 @@
                     </connections>
                 </application>
                 <customObject id="aPi-Ol-I4O" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="Wsw-a9-b4o" customClass="AppDelegate" customModule="Demo" customModuleProvider="target"/>
+                <customObject id="Wsw-a9-b4o" customClass="AppDelegate" customModule="Inspector" customModuleProvider="target"/>
                 <userDefaultsController representsSharedInstance="YES" id="r01-2Q-rcu"/>
             </objects>
             <point key="canvasLocation" x="-1018" y="-502"/>

@@ -46,7 +46,7 @@ Then drag'n'drop into your Xcode's workspace and update your targets to link aga
 
 ## Next Steps
 
-See the Demo app and playground. Read about [Styling]() and special notes regarding [Cocoa's Key Equivalents]().
+See the Demo playground and play with the Inspector app. Read about [Styling]() and special notes regarding [Cocoa's Key Equivalents]().
 
 Questions
 ---------
