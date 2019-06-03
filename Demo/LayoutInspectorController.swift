@@ -251,11 +251,6 @@ class LayoutInspectorController: NSViewController {
             // Let window inherite its appearance from the system.
             view.window?.appearance = nil
         }
-
-        let horizontalScaleFactor = scaledWidthConstraint.multiplier
-        let verticalScaleFactor = scaledHeightConstraint.multiplier
-        scaledWidthConstraint.constant = recorderControl.alignmentRectInsets.horizontal * horizontalScaleFactor
-        scaledHeightConstraint.constant = recorderControl.alignmentRectInsets.vertical * verticalScaleFactor
     }
 
     func updateXAnchors(_ defaults: UserDefaults, _ change: NSKeyValueObservedChange<Int>? = nil) {
@@ -319,10 +314,6 @@ class LayoutInspectorController: NSViewController {
         super.viewDidLoad()
 
         recorderControl.bind(.enabled, to: UserDefaults.standard, withKeyPath: Setting.isEnabled.rawValue, options: nil)
-
-        let insets = recorderControl.alignmentRectInsets
-        scaledWidthConstraint.constant = scaledWidthConstraint.multiplier * insets.horizontal
-        scaledHeightConstraint.constant = scaledHeightConstraint.multiplier * insets.vertical
 
         let defaults = UserDefaults.standard
 

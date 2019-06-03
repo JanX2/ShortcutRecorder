@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="Cfg-6J-0Ka">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
@@ -8,16 +8,13 @@
         <!--Window Controller-->
         <scene sceneID="1ZT-VY-ZPj">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="Cfg-6J-0Ka" sceneMemberID="viewController">
-                    <window key="window" title="Bindings Inspector" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="disallowed" id="hCG-RA-0tE">
+                <windowController storyboardIdentifier="BindingsInspector" showSeguePresentationStyle="single" id="Cfg-6J-0Ka" sceneMemberID="viewController">
+                    <window key="window" title="Bindings Inspector" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="disallowed" id="hCG-RA-0tE">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowCollectionBehavior key="collectionBehavior" fullScreenNone="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="1112" y="531" width="480" height="270"/>
+                        <rect key="contentRect" x="0.0" y="0.0" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="boolean" keyPath="excludedFromWindowsMenu" value="YES"/>
-                        </userDefinedRuntimeAttributes>
                         <connections>
                             <outlet property="delegate" destination="Cfg-6J-0Ka" id="dGz-3O-P3G"/>
                         </connections>
@@ -41,16 +38,13 @@
         <!--Window Controller-->
         <scene sceneID="CkZ-Ph-fhY">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="WGQ-I6-9sj" sceneMemberID="viewController">
-                    <window key="window" title="Layout Inspector" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="disallowed" id="Myw-6Q-SOC">
+                <windowController storyboardIdentifier="LayoutInspector" showSeguePresentationStyle="single" id="WGQ-I6-9sj" sceneMemberID="viewController">
+                    <window key="window" title="Layout Inspector" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="disallowed" id="Myw-6Q-SOC">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <windowCollectionBehavior key="collectionBehavior" fullScreenNone="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="425" y="461" width="480" height="270"/>
+                        <rect key="contentRect" x="0.0" y="0.0" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
-                        <userDefinedRuntimeAttributes>
-                            <userDefinedRuntimeAttribute type="boolean" keyPath="excludedFromWindowsMenu" value="YES"/>
-                        </userDefinedRuntimeAttributes>
                         <connections>
                             <outlet property="delegate" destination="WGQ-I6-9sj" id="GY2-av-UeO"/>
                         </connections>

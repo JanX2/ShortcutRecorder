@@ -41,4 +41,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         super.awakeFromNib()
     }
+
+    func showWindows() {
+        let s = NSStoryboard(name: "Main", bundle: nil)
+        let layoutInspector = s.instantiateController(withIdentifier: "LayoutInspector") as! NSWindowController
+        let bindingsInspector = s.instantiateController(withIdentifier: "BindingsInspector") as! NSWindowController
+
+        let layoutWindow = layoutInspector.window!
+        let bindingsWindow = bindingsInspector.window!
+
+        // The Window submenu alraedy lists all available windows.
+        layoutWindow.isExcludedFromWindowsMenu = true
+        bindingsWindow.isExcludedFromWindowsMenu = true
+
+        bindingsInspector.showWindow(self)
+        layoutInspector.showWindow(self)
+
+        // Center both windows on the screen.
+        // Must be called _after_ window is shown, otherwise frame origin may not be respected.
+        layoutWindow.center()
+        var layoutOrigin = layoutWindow.frame.origin
+        layoutOrigin.x = (layoutOrigin.x + bindingsWindow.frame.width / 2.0).rounded()
+        layoutWindow.setFrameOrigin(layoutOrigin)
+
+        var bindingsOrigin = layoutOrigin
+        bindingsOrigin.x -= bindingsWindow.frame.width
+        bindingsWindow.setFrameOrigin(bindingsOrigin)
+
+        layoutWindow.setFrameAutosaveName("SRLayoutInspector")
+        bindingsWindow.setFrameAutosaveName("SRBindingsInspector")
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        showWindows()
+    }
 }

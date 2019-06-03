@@ -22,13 +22,13 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hz6-mo-xeY">
-            <rect key="frame" x="0.0" y="0.0" width="1120" height="712"/>
+            <rect key="frame" x="0.0" y="0.0" width="1128" height="720"/>
             <subviews>
                 <customView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vyw-jl-zim" customClass="ScaledChessboardView" customModule="Demo" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="376" width="1120" height="336"/>
+                    <rect key="frame" x="0.0" y="376" width="1128" height="344"/>
                     <subviews>
                         <customView horizontalHuggingPriority="750" verticalHuggingPriority="750" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="24" translatesAutoresizingMaskIntoConstraints="NO" id="gGm-nA-WxT" customClass="ScaledRecorderControl" customModule="Demo" customModuleProvider="target">
-                            <rect key="frame" x="520" y="156" width="80" height="24"/>
+                            <rect key="frame" x="524" y="160" width="80" height="24"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="80" id="jUI-pd-NTD"/>
                             </constraints>
@@ -43,9 +43,9 @@
                         </customView>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="height" secondItem="gGm-nA-WxT" secondAttribute="height" multiplier="14" id="8aj-Of-RI3"/>
+                        <constraint firstAttribute="height" secondItem="gGm-nA-WxT" secondAttribute="height" multiplier="14" constant="8" id="8aj-Of-RI3"/>
                         <constraint firstItem="gGm-nA-WxT" firstAttribute="centerX" secondItem="vyw-jl-zim" secondAttribute="centerX" id="Xeg-Nx-QzC"/>
-                        <constraint firstAttribute="width" secondItem="gGm-nA-WxT" secondAttribute="width" multiplier="14" id="a4a-2G-YQI"/>
+                        <constraint firstAttribute="width" secondItem="gGm-nA-WxT" secondAttribute="width" multiplier="14" constant="8" id="a4a-2G-YQI"/>
                         <constraint firstItem="gGm-nA-WxT" firstAttribute="centerY" secondItem="vyw-jl-zim" secondAttribute="centerY" id="ibb-T6-2tF"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
@@ -59,9 +59,9 @@
                     </userDefinedRuntimeAttributes>
                 </customView>
                 <box autoresizesSubviews="NO" title="Alignment" translatesAutoresizingMaskIntoConstraints="NO" id="blu-My-H6i">
-                    <rect key="frame" x="287" y="227" width="816" height="141"/>
+                    <rect key="frame" x="287" y="227" width="824" height="141"/>
                     <view key="contentView" id="9Lq-Gn-tah">
-                        <rect key="frame" x="3" y="3" width="810" height="123"/>
+                        <rect key="frame" x="3" y="3" width="818" height="123"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ypo-HH-lJX">
@@ -319,12 +319,11 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="137" id="apz-2z-RZi"/>
                     </constraints>
-                    <font key="titleFont" metaFont="smallSystem"/>
                 </box>
                 <box autoresizesSubviews="NO" title="Drawing" translatesAutoresizingMaskIntoConstraints="NO" id="rDq-Mf-wY4">
-                    <rect key="frame" x="287" y="122" width="816" height="101"/>
+                    <rect key="frame" x="287" y="122" width="824" height="101"/>
                     <view key="contentView" id="zWA-lL-b7f">
-                        <rect key="frame" x="3" y="3" width="810" height="83"/>
+                        <rect key="frame" x="3" y="3" width="818" height="83"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TVY-iC-Nhp">
@@ -425,7 +424,6 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="97" id="Yxy-Ch-UBT"/>
                     </constraints>
-                    <font key="titleFont" metaFont="smallSystem"/>
                 </box>
                 <box autoresizesSubviews="NO" title="Recorder Control Style" translatesAutoresizingMaskIntoConstraints="NO" id="s6M-r2-rwo">
                     <rect key="frame" x="17" y="121" width="268" height="247"/>
@@ -533,14 +531,14 @@
                                     </menu>
                                 </popUpButtonCell>
                                 <connections>
-                                    <binding destination="-2" name="enabled" keyPath="self.animateStyle" id="iEO-cb-6fX">
-                                        <dictionary key="options">
-                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                        </dictionary>
-                                    </binding>
                                     <binding destination="qj2-xh-LA0" name="selectedTag" keyPath="selection.appearance" id="w6J-Zt-atq">
                                         <dictionary key="options">
                                             <integer key="NSNullPlaceholder" value="0"/>
+                                        </dictionary>
+                                    </binding>
+                                    <binding destination="-2" name="enabled" keyPath="self.animateStyle" id="iEO-cb-6fX">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
                                         </dictionary>
                                     </binding>
                                 </connections>
@@ -588,14 +586,14 @@
                                     </menu>
                                 </popUpButtonCell>
                                 <connections>
-                                    <binding destination="-2" name="enabled" keyPath="self.animateStyle" id="zuL-4q-VNO">
-                                        <dictionary key="options">
-                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                        </dictionary>
-                                    </binding>
                                     <binding destination="qj2-xh-LA0" name="selectedTag" keyPath="selection.accessibility" id="gB8-Mb-JWi">
                                         <dictionary key="options">
                                             <integer key="NSNullPlaceholder" value="0"/>
+                                        </dictionary>
+                                    </binding>
+                                    <binding destination="-2" name="enabled" keyPath="self.animateStyle" id="zuL-4q-VNO">
+                                        <dictionary key="options">
+                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
                                         </dictionary>
                                     </binding>
                                 </connections>
@@ -629,12 +627,11 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="262" id="0fl-8J-Jx8"/>
                     </constraints>
-                    <font key="titleFont" metaFont="smallSystem"/>
                 </box>
                 <box autoresizesSubviews="NO" borderType="line" title="Animation" translatesAutoresizingMaskIntoConstraints="NO" id="ht5-67-Y8C">
-                    <rect key="frame" x="17" y="16" width="1086" height="102"/>
+                    <rect key="frame" x="17" y="16" width="1094" height="102"/>
                     <view key="contentView" id="6wS-aa-O7P">
-                        <rect key="frame" x="3" y="3" width="1080" height="84"/>
+                        <rect key="frame" x="3" y="3" width="1088" height="84"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="K35-Wk-DhN">
@@ -714,7 +711,6 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="98" id="7Ft-O7-Jzu"/>
                     </constraints>
-                    <font key="titleFont" metaFont="smallSystem"/>
                 </box>
             </subviews>
             <constraints>
