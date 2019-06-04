@@ -321,6 +321,8 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 @implementation SRShortcutRegistration
 {
     SRShortcut *_shortcut;
+    SRShortcutActionHandler _actionHandler;
+    __weak id _target;
 }
 
 + (void)enableShortcutRegistrations
@@ -385,6 +387,16 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
     return NO;
 }
 
++ (BOOL)automaticallyNotifiesObserversOfActionHandler
+{
+    return NO;
+}
+
++ (BOOL)automaticallyNotifiesObserversOfTarget
+{
+    return NO;
+}
+
 - (SRShortcut *)shortcut
 {
     @synchronized (self)
@@ -443,6 +455,64 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
             [self didChangeValueForKey:@"observedObject"];
         }
     });
+}
+
+- (SRShortcutActionHandler)actionHandler
+{
+    @synchronized (self)
+    {
+        return _actionHandler;
+    }
+}
+
+- (void)setActionHandler:(SRShortcutActionHandler)newActionHandler
+{
+    @synchronized (self)
+    {
+        if (newActionHandler == _actionHandler)
+            return;
+
+        [self willChangeValueForKey:@"actionHandler"];
+        _actionHandler = newActionHandler;
+
+        if (_actionHandler && _target)
+        {
+            [self willChangeValueForKey:@"target"];
+            _target = nil;
+            [self didChangeValueForKey:@"target"];
+        }
+
+        [self didChangeValueForKey:@"actionHandler"];
+    }
+}
+
+- (id)target
+{
+    @synchronized (self)
+    {
+        return _target;
+    }
+}
+
+- (void)setTarget:(id)newTarget
+{
+    @synchronized (self)
+    {
+        if (newTarget == _target)
+            return;
+
+        [self willChangeValueForKey:@"target"];
+        _target = newTarget;
+
+        if (_target && _actionHandler)
+        {
+            [self willChangeValueForKey:@"actionHandler"];
+            _actionHandler = nil;
+            [self didChangeValueForKey:@"actionHandler"];
+        }
+
+        [self didChangeValueForKey:@"target"];
+    }
 }
 
 #pragma mark Methods

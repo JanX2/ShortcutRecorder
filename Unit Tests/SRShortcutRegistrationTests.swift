@@ -84,4 +84,24 @@ class SRShortcutRegistrationTests: XCTestCase {
         registration.invalidate()
         XCTAssertFalse(registration.isValid)
     }
+
+    func testSettingTargetResetsActionHandler() {
+        let registration = ShortcutRegistration()
+        XCTAssertNil(registration.target)
+        XCTAssertNil(registration.actionHandler)
+
+        let action: ShortcutRegistration.Action = {_ in }
+
+        registration.actionHandler = action
+        XCTAssertNil(registration.target)
+        XCTAssertNotNil(registration.actionHandler)
+
+        registration.target = self
+        XCTAssertNotNil(registration.target)
+        XCTAssertNil(registration.actionHandler)
+
+        registration.actionHandler = action
+        XCTAssertNil(registration.target)
+        XCTAssertNotNil(registration.actionHandler)
+    }
 }
