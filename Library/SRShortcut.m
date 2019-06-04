@@ -5,6 +5,7 @@
 
 #import "SRCommon.h"
 #import "SRKeyCodeTransformer.h"
+#import "SRShortcutFormatter.h"
 
 #import "SRShortcut.h"
 
@@ -221,7 +222,15 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p %@>", self.className, self, self.dictionaryRepresentation.description];
+    static SRShortcutFormatter *formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [SRShortcutFormatter new];
+        formatter.usesASCIICapableKeyboardInputSource = YES;
+        formatter.isKeyCodeLiteral = YES;
+    });
+
+    return [formatter stringForObjectValue:self];
 }
 
 @end

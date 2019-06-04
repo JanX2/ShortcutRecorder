@@ -11,6 +11,32 @@
 
 @implementation SRShortcutFormatter
 
+- (instancetype)init
+{
+    self = [super init];
+
+    if (self)
+    {
+        _isKeyCodeLiteral = YES;
+        _usesASCIICapableKeyboardInputSource = YES;
+    }
+
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+
+    if (self)
+    {
+        _isKeyCodeLiteral = YES;
+        _usesASCIICapableKeyboardInputSource = YES;
+    }
+
+    return self;
+}
+
 #pragma mark NSFormatter
 
 - (NSString *)stringForObjectValue:(SRShortcut *)aShortcut
