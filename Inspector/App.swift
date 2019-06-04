@@ -75,4 +75,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         showWindows()
     }
+
+    override func performShortcutAction(_ aRegistration: ShortcutRegistration) {
+        NSSound(named: "Purr")!.play()
+    }
 }

@@ -4,6 +4,8 @@
 //
 
 #import <Carbon/Carbon.h>
+#import <os/trace.h>
+#import <os/activity.h>
 
 #import "SRShortcutRegistration.h"
 
@@ -11,19 +13,28 @@
 const OSType SRShortcutRegistrationSignature = 'SRSR';
 
 
+static const UInt32 _SRInvalidHotKeyID = 0;
+
+
 @interface SRShortcutRegistration ()
 @property (nullable) EventHotKeyRef carbonHotKey;
 @property EventHotKeyID carbonHotKeyID;
-@property (nonnull) SRShortcutAction action;
-- (instancetype)initWithShortcut:(nullable SRShortcut *)aShortcut action:(nonnull SRShortcutAction)anAction;
-- (void)invoke;
+- (void)_invalidateRegistration;
+- (void)_invalidateObserving;
 @end;
 
 
 @interface _SRShortcutRegistrationMonitor : NSObject
 @property (class, nonnull, readonly) _SRShortcutRegistrationMonitor *shared;
-- (BOOL)provisionRegistration:(nonnull SRShortcutRegistration *)aRegistration error:(NSError * _Nullable *)outError;
+- (void)enable;
+- (void)disable;
+
+- (void)installEventHandlerIfNeeded;
+- (void)removeEventHandlerIfNeeded;
+
+- (void)addRegistration:(nonnull SRShortcutRegistration *)aRegistration;
 - (void)removeRegistration:(nonnull SRShortcutRegistration *)aRegistration;
+
 - (OSStatus)sendCarbonEvent:(nullable EventRef)anEvent;
 @end
 
@@ -39,6 +50,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 {
     NSMutableArray<SRShortcutRegistration *> *_registrations;
     EventHandlerRef _carbonEventHandler;
+    NSInteger _disableCounter;
 }
 
 + (_SRShortcutRegistrationMonitor *)shared
@@ -61,119 +73,243 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     return self;
 }
 
-- (BOOL)provisionRegistration:(SRShortcutRegistration *)aRegistration error:(NSError * __autoreleasing *)outError
+- (void)enable
 {
-    static UInt32 CarbonID = 0;
-
     @synchronized (self)
     {
-        if (CarbonID == UINT32_MAX)
-            [NSException raise:NSInternalInconsistencyException
-                        format:@"Maximum number of shortcut registrations reached."];
+        os_trace_debug("%ld -> %ld", _disableCounter, _disableCounter - 1);
+        _disableCounter -= 1;
+        [self installEventHandlerIfNeeded];
+    }
 
-        EventHotKeyRef hotKey = NULL;
-        EventHotKeyID hotKeyID = {SRShortcutRegistrationSignature, ++CarbonID};
-        OSStatus error = RegisterEventHotKey(aRegistration.shortcut.carbonKeyCode,
-                                             aRegistration.shortcut.carbonModifierFlags,
-                                             hotKeyID,
-                                             GetEventDispatcherTarget(),
-                                             0,
-                                             &hotKey);
+}
 
-        if (error != noErr)
-        {
-            if (outError)
-                *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:error userInfo:nil];
-
-            return NO;
-        }
-
-        if (_registrations.count == 0)
-        {
-            static const EventTypeSpec eventSpec[1] = { { kEventClassKeyboard, kEventHotKeyPressed } };
-            error = InstallEventHandler(GetEventDispatcherTarget(),
-                                        (EventHandlerProcPtr)SRCarbonEventHandler,
-                                        1,
-                                        eventSpec,
-                                        (__bridge void *)self,
-                                        &_carbonEventHandler);
-
-            if (error != noErr)
-            {
-                if (outError)
-                    *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:error userInfo:nil];
-
-
-                return NO;
-            }
-        }
-
-        NSAssert(aRegistration.isValid, @"Registration must be valid");
-        aRegistration.carbonHotKey = hotKey;
-        aRegistration.carbonHotKeyID = hotKeyID;
-        [_registrations addObject:aRegistration];
-
-        return YES;
+- (void)disable
+{
+    @synchronized (self)
+    {
+        os_trace_debug("%ld -> %ld", _disableCounter, _disableCounter + 1);
+        _disableCounter += 1;
+        [self removeEventHandlerIfNeeded];
     }
 }
 
-- (OSStatus)sendCarbonEvent:(EventRef)anEvent
+- (void)installEventHandlerIfNeeded
 {
-    if (!anEvent)
-        return eventNotHandledErr;
+    if (!_registrations.count)
+        return;
 
-    if (GetEventClass(anEvent) != kEventClassKeyboard)
-        return eventNotHandledErr;
+    if (_disableCounter)
+        return;
 
-    EventHotKeyID hotKeyID;
-    OSStatus error = GetEventParameter(anEvent,
-                                       kEventParamDirectObject,
-                                       typeEventHotKeyID,
-                                       NULL,
-                                       sizeof(hotKeyID),
-                                       NULL,
-                                       &hotKeyID);
-
-    if (error != noErr)
-        return eventNotHandledErr;
-
-    if (hotKeyID.id == 0 || hotKeyID.signature != SRShortcutRegistrationSignature)
-        return eventNotHandledErr;
-
-    @synchronized (self)
+    if (!_carbonEventHandler)
     {
-        NSUInteger i = [_registrations indexOfObjectPassingTest:^(SRShortcutRegistration *obj, NSUInteger idx, BOOL *stop) {
-            return (BOOL)(obj.carbonHotKeyID.id == hotKeyID.id);
-        }];
+        static const EventTypeSpec eventSpec[1] = { { kEventClassKeyboard, kEventHotKeyPressed } };
+        os_trace("Installing event handler");
+        OSStatus error = InstallEventHandler(GetEventDispatcherTarget(),
+                                             (EventHandlerProcPtr)SRCarbonEventHandler,
+                                             1,
+                                             eventSpec,
+                                             (__bridge void *)self,
+                                             &_carbonEventHandler);
 
-        if (i != NSNotFound)
-            [_registrations[i] invoke];
+        if (error != noErr)
+        {
+            os_trace_error("Failed to install event handler: %d", error);
+            return;
+        }
     }
 
-    return noErr;
+    for (SRShortcutRegistration *r in _registrations)
+    {
+        if (r.carbonHotKey)
+            continue;
+
+        @synchronized (r)
+        {
+            SRShortcut *shortcut = r.shortcut;
+
+            if (!shortcut)
+                continue;
+
+            EventHotKeyRef hotKey = NULL;
+            static UInt32 CarbonID = _SRInvalidHotKeyID;
+            EventHotKeyID hotKeyID = {SRShortcutRegistrationSignature, ++CarbonID};
+            os_trace("Registering hot key");
+            OSStatus error = RegisterEventHotKey(shortcut.carbonKeyCode,
+                                                 shortcut.carbonModifierFlags,
+                                                 hotKeyID,
+                                                 GetEventDispatcherTarget(),
+                                                 0,
+                                                 &hotKey);
+
+            if (error != noErr)
+            {
+                os_trace_error_with_payload("Failed to register hot key: %d", error, ^(xpc_object_t d) {
+                    xpc_dictionary_set_uint64(d, "keyCode", shortcut.keyCode);
+                    xpc_dictionary_set_uint64(d, "modifierFlags", shortcut.modifierFlags);
+                });
+                continue;
+            }
+            else
+            {
+                os_trace_with_payload("Registered hot key: %u", hotKeyID.id, ^(xpc_object_t d) {
+                    xpc_dictionary_set_uint64(d, "keyCode", shortcut.keyCode);
+                    xpc_dictionary_set_uint64(d, "modifierFlags", shortcut.modifierFlags);
+                });
+            }
+
+            r.carbonHotKey = hotKey;
+            r.carbonHotKeyID = hotKeyID;
+        }
+    }
+}
+
+- (void)removeEventHandlerIfNeeded
+{
+    if (!_carbonEventHandler)
+        return;
+
+    if (_disableCounter || !_registrations.count)
+    {
+        os_trace("Removing event handler");
+        OSStatus error = RemoveEventHandler(_carbonEventHandler);
+
+        if (error != noErr)
+            os_trace_error("Failed to remove event handler: %d", error);
+        else
+            _carbonEventHandler = NULL;
+    }
+
+    if (_disableCounter)
+    {
+        for (SRShortcutRegistration *r in _registrations)
+        {
+            if (!r.carbonHotKey)
+                continue;
+
+            @synchronized (r)
+            {
+                os_trace("Removing hot key");
+                OSStatus error = UnregisterEventHotKey(r.carbonHotKey);
+                SRShortcut *shortcut = r.shortcut;
+
+                if (error != noErr)
+                {
+                    os_trace_error_with_payload("Failed to unregister hot key: %d", error, ^(xpc_object_t d) {
+                        xpc_dictionary_set_uint64(d, "keyCode", shortcut.keyCode);
+                        xpc_dictionary_set_uint64(d, "modifierFlags", shortcut.modifierFlags);
+                    });
+                }
+                else
+                {
+                    os_trace_with_payload("Unregistered hot key: %u", r.carbonHotKeyID.id, ^(xpc_object_t d) {
+                        xpc_dictionary_set_uint64(d, "keyCode", shortcut.keyCode);
+                        xpc_dictionary_set_uint64(d, "modifierFlags", shortcut.modifierFlags);
+                    });
+                    r.carbonHotKey = NULL;
+                    r.carbonHotKeyID = (EventHotKeyID){SRShortcutRegistrationSignature, _SRInvalidHotKeyID};
+                }
+            }
+        }
+    }
+}
+
+- (void)addRegistration:(nonnull SRShortcutRegistration *)aRegistration
+{
+    @synchronized (self)
+    {
+        [_registrations addObject:aRegistration];
+        [self installEventHandlerIfNeeded];
+    }
 }
 
 - (void)removeRegistration:(SRShortcutRegistration *)aRegistration
 {
     @synchronized (self)
     {
-        NSUInteger i = [_registrations indexOfObject:aRegistration];
+        [_registrations removeObjectIdenticalTo:aRegistration];
 
-        if (i == NSNotFound)
-            return;
-
-        NSAssert(aRegistration.isValid, @"Registration must be valid");
-        UnregisterEventHotKey(aRegistration.carbonHotKey);
-        [_registrations removeObjectAtIndex:i];
-        aRegistration.carbonHotKey = NULL;
-        aRegistration.carbonHotKeyID = (EventHotKeyID){SRShortcutRegistrationSignature, 0};
-
-        if (!_registrations.count && _carbonEventHandler)
+        if (aRegistration.carbonHotKey)
         {
-            RemoveEventHandler(_carbonEventHandler);
-            _carbonEventHandler = NULL;
+            UnregisterEventHotKey(aRegistration.carbonHotKey);
+            aRegistration.carbonHotKey = NULL;
+            aRegistration.carbonHotKeyID = (EventHotKeyID){SRShortcutRegistrationSignature, _SRInvalidHotKeyID};
         }
+
+        [self removeEventHandlerIfNeeded];
     }
+}
+
+- (OSStatus)sendCarbonEvent:(EventRef)anEvent
+{
+    __block OSStatus error = noErr;
+
+    os_activity_initiate("Handeling carbon event", OS_ACTIVITY_FLAG_DETACHED, ^{
+        if (self->_disableCounter > 0)
+        {
+            os_trace_debug("Registrations are currently disabled");
+            error = eventNotHandledErr;
+            return;
+        }
+
+        if (!anEvent)
+        {
+            os_trace_error("Event is NULL");
+            error = eventNotHandledErr;
+            return;
+        }
+
+        if (GetEventClass(anEvent) != kEventClassKeyboard)
+        {
+            os_trace_error("Event is of wrong class");
+            error = eventNotHandledErr;
+            return;
+        }
+
+        EventHotKeyID hotKeyID;
+        error = GetEventParameter(anEvent,
+                                  kEventParamDirectObject,
+                                  typeEventHotKeyID,
+                                  NULL,
+                                  sizeof(hotKeyID),
+                                  NULL,
+                                  &hotKeyID);
+
+        if (error != noErr)
+        {
+            os_trace_error("Failed to get hot key parameters: %d", error);
+            error = eventNotHandledErr;
+            return;
+        }
+
+        if (hotKeyID.id == 0 || hotKeyID.signature != SRShortcutRegistrationSignature)
+        {
+            os_trace_error("Unexpected hot key with id %u and signature: %u", hotKeyID.id, hotKeyID.signature);
+            error = eventNotHandledErr;
+            return;
+        }
+
+        @synchronized (self)
+        {
+            NSUInteger i = [self->_registrations indexOfObjectPassingTest:^(SRShortcutRegistration *obj, NSUInteger idx, BOOL *stop) {
+                return (BOOL)(obj.carbonHotKeyID.id == hotKeyID.id);
+            }];
+
+            if (i != NSNotFound)
+            {
+                [self->_registrations[i] fire];
+                error = noErr;
+            }
+            else
+            {
+                os_trace_error("Unregistered hot key with id %u and signature %u", hotKeyID.id, hotKeyID.signature);
+                error = eventNotHandledErr;
+            }
+        }
+    });
+
+    return error;
 }
 
 @end
@@ -184,47 +320,45 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 
 @implementation SRShortcutRegistration
 {
-    SRShortcutAction _action;
-    __weak NSObject *_observedObject;
-    NSString *_observedKeyPath;
+    SRShortcut *_shortcut;
 }
 
-+ (instancetype)registerShortcut:(SRShortcut *)aShortcut
-                      withAction:(SRShortcutAction)anAction
-                           error:(NSError *__autoreleasing *)outError
++ (void)enableShortcutRegistrations
 {
-    SRShortcutRegistration *registration = [[self alloc] initWithShortcut:aShortcut action:anAction];
-
-    if ([_SRShortcutRegistrationMonitor.shared provisionRegistration:registration error:outError])
-        return registration;
-    else
-        return nil;
+    os_activity_initiate("Enabling registrations", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        [_SRShortcutRegistrationMonitor.shared enable];
+    });
 }
 
-+ (nullable instancetype)registerAutoupdatingShortcutWithKeyPath:(NSString *)aKeyPath
-                                                        toObject:(NSObject *)anObject
-                                                          action:(SRShortcutAction)anAction
-                                                           error:(NSError * _Nullable *)outError
++ (void)disableShortcutRegistrations
 {
-    SRShortcutRegistration *registration = [[self alloc] initWithShortcut:nil action:anAction];
-    [anObject addObserver:registration
-               forKeyPath:aKeyPath
-                  options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
-                  context:_SRShortcutRegistrationContext];
+    os_activity_initiate("Disabling registrations", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        [_SRShortcutRegistrationMonitor.shared disable];
+    });
+}
+
++ (instancetype)registerShortcut:(SRShortcut *)aShortcut actionHandler:(SRShortcutActionHandler)anActionHandler
+{
+    SRShortcutRegistration *registration = [self new];
+    registration.shortcut = aShortcut;
     return registration;
 }
 
-- (instancetype)initWithShortcut:(SRShortcut *)aShortcut action:(SRShortcutAction)anAction
++ (instancetype)registerShortcutKeyPath:(NSString *)aKeyPath
+                               ofObject:(id)anObject
+                          actionHandler:(SRShortcutActionHandler)anActionHandler
+{
+    SRShortcutRegistration *registration = [self new];
+    [registration setObservedObject:anObject withKeyPath:aKeyPath];
+    return registration;
+}
+
+- (instancetype)init
 {
     self = [super init];
 
     if (self)
-    {
-        _action = anAction;
-        _shortcut = aShortcut;
         _dispatchQueue = dispatch_get_main_queue();
-        _isValid = YES;
-    }
 
     return self;
 }
@@ -234,32 +368,150 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
     [self invalidate];
 }
 
+#pragma mark Properties
+
++ (BOOL)automaticallyNotifiesObserversOfCarbonHotKey
+{
+    return NO;
+}
+
++ (BOOL)automaticallyNotifiesObserversOfCarbonHotKeyID
+{
+    return NO;
+}
+
++ (BOOL)automaticallyNotifiesObserversOfShortcut
+{
+    return NO;
+}
+
+- (SRShortcut *)shortcut
+{
+    @synchronized (self)
+    {
+        return _shortcut;
+    }
+}
+
+- (void)setShortcut:(SRShortcut *)aShortcut
+{
+    os_activity_initiate("Registering raw shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        @synchronized (self)
+        {
+            if (self->_shortcut == aShortcut || [self->_shortcut isEqual:aShortcut])
+                return;
+
+            [self willChangeValueForKey:@"observedObject"];
+            [self willChangeValueForKey:@"observedKeyPath"];
+            [self willChangeValueForKey:@"shortcut"];
+            [self willChangeValueForKey:@"isValid"];
+
+            [self _invalidateObserving];
+            [self _invalidateRegistration];
+            self->_shortcut = aShortcut;
+            self->_isValid = YES;
+            [_SRShortcutRegistrationMonitor.shared addRegistration:self];
+
+            [self didChangeValueForKey:@"isValid"];
+            [self didChangeValueForKey:@"shortcut"];
+            [self didChangeValueForKey:@"observedKeyPath"];
+            [self didChangeValueForKey:@"observedObject"];
+        }
+    });
+}
+
+- (void)setObservedObject:(id)anObservedObject withKeyPath:(NSString *)aKeyPath
+{
+    os_activity_initiate("Registering autoupdating shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        @synchronized (self)
+        {
+            [self willChangeValueForKey:@"observedObject"];
+            [self willChangeValueForKey:@"observedKeyPath"];
+            [self willChangeValueForKey:@"shortcut"];
+            [self willChangeValueForKey:@"isValid"];
+            [self _invalidateRegistration];
+            [anObservedObject addObserver:self
+                               forKeyPath:aKeyPath
+                                  options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+                                  context:_SRShortcutRegistrationContext];
+            self->_observedObject = anObservedObject;
+            self->_observedKeyPath = aKeyPath;
+            self->_isValid = YES; // registration is valid as long as observation continues
+            [self didChangeValueForKey:@"isValid"];
+            [self didChangeValueForKey:@"shortcut"];
+            [self didChangeValueForKey:@"observedKeyPath"];
+            [self didChangeValueForKey:@"observedObject"];
+        }
+    });
+}
+
 #pragma mark Methods
 
-- (void)invoke
+- (void)fire
 {
-    dispatch_async(_dispatchQueue, dispatch_block_create(DISPATCH_BLOCK_DETACHED, ^{
-        if (self.isValid)
-            self->_action(self);
-    }));
+    os_activity_initiate("Firing shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        dispatch_async(self.dispatchQueue, dispatch_block_create(DISPATCH_BLOCK_NO_QOS_CLASS, ^{
+            SRShortcutActionHandler handler = self.actionHandler;
+            id target = self.target;
+
+            if (handler)
+                handler(self);
+            else if (target)
+                [target performSelector:@selector(performShortcutActionForRegistration:) withObject:self];
+        }));
+    });
 }
 
 - (void)invalidate
 {
-    @synchronized (self)
-    {
-        if (_observedObject)
-            [_observedObject removeObserver:self
-                                 forKeyPath:_observedKeyPath
-                                    context:_SRShortcutRegistrationContext];
+    os_activity_initiate("Invalidating shortcut registration", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        @synchronized (self)
+        {
+            if (!self->_isValid)
+                return;
 
-        _observedObject = nil;
+            [self willChangeValueForKey:@"observedObject"];
+            [self willChangeValueForKey:@"observedKeyPath"];
+            [self willChangeValueForKey:@"shortcut"];
+            [self willChangeValueForKey:@"isValid"];
 
-        if (_carbonHotKey)
-            [_SRShortcutRegistrationMonitor.shared removeRegistration:self];
+            [self _invalidateObserving];
+            [self _invalidateRegistration];
+            self->_isValid = NO;
 
-        _isValid = NO;
-    }
+            [self didChangeValueForKey:@"isValid"];
+            [self didChangeValueForKey:@"shortcut"];
+            [self didChangeValueForKey:@"observedKeyPath"];
+            [self didChangeValueForKey:@"observedObject"];
+
+        }
+    });
+}
+
+#pragma mark Private
+
+- (void)_invalidateRegistration
+{
+    [_SRShortcutRegistrationMonitor.shared removeRegistration:self];
+    _shortcut = nil;
+}
+
+- (void)_invalidateObserving
+{
+    if (_observedObject)
+        [_observedObject removeObserver:self forKeyPath:_observedKeyPath context:_SRShortcutRegistrationContext];
+
+    _observedObject = nil;
+    _observedKeyPath = nil;
+}
+
+#pragma mark NSNibLoading
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    if (_observedObject && _observedKeyPath)
+        [self setObservedObject:_observedObject withKeyPath:_observedKeyPath];
 }
 
 #pragma mark NSObject
@@ -271,34 +523,37 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 {
     if (aContext == _SRShortcutRegistrationContext)
     {
-        SRShortcut *newShortcut = aChange[NSKeyValueChangeNewKey];
+        os_activity_initiate("Observing new shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+            SRShortcut *newShortcut = aChange[NSKeyValueChangeNewKey];
 
-        // NSController subclasses are notable for not populating New and Old key of the change dict.
-        if ((!newShortcut || (NSNull *)newShortcut == NSNull.null) && [anObject isKindOfClass:NSController.class])
-            newShortcut = [anObject valueForKeyPath:aKeyPath];
+            // NSController subclasses are notable for not setting the New and Old keys of the change dictionary.
+            if ((!newShortcut || (NSNull *)newShortcut == NSNull.null) && [anObject isKindOfClass:NSController.class])
+                newShortcut = [anObject valueForKeyPath:aKeyPath];
 
-        if ([newShortcut isKindOfClass:NSDictionary.class])
-            newShortcut = [SRShortcut shortcutWithDictionary:(NSDictionary *)newShortcut];
-        else if ([newShortcut isKindOfClass:NSData.class])
-            newShortcut = [NSKeyedUnarchiver unarchiveObjectWithData:(NSData *)newShortcut];
-        else if ((NSNull *)newShortcut == NSNull.null)
-            newShortcut = nil;
+            if ([newShortcut isKindOfClass:NSDictionary.class])
+                newShortcut = [SRShortcut shortcutWithDictionary:(NSDictionary *)newShortcut];
+            else if ([newShortcut isKindOfClass:NSData.class])
+                newShortcut = [NSKeyedUnarchiver unarchiveObjectWithData:(NSData *)newShortcut];
+            else if ((NSNull *)newShortcut == NSNull.null)
+                newShortcut = nil;
 
-        @synchronized (self)
-        {
-            if (!self.isValid)
-                return;
+            @synchronized (self)
+            {
+                if (self->_shortcut == newShortcut || [self->_shortcut isEqual:newShortcut])
+                    return;
 
-            if (newShortcut == self.shortcut || [self.shortcut isEqual:newShortcut])
-                return;
+                [self willChangeValueForKey:@"shortcut"];
+                [self _invalidateRegistration];
 
-            [self willChangeValueForKey:@"shortcut"];
-            [_SRShortcutRegistrationMonitor.shared removeRegistration:self];
-            _shortcut = newShortcut;
-            if (_shortcut)
-                [_SRShortcutRegistrationMonitor.shared provisionRegistration:self error:nil];
-            [self didChangeValueForKey:@"shortcut"];
-        }
+                if (newShortcut)
+                {
+                    self->_shortcut = newShortcut;
+                    [_SRShortcutRegistrationMonitor.shared addRegistration:self];
+                }
+
+                [self didChangeValueForKey:@"shortcut"];
+            }
+        });
     }
     else
         [super observeValueForKeyPath:aKeyPath ofObject:anObject change:aChange context:aContext];

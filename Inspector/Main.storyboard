@@ -162,6 +162,15 @@
                 <customObject id="aPi-Ol-I4O" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <customObject id="Wsw-a9-b4o" customClass="AppDelegate" customModule="Inspector" customModuleProvider="target"/>
                 <userDefaultsController representsSharedInstance="YES" id="r01-2Q-rcu"/>
+                <customObject id="GQr-b9-Npt" customClass="SRShortcutRegistration">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="observedKeyPath" value="values.shortcut"/>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <outlet property="observedObject" destination="r01-2Q-rcu" id="jS1-l4-pqn"/>
+                        <outlet property="target" destination="Wsw-a9-b4o" id="Utp-MP-gq8"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="-1018" y="-502"/>
         </scene>

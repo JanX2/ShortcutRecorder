@@ -19,9 +19,7 @@ class SRShortcutRegistrationTests: XCTestCase {
         }
 
         let model = Model()
-        let registration = try! ShortcutRegistration.register(autoupdatingShortcutWithKeyPath: "shortcut",
-                                                              to: model,
-                                                              action: {_ in })
+        let registration = ShortcutRegistration.register(keyPath: "shortcut", of: model, action: {_ in })
         XCTAssertNil(registration.shortcut)
 
         model.shortcut = Shortcut.default
@@ -37,9 +35,7 @@ class SRShortcutRegistrationTests: XCTestCase {
         }
 
         let model = Model()
-        let registration = try! ShortcutRegistration.register(autoupdatingShortcutWithKeyPath: "shortcut",
-                                                              to: model,
-                                                              action: {_ in })
+        let registration = ShortcutRegistration.register(keyPath: "shortcut", of: model, action: {_ in })
         XCTAssertNil(registration.shortcut)
 
         model.shortcut = Shortcut.default.dictionaryRepresentation
@@ -55,9 +51,7 @@ class SRShortcutRegistrationTests: XCTestCase {
         }
 
         let model = Model()
-        let registration = try! ShortcutRegistration.register(autoupdatingShortcutWithKeyPath: "shortcut",
-                                                              to: model,
-                                                              action: {_ in })
+        let registration = ShortcutRegistration.register(keyPath: "shortcut", of: model, action: {_ in })
         XCTAssertNil(registration.shortcut)
 
         model.shortcut = NSKeyedArchiver.archivedData(withRootObject: Shortcut.default)
@@ -70,9 +64,7 @@ class SRShortcutRegistrationTests: XCTestCase {
     func testAutoupdatingFromUserDefaultsController() {
         let defaults = NSUserDefaultsController.shared
         let keyPath = "values.shortcut"
-        let registration = try! ShortcutRegistration.register(autoupdatingShortcutWithKeyPath: keyPath,
-                                                              to: defaults,
-                                                              action: {_ in })
+        let registration = ShortcutRegistration.register(keyPath: keyPath, of: defaults, action: {_ in })
         XCTAssertNil(registration.shortcut)
 
         defaults.setValue(NSKeyedArchiver.archivedData(withRootObject: Shortcut.default), forKeyPath: keyPath)
@@ -80,5 +72,16 @@ class SRShortcutRegistrationTests: XCTestCase {
 
         defaults.setValue(nil, forKeyPath: keyPath)
         XCTAssertNil(registration.shortcut)
+    }
+
+    func testValidity() {
+        let registration = ShortcutRegistration()
+        XCTAssertFalse(registration.isValid)
+
+        registration.shortcut = Shortcut.default
+        XCTAssertTrue(registration.isValid)
+
+        registration.invalidate()
+        XCTAssertFalse(registration.isValid)
     }
 }
