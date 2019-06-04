@@ -7,6 +7,7 @@
 #import <objc/runtime.h>
 
 #import "SRRecorderControl.h"
+#import "SRShortcutRegistration.h"
 #import "SRKeyCodeTransformer.h"
 #import "SRModifierFlagsTransformer.h"
 
@@ -58,6 +59,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     _requiredModifierFlags = 0;
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     _cancelButtonToolTipTag = NSIntegerMax;
+    _disablesShortcutRegistrationsWhileRecording = YES;
 
     _notifyStyle = [NSInvocation invocationWithMethodSignature:[SRRecorderControlStyle instanceMethodSignatureForSelector:@selector(recorderControlAppearanceDidChange:)]];
     _notifyStyle.selector = @selector(recorderControlAppearanceDidChange:);
@@ -401,6 +403,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     self.toolTip = SRLoc(@"Type shortcut");
     NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
+    if (self.disablesShortcutRegistrationsWhileRecording)
+        [SRShortcutRegistration disableShortcutRegistrations];
+
     return YES;
 }
 
@@ -451,6 +456,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 #pragma clang diagnostic pop
 
     [self sendAction:self.action to:self.target];
+
+    if (self.disablesShortcutRegistrationsWhileRecording)
+        [SRShortcutRegistration enableShortcutRegistrations];
 }
 
 - (void)updateActiveConstraints

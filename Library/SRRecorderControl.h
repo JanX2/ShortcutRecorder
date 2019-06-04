@@ -108,6 +108,17 @@ IB_DESIGNABLE
 @property IBInspectable BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
+ If YES, the shortcut monitoring of all active shortcut registrations is disabled
+ for the duration of the recording.
+
+ @discussion
+ Defaults to YES.
+
+ @seealso SRShortcutRegistration
+ */
+@property IBInspectable BOOL disablesShortcutRegistrationsWhileRecording;
+
+/*!
  Configure allowed and required modifier flags for user interaction.
 
  @param newAllowedModifierFlags New allowed modifier flags.
