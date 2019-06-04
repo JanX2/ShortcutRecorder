@@ -3,8 +3,10 @@
 //  CC BY 3.0
 //
 
-#import "SRRecorderControl.h"
+#import <os/trace.h>
+#import <os/activity.h>
 
+#import "SRRecorderControl.h"
 #import "SRRecorderControlStyle.h"
 
 
@@ -682,157 +684,186 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         aDestination[aKey] = Get(aSource, aKey, aVerifier, aTransformer);
     };
 
-    @synchronized (self)
-    {
-        NSDictionary *info = [_cache objectForKey:aStyle.identifier];
+    __block NSDictionary *info = nil;
+    os_activity_initiate("infoForStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+        os_trace_debug_with_payload("Fetching info", ^(xpc_object_t d) {
+            xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
+        });
 
-        if (!info)
+        @synchronized (self)
         {
-            NSString *resourceName = [NSString stringWithFormat:@"%@-info", aStyle.identifier];
-            NSData *data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
+            info = [self->_cache objectForKey:aStyle.identifier];
 
-            if (!data)
-                data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
+            if (!info)
+            {
+                os_trace_debug("Info is not in cache");
+                NSString *resourceName = [NSString stringWithFormat:@"%@-info", aStyle.identifier];
+                NSData *data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
 
-            if (!data)
-                [NSException raise:NSInternalInconsistencyException format:@"Missing %@", resourceName];
+                if (!data)
+                    data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
 
-            NSError *error = nil;
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-            if (!json)
-                [NSException raise:NSInternalInconsistencyException
-                            format:@"%@ is an invalid JSON: %@", resourceName, error.localizedFailureReason];
+                if (!data)
+                    [NSException raise:NSInternalInconsistencyException format:@"Missing %@", resourceName];
 
-            NSMutableDictionary *infoInProgress = NSMutableDictionary.dictionary;
+                NSError *error = nil;
+                NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                if (!json)
+                    [NSException raise:NSInternalInconsistencyException
+                                format:@"%@ is an invalid JSON: %@", resourceName, error.localizedFailureReason];
 
-            Set(infoInProgress, json, @"supportedComponents", VerifyIsArray, ^(NSArray *anObject, NSString *aKey) {
-                NSMutableArray *components = [NSMutableArray arrayWithCapacity:anObject.count];
+                NSMutableDictionary *infoInProgress = NSMutableDictionary.dictionary;
 
-                [anObject enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    NSString *subkey = [NSString stringWithFormat:@"%@.[%lu]", aKey, idx];
-                    VerifyIsComponents(obj, subkey);
-                    [components addObject:TransformComponents(obj, subkey)];
-                }];
+                Set(infoInProgress, json, @"supportedComponents", VerifyIsArray, ^(NSArray *anObject, NSString *aKey) {
+                    NSMutableArray *components = [NSMutableArray arrayWithCapacity:anObject.count];
 
-                [components addObject:[SRRecorderControlStyleComponents new]];
+                    [anObject enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        NSString *subkey = [NSString stringWithFormat:@"%@.[%lu]", aKey, idx];
+                        VerifyIsComponents(obj, subkey);
+                        [components addObject:TransformComponents(obj, subkey)];
+                    }];
 
-                return (NSArray *)components.copy;
-            });
+                    [components addObject:[SRRecorderControlStyleComponents new]];
 
-            Set(infoInProgress, json, @"metrics", VerifyIsDictionary, ^(NSDictionary *anObject, NSString *aKey) {
-                NSMutableDictionary *metricsInProgress = [NSMutableDictionary dictionaryWithCapacity:anObject.count];
+                    return (NSArray *)components.copy;
+                });
 
-                Set(metricsInProgress, anObject, @"minSize", VerifyIsSize, TransformSize);
-                Set(metricsInProgress, anObject, @"labelToCancel", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"cancelToClear", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"buttonToAlignment", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"baselineFromTop", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"alignmentToLabel", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"labelToAlignment", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"baselineLayoutOffsetFromBottom", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"baselineDrawingOffsetFromBottom", VerifyIsNumber, nil);
-                Set(metricsInProgress, anObject, @"focusRingCornerRadius", VerifyIsSize, TransformSize);
-                Set(metricsInProgress, anObject, @"focusRingInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
-                Set(metricsInProgress, anObject, @"alignmentInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
-                Set(metricsInProgress, anObject, @"normalLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
-                Set(metricsInProgress, anObject, @"recordingLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
-                Set(metricsInProgress, anObject, @"disabledLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
+                Set(infoInProgress, json, @"metrics", VerifyIsDictionary, ^(NSDictionary *anObject, NSString *aKey) {
+                    NSMutableDictionary *metricsInProgress = [NSMutableDictionary dictionaryWithCapacity:anObject.count];
 
-                return (NSDictionary *)metricsInProgress.copy;
-            });
+                    Set(metricsInProgress, anObject, @"minSize", VerifyIsSize, TransformSize);
+                    Set(metricsInProgress, anObject, @"labelToCancel", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"cancelToClear", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"buttonToAlignment", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"baselineFromTop", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"alignmentToLabel", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"labelToAlignment", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"baselineLayoutOffsetFromBottom", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"baselineDrawingOffsetFromBottom", VerifyIsNumber, nil);
+                    Set(metricsInProgress, anObject, @"focusRingCornerRadius", VerifyIsSize, TransformSize);
+                    Set(metricsInProgress, anObject, @"focusRingInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
+                    Set(metricsInProgress, anObject, @"alignmentInsets", VerifyIsEdgeInsets, TransformEdgeInsets);
+                    Set(metricsInProgress, anObject, @"normalLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
+                    Set(metricsInProgress, anObject, @"recordingLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
+                    Set(metricsInProgress, anObject, @"disabledLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
 
-            info = infoInProgress.copy;
-            [_cache setObject:info forKey:aStyle.identifier];
+                    return (NSDictionary *)metricsInProgress.copy;
+                });
+
+                info = infoInProgress.copy;
+                [self->_cache setObject:info forKey:aStyle.identifier];
+            }
+            else
+                os_trace_debug("Info is in cache");
         }
+    }));
 
-        return info;
-    }
+    return info;
 }
 
 - (NSArray<NSString *> *)lookupPrefixesForStyle:(SRRecorderControlStyle *)aStyle
 {
-    @synchronized (self)
-    {
-        __auto_type key = [SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey new];
-        key.identifier = aStyle.identifier.copy;
-        key.components = aStyle.effectiveComponents.copy;
+    __block NSArray *lookupPrefixes = nil;
+    os_activity_initiate("lookupPrefixesForStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+        os_trace_debug_with_payload("Fetching lookup prefixes", ^(xpc_object_t d) {
+            xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
+        });
 
-        NSArray *lookupPrefixes = [_cache objectForKey:key];
-
-        if (!lookupPrefixes)
+        @synchronized (self)
         {
-            SRRecorderControlStyleComponents *effectiveComponents = aStyle.effectiveComponents;
-            NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleComponents *a, SRRecorderControlStyleComponents *b) {
-                return [a compare:b relativeToComponents:effectiveComponents];
-            };
-            __auto_type supportedComponents = (NSArray<SRRecorderControlStyleComponents *> *)[self infoForStyle:aStyle][@"supportedComponents"];
-            supportedComponents = [supportedComponents sortedArrayWithOptions:NSSortStable usingComparator:cmp];
-            lookupPrefixes = [NSMutableArray arrayWithCapacity:supportedComponents.count];
+            __auto_type key = [SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey new];
+            key.identifier = aStyle.identifier.copy;
+            key.components = aStyle.effectiveComponents.copy;
 
-            for (SRRecorderControlStyleComponents *c in supportedComponents)
-                [(NSMutableArray *)lookupPrefixes addObject:[NSString stringWithFormat:@"%@%@", aStyle.identifier, c.stringRepresentation]];
+            lookupPrefixes = [self->_cache objectForKey:key];
 
-            lookupPrefixes = lookupPrefixes.copy;
-            [_cache setObject:lookupPrefixes forKey:key];
+            if (!lookupPrefixes)
+            {
+                os_trace_debug("Lookup prefixes are not in cache");
+                SRRecorderControlStyleComponents *effectiveComponents = aStyle.effectiveComponents;
+                NSComparator cmp = ^NSComparisonResult(SRRecorderControlStyleComponents *a, SRRecorderControlStyleComponents *b) {
+                    return [a compare:b relativeToComponents:effectiveComponents];
+                };
+                __auto_type supportedComponents = (NSArray<SRRecorderControlStyleComponents *> *)[self infoForStyle:aStyle][@"supportedComponents"];
+                supportedComponents = [supportedComponents sortedArrayWithOptions:NSSortStable usingComparator:cmp];
+                lookupPrefixes = [NSMutableArray arrayWithCapacity:supportedComponents.count];
+
+                for (SRRecorderControlStyleComponents *c in supportedComponents)
+                    [(NSMutableArray *)lookupPrefixes addObject:[NSString stringWithFormat:@"%@%@", aStyle.identifier, c.stringRepresentation]];
+
+                lookupPrefixes = lookupPrefixes.copy;
+                [self->_cache setObject:lookupPrefixes forKey:key];
+            }
+            else
+                os_trace_debug("Lookup prefixes are in cache");
         }
+    }));
 
-        return lookupPrefixes;
-    }
+    return lookupPrefixes;
 }
 
 - (NSImage *)imageNamed:(NSString *)aName forStyle:(SRRecorderControlStyle *)aStyle
 {
-    @synchronized (self)
-    {
-        __auto_type key = [SRRecorderControlStyleResourceLoaderCacheImageKey new];
-        key.identifier = aStyle.identifier.copy;
-        key.components = aStyle.effectiveComponents.copy;
-        key.name = aName.copy;
-        NSArray *imageNameCache = [_cache objectForKey:key];
-        NSImage *image = nil;
+    __block NSImage *image = nil;
+    os_activity_initiate("imageNamed:forStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+        os_trace_debug_with_payload("Fetching lookup prefixes", ^(xpc_object_t d) {
+            xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
+            xpc_dictionary_set_string(d, "image", aName.UTF8String);
+        });
 
-        if (!imageNameCache)
+        @synchronized (self)
         {
-            NSString *imageName = nil;
-            BOOL usesSRImage = YES;
+            __auto_type key = [SRRecorderControlStyleResourceLoaderCacheImageKey new];
+            key.identifier = aStyle.identifier.copy;
+            key.components = aStyle.effectiveComponents.copy;
+            key.name = aName.copy;
+            NSArray *imageNameCache = [self->_cache objectForKey:key];
 
-            for (NSString *p in [self lookupPrefixesForStyle:aStyle])
+            if (!imageNameCache)
             {
-                imageName = [NSString stringWithFormat:@"%@-%@", p, aName];
+                os_trace_debug("Image name is not in cache");
+                NSString *imageName = nil;
+                BOOL usesSRImage = YES;
 
-                image = SRImage(imageName);
-                if (image)
+                for (NSString *p in [self lookupPrefixesForStyle:aStyle])
                 {
-                    usesSRImage = YES;
-                    break;
+                    imageName = [NSString stringWithFormat:@"%@-%@", p, aName];
+
+                    image = SRImage(imageName);
+                    if (image)
+                    {
+                        usesSRImage = YES;
+                        break;
+                    }
+
+                    image = [NSImage imageNamed:imageName];
+                    if (image)
+                    {
+                        usesSRImage = NO;
+                        break;
+                    }
                 }
 
-                image = [NSImage imageNamed:imageName];
-                if (image)
-                {
-                    usesSRImage = NO;
-                    break;
-                }
+                if (!image)
+                    [NSException raise:NSInternalInconsistencyException format:@"Missing image named %@", aName];
+
+                [self->_cache setObject:@[imageName, @(usesSRImage)] forKey:key];
             }
-
-            if (!image)
-                [NSException raise:NSInternalInconsistencyException format:@"Missing image named %@", aName];
-
-            [_cache setObject:@[imageName, @(usesSRImage)] forKey:key];
-        }
-        else
-        {
-            NSString *imageName = imageNameCache[0];
-            BOOL usesSRImage = [imageNameCache[1] boolValue];
-
-            if (usesSRImage)
-                image = SRImage(imageName);
             else
-                image = [NSImage imageNamed:imageName];
-        }
+            {
+                os_trace_debug("Image name is in cache");
+                NSString *imageName = imageNameCache[0];
+                BOOL usesSRImage = [imageNameCache[1] boolValue];
 
-        return image;
-    }
+                if (usesSRImage)
+                    image = SRImage(imageName);
+                else
+                    image = [NSImage imageNamed:imageName];
+            }
+        }
+    }));
+
+    return image;
 }
 
 @end

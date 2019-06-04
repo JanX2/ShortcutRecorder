@@ -10,6 +10,8 @@ import ShortcutRecorder
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+    let purrSound = NSSound(named: "Purr")!
+
     override func awakeFromNib() {
         let shortcut = Shortcut(code: 0, modifierFlags: [.shift, .control, .option, .command], characters: "A", charactersIgnoringModifiers: "a")
         let shortcutData = NSKeyedArchiver.archivedData(withRootObject: shortcut)
@@ -77,6 +79,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     override func performShortcutAction(_ aRegistration: ShortcutRegistration) {
-        NSSound(named: "Purr")!.play()
+        purrSound.play()
     }
 }
