@@ -115,7 +115,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
         if (error != noErr)
         {
-            os_trace_error("Failed to install event handler: %d", error);
+            os_trace_error("#Critical Failed to install event handler: %d", error);
             return;
         }
     }
@@ -145,7 +145,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
             if (error != noErr)
             {
-                os_trace_error_with_payload("Failed to register hot key: %d", error, ^(xpc_object_t d) {
+                os_trace_error_with_payload("#Critical Failed to register hot key: %d", error, ^(xpc_object_t d) {
                     xpc_dictionary_set_uint64(d, "keyCode", shortcut.keyCode);
                     xpc_dictionary_set_uint64(d, "modifierFlags", shortcut.modifierFlags);
                 });
@@ -196,7 +196,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
                 if (error != noErr)
                 {
-                    os_trace_error_with_payload("Failed to unregister hot key: %d", error, ^(xpc_object_t d) {
+                    os_trace_error_with_payload("#Critical Failed to unregister hot key: %d", error, ^(xpc_object_t d) {
                         xpc_dictionary_set_uint64(d, "keyCode", shortcut.keyCode);
                         xpc_dictionary_set_uint64(d, "modifierFlags", shortcut.modifierFlags);
                     });
@@ -255,14 +255,14 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
         if (!anEvent)
         {
-            os_trace_error("Event is NULL");
+            os_trace_error("#Error Event is NULL");
             error = eventNotHandledErr;
             return;
         }
 
         if (GetEventClass(anEvent) != kEventClassKeyboard)
         {
-            os_trace_error("Event is of wrong class");
+            os_trace_error("#Error Event is of wrong class");
             error = eventNotHandledErr;
             return;
         }
@@ -278,14 +278,14 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
         if (error != noErr)
         {
-            os_trace_error("Failed to get hot key parameters: %d", error);
+            os_trace_error("#Critical Failed to get hot key parameters: %d", error);
             error = eventNotHandledErr;
             return;
         }
 
         if (hotKeyID.id == 0 || hotKeyID.signature != SRShortcutRegistrationSignature)
         {
-            os_trace_error("Unexpected hot key with id %u and signature: %u", hotKeyID.id, hotKeyID.signature);
+            os_trace_error("#Error Unexpected hot key with id %u and signature: %u", hotKeyID.id, hotKeyID.signature);
             error = eventNotHandledErr;
             return;
         }
@@ -303,7 +303,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
             }
             else
             {
-                os_trace_error("Unregistered hot key with id %u and signature %u", hotKeyID.id, hotKeyID.signature);
+                os_trace("Unregistered hot key with id %u and signature %u", hotKeyID.id, hotKeyID.signature);
                 error = eventNotHandledErr;
             }
         }

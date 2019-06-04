@@ -122,7 +122,7 @@
 
         if (err != noErr)
         {
-            os_trace_error("Unable to read System Shortcuts: %d", err);
+            os_trace_error("#Error Unable to read System Shortcuts: %d", err);
             result = NO;
             return;
         }

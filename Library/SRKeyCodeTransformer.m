@@ -363,7 +363,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
                                   chars);
     if (err != noErr)
     {
-        os_trace_error("Unable to translate keyCode %hu and modifierFlags %lu", aValue.unsignedShortValue, anImplicitModifierFlags.unsignedIntegerValue);
+        os_trace_error("#Error Unable to translate keyCode %hu and modifierFlags %lu", aValue.unsignedShortValue, anImplicitModifierFlags.unsignedIntegerValue);
         return nil;
     }
 
