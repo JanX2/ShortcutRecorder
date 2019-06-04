@@ -160,8 +160,8 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
         _symbolicKeyCode = [SRKeyCodeTransformer.sharedSymbolicTransformer transformedValue:keyCode];
         _literalASCIIKeyCode = [SRKeyCodeTransformer.sharedLiteralASCIITransformer transformedValue:keyCode];
         _symbolicASCIIKeyCode = [SRKeyCodeTransformer.sharedSymbolicASCIITransformer transformedValue:keyCode];
-        _literalModifierFlags = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:modifierFlags];
-        _symbolicModifierFlags = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:modifierFlags];
+        _literalModifierFlags = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:modifierFlags];
+        _symbolicModifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:modifierFlags];
     }
 }
 

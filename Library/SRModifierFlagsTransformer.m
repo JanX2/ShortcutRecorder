@@ -6,79 +6,80 @@
 #import "SRModifierFlagsTransformer.h"
 #import "SRCommon.h"
 
-
-@implementation SRModifierFlagsTransformer
-
-- (instancetype)init:(BOOL)aIsLiteral
-{
-    self = [super init];
-
-    if (self)
-    {
-        _isLiteral = aIsLiteral;
-    }
-
-    return self;
-}
-
-- (instancetype)init
-{
-    return [self init:NO];
-}
-
-
-#pragma mark Methods
-
-+ (instancetype)sharedSymbolicTransformer
-{
-    static dispatch_once_t OnceToken;
-    static SRModifierFlagsTransformer *Transformer = nil;
-    dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] init:NO];
-    });
-    return Transformer;
-}
-
-+ (instancetype)sharedLiteralTransformer
-{
-    static dispatch_once_t OnceToken;
-    static SRModifierFlagsTransformer *Transformer = nil;
-    dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] init:YES];
-    });
-    return Transformer;
-}
-
-
-#pragma mark Deprecated
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
-+ (instancetype)sharedTransformer
+@implementation SRModifierFlagsTransformer
+
+- (id)init
 {
-    return self.sharedSymbolicTransformer;
+    if (self.class == SRModifierFlagsTransformer.class)
+        return (id)SRSymbolicModifierFlagsTransformer.sharedTransformer;
+    else
+        return [super init];
 }
 
-+ (instancetype)sharedPlainTransformer
++ (id)sharedTransformer
 {
-    return self.sharedLiteralTransformer;
+    return SRSymbolicModifierFlagsTransformer.sharedTransformer;
 }
 
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings
++ (id)sharedPlainTransformer
 {
-    return [self init:aUsesPlainStrings];
+    return SRLiteralModifierFlagsTransformer.sharedTransformer;
 }
+
+- (id)initWithPlainStrings:(BOOL)aUsesPlainStrings
+{
+    if (aUsesPlainStrings)
+        return (id)SRLiteralModifierFlagsTransformer.sharedTransformer;
+    else
+        return (id)SRSymbolicModifierFlagsTransformer.sharedTransformer;
+}
+
+- (BOOL)usesPlainStrings
+{
+    return [self isKindOfClass:SRSymbolicModifierFlagsTransformer.class];
+}
+
++ (Class)transformedValueClass
+{
+    return NSString.class;
+}
+
++ (BOOL)allowsReverseTransformation
+{
+    return NO;
+}
+
+- (NSString *)transformedValue:(NSNumber *)aValue forView:(NSView *)aView
+{
+    return nil;
+}
+
+- (id)transformedValue:(id)value
+{
+    return nil;
+}
+
+@end
 
 #pragma clang diagnostic pop
 
 
-#pragma mark NSValueTransformer
+@implementation SRLiteralModifierFlagsTransformer
 
-+ (Class)transformedValueClass
++ (SRLiteralModifierFlagsTransformer *)sharedTransformer
 {
-    return [NSString class];
+    static dispatch_once_t OnceToken;
+    static SRLiteralModifierFlagsTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [[self alloc] init];
+    });
+    return Transformer;
 }
+
+#pragma mark NSValueTransformer
 
 + (BOOL)allowsReverseTransformation
 {
@@ -87,39 +88,123 @@
 
 - (NSString *)transformedValue:(NSNumber *)aValue
 {
-    if (![aValue isKindOfClass:[NSNumber class]])
-        return [super transformedValue:aValue];
-    else if (self.isLiteral)
-    {
-        NSEventModifierFlags modifierFlags = aValue.unsignedIntegerValue;
-        NSMutableString *s = [NSMutableString string];
+    return [self transformedValue:aValue forView:nil];
+}
 
-        if (modifierFlags & NSControlKeyMask)
-            [s appendString:SRLoc(@"Control-")];
+- (NSString *)transformedValue:(NSNumber *)aValue forView:(NSView *)aView
+{
+    if (![aValue isKindOfClass:NSNumber.class])
+        return nil;
 
-        if (modifierFlags & NSAlternateKeyMask)
-            [s appendString:SRLoc(@"Option-")];
+    NSEventModifierFlags flags = aValue.unsignedIntegerValue;
+    NSMutableArray<NSString *> *flagsStringComponents = NSMutableArray.array;
 
-        if (modifierFlags & NSShiftKeyMask)
-            [s appendString:SRLoc(@"Shift-")];
+    if (flags & NSControlKeyMask)
+        [flagsStringComponents addObject:SRLoc(@"Control")];
 
-        if (modifierFlags & NSCommandKeyMask)
-            [s appendString:SRLoc(@"Command-")];
+    if (flags & NSAlternateKeyMask)
+        [flagsStringComponents addObject:SRLoc(@"Option")];
 
-        if (s.length > 0)
-            [s deleteCharactersInRange:NSMakeRange(s.length - 1, 1)];
+    if (flags & NSShiftKeyMask)
+        [flagsStringComponents addObject:SRLoc(@"Shift")];
 
-        return s;
-    }
+    if (flags & NSCommandKeyMask)
+        [flagsStringComponents addObject:SRLoc(@"Command")];
+
+    __auto_type layoutDirection = aView ? aView.userInterfaceLayoutDirection : NSApp.userInterfaceLayoutDirection;
+
+    if (layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+        return [[[flagsStringComponents reverseObjectEnumerator] allObjects] componentsJoinedByString:@"-"];
     else
+        return [flagsStringComponents componentsJoinedByString:@"-"];
+}
+
+@end
+
+
+@implementation SRSymbolicModifierFlagsTransformer
+
++ (SRSymbolicModifierFlagsTransformer *)sharedTransformer
+{
+    static dispatch_once_t OnceToken;
+    static SRSymbolicModifierFlagsTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [[self alloc] init];
+    });
+    return Transformer;
+}
+
+#pragma mark NSValueTransformer
+
++ (BOOL)allowsReverseTransformation
+{
+    return YES;
+}
+
+- (NSString *)transformedValue:(NSNumber *)aValue
+{
+    return [self transformedValue:aValue forView:nil];
+}
+
+- (NSString *)transformedValue:(NSNumber *)aValue forView:(NSView *)aView
+{
+    if (![aValue isKindOfClass:NSNumber.class])
+        return nil;
+
+    NSEventModifierFlags flags = aValue.unsignedIntegerValue;
+    NSMutableArray<NSString *> *flagsStringFragments = NSMutableArray.array;
+
+    if (flags & NSControlKeyMask)
+        [flagsStringFragments addObject:@"⌃"];
+
+    if (flags & NSAlternateKeyMask)
+        [flagsStringFragments addObject:@"⌥"];
+
+    if (flags & NSShiftKeyMask)
+        [flagsStringFragments addObject:@"⇧"];
+
+    if (flags & NSCommandKeyMask)
+        [flagsStringFragments addObject:@"⌘"];
+
+    __auto_type layoutDirection = aView ? aView.userInterfaceLayoutDirection : NSApp.userInterfaceLayoutDirection;
+
+    if (layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+        return [[[flagsStringFragments reverseObjectEnumerator] allObjects] componentsJoinedByString:@""];
+    else
+        return [flagsStringFragments componentsJoinedByString:@""];
+}
+
+- (NSNumber *)reverseTransformedValue:(NSString *)aValue
+{
+    if (![aValue isKindOfClass:NSString.class])
+        return nil;
+
+    __block NSEventModifierFlags flags = 0;
+    __block BOOL foundInvalidSubstring = NO;
+
+    [aValue enumerateSubstringsInRange:NSMakeRange(0, aValue.length)
+                               options:NSStringEnumerationByComposedCharacterSequences
+                            usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop)
     {
-        NSEventModifierFlags f = aValue.unsignedIntegerValue;
-        return [NSString stringWithFormat:@"%@%@%@%@",
-                (f & NSControlKeyMask ? @"⌃" : @""),
-                (f & NSAlternateKeyMask ? @"⌥" : @""),
-                (f & NSShiftKeyMask ? @"⇧" : @""),
-                (f & NSCommandKeyMask ? @"⌘" : @"")];
-    }
+        if ([substring isEqualToString:@"⌃"] && (flags & NSControlKeyMask) == 0)
+            flags |= NSControlKeyMask;
+        else if ([substring isEqualToString:@"⌥"] && (flags & NSAlternateKeyMask) == 0)
+            flags |= NSAlternateKeyMask;
+        else if ([substring isEqualToString:@"⇧"] && (flags & NSShiftKeyMask) == 0)
+            flags |= NSShiftKeyMask;
+        else if ([substring isEqualToString:@"⌘"] && (flags & NSCommandKeyMask) == 0)
+            flags |= NSCommandKeyMask;
+        else
+        {
+            foundInvalidSubstring = YES;
+            *stop = YES;
+        }
+    }];
+
+    if (foundInvalidSubstring)
+        return nil;
+
+    return @(flags);
 }
 
 @end

@@ -305,7 +305,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
 
         if (modifierFlags)
-            label = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:@(modifierFlags)];
+            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags) forView:self];
         else
             label = self.stringValue;
 
@@ -328,7 +328,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (!_objectValue)
         return nil;
 
-    NSString *f = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:@(_objectValue.modifierFlags)];
+    NSString *f = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags) forView:self];
     NSString *c = nil;
 
     if (self.drawsASCIIEquivalentOfShortcut)
@@ -720,7 +720,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (self.isRecording)
     {
         NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-        label = [SRModifierFlagsTransformer.sharedLiteralTransformer transformedValue:@(modifierFlags)];
+        label = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags) forView:self];
 
         if (!label.length)
             label = SRLoc(@"Type shortcut");
@@ -922,7 +922,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (!_objectValue)
         return @"";
 
-    NSString *flags = [SRModifierFlagsTransformer.sharedSymbolicTransformer transformedValue:@(_objectValue.modifierFlags)];
+    NSString *flags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags) forView:self];
     SRKeyCodeTransformer *transformer = nil;
 
     if (self.drawsASCIIEquivalentOfShortcut)

@@ -58,9 +58,9 @@
     SRModifierFlagsTransformer *flagsTransformer = nil;
 
     if (self.areModifierFlagsLiteral)
-        flagsTransformer = SRModifierFlagsTransformer.sharedLiteralTransformer;
+        flagsTransformer = SRLiteralModifierFlagsTransformer.sharedTransformer;
     else
-        flagsTransformer = SRModifierFlagsTransformer.sharedSymbolicTransformer;
+        flagsTransformer = SRSymbolicModifierFlagsTransformer.sharedTransformer;
 
     NSString *key = [keyTransformer transformedValue:@(aShortcut.keyCode)
                            withImplicitModifierFlags:nil

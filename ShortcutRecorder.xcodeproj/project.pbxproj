@@ -18,6 +18,7 @@
 		939839400DA4350B007F53F3 /* SRCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C367100A246B4900B69171 /* SRCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */; };
 		BA03E78F216A90A40008002D /* SRValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA03E78E216A90A40008002D /* SRValidatorTests.swift */; };
+		BA3711CD22A71DD800738321 /* SRModifierFlagsTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3711CC22A71DD800738321 /* SRModifierFlagsTransformerTests.swift */; };
 		BA6FAD9B229DEFB100B63E4B /* LayoutInspectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6FAD99229DEFB000B63E4B /* LayoutInspectorController.swift */; };
 		BA6FAD9C229DEFB100B63E4B /* LayoutInspectorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BA6FAD9A229DEFB000B63E4B /* LayoutInspectorController.xib */; };
 		BA6FADBA229F5A8B00B63E4B /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6FADB9229F5A8B00B63E4B /* Settings.swift */; };
@@ -111,6 +112,7 @@
 		939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = Library/ShortcutRecorder.h; sourceTree = SOURCE_ROOT; };
 		BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyCodeTransformerTests.swift; sourceTree = "<group>"; };
 		BA03E78E216A90A40008002D /* SRValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRValidatorTests.swift; sourceTree = "<group>"; };
+		BA3711CC22A71DD800738321 /* SRModifierFlagsTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRModifierFlagsTransformerTests.swift; sourceTree = "<group>"; };
 		BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRRecorderControlStyle.h; path = Library/SRRecorderControlStyle.h; sourceTree = "<group>"; };
 		BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRRecorderControlStyle.m; path = Library/SRRecorderControlStyle.m; sourceTree = "<group>"; };
 		BA6FAD99229DEFB000B63E4B /* LayoutInspectorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutInspectorController.swift; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				BAED4704217007C70008DA80 /* SRRecorderControlTests.swift */,
 				BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */,
 				BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */,
+				BA3711CC22A71DD800738321 /* SRModifierFlagsTransformerTests.swift */,
 				BA722EF621640D2400EFF192 /* Utility.swift */,
 			);
 			path = "Unit Tests";
@@ -596,6 +599,7 @@
 				BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */,
 				BA8CFE1822A31CBE00C96F79 /* SRShortcutRegistrationTests.swift in Sources */,
 				BA722ED12161625100EFF192 /* SRShortcutTests.swift in Sources */,
+				BA3711CD22A71DD800738321 /* SRModifierFlagsTransformerTests.swift in Sources */,
 				BA722EF721640D2400EFF192 /* Utility.swift in Sources */,
 				BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */,
 				BA03E78F216A90A40008002D /* SRValidatorTests.swift in Sources */,
