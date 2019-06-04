@@ -342,6 +342,7 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 + (instancetype)registerShortcut:(SRShortcut *)aShortcut actionHandler:(SRShortcutActionHandler)anActionHandler
 {
     SRShortcutRegistration *registration = [self new];
+    registration.actionHandler = anActionHandler;
     registration.shortcut = aShortcut;
     return registration;
 }
@@ -351,6 +352,7 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
                           actionHandler:(SRShortcutActionHandler)anActionHandler
 {
     SRShortcutRegistration *registration = [self new];
+    registration.actionHandler = anActionHandler;
     [registration setObservedObject:anObject withKeyPath:aKeyPath];
     return registration;
 }
@@ -469,9 +471,6 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 {
     @synchronized (self)
     {
-        if (newActionHandler == _actionHandler)
-            return;
-
         [self willChangeValueForKey:@"actionHandler"];
         _actionHandler = newActionHandler;
 
@@ -525,9 +524,15 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
             id target = self.target;
 
             if (handler)
+            {
+                os_trace_debug("Using action handler");
                 handler(self);
+            }
             else if (target)
+            {
+                os_trace_debug("Using target-action");
                 [target performSelector:@selector(performShortcutActionForRegistration:) withObject:self];
+            }
         }));
     });
 }

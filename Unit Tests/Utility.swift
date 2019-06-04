@@ -4,6 +4,8 @@
 //
 
 import Foundation
+import XCTest
+
 import ShortcutRecorder
 
 
@@ -14,5 +16,13 @@ extension Shortcut {
                          modifierFlags: [.option, .command],
                          characters: "å",
                          charactersIgnoringModifiers: "a")
+    }
+}
+
+
+extension XCTKVOExpectation {
+    convenience init(closureKeyPath: String, object: Any) {
+        self.init(keyPath: closureKeyPath, object: object, expectedValue: nil, options: [.new])
+        handler = { (_, _) in return true }
     }
 }
