@@ -5,6 +5,8 @@
 
 #import <limits.h>
 #import <objc/runtime.h>
+#import <os/trace.h>
+#import <os/activity.h>
 
 #import "SRRecorderControl.h"
 #import "SRShortcutRegistration.h"
@@ -362,61 +364,80 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)beginRecording
 {
-    if (!self.enabled)
-        return NO;
+    __block BOOL result = NO;
+    os_activity_initiate("beginRecording", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        if (!self.enabled)
+        {
+            result = NO;
+            return;
+        }
 
-    if (self.isRecording)
-        return YES;
+        if (self.isRecording)
+        {
+            result = YES;
+            return;
+        }
 
-    self.needsDisplay = YES;
+        self.needsDisplay = YES;
 
-    BOOL shouldBeginRecording = YES;
+        BOOL shouldBeginRecording = YES;
 
-    if ([self.delegate respondsToSelector:@selector(recorderControlShouldBeginRecording:)])
-        shouldBeginRecording = [self.delegate recorderControlShouldBeginRecording:self];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-    else if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
-        shouldBeginRecording = [self.delegate shortcutRecorderShouldBeginRecording:self];
-#pragma clang diagnostic pop
+        if ([self.delegate respondsToSelector:@selector(recorderControlShouldBeginRecording:)])
+            shouldBeginRecording = [self.delegate recorderControlShouldBeginRecording:self];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
+            shouldBeginRecording = [self.delegate shortcutRecorderShouldBeginRecording:self];
 
-    if (!shouldBeginRecording)
-    {
-        NSBeep();
-        return NO;
-    }
+        if (!shouldBeginRecording)
+        {
+            NSBeep();
+            result = NO;
+            return;
+        }
 
-    NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
-    if (bindingInfo)
-    {
-        id controller = bindingInfo[NSObservedObjectKey];
-        if ([controller respondsToSelector:@selector(objectDidBeginEditing:)])
-            [controller objectDidBeginEditing:(id<NSEditor>) self];
-    }
+        NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
+        if (bindingInfo)
+        {
+            id controller = bindingInfo[NSObservedObjectKey];
+            if ([controller respondsToSelector:@selector(objectDidBeginEditing:)])
+                [controller objectDidBeginEditing:(id<NSEditor>) self];
+        }
 
-    [self willChangeValueForKey:@"isRecording"];
-    _isRecording = YES;
-    [self didChangeValueForKey:@"isRecording"];
+        [self willChangeValueForKey:@"isRecording"];
+        self->_isRecording = YES;
+        [self didChangeValueForKey:@"isRecording"];
 
-    [self updateActiveConstraints];
-    [self updateTrackingAreas];
-    self.toolTip = SRLoc(@"Type shortcut");
-    NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
+        [self updateActiveConstraints];
+        [self updateTrackingAreas];
+        self.toolTip = SRLoc(@"Type shortcut");
+        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
-    if (self.disablesShortcutRegistrationsWhileRecording)
-        [SRShortcutRegistration disableShortcutRegistrations];
+        if (self.disablesShortcutRegistrationsWhileRecording)
+            [SRShortcutRegistration disableShortcutRegistrations];
 
-    return YES;
+        result = YES;
+    });
+
+    return result;
 }
 
 - (void)endRecording
 {
-    [self endRecordingWithObjectValue:_objectValue];
+    if (!self.isRecording)
+        return;
+
+    os_activity_initiate("endRecording via cancel", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        [self endRecordingWithObjectValue:self->_objectValue];
+    });
 }
 
 - (void)clearAndEndRecording
 {
-    [self endRecordingWithObjectValue:nil];
+    if (!self.isRecording)
+        return;
+
+    os_activity_initiate("endRecording via clear", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        [self endRecordingWithObjectValue:nil];
+    });
 }
 
 - (void)endRecordingWithObjectValue:(SRShortcut *)anObjectValue
@@ -424,41 +445,40 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (!self.isRecording)
         return;
 
-    NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
-    if (bindingInfo)
-    {
-        id controller = bindingInfo[NSObservedObjectKey];
-        if ([controller respondsToSelector:@selector(objectDidEndEditing:)])
-            [controller objectDidEndEditing:(id<NSEditor>)self];
-    }
+    os_activity_initiate("endRecording explicitly", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
+        NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
+        if (bindingInfo)
+        {
+            id controller = bindingInfo[NSObservedObjectKey];
+            if ([controller respondsToSelector:@selector(objectDidEndEditing:)])
+                [controller objectDidEndEditing:(id<NSEditor>)self];
+        }
 
-    [self willChangeValueForKey:@"isRecording"];
-    _isRecording = NO;
-    [self didChangeValueForKey:@"isRecording"];
+        [self willChangeValueForKey:@"isRecording"];
+        self->_isRecording = NO;
+        [self didChangeValueForKey:@"isRecording"];
 
-    self.objectValue = anObjectValue;
+        self.objectValue = anObjectValue;
 
-    [self updateActiveConstraints];
-    [self updateTrackingAreas];
-    self.toolTip = SRLoc(@"Click to record shortcut");
-    self.needsDisplay = YES;
-    NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
+        [self updateActiveConstraints];
+        [self updateTrackingAreas];
+        self.toolTip = SRLoc(@"Click to record shortcut");
+        self.needsDisplay = YES;
+        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
-    if (self.window.firstResponder == self && !self.canBecomeKeyView)
-        [self.window makeFirstResponder:nil];
+        if (self.window.firstResponder == self && !self.canBecomeKeyView)
+            [self.window makeFirstResponder:nil];
 
-    if ([self.delegate respondsToSelector:@selector(recorderControlDidEndRecording:)])
-        [self.delegate recorderControlDidEndRecording:self];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-    else if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
-        [self.delegate shortcutRecorderDidEndRecording:self];
-#pragma clang diagnostic pop
+        if ([self.delegate respondsToSelector:@selector(recorderControlDidEndRecording:)])
+            [self.delegate recorderControlDidEndRecording:self];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
+            [self.delegate shortcutRecorderDidEndRecording:self];
 
-    [self sendAction:self.action to:self.target];
+        [self sendAction:self.action to:self.target];
 
-    if (self.disablesShortcutRegistrationsWhileRecording)
-        [SRShortcutRegistration enableShortcutRegistrations];
+        if (self.disablesShortcutRegistrationsWhileRecording)
+            [SRShortcutRegistration enableShortcutRegistrations];
+    });
 }
 
 - (void)updateActiveConstraints
@@ -592,21 +612,21 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
 {
+    __block BOOL allowModifierFlags = NO;
     aModifierFlags &= SRCocoaModifierFlagsMask;
 
-    BOOL allowModifierFlags = NO;
+    os_activity_initiate("areModifierFlagsValid:forKeyCode:", OS_ACTIVITY_FLAG_DEFAULT, ^{
 
-    if ([self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
-        allowModifierFlags = [self.delegate recorderControl:self
-                    shouldUnconditionallyAllowModifierFlags:aModifierFlags
-                                                 forKeyCode:aKeyCode];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-    else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
-        allowModifierFlags = [self.delegate shortcutRecorder:self
-                     shouldUnconditionallyAllowModifierFlags:aModifierFlags
-                                                  forKeyCode:aKeyCode];
-#pragma clang diagnostic pop
+
+        if ([self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+            allowModifierFlags = [self.delegate recorderControl:self
+                        shouldUnconditionallyAllowModifierFlags:aModifierFlags
+                                                     forKeyCode:aKeyCode];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+            allowModifierFlags = [self.delegate shortcutRecorder:self
+                         shouldUnconditionallyAllowModifierFlags:aModifierFlags
+                                                      forKeyCode:aKeyCode];
+    });
 
     if (allowModifierFlags)
         return YES;
@@ -657,10 +677,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         {
             if([[transformer class] allowsReverseTransformation])
                 aValue = [transformer reverseTransformedValue:aValue];
-#ifdef DEBUG
             else
                 NSLog(@"WARNING: binding \"%@\" has value transformer, but it doesn't allow reverse transformations in %s", aBinding, __PRETTY_FUNCTION__);
-#endif
         }
     }
 
@@ -1317,70 +1335,99 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)performKeyEquivalent:(NSEvent *)anEvent
 {
-    if (!self.enabled)
-        return NO;
-
-    if (self.window.firstResponder != self)
-        return NO;
-
-    if (_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
-        return NO;
-
-    if (self.isRecording)
-    {
-        if (anEvent.keyCode == USHRT_MAX)
+    __block BOOL result = NO;
+    os_activity_initiate("performKeyEquivalent:", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        if (!self.enabled)
         {
-            // This shouldn't really happen ever, but was rarely observed.
-            // See https://github.com/Kentzo/ShortcutRecorder/issues/40
-            return NO;
+            os_trace_debug("The control is disabled -> NO");
+            result = NO;
+            return;
         }
-        else if (self.allowsEscapeToCancelRecording &&
-            anEvent.keyCode == kVK_Escape &&
-            (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
+
+        if (self.window.firstResponder != self)
         {
-            [self endRecording];
-            return YES;
+            os_trace_debug("The control is not the first responder -> NO");
+            result = NO;
+            return;
         }
-        else if (self.allowsDeleteToClearShortcutAndEndRecording &&
-                (anEvent.keyCode == kVK_Delete || anEvent.keyCode == kVK_ForwardDelete) &&
-                (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
+
+        if (self->_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
         {
-            [self clearAndEndRecording];
-            return YES;
+            os_trace_debug("The control is tracking %lu -> NO", self->_mouseTrackingButtonTag);
+            result = NO;
+            return;
         }
-        else if ([self areModifierFlagsValid:anEvent.modifierFlags forKeyCode:anEvent.keyCode])
+
+        if (self.isRecording)
         {
-            SRShortcut *newObjectValue = [SRShortcut shortcutWithCode:anEvent.keyCode
-                                                        modifierFlags:anEvent.modifierFlags
-                                                           characters:anEvent.characters
-                                          charactersIgnoringModifiers:anEvent.charactersIgnoringModifiers];
-
-            BOOL canRecordShortcut = YES;
-
-            if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
-                canRecordShortcut = [self.delegate recorderControl:self canRecordShortcut:newObjectValue];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-            else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
-                canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue];
-#pragma clang diagnostic pop
-            else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
-                canRecordShortcut = [self.delegate control:self isValidObject:newObjectValue];
-
-            if (!canRecordShortcut)
+            if (anEvent.keyCode == USHRT_MAX)
             {
-                // Do not end editing and allow the client to make another attempt.
-                return YES;
+                // This shouldn't really happen ever, but was rarely observed.
+                // See https://github.com/Kentzo/ShortcutRecorder/issues/40
+                os_trace_debug("Invalid keyCode -> NO");
+                result = NO;
             }
+            else if (self.allowsEscapeToCancelRecording &&
+                anEvent.keyCode == kVK_Escape &&
+                (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
+            {
+                os_trace_debug("Cancel via Esc -> YES");
+                [self endRecording];
+                result = YES;
+            }
+            else if (self.allowsDeleteToClearShortcutAndEndRecording &&
+                    (anEvent.keyCode == kVK_Delete || anEvent.keyCode == kVK_ForwardDelete) &&
+                    (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
+            {
+                os_trace_debug("Clear via Delete -> YES");
+                [self clearAndEndRecording];
+                result = YES;
+            }
+            else if ([self areModifierFlagsValid:anEvent.modifierFlags forKeyCode:anEvent.keyCode])
+            {
+                SRShortcut *newObjectValue = [SRShortcut shortcutWithCode:anEvent.keyCode
+                                                            modifierFlags:anEvent.modifierFlags
+                                                               characters:anEvent.characters
+                                              charactersIgnoringModifiers:anEvent.charactersIgnoringModifiers];
 
-            [self endRecordingWithObjectValue:newObjectValue];
-            return YES;
+                BOOL canRecordShortcut = YES;
+
+                if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
+                    canRecordShortcut = [self.delegate recorderControl:self canRecordShortcut:newObjectValue];
+                else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
+                    canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue];
+                else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
+                    canRecordShortcut = [self.delegate control:self isValidObject:newObjectValue];
+
+                if (canRecordShortcut)
+                {
+                    os_trace_debug("Valid and accepted shortcut -> YES");
+                    [self endRecordingWithObjectValue:newObjectValue];
+                    result = YES;
+                }
+                else
+                {
+                    // Do not end editing and allow the client to make another attempt.
+                    os_trace_debug("Valid but rejected shortcut -> YES");
+                    result = YES;
+                }
+            }
+            else
+            {
+                os_trace_debug("Modifier flags %lu rejected -> NO", anEvent.modifierFlags);
+                result = NO;
+            }
         }
-    }
-    else if (anEvent.keyCode == kVK_Space)
-        return [self beginRecording];
+        else if (anEvent.keyCode == kVK_Space)
+        {
+            os_trace_debug("Begin recording via Space -> YES");
+            result = [self beginRecording];
+        }
+        else
+            result = NO;
+    });
 
-    return NO;
+    return result;
 }
 
 - (void)flagsChanged:(NSEvent *)anEvent

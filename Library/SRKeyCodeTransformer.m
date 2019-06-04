@@ -3,6 +3,8 @@
 //  CC BY 3.0
 //
 
+#import <os/trace.h>
+
 #import "SRKeyCodeTransformer.h"
 #import "SRCommon.h"
 
@@ -361,10 +363,7 @@ FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
                                   chars);
     if (err != noErr)
     {
-#ifdef DEBUG
-        NSLog(@"WARNING: Unable to translate key code (%d) and modifier flags (%lu).", aValue.unsignedShortValue,
-              anImplicitModifierFlags.unsignedIntegerValue);
-#endif
+        os_trace_error("Unable to translate keyCode %hu and modifierFlags %lu", aValue.unsignedShortValue, anImplicitModifierFlags.unsignedIntegerValue);
         return nil;
     }
 
