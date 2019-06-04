@@ -1,5 +1,5 @@
 - Ilya Kulakov, <kulakov.ilya@gmail.com>: Current maintainer
-- https://github.com/Kentzo/ShortcutRecorder/graphs/contributors
+- [Contributors](https://github.com/Kentzo/ShortcutRecorder/graphs/contributors)
 
 Initial developers:
 - Jesper, waffle software, <wootest+shortcutrecorder@gmail.com>: Initial idea and concept
