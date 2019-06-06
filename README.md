@@ -1,4 +1,4 @@
-[![CC BY 3.0](https://img.shields.io/badge/license-CC%20BY%203.0-orange.svg)](http://creativecommons.org/licenses/by/3.0/)
+[![CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-orange.svg)](http://creativecommons.org/licenses/by/4.0/)
 ![macOS 10.11](https://img.shields.io/badge/macOS-10.11%2B-black.svg)
 
 # ShortcutRecorder

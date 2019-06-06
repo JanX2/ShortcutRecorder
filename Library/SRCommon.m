@@ -1,6 +1,6 @@
 //
 //  Copyright 2006 ShortcutRecorder Contributors
-//  CC BY 3.0
+//  CC BY 4.0
 //
 
 #import <objc/runtime.h>

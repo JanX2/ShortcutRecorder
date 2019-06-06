@@ -1,6 +1,6 @@
 //
 //  Copyright 2018 ShortcutRecorder Contributors
-//  CC BY 3.0
+//  CC BY 4.0
 //
 
 import Foundation
