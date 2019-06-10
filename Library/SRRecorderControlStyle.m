@@ -419,13 +419,13 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 - (NSUInteger)hash
 {
-    int tintOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsTintMax);
-    int layoutDirectionOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsLayoutDirectionMax);
-    int appearanceOffset = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsAppearanceMax);
+    int tintBitSize = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsTintMax);
+    int layoutDirectionBitSize = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsLayoutDirectionMax);
+    int appearanceBitSize = sizeof(NSUInteger) * CHAR_BIT - __builtin_clzl(SRRecorderControlStyleComponentsAppearanceMax);
     return self.tint |
-        (self.layoutDirection << tintOffset) |
-        (self.appearance << (tintOffset + layoutDirectionOffset)) |
-        (self.accessibility << (tintOffset + layoutDirectionOffset + appearanceOffset));
+        (self.layoutDirection << tintBitSize) |
+        (self.appearance << (tintBitSize + layoutDirectionBitSize)) |
+        (self.accessibility << (tintBitSize + layoutDirectionBitSize + appearanceBitSize));
 }
 
 - (NSString *)description
@@ -436,20 +436,20 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @end
 
 
-@interface SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey: NSObject
+@interface _SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey: NSObject <NSCopying>
 @property NSString *identifier;
 @property SRRecorderControlStyleComponents *components;
 @end
 
 
-@implementation SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey
+@implementation _SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey
 
 - (NSUInteger)hash
 {
     return (self.components.hash << 32) ^ self.identifier.hash;
 }
 
-- (BOOL)isEqual:(SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey *)anObject
+- (BOOL)isEqual:(_SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey *)anObject
 {
     if (![anObject isKindOfClass:self.class])
         return NO;
@@ -457,24 +457,29 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     return [self.identifier isEqual:anObject.identifier] && [self.components isEqual:anObject.components];
 }
 
+- (id)copyWithZone:(NSZone *)aZone
+{
+    return self;
+}
+
 @end
 
 
-@interface SRRecorderControlStyleResourceLoaderCacheImageKey: NSObject
+@interface _SRRecorderControlStyleResourceLoaderCacheImageKey: NSObject <NSCopying>
 @property NSString *identifier;
 @property SRRecorderControlStyleComponents *components;
 @property NSString *name;
 @end
 
 
-@implementation SRRecorderControlStyleResourceLoaderCacheImageKey
+@implementation _SRRecorderControlStyleResourceLoaderCacheImageKey
 
 - (NSUInteger)hash
 {
     return (self.components.hash << 32) ^ (self.name.hash << 32) ^ self.components.hash;
 }
 
-- (BOOL)isEqual:(SRRecorderControlStyleResourceLoaderCacheImageKey *)anObject
+- (BOOL)isEqual:(_SRRecorderControlStyleResourceLoaderCacheImageKey *)anObject
 {
     if (![anObject isKindOfClass:self.class])
         return NO;
@@ -482,6 +487,11 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     return [self.identifier isEqual:anObject.identifier] &&
         [self.components isEqual:anObject.components] &&
         [self.name isEqual:anObject];
+}
+
+- (id)copyWithZone:(NSZone *)aZone
+{
+    return self;
 }
 
 @end
@@ -771,7 +781,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
         @synchronized (self)
         {
-            __auto_type key = [SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey new];
+            __auto_type key = [_SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey new];
             key.identifier = aStyle.identifier.copy;
             key.components = aStyle.effectiveComponents.copy;
 
@@ -813,7 +823,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
         @synchronized (self)
         {
-            __auto_type key = [SRRecorderControlStyleResourceLoaderCacheImageKey new];
+            __auto_type key = [_SRRecorderControlStyleResourceLoaderCacheImageKey new];
             key.identifier = aStyle.identifier.copy;
             key.components = aStyle.effectiveComponents.copy;
             key.name = aName.copy;

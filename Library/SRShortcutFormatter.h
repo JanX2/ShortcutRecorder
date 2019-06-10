@@ -9,7 +9,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
- Transform shortcut into a string.
+ Format shortcut into a string.
+
+ @discussion
+ Reverse formatting is supported for literal ASCII transformers with left-to-right layout.
  */
 NS_SWIFT_NAME(ShortcutFormatter)
 @interface SRShortcutFormatter : NSFormatter
@@ -17,6 +20,7 @@ NS_SWIFT_NAME(ShortcutFormatter)
 @property IBInspectable BOOL isKeyCodeLiteral;
 @property IBInspectable BOOL areModifierFlagsLiteral;
 @property IBInspectable BOOL usesASCIICapableKeyboardInputSource;
+@property IBInspectable NSUserInterfaceLayoutDirection layoutDirection;
 
 @end
 

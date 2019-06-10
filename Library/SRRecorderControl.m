@@ -102,12 +102,27 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return NO;
 }
 
++ (BOOL)automaticallyNotifiesObserversOfStringValue
+{
+    return NO;
+}
+
++ (BOOL)automaticallyNotifiesObserversOfAttributedStringValue
+{
+    return NO;
+}
+
 + (NSSet<NSString *> *)keyPathsForValuesAffectingDictionaryValue
 {
     return [NSSet setWithObject:@"objectValue"];
 }
 
 + (NSSet<NSString *> *)keyPathsForValuesAffectingStringValue
+{
+    return [NSSet setWithObject:@"objectValue"];
+}
+
++ (NSSet<NSString *> *)keyPathsForValuesAffectingAttributedStringValue
 {
     return [NSSet setWithObject:@"objectValue"];
 }
@@ -305,7 +320,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
 
         if (modifierFlags)
-            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags) forView:self];
+        {
+            __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
+            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags)
+                                                                           layoutDirection:layoutDirection];
+        }
         else
             label = self.stringValue;
 
@@ -328,13 +347,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (!_objectValue)
         return nil;
 
-    NSString *f = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags) forView:self];
+    __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
+    NSString *f = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
+                                                                        layoutDirection:layoutDirection];
     NSString *c = nil;
 
     if (self.drawsASCIIEquivalentOfShortcut)
-        c = [SRKeyCodeTransformer.sharedLiteralASCIITransformer transformedValue:@(_objectValue.keyCode)];
+        c = [SRASCIILiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
     else
-        c = [SRKeyCodeTransformer.sharedLiteralTransformer transformedValue:@(_objectValue.keyCode)];
+        c = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
 
     if (f.length > 0)
         return [NSString stringWithFormat:@"%@-%@", f, c];
@@ -719,8 +740,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
+        __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
         NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-        label = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags) forView:self];
+        label = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags) layoutDirection:layoutDirection];
 
         if (!label.length)
             label = SRLoc(@"Type shortcut");
@@ -917,28 +939,40 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return [[NSAttributedString alloc] initWithString:self.stringValue];
 }
 
+- (void)setAttributedStringValue:(NSAttributedString *)newAttributedStringValue
+{
+    [self setObjectValue:[SRShortcut shortcutWithKeyEquivalent:newAttributedStringValue.string]];
+}
+
 - (NSString *)stringValue
 {
     if (!_objectValue)
         return @"";
 
-    NSString *flags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags) forView:self];
+    __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
+    NSString *flags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
+                                                                             layoutDirection:layoutDirection];
     SRKeyCodeTransformer *transformer = nil;
 
     if (self.drawsASCIIEquivalentOfShortcut)
-        transformer = SRKeyCodeTransformer.sharedLiteralASCIITransformer;
+        transformer = SRASCIILiteralKeyCodeTransformer.sharedTransformer;
     else
-        transformer = SRKeyCodeTransformer.sharedLiteralTransformer;
+        transformer = SRLiteralKeyCodeTransformer.sharedTransformer;
 
     NSString *code = [transformer transformedValue:@(_objectValue.keyCode)
                          withImplicitModifierFlags:nil
                              explicitModifierFlags:@(_objectValue.modifierFlags)
-                                           forView:self];
+                                   layoutDirection:layoutDirection];
 
-    if (self.userInterfaceLayoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+    if (layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
         return [NSString stringWithFormat:@"%@%@", code, flags];
     else
         return [NSString stringWithFormat:@"%@%@", flags, code];
+}
+
+- (void)setStringValue:(NSString *)newStringValue
+{
+    [self setObjectValue:[SRShortcut shortcutWithKeyEquivalent:newStringValue]];
 }
 
 - (BOOL)isHighlighted

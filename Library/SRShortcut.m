@@ -6,6 +6,7 @@
 #import "SRCommon.h"
 #import "SRKeyCodeTransformer.h"
 #import "SRShortcutFormatter.h"
+#import "SRModifierFlagsTransformer.h"
 
 #import "SRShortcut.h"
 
@@ -73,6 +74,35 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
                     modifierFlags:modifierFlagsValue
                        characters:charactersValue
       charactersIgnoringModifiers:charactersIgnoringModifiersValue];
+}
+
++ (instancetype)shortcutWithKeyEquivalent:(NSString *)aKeyEquivalent
+{
+    NSScanner *parser = [NSScanner scannerWithString:aKeyEquivalent];
+    parser.caseSensitive = NO;
+    NSString *modifierFlagsString = nil;
+    [parser scanCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"⌃⌥⇧⌘"]
+                       intoString:&modifierFlagsString];
+    NSString *keyCodeString = [aKeyEquivalent substringFromIndex:parser.scanLocation];
+
+    NSNumber *modifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer reverseTransformedValue:modifierFlagsString];
+    NSNumber *keyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer reverseTransformedValue:keyCodeString];
+
+    if (!modifierFlags || !keyCode)
+        return nil;
+
+    NSString *characters = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
+                                                                       withImplicitModifierFlags:modifierFlags
+                                                                           explicitModifierFlags:nil
+                                                                                 layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
+    NSString *charactersIgnoringModifiers = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
+                                                                                        withImplicitModifierFlags:nil
+                                                                                            explicitModifierFlags:modifierFlags
+                                                                                                  layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
+    return [self shortcutWithCode:keyCode.unsignedShortValue
+                    modifierFlags:modifierFlags.unsignedIntegerValue
+                       characters:characters
+      charactersIgnoringModifiers:charactersIgnoringModifiers];
 }
 
 - (instancetype)initWithCode:(unsigned short)aKeyCode
@@ -149,10 +179,22 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 - (BOOL)isEqualToKeyEquivalent:(nullable NSString *)aKeyEquivalent withModifierFlags:(NSEventModifierFlags)aModifierFlags
 {
+    if (!aKeyEquivalent)
+        return NO;
+
+    if (([self.characters caseInsensitiveCompare:aKeyEquivalent] ||
+         [self.charactersIgnoringModifiers caseInsensitiveCompare:aKeyEquivalent]) &&
+        self.modifierFlags == aModifierFlags)
+    {
+        return YES;
+    }
+    else
+    {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(self.keyCode, self.modifierFlags, aKeyEquivalent, aModifierFlags);
 #pragma clang diagnostic pop
+    }
 }
 
 
@@ -228,6 +270,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
         formatter = [SRShortcutFormatter new];
         formatter.usesASCIICapableKeyboardInputSource = YES;
         formatter.isKeyCodeLiteral = YES;
+        formatter.layoutDirection = NSUserInterfaceLayoutDirectionLeftToRight;
     });
 
     return [formatter stringForObjectValue:self];
@@ -310,45 +353,84 @@ static BOOL _SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKey
                                                              NSEventModifierFlags aKeyEquivalentModifierFlags,
                                                              SRKeyCodeTransformer * _Nonnull aTransformer)
 {
-    if (![aKeyEquivalent length])
+    if (!aKeyEquivalent.length)
         return NO;
 
     aKeyCodeFlags &= SRCocoaModifierFlagsMask;
     aKeyEquivalentModifierFlags &= SRCocoaModifierFlagsMask;
 
-    if (aKeyCodeFlags == aKeyEquivalentModifierFlags)
+    // Special case: Both ⇤ and ⇥ key equivalents respond to kVK_Tab.
+    if (aKeyCode == kVK_Tab &&
+        aKeyCodeFlags == aKeyEquivalentModifierFlags &&
+        aKeyEquivalent.length == 1 &&
+        ([aKeyEquivalent characterAtIndex:0] == NSTabCharacter ||
+         [aKeyEquivalent characterAtIndex:0] == NSBackTabCharacter))
     {
-        NSString *keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
-                                               withImplicitModifierFlags:nil
-                                                   explicitModifierFlags:@(aKeyCodeFlags)];
-        return [keyCodeRepresentation isEqual:aKeyEquivalent];
+        return YES;
     }
-    else if (!aKeyEquivalentModifierFlags ||
-             (aKeyCodeFlags & aKeyEquivalentModifierFlags) == aKeyEquivalentModifierFlags)
-    {
-        // Some key equivalent modifier flags can be implicitly set via special unicode characters. E.g. å instead of opt-a.
-        // However all modifier flags explictily set in key equivalent MUST be also set in key code flags.
-        // E.g. ctrl-å/ctrl-opt-a and å/opt-a match this condition, but cmd-å/ctrl-opt-a doesn't.
-        NSString *keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
-                                               withImplicitModifierFlags:nil
-                                                   explicitModifierFlags:@(aKeyCodeFlags)];
 
-        if ([keyCodeRepresentation isEqual:aKeyEquivalent])
-        {
-            // Key code and key equivalent are not equal if key code representation matches key equivalent, but modifier flags are not.
-            return NO;
-        }
-        else
-        {
-            NSEventModifierFlags possiblyImplicitFlags = aKeyCodeFlags & ~aKeyEquivalentModifierFlags;
-            keyCodeRepresentation = [aTransformer transformedValue:@(aKeyCode)
-                                         withImplicitModifierFlags:@(possiblyImplicitFlags)
-                                             explicitModifierFlags:@(aKeyEquivalentModifierFlags)];
-            return [keyCodeRepresentation isEqual:aKeyEquivalent];
-        }
-    }
-    else
+    NSUserInterfaceLayoutDirection layoutDirection = NSApp.userInterfaceLayoutDirection;
+    NSString *unalteredKeyEquivalent = [aTransformer transformedValue:@(aKeyCode)
+                                            withImplicitModifierFlags:@(0)
+                                                explicitModifierFlags:@(aKeyCodeFlags)
+                                                      layoutDirection:layoutDirection];
+
+    if ([unalteredKeyEquivalent isEqualToString:aKeyEquivalent] && aKeyCodeFlags == aKeyEquivalentModifierFlags)
+        return YES;
+
+    if ((aKeyCodeFlags & aKeyEquivalentModifierFlags) != aKeyEquivalentModifierFlags)
+    {
+        // All explicitly specified key equivalent modifier flags must appear in the key code flags.
         return NO;
+    }
+
+    static const NSEventModifierFlags PossibleFlags[] = {
+        0,
+        NSEventModifierFlagControl,
+        NSEventModifierFlagCommand,
+        NSEventModifierFlagShift,
+        NSEventModifierFlagOption,
+        NSEventModifierFlagControl | NSEventModifierFlagCommand,
+        NSEventModifierFlagControl | NSEventModifierFlagShift,
+        NSEventModifierFlagControl | NSEventModifierFlagOption,
+        NSEventModifierFlagCommand | NSEventModifierFlagShift,
+        NSEventModifierFlagCommand | NSEventModifierFlagOption,
+        NSEventModifierFlagShift | NSEventModifierFlagOption,
+        NSEventModifierFlagControl | NSEventModifierFlagCommand | NSEventModifierFlagShift,
+        NSEventModifierFlagControl | NSEventModifierFlagCommand | NSEventModifierFlagOption,
+        NSEventModifierFlagCommand | NSEventModifierFlagShift | NSEventModifierFlagOption,
+        NSEventModifierFlagControl | NSEventModifierFlagCommand | NSEventModifierFlagShift | NSEventModifierFlagOption
+    };
+    static const size_t PossibleFlagsSize = sizeof(PossibleFlags) / sizeof(NSEventModifierFlags);
+
+    // Key equivalents may implicitly include modifier flags, including those already specified as explicit.
+    // E.g. the shift-a, shift-A and A key equivalents are equal. Note that "a" is a completely different key equivalent.
+    NSEventModifierFlags implicitFlags = aKeyCodeFlags & ~aKeyEquivalentModifierFlags;
+    NSEventModifierFlags explicitFlags = aKeyEquivalentModifierFlags;
+
+    for (size_t i = 0; i < PossibleFlagsSize; ++i)
+    {
+        NSEventModifierFlags flags = PossibleFlags[i];
+
+        if ((explicitFlags & flags) != flags)
+            continue;
+
+        // Guess that the given sub-combination of explicit modifier flags is also included into
+        // the key equivalent as implicit.
+        NSString *alteredKeyEquivalent = [aTransformer transformedValue:@(aKeyCode)
+                                              withImplicitModifierFlags:@(implicitFlags | flags)
+                                                  explicitModifierFlags:@(explicitFlags)
+                                                        layoutDirection:layoutDirection];
+
+        // Implicit flags must change the appearance, otherwise they are explicit.
+        if ([alteredKeyEquivalent isEqualToString:unalteredKeyEquivalent])
+            continue;
+
+        if ([alteredKeyEquivalent isEqualToString:aKeyEquivalent])
+            return YES;
+    }
+
+    return NO;
 }
 
 
@@ -361,7 +443,7 @@ BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
                                                                     aKeyCodeFlags,
                                                                     aKeyEquivalent,
                                                                     aKeyEquivalentModifierFlags,
-                                                                    [SRKeyCodeTransformer sharedASCIITransformer]);
+                                                                    SRASCIISymbolicKeyCodeTransformer.sharedTransformer);
 
     if (!isEqual)
     {
@@ -369,7 +451,7 @@ BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
                                                                    aKeyCodeFlags,
                                                                    aKeyEquivalent,
                                                                    aKeyEquivalentModifierFlags,
-                                                                   [SRKeyCodeTransformer sharedTransformer]);
+                                                                   SRSymbolicKeyCodeTransformer.sharedTransformer);
     }
 
     return isEqual;

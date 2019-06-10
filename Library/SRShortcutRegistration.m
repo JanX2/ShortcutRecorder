@@ -58,7 +58,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     static _SRShortcutRegistrationMonitor *Shared = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Shared = [self new];
+        Shared = [_SRShortcutRegistrationMonitor new];
     });
     return Shared;
 }

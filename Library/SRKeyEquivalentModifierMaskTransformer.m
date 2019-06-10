@@ -17,7 +17,7 @@
     static dispatch_once_t OnceToken;
     static SRKeyEquivalentModifierMaskTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [self new];
+        Transformer = [SRKeyEquivalentModifierMaskTransformer new];
     });
     return Transformer;
 }

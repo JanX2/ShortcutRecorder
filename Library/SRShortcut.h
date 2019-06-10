@@ -77,6 +77,11 @@ NS_SWIFT_NAME(Shortcut)
  */
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary;
 
+/*!
+ Initialize the shortcut from a left-to-right ASCII key code and symbolic modifier flags e.g. @"⇧⌘A".
+ */
++ (nullable instancetype)shortcutWithKeyEquivalent:(NSString *)aKeyEquivalent;
+
 + (instancetype)new NS_UNAVAILABLE;
 
 /*!

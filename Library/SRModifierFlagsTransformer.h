@@ -11,20 +11,28 @@ NS_ASSUME_NONNULL_BEGIN
 @class SRLiteralModifierFlagsTransformer;
 
 /*!
- Deprecated. Use SRLiteralModifierFlagsTransformer and SRSymbolicModifierFlagsTransformer instead.
+ Don't use directly. Use SRLiteralModifierFlagsTransformer / SRSymbolicModifierFlagsTransformer instead.
  */
+NS_SWIFT_UNAVAILABLE("use SRLiteralModifierFlagsTransformer / SRSymbolicModifierFlagsTransformer instead")
 @interface SRModifierFlagsTransformer : NSValueTransformer
+/*!
+ Shared transformer.
+ */
 @property (class, readonly) SRModifierFlagsTransformer* sharedTransformer NS_SWIFT_NAME(shared);
-+ (SRLiteralModifierFlagsTransformer *)sharedPlainTransformer __attribute__((deprecated("", "SRLiteralModifierFlagsTransformer.shared")));
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
-@property (readonly) BOOL usesPlainStrings __attribute__((deprecated));
 
 /*!
  Order modifier flags according to the user interface layout direction of the view.
 
- @param aView View whose userInterfaceLayoutDirection is considered. If nil, NSApp's default is used.
+ @param aDirection The layout direction to select an appropriate symbol or literal.
  */
-- (nullable NSString *)transformedValue:(NSNumber *)aValue forView:(nullable NSView *)aView;
+- (nullable NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
+@end
+
+
+@interface SRModifierFlagsTransformer (Deprecated)
++ (SRLiteralModifierFlagsTransformer *)sharedPlainTransformer __attribute__((deprecated("", "SRLiteralModifierFlagsTransformer.shared")));
+- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
+@property (readonly) BOOL usesPlainStrings __attribute__((deprecated));
 @end
 
 
@@ -40,8 +48,6 @@ NS_SWIFT_NAME(LiteralModifierFlagsTransformer)
 
 /*!
  Transform modifier flags into a localized literal string such as Command-Option.
-
- @note Does not allow reverse transformation.
  */
 NS_SWIFT_NAME(SymbolicModifierFlagsTransformer)
 @interface SRSymbolicModifierFlagsTransformer: SRModifierFlagsTransformer

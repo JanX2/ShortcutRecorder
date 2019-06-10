@@ -3,11 +3,11 @@
 //  CC BY 4.0
 //
 
+#import <os/trace.h>
+
 #import "SRModifierFlagsTransformer.h"
 #import "SRCommon.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
 @implementation SRModifierFlagsTransformer
 
@@ -23,6 +23,9 @@
 {
     return SRSymbolicModifierFlagsTransformer.sharedTransformer;
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
 + (id)sharedPlainTransformer
 {
@@ -42,6 +45,8 @@
     return [self isKindOfClass:SRSymbolicModifierFlagsTransformer.class];
 }
 
+#pragma clang diagnostic pop
+
 + (Class)transformedValueClass
 {
     return NSString.class;
@@ -52,7 +57,7 @@
     return NO;
 }
 
-- (NSString *)transformedValue:(NSNumber *)aValue forView:(NSView *)aView
+- (NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
     return nil;
 }
@@ -64,8 +69,6 @@
 
 @end
 
-#pragma clang diagnostic pop
-
 
 @implementation SRLiteralModifierFlagsTransformer
 
@@ -74,7 +77,7 @@
     static dispatch_once_t OnceToken;
     static SRLiteralModifierFlagsTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] init];
+        Transformer = [SRLiteralModifierFlagsTransformer new];
     });
     return Transformer;
 }
@@ -88,13 +91,16 @@
 
 - (NSString *)transformedValue:(NSNumber *)aValue
 {
-    return [self transformedValue:aValue forView:nil];
+    return [self transformedValue:aValue layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
-- (NSString *)transformedValue:(NSNumber *)aValue forView:(NSView *)aView
+- (NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
     if (![aValue isKindOfClass:NSNumber.class])
+    {
+        os_trace_error("#Error Invalid value for transformation");
         return nil;
+    }
 
     NSEventModifierFlags flags = aValue.unsignedIntegerValue;
     NSMutableArray<NSString *> *flagsStringComponents = NSMutableArray.array;
@@ -111,9 +117,7 @@
     if (flags & NSCommandKeyMask)
         [flagsStringComponents addObject:SRLoc(@"Command")];
 
-    __auto_type layoutDirection = aView ? aView.userInterfaceLayoutDirection : NSApp.userInterfaceLayoutDirection;
-
-    if (layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+    if (aDirection == NSUserInterfaceLayoutDirectionRightToLeft)
         return [[[flagsStringComponents reverseObjectEnumerator] allObjects] componentsJoinedByString:@"-"];
     else
         return [flagsStringComponents componentsJoinedByString:@"-"];
@@ -129,7 +133,7 @@
     static dispatch_once_t OnceToken;
     static SRSymbolicModifierFlagsTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [[self alloc] init];
+        Transformer = [SRSymbolicModifierFlagsTransformer new];
     });
     return Transformer;
 }
@@ -143,13 +147,16 @@
 
 - (NSString *)transformedValue:(NSNumber *)aValue
 {
-    return [self transformedValue:aValue forView:nil];
+    return [self transformedValue:aValue layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
-- (NSString *)transformedValue:(NSNumber *)aValue forView:(NSView *)aView
+- (NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
     if (![aValue isKindOfClass:NSNumber.class])
+    {
+        os_trace_error("#Error Invalid value for transformation");
         return nil;
+    }
 
     NSEventModifierFlags flags = aValue.unsignedIntegerValue;
     NSMutableArray<NSString *> *flagsStringFragments = NSMutableArray.array;
@@ -166,9 +173,7 @@
     if (flags & NSCommandKeyMask)
         [flagsStringFragments addObject:@"⌘"];
 
-    __auto_type layoutDirection = aView ? aView.userInterfaceLayoutDirection : NSApp.userInterfaceLayoutDirection;
-
-    if (layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
+    if (aDirection == NSUserInterfaceLayoutDirectionRightToLeft)
         return [[[flagsStringFragments reverseObjectEnumerator] allObjects] componentsJoinedByString:@""];
     else
         return [flagsStringFragments componentsJoinedByString:@""];
@@ -177,7 +182,10 @@
 - (NSNumber *)reverseTransformedValue:(NSString *)aValue
 {
     if (![aValue isKindOfClass:NSString.class])
+    {
+        os_trace_error("#Error Invalid value for reverse transformation");
         return nil;
+    }
 
     __block NSEventModifierFlags flags = 0;
     __block BOOL foundInvalidSubstring = NO;
@@ -202,7 +210,10 @@
     }];
 
     if (foundInvalidSubstring)
+    {
+        os_trace_error("#Error Invalid value for reverse transformation");
         return nil;
+    }
 
     return @(flags);
 }

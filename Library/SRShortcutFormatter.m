@@ -19,6 +19,7 @@
     {
         _isKeyCodeLiteral = YES;
         _usesASCIICapableKeyboardInputSource = YES;
+        _layoutDirection = NSApp.userInterfaceLayoutDirection;
     }
 
     return self;
@@ -32,6 +33,7 @@
     {
         _isKeyCodeLiteral = YES;
         _usesASCIICapableKeyboardInputSource = YES;
+        _layoutDirection = NSApp.userInterfaceLayoutDirection;
     }
 
     return self;
@@ -47,13 +49,13 @@
     SRKeyCodeTransformer *keyTransformer = nil;
 
     if (self.isKeyCodeLiteral && self.usesASCIICapableKeyboardInputSource)
-        keyTransformer = SRKeyCodeTransformer.sharedLiteralASCIITransformer;
+        keyTransformer = SRASCIILiteralKeyCodeTransformer.sharedTransformer;
     else if (self.isKeyCodeLiteral)
-        keyTransformer = SRKeyCodeTransformer.sharedLiteralTransformer;
+        keyTransformer = SRLiteralKeyCodeTransformer.sharedTransformer;
     else if (self.usesASCIICapableKeyboardInputSource)
-        keyTransformer = SRKeyCodeTransformer.sharedSymbolicASCIITransformer;
+        keyTransformer = SRASCIISymbolicKeyCodeTransformer.sharedTransformer;
     else
-        keyTransformer = SRKeyCodeTransformer.sharedSymbolicTransformer;
+        keyTransformer = SRSymbolicKeyCodeTransformer.sharedTransformer;
 
     SRModifierFlagsTransformer *flagsTransformer = nil;
 
@@ -64,14 +66,26 @@
 
     NSString *key = [keyTransformer transformedValue:@(aShortcut.keyCode)
                            withImplicitModifierFlags:nil
-                               explicitModifierFlags:@(aShortcut.modifierFlags)];
+                               explicitModifierFlags:@(aShortcut.modifierFlags)
+                                     layoutDirection:self.layoutDirection];
     NSString *flags = [flagsTransformer transformedValue:@(aShortcut.modifierFlags)];
     return [NSString stringWithFormat:@"%@%@", flags, key];
 }
 
-- (BOOL)getObjectValue:(out id  _Nullable __autoreleasing *)obj forString:(NSString *)string errorDescription:(out NSString *__autoreleasing _Nullable *)error
+- (BOOL)getObjectValue:(id __autoreleasing *)anObject forString:(NSString *)aString errorDescription:(NSString *__autoreleasing *)anError
 {
-    return NO;
+    if (!self.isKeyCodeLiteral || !self.usesASCIICapableKeyboardInputSource || self.layoutDirection != NSUserInterfaceLayoutDirectionLeftToRight)
+        return NO;
+
+    SRShortcut *shortcut = [SRShortcut shortcutWithKeyEquivalent:aString];
+
+    if (!shortcut)
+        return NO;
+
+    if (anObject)
+        *anObject = shortcut;
+
+    return YES;
 }
 
 @end

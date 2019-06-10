@@ -154,12 +154,15 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
     else
     {
         NSNumber *modifierFlags = [self valueForKeyPath:@"selection.modifierFlags"];
-        _keyEquivalent = [SRKeyCodeTransformer.sharedSymbolicASCIITransformer transformedValue:keyCode withImplicitModifierFlags:nil explicitModifierFlags:modifierFlags];
+        _keyEquivalent = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
+                                                                     withImplicitModifierFlags:nil
+                                                                         explicitModifierFlags:nil
+                                                                               layoutDirection:NSApp.userInterfaceLayoutDirection];
         _keyEquivalentModifierMask = [SRKeyEquivalentModifierMaskTransformer.sharedTransformer transformedValue:modifierFlags];
-        _literalKeyCode = [SRKeyCodeTransformer.sharedLiteralTransformer transformedValue:keyCode];
-        _symbolicKeyCode = [SRKeyCodeTransformer.sharedSymbolicTransformer transformedValue:keyCode];
-        _literalASCIIKeyCode = [SRKeyCodeTransformer.sharedLiteralASCIITransformer transformedValue:keyCode];
-        _symbolicASCIIKeyCode = [SRKeyCodeTransformer.sharedSymbolicASCIITransformer transformedValue:keyCode];
+        _literalKeyCode = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
+        _symbolicKeyCode = [SRSymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
+        _literalASCIIKeyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
+        _symbolicASCIIKeyCode = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
         _literalModifierFlags = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:modifierFlags];
         _symbolicModifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:modifierFlags];
     }

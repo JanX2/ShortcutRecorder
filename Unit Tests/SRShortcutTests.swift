@@ -119,9 +119,6 @@ class SRShortcutTests: XCTestCase {
         XCTAssertFalse(s.isEqual(dictionary: [ShortcutKey.modifierFlags: modifierFlags.rawValue,
                                               ShortcutKey.characters: "å",
                                               ShortcutKey.charactersIgnoringModifiers: "a"]))
-        XCTAssertTrue(s.isEqual(keyEquivalent: "a", modifierFlags: [NSEvent.ModifierFlags.option, NSEvent.ModifierFlags.command]));
-        XCTAssertTrue(s.isEqual(keyEquivalent: "å", modifierFlags: []));
-        XCTAssertFalse(s.isEqual(keyEquivalent: "b", modifierFlags: []));
     }
 
     func testSimpleSubclassEquality() {
@@ -226,5 +223,61 @@ class SRShortcutTests: XCTestCase {
         let s = Shortcut.default
         let c = s.copy() as! Shortcut
         XCTAssertEqual(s, c)
+    }
+
+    func testKeyEquivalentComparison() {
+        let a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertTrue(a.isEqual(keyEquivalent: "a", modifierFlags: []))
+        XCTAssertFalse(a.isEqual(keyEquivalent: "a", modifierFlags: [.shift]))
+        XCTAssertFalse(a.isEqual(keyEquivalent: "A", modifierFlags: []))
+        XCTAssertFalse(a.isEqual(keyEquivalent: "A", modifierFlags: [.shift]))
+
+        let opt_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.option], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertTrue(opt_a.isEqual(keyEquivalent: "å", modifierFlags: []))
+        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "å", modifierFlags: [.shift]))
+        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "Å", modifierFlags: []))
+        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "Å", modifierFlags: [.shift]))
+        XCTAssertTrue(opt_a.isEqual(keyEquivalent: "a", modifierFlags: [.option]))
+        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "a", modifierFlags: [.option, .shift]))
+        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "A", modifierFlags: [.option]))
+        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "A", modifierFlags: [.option, .shift]))
+
+        let ctrl_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertTrue(ctrl_a.isEqual(keyEquivalent: "a", modifierFlags: [.control]))
+        XCTAssertFalse(ctrl_a.isEqual(keyEquivalent: "A", modifierFlags: [.control]))
+        XCTAssertFalse(ctrl_a.isEqual(keyEquivalent: "a", modifierFlags: [.control, .shift]))
+        XCTAssertFalse(ctrl_a.isEqual(keyEquivalent: "a", modifierFlags: []))
+
+        let cmd_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.command], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertTrue(cmd_a.isEqual(keyEquivalent: "a", modifierFlags: [.command]))
+        XCTAssertFalse(cmd_a.isEqual(keyEquivalent: "A", modifierFlags: [.command]))
+        XCTAssertFalse(cmd_a.isEqual(keyEquivalent: "a", modifierFlags: [.command, .shift]))
+        XCTAssertFalse(cmd_a.isEqual(keyEquivalent: "a", modifierFlags: []))
+
+        let shift_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.shift], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertFalse(shift_a.isEqual(keyEquivalent: "a", modifierFlags: []))
+        XCTAssertTrue(shift_a.isEqual(keyEquivalent: "a", modifierFlags: [.shift]))
+        XCTAssertTrue(shift_a.isEqual(keyEquivalent: "A", modifierFlags: []))
+        XCTAssertTrue(shift_a.isEqual(keyEquivalent: "A", modifierFlags: [.shift]))
+
+        let ctrl_tab = Shortcut(code: UInt16(kVK_Tab), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertTrue(ctrl_tab.isEqual(keyEquivalent: "\u{0009}", modifierFlags: [.control]))
+        XCTAssertTrue(ctrl_tab.isEqual(keyEquivalent: "\u{0019}", modifierFlags: [.control]))
+
+        let ctrl_del = Shortcut(code: UInt16(kVK_Delete), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertTrue(ctrl_del.isEqual(keyEquivalent: "\u{0008}", modifierFlags: [.control]));
+        XCTAssertFalse(ctrl_del.isEqual(keyEquivalent: "\u{007f}", modifierFlags: [.control]));
+
+        let ctrl_fdel = Shortcut(code: UInt16(kVK_ForwardDelete), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertFalse(ctrl_fdel.isEqual(keyEquivalent: "\u{0008}", modifierFlags: [.control]));
+        XCTAssertTrue(ctrl_fdel.isEqual(keyEquivalent: "\u{007f}", modifierFlags: [.control]));
+    }
+
+    func testInitializationWithKeyEquivalent() {
+        let shift_cmd_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.shift, .command], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertEqual(Shortcut(keyEquivalent: "⇧⌘A"), shift_cmd_a)
+
+        let ctrl_esc = Shortcut(code: UInt16(kVK_Escape), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        XCTAssertEqual(Shortcut(keyEquivalent: "⌃Escape"), ctrl_esc)
     }
 }

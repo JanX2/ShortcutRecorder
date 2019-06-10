@@ -17,7 +17,7 @@
     static dispatch_once_t OnceToken;
     static SRKeyEquivalentTransformer *Transformer = nil;
     dispatch_once(&OnceToken, ^{
-        Transformer = [self new];
+        Transformer = [SRKeyEquivalentTransformer new];
     });
     return Transformer;
 }
@@ -49,9 +49,10 @@
     if (![modifierFlags isKindOfClass:[NSNumber class]])
         modifierFlags = @(0);
 
-    return [SRKeyCodeTransformer.sharedSymbolicASCIITransformer transformedValue:keyCode
+    return [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
                                                        withImplicitModifierFlags:nil
-                                                           explicitModifierFlags:modifierFlags];
+                                                           explicitModifierFlags:modifierFlags
+                                                                 layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
 @end
