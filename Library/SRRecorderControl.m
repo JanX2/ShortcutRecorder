@@ -703,6 +703,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         }
     }
 
+    if (!_isCompatibilityModeEnabled &&
+        ([boundObject isKindOfClass:NSUserDefaults.class] || [boundObject isKindOfClass:NSUserDefaultsController.class]) &&
+        [aValue isKindOfClass:SRShortcut.class])
+    {
+        os_trace_error("#Error The control is bound to NSUserDefaults but is not transformed into an allowed CFPreferences value");
+        NSLog(@"WARNING: Shortcut Recroder 2 compatibility mode enabled. Getters of objectValue and NSValueBinding will return an instance of NSDictionary.");
+        _isCompatibilityModeEnabled = YES;
+
+        aValue = [aValue dictionaryRepresentation];
+    }
+
     [boundObject setValue:aValue forKeyPath:boundKeyPath];
 }
 

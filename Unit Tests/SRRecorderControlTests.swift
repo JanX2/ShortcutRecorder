@@ -74,9 +74,10 @@ class SRRecorderControlTests: XCTestCase {
         UserDefaults.standard.set(objectValue as NSDictionary, forKey: "shortcut")
         XCTAssertEqual(v.objectValue![.keyCode] as! UInt16, keyCode)
         XCTAssertEqual(v.objectValue![.modifierFlags] as! UInt, modifierFlags.rawValue)
+        XCTAssertTrue(v.value(forKey: "isCompatibilityModeEnabled") as! Bool)
     }
 
-    func testComaptibilityBindingAndViewChange() {
+    func testComaptibilityBindingAndViewChangeWithDictionary() {
         let v = RecorderControl()
         v.bind(NSBindingName.value, to: NSUserDefaultsController.shared, withKeyPath: "values.shortcut", options: nil)
         let keyCode: UInt16 = 0
@@ -85,6 +86,19 @@ class SRRecorderControlTests: XCTestCase {
         v.setValue(objectValue as NSDictionary, forKey: "objectValue")
         XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.keyCode") as! UInt16, keyCode)
         XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.modifierFlags") as! UInt, modifierFlags.rawValue)
+        XCTAssertTrue(v.value(forKey: "isCompatibilityModeEnabled") as! Bool)
+    }
+
+    func testComaptibilityBindingAndViewChangeWithShortcut() {
+        let v = RecorderControl()
+        v.bind(NSBindingName.value, to: NSUserDefaultsController.shared, withKeyPath: "values.shortcut", options: nil)
+        let keyCode: UInt16 = 0
+        let modifierFlags: NSEvent.ModifierFlags = [.command, .option]
+        let objectValue = Shortcut(code: keyCode, modifierFlags: modifierFlags, characters: nil, charactersIgnoringModifiers: nil)
+        v.setValue(objectValue, forKey: "objectValue")
+        XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.keyCode") as! UInt16, keyCode)
+        XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.modifierFlags") as! UInt, modifierFlags.rawValue)
+        XCTAssertTrue(v.value(forKey: "isCompatibilityModeEnabled") as! Bool)
     }
 
     func testStyleIsCopied() {
