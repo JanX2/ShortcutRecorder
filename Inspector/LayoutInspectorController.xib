@@ -39,6 +39,7 @@
                                 <userDefinedRuntimeAttribute type="color" keyPath="chessboardSecondaryColor">
                                     <color key="value" name="controlAccentColor" catalog="System" colorSpace="catalog"/>
                                 </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="boolean" keyPath="drawLabelRespectsUserInterfaceLayoutDirection" value="YES"/>
                             </userDefinedRuntimeAttributes>
                         </customView>
                     </subviews>
