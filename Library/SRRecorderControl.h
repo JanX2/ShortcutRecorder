@@ -399,7 +399,7 @@ NS_SWIFT_NAME(RecorderControlDelegate)
  */
 - (void)recorderControlDidEndRecording:(SRRecorderControl *)aControl;
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(SRShortcut *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
 
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
 

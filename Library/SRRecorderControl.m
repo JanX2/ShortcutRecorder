@@ -1429,7 +1429,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                 if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
                     canRecordShortcut = [self.delegate recorderControl:self canRecordShortcut:newObjectValue];
                 else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
-                    canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue];
+                    canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue.dictionaryRepresentation];
                 else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
                     canRecordShortcut = [self.delegate control:self isValidObject:newObjectValue];
 
