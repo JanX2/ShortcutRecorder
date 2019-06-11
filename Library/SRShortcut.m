@@ -3,6 +3,8 @@
 //  CC BY 4.0
 //
 
+#import <os/trace.h>
+
 #import "SRCommon.h"
 #import "SRKeyCodeTransformer.h"
 #import "SRShortcutFormatter.h"
@@ -38,7 +40,10 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 + (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent
 {
     if (((1 << aKeyboardEvent.type) & (NSEventMaskKeyDown | NSEventMaskKeyUp)) == 0)
-        [NSException raise:NSInvalidArgumentException format:@"aKeyboardEvent must be either NSEventTypeKeyUp or NSEventTypeKeyDown, got %lu", aKeyboardEvent.type, nil];
+    {
+        os_trace_error("aKeyboardEvent must be either NSEventTypeKeyUp or NSEventTypeKeyDown, but got %lu", aKeyboardEvent.type);
+        return nil;
+    }
 
     return [self shortcutWithCode:aKeyboardEvent.keyCode
                     modifierFlags:aKeyboardEvent.modifierFlags
@@ -51,7 +56,10 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     NSNumber *keyCode = aDictionary[SRShortcutKeyKeyCode];
 
     if (![keyCode isKindOfClass:NSNumber.class])
-        [NSException raise:NSInvalidArgumentException format:@"aDictionary must contain a key code", nil];
+    {
+        os_trace_error("aDictionary must have a key code");
+        return nil;
+    }
 
     unsigned short keyCodeValue = keyCode.unsignedShortValue;
     NSUInteger modifierFlagsValue = 0;

@@ -61,12 +61,8 @@ NS_SWIFT_NAME(Shortcut)
 
 /*!
  Initialize the shortcut with a keyboard event.
-
- @throws NSInvalidArgumentException
-
- @discussion NSInvalidArgumentException is thrown if event is not related to keyboard.
  */
-+ (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent;
++ (nullable instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent;
 
 /*!
  Initialize the shortcut with a dictionary.
@@ -75,7 +71,7 @@ NS_SWIFT_NAME(Shortcut)
 
  @seealso SRShortcutKey
  */
-+ (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary;
++ (nullable instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary;
 
 /*!
  Initialize the shortcut from a left-to-right ASCII key code and symbolic modifier flags e.g. @"⇧⌘A".
