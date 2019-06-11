@@ -154,11 +154,12 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
     else
     {
         NSNumber *modifierFlags = [self valueForKeyPath:@"selection.modifierFlags"];
-        _keyEquivalent = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
-                                                                     withImplicitModifierFlags:nil
-                                                                         explicitModifierFlags:nil
-                                                                               layoutDirection:NSApp.userInterfaceLayoutDirection];
-        _keyEquivalentModifierMask = [SRKeyEquivalentModifierMaskTransformer.sharedTransformer transformedValue:modifierFlags];
+        SRShortcut *selection = [SRShortcut shortcutWithCode:keyCode.unsignedShortValue
+                                               modifierFlags:modifierFlags.unsignedIntegerValue
+                                                  characters:nil
+                                 charactersIgnoringModifiers:nil];
+        _keyEquivalent = [SRKeyEquivalentTransformer.sharedTransformer transformedValue:selection];
+        _keyEquivalentModifierMask = [SRKeyEquivalentModifierMaskTransformer.sharedTransformer transformedValue:selection];
         _literalKeyCode = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
         _symbolicKeyCode = [SRSymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
         _literalASCIIKeyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer transformedValue:keyCode];
