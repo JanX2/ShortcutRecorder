@@ -31,17 +31,17 @@
 
 + (Class)transformedValueClass
 {
-    return [NSNumber class];
+    return NSNumber.class;
 }
 
 - (NSNumber *)transformedValue:(NSDictionary *)aValue
 {
-    if (![aValue isKindOfClass:[NSDictionary class]])
-        return [super transformedValue:aValue];
+    if (![aValue isKindOfClass:NSDictionary.class] && ![aValue isKindOfClass:SRShortcut.class])
+        return nil;
 
     NSNumber *modifierFlags = aValue[SRShortcutKeyModifierFlags];
 
-    if (![modifierFlags isKindOfClass:[NSNumber class]])
+    if (![modifierFlags isKindOfClass:NSNumber.class])
         return nil;
 
     return modifierFlags;

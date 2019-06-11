@@ -31,22 +31,22 @@
 
 + (Class)transformedValueClass
 {
-    return [NSString class];
+    return NSString.class;
 }
 
 - (NSString *)transformedValue:(NSDictionary *)aValue
 {
-    if (![aValue isKindOfClass:[NSDictionary class]])
-        return [super transformedValue:aValue];
+    if (![aValue isKindOfClass:NSDictionary.class] && ![aValue isKindOfClass:SRShortcut.class])
+        return nil;
 
     NSNumber *keyCode = aValue[SRShortcutKeyKeyCode];
 
-    if (![keyCode isKindOfClass:[NSNumber class]])
+    if (![keyCode isKindOfClass:NSNumber.class])
         return nil;
 
     NSNumber *modifierFlags = aValue[SRShortcutKeyModifierFlags];
 
-    if (![modifierFlags isKindOfClass:[NSNumber class]])
+    if (![modifierFlags isKindOfClass:NSNumber.class])
         modifierFlags = @(0);
 
     return [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode

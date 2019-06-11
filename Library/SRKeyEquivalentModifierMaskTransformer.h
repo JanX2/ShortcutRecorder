@@ -7,8 +7,8 @@
 
 
 /*!
- Transform dictionary representation of a shortcut into a string suitable
- for -setKeyEquivalentModifierMask: of Cocoa objects such as NSButton and NSMenuItem.
+ Transform a shortcut or its dictionary representation into Cocoa's key equivalent modifier mask
+ for objects like NSButton and NSMenuItem.
  */
 NS_SWIFT_NAME(KeyEquivalentModifierMaskTransformer)
 @interface SRKeyEquivalentModifierMaskTransformer : NSValueTransformer
@@ -16,6 +16,6 @@ NS_SWIFT_NAME(KeyEquivalentModifierMaskTransformer)
 /*!
  Shared transformer.
  */
-@property (class, readonly) SRKeyEquivalentModifierMaskTransformer *sharedTransformer;
+@property (class, readonly) SRKeyEquivalentModifierMaskTransformer *sharedTransformer NS_SWIFT_NAME(shared);;
 
 @end

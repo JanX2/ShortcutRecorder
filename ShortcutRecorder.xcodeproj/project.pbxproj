@@ -32,6 +32,8 @@
 		BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */ = {isa = PBXBuildFile; fileRef = BA722ED42162A4AA00EFF192 /* SRShortcutController.m */; };
 		BA722EF52164099200EFF192 /* SRShortcutControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */; };
 		BA722EF721640D2400EFF192 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA722EF621640D2400EFF192 /* Utility.swift */; };
+		BA813C9722B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA813C9622B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift */; };
+		BA813C9922B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA813C9822B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift */; };
 		BA8CFDF322A2645800C96F79 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = BA8CFDF222A2645800C96F79 /* LICENSE.md */; };
 		BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */; };
@@ -130,6 +132,8 @@
 		BA722ED42162A4AA00EFF192 /* SRShortcutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutController.m; path = Library/SRShortcutController.m; sourceTree = "<group>"; };
 		BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutControllerTests.swift; sourceTree = "<group>"; };
 		BA722EF621640D2400EFF192 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		BA813C9622B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyEquivalentTransformerTests.swift; sourceTree = "<group>"; };
+		BA813C9822B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyEquivalentModifierMaskTransformerTests.swift; sourceTree = "<group>"; };
 		BA8C53D421FFED8D00B40164 /* Demo.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Demo.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BA8CFDF222A2645800C96F79 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
 		BA8CFDF422A26DAA00C96F79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
@@ -311,6 +315,8 @@
 				BAE0CED422946B4500DD65C5 /* SRRecorderControlStyleTests.swift */,
 				BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */,
 				BA3711CC22A71DD800738321 /* SRModifierFlagsTransformerTests.swift */,
+				BA813C9622B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift */,
+				BA813C9822B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift */,
 				BA722EF621640D2400EFF192 /* Utility.swift */,
 			);
 			path = "Unit Tests";
@@ -600,10 +606,12 @@
 				BA8CFE1822A31CBE00C96F79 /* SRShortcutRegistrationTests.swift in Sources */,
 				BA722ED12161625100EFF192 /* SRShortcutTests.swift in Sources */,
 				BA3711CD22A71DD800738321 /* SRModifierFlagsTransformerTests.swift in Sources */,
+				BA813C9722B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift in Sources */,
 				BA722EF721640D2400EFF192 /* Utility.swift in Sources */,
 				BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */,
 				BA03E78F216A90A40008002D /* SRValidatorTests.swift in Sources */,
 				BAED4705217007C70008DA80 /* SRRecorderControlTests.swift in Sources */,
+				BA813C9922B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
