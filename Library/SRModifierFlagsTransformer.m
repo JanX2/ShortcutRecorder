@@ -162,16 +162,16 @@
     NSMutableArray<NSString *> *flagsStringFragments = NSMutableArray.array;
 
     if (flags & NSControlKeyMask)
-        [flagsStringFragments addObject:@"⌃"];
+        [flagsStringFragments addObject:SRModifierFlagStringControl];
 
     if (flags & NSAlternateKeyMask)
-        [flagsStringFragments addObject:@"⌥"];
+        [flagsStringFragments addObject:SRModifierFlagStringOption];
 
     if (flags & NSShiftKeyMask)
-        [flagsStringFragments addObject:@"⇧"];
+        [flagsStringFragments addObject:SRModifierFlagStringShift];
 
     if (flags & NSCommandKeyMask)
-        [flagsStringFragments addObject:@"⌘"];
+        [flagsStringFragments addObject:SRModifierFlagStringCommand];
 
     if (aDirection == NSUserInterfaceLayoutDirectionRightToLeft)
         return [[[flagsStringFragments reverseObjectEnumerator] allObjects] componentsJoinedByString:@""];
@@ -194,13 +194,13 @@
                                options:NSStringEnumerationByComposedCharacterSequences
                             usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop)
     {
-        if ([substring isEqualToString:@"⌃"] && (flags & NSControlKeyMask) == 0)
+        if ([substring isEqualToString:SRModifierFlagStringControl] && (flags & NSControlKeyMask) == 0)
             flags |= NSControlKeyMask;
-        else if ([substring isEqualToString:@"⌥"] && (flags & NSAlternateKeyMask) == 0)
+        else if ([substring isEqualToString:SRModifierFlagStringOption] && (flags & NSAlternateKeyMask) == 0)
             flags |= NSAlternateKeyMask;
-        else if ([substring isEqualToString:@"⇧"] && (flags & NSShiftKeyMask) == 0)
+        else if ([substring isEqualToString:SRModifierFlagStringShift] && (flags & NSShiftKeyMask) == 0)
             flags |= NSShiftKeyMask;
-        else if ([substring isEqualToString:@"⌘"] && (flags & NSCommandKeyMask) == 0)
+        else if ([substring isEqualToString:SRModifierFlagStringCommand] && (flags & NSCommandKeyMask) == 0)
             flags |= NSCommandKeyMask;
         else
         {

@@ -8,6 +8,31 @@
 #import "SRCommon.h"
 
 
+SRKeyCodeString const SRKeyCodeStringTabRight = @"⇥";
+SRKeyCodeString const SRKeyCodeStringTabLeft = @"⇤";
+SRKeyCodeString const SRKeyCodeStringReturn = @"⌅";
+SRKeyCodeString const SRKeyCodeStringReturnR2L = @"↩";
+SRKeyCodeString const SRKeyCodeStringDeleteLeft = @"⌫";
+SRKeyCodeString const SRKeyCodeStringDeleteRight = @"⌦";
+SRKeyCodeString const SRKeyCodeStringPadClear = @"⌧";
+SRKeyCodeString const SRKeyCodeStringLeftArrow = @"←";
+SRKeyCodeString const SRKeyCodeStringRightArrow = @"→";
+SRKeyCodeString const SRKeyCodeStringUpArrow = @"↑";
+SRKeyCodeString const SRKeyCodeStringDownArrow = @"↓";
+SRKeyCodeString const SRKeyCodeStringPageDown = @"⇟";
+SRKeyCodeString const SRKeyCodeStringPageUp = @"⇞";
+SRKeyCodeString const SRKeyCodeStringNorthwestArrow = @"↖";
+SRKeyCodeString const SRKeyCodeStringSoutheastArrow = @"↘";
+SRKeyCodeString const SRKeyCodeStringEscape = @"⎋";
+SRKeyCodeString const SRKeyCodeStringSpace = @" ";
+
+
+SRModifierFlagString const SRModifierFlagStringCommand = @"⌘";
+SRModifierFlagString const SRModifierFlagStringOption = @"⌥";
+SRModifierFlagString const SRModifierFlagStringShift = @"⇧";
+SRModifierFlagString const SRModifierFlagStringControl = @"⌃";
+
+
 NSBundle *SRBundle()
 {
     static dispatch_once_t onceToken;

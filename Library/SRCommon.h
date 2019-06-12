@@ -10,19 +10,21 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
-    Mask representing subset of Cocoa modifier flags suitable for shortcuts.
+ Mask representing subset of Cocoa modifier flags suitable for shortcuts.
  */
 static const NSEventModifierFlags SRCocoaModifierFlagsMask = NSEventModifierFlagCommand | NSEventModifierFlagOption | NSEventModifierFlagShift | NSEventModifierFlagControl;
 
+
 /*!
-    Mask representing subset of Carbon modifier flags suitable for shortcuts.
+ Mask representing subset of Carbon modifier flags suitable for shortcuts.
  */
-static const NSUInteger SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
+static const UInt32 SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
 
 
 /*!
-    These constants represents drawable unicode characters for key codes that do not have
-    appropriate constants in Carbon and Cocoa.
+ Dawable unicode characters for key codes that do not have appropriate constants in Carbon and Cocoa.
+
+ @seealso SRKeyCodeString
  */
 typedef NS_ENUM(unichar, SRKeyCodeGlyph)
 {
@@ -42,13 +44,63 @@ typedef NS_ENUM(unichar, SRKeyCodeGlyph)
     SRKeyCodeGlyphNorthwestArrow = 0x2196, // ↖
     SRKeyCodeGlyphSoutheastArrow = 0x2198, // ↘
     SRKeyCodeGlyphEscape = 0x238B, // ⎋
-    SRKeyCodeGlyphSpace = 0x0020, // ' '
+    SRKeyCodeGlyphSpace = 0x0020 // ' '
 };
 
 
+/*!
+ NSString version of SRKeyCodeGlyph
+
+ @seealso SRKeyCodeGlyph
+ */
+typedef NSString *SRKeyCodeString NS_TYPED_EXTENSIBLE_ENUM;
+extern SRKeyCodeString const SRKeyCodeStringTabRight;
+extern SRKeyCodeString const SRKeyCodeStringTabLeft;
+extern SRKeyCodeString const SRKeyCodeStringReturn;
+extern SRKeyCodeString const SRKeyCodeStringReturnR2L;
+extern SRKeyCodeString const SRKeyCodeStringDeleteLeft;
+extern SRKeyCodeString const SRKeyCodeStringDeleteRight;
+extern SRKeyCodeString const SRKeyCodeStringPadClear;
+extern SRKeyCodeString const SRKeyCodeStringLeftArrow;
+extern SRKeyCodeString const SRKeyCodeStringRightArrow;
+extern SRKeyCodeString const SRKeyCodeStringUpArrow;
+extern SRKeyCodeString const SRKeyCodeStringDownArrow;
+extern SRKeyCodeString const SRKeyCodeStringPageDown;
+extern SRKeyCodeString const SRKeyCodeStringPageUp;
+extern SRKeyCodeString const SRKeyCodeStringNorthwestArrow;
+extern SRKeyCodeString const SRKeyCodeStringSoutheastArrow;
+extern SRKeyCodeString const SRKeyCodeStringEscape;
+extern SRKeyCodeString const SRKeyCodeStringSpace;
+
 
 /*!
-    Convert Carbon modifier flags to Cocoa.
+ Dawable unicode characters for modifier flags.
+
+ @seealso SRModifierFlagString
+ */
+typedef NS_ENUM(unichar, SRModifierFlagGlyph)
+{
+    SRModifierFlagGlyphCommand = kCommandUnicode, // ⌘
+    SRModifierFlagGlyphOption = kOptionUnicode,  // ⌥
+    SRModifierFlagGlyphShift = kShiftUnicode, // ⇧
+    SRModifierFlagGlyphControl = kControlUnicode // ⌃
+};
+
+
+/*!
+ NSString version of SRModifierFlagGlyph
+
+ @seealso SRModifierFlagGlyph
+ */
+typedef NSString *SRModifierFlagString NS_TYPED_EXTENSIBLE_ENUM;
+extern SRModifierFlagString const SRModifierFlagStringCommand;
+extern SRModifierFlagString const SRModifierFlagStringOption;
+extern SRModifierFlagString const SRModifierFlagStringShift;
+extern SRModifierFlagString const SRModifierFlagStringControl;
+
+
+/*!
+ Convert Carbon modifier flags to Cocoa.
  */
 NS_INLINE NSEventModifierFlags SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 {
@@ -70,7 +122,7 @@ NS_INLINE NSEventModifierFlags SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 }
 
 /*!
-    Convert Cocoa modifier flags to Carbon.
+ Convert Cocoa modifier flags to Carbon.
  */
 NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 {
@@ -93,23 +145,23 @@ NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 
 
 /*!
-    Return Bundle where resources can be found.
+ Return Bundle where resources can be found.
 
-    @throws NSInternalInconsistencyException
+ @throws NSInternalInconsistencyException
 
-    @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
-*/
+ @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
+ */
 NSBundle * SRBundle(void);
 
 
 /*!
-    Convenience method to get localized string from the framework bundle.
+ Convenience method to get localized string from the framework bundle.
  */
 NSString * _Nullable SRLoc(NSString * _Nullable aKey);
 
 
 /*!
-    Convenience method to get image from the framework bundle.
+ Convenience method to get image from the framework bundle.
  */
 NSImage * _Nullable SRImage(NSString * _Nullable anImageName);
 
@@ -149,9 +201,6 @@ NSImage * _Nullable SRImage(NSString * _Nullable anImageName);
      else
          return <memberwise comparison>;
  }
-
- @note Identity and -isKindOfClass: checks are only necessary if -isEqualTo<Class>: can be called outside of -isEqual:
-       and guard against misuse. You may drop them if you can guarantee that no code calls it.
  */
 - (BOOL)SR_isEqual:(nullable NSObject *)anObject usingSelector:(SEL)aSelector ofCommonAncestor:(Class)anAncestor;
 

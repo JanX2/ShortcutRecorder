@@ -86,11 +86,21 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 + (instancetype)shortcutWithKeyEquivalent:(NSString *)aKeyEquivalent
 {
+    static NSCharacterSet *PossibleFlags = nil;
+    static dispatch_once_t OnceToken;
+    dispatch_once(&OnceToken, ^{
+        PossibleFlags = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"%C%C%C%C",
+                                                                            SRModifierFlagGlyphCommand,
+                                                                            SRModifierFlagGlyphOption,
+                                                                            SRModifierFlagGlyphShift,
+                                                                            SRModifierFlagGlyphControl]];
+    });
+
     NSScanner *parser = [NSScanner scannerWithString:aKeyEquivalent];
     parser.caseSensitive = NO;
+
     NSString *modifierFlagsString = @"";
-    [parser scanCharactersFromSet:[NSCharacterSet characterSetWithCharactersInString:@"⌃⌥⇧⌘"]
-                       intoString:&modifierFlagsString];
+    [parser scanCharactersFromSet:PossibleFlags intoString:&modifierFlagsString];
     NSString *keyCodeString = [aKeyEquivalent substringFromIndex:parser.scanLocation];
 
     NSNumber *modifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer reverseTransformedValue:modifierFlagsString];

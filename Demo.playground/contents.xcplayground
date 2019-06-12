@@ -3,5 +3,6 @@
     <pages>
         <page name='The Recorder Control and Shortcut Registrations'/>
         <page name='Formatting in Labels and Other Controls'/>
+        <page name='Utility'/>
     </pages>
 </playground>
