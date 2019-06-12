@@ -37,7 +37,7 @@ class SRShortcutTests: XCTestCase {
                                  charactersIgnoringModifiers: "a",
                                  isARepeat: false,
                                  keyCode: 0)
-        let s = ShortcutRecorder.Shortcut(event: e!)
+        let s = ShortcutRecorder.Shortcut(event: e!)!
         XCTAssertEqual(s.keyCode, 0)
         XCTAssertEqual(s.modifierFlags, .option)
         XCTAssertEqual(s.characters, "å")
@@ -61,27 +61,27 @@ class SRShortcutTests: XCTestCase {
     }
 
     func testDictionaryInitialization() {
-        let s1 = Shortcut(dictionary: [ShortcutKey.keyCode: 0])
+        let s1 = Shortcut(dictionary: [ShortcutKey.keyCode: 0])!
         XCTAssertEqual(s1.keyCode, 0)
         XCTAssertEqual(s1.modifierFlags, [])
         XCTAssertEqual(s1.characters, nil)
         XCTAssertEqual(s1.charactersIgnoringModifiers, nil)
 
-        let s2 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])
+        let s2 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])!
         XCTAssertEqual(s2.keyCode, 0)
         XCTAssertEqual(s2.modifierFlags, NSEvent.ModifierFlags.option)
         XCTAssertEqual(s2.characters, nil)
         XCTAssertEqual(s2.charactersIgnoringModifiers, nil)
 
         let s3 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
-                                       ShortcutKey.characters: NSNull(), ShortcutKey.charactersIgnoringModifiers: NSNull()])
+                                       ShortcutKey.characters: NSNull(), ShortcutKey.charactersIgnoringModifiers: NSNull()])!
         XCTAssertEqual(s3.keyCode, 0)
         XCTAssertEqual(s3.modifierFlags, NSEvent.ModifierFlags.option)
         XCTAssertEqual(s3.characters, nil)
         XCTAssertEqual(s3.charactersIgnoringModifiers, nil)
 
         let s4 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
-                                       ShortcutKey.characters: "å", ShortcutKey.charactersIgnoringModifiers: "a"])
+                                       ShortcutKey.characters: "å", ShortcutKey.charactersIgnoringModifiers: "a"])!
         XCTAssertEqual(s4.keyCode, 0)
         XCTAssertEqual(s4.modifierFlags, NSEvent.ModifierFlags.option)
         XCTAssertEqual(s4.characters, "å")
@@ -89,16 +89,16 @@ class SRShortcutTests: XCTestCase {
     }
 
     func testDictionaryRepresentation() {
-        let s1 = Shortcut(dictionary: [ShortcutKey.keyCode: 0])
+        let s1 = Shortcut(dictionary: [ShortcutKey.keyCode: 0])!
         XCTAssertEqual(s1.dictionaryRepresentation as NSDictionary, [ShortcutKey.keyCode: 0,
                                                                      ShortcutKey.modifierFlags: 0])
 
-        let s2 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])
+        let s2 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])!
         XCTAssertEqual(s2.dictionaryRepresentation as NSDictionary, [ShortcutKey.keyCode: 0,
                                                                      ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])
 
         let s3 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
-                                       ShortcutKey.characters: "å", ShortcutKey.charactersIgnoringModifiers: "a"])
+                                       ShortcutKey.characters: "å", ShortcutKey.charactersIgnoringModifiers: "a"])!
         XCTAssertEqual(s3.dictionaryRepresentation as NSDictionary, [ShortcutKey.keyCode: 0,
                                                                      ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
                                                                      ShortcutKey.characters: "å",
