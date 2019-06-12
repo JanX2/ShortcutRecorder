@@ -26,3 +26,27 @@ extension XCTKVOExpectation {
         handler = { (_, _) in return true }
     }
 }
+
+
+extension TISInputSource {
+    var identifier: String {
+        return Unmanaged<CFString>.fromOpaque(TISGetInputSourceProperty(self, kTISPropertyInputSourceID)).takeUnretainedValue() as String
+    }
+
+    static func withIdentifier(_ identifier: String) -> TISInputSource? {
+        let properties: [CFString: CFTypeRef] = [
+            kTISPropertyInputSourceType: kTISTypeKeyboardLayout!,
+            kTISPropertyInputSourceID: identifier as CFString
+        ]
+
+        let sources = TISCreateInputSourceList(properties as CFDictionary, true)!.takeRetainedValue()
+        return CFArrayGetCount(sources) > 0 ? Unmanaged<TISInputSource>.fromOpaque(CFArrayGetValueAtIndex(sources, 0)).takeUnretainedValue() : nil
+    }
+}
+
+
+extension NSEvent.ModifierFlags {
+    var symbolic: String {
+        return SymbolicModifierFlagsTransformer.shared.transformedValue(self.rawValue) as! String
+    }
+}

@@ -226,39 +226,220 @@ class SRShortcutTests: XCTestCase {
     }
 
     func testKeyEquivalentComparison() {
-        let a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [], characters: nil, charactersIgnoringModifiers: nil)
-        XCTAssertTrue(a.isEqual(keyEquivalent: "a", modifierFlags: []))
-        XCTAssertFalse(a.isEqual(keyEquivalent: "a", modifierFlags: [.shift]))
-        XCTAssertFalse(a.isEqual(keyEquivalent: "A", modifierFlags: []))
-        XCTAssertFalse(a.isEqual(keyEquivalent: "A", modifierFlags: [.shift]))
+        typealias KeyEquivalent = (key: String, flags: NSEvent.ModifierFlags)
 
-        let opt_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.option], characters: nil, charactersIgnoringModifiers: nil)
-        XCTAssertTrue(opt_a.isEqual(keyEquivalent: "å", modifierFlags: []))
-        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "å", modifierFlags: [.shift]))
-        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "Å", modifierFlags: []))
-        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "Å", modifierFlags: [.shift]))
-        XCTAssertTrue(opt_a.isEqual(keyEquivalent: "a", modifierFlags: [.option]))
-        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "a", modifierFlags: [.option, .shift]))
-        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "A", modifierFlags: [.option]))
-        XCTAssertFalse(opt_a.isEqual(keyEquivalent: "A", modifierFlags: [.option, .shift]))
+        func AssertEqual(_ shortcut: Shortcut, _ keyEquivalents: [KeyEquivalent], _ transformer: SymbolicKeyCodeTransformer? = nil) {
+            for ke in keyEquivalents {
+                if let transformer = transformer {
+                    XCTAssertTrue(shortcut.isEqual(keyEquivalent: ke.key, modifierFlags: ke.flags, transformer: transformer),
+                                  "\(shortcut) != \(ke.flags.symbolic)\(ke.key) in \((transformer.inputSource as! TISInputSource).identifier)")
+                }
+                else {
+                    XCTAssertTrue(shortcut.isEqual(keyEquivalent: ke.key, modifierFlags: ke.flags),
+                                  "\(shortcut) != \(ke.flags.symbolic)\(ke.key) in current")
+                }
+            }
+        }
 
-        let ctrl_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
-        XCTAssertTrue(ctrl_a.isEqual(keyEquivalent: "a", modifierFlags: [.control]))
-        XCTAssertFalse(ctrl_a.isEqual(keyEquivalent: "A", modifierFlags: [.control]))
-        XCTAssertFalse(ctrl_a.isEqual(keyEquivalent: "a", modifierFlags: [.control, .shift]))
-        XCTAssertFalse(ctrl_a.isEqual(keyEquivalent: "a", modifierFlags: []))
+        func AssertNotEqual(_ shortcut: Shortcut, _ keyEquivalents: [KeyEquivalent], _ transformer: SymbolicKeyCodeTransformer? = nil) {
+            for ke in keyEquivalents {
+                if let transformer = transformer {
+                    XCTAssertFalse(shortcut.isEqual(keyEquivalent: ke.key, modifierFlags: ke.flags, transformer: transformer),
+                                   "\(shortcut) == \(ke.flags.symbolic)\(ke.key) in \((transformer.inputSource as! TISInputSource).identifier)")
+                }
+                else {
+                    XCTAssertFalse(shortcut.isEqual(keyEquivalent: ke.key, modifierFlags: ke.flags),
+                                   "\(shortcut) == \(ke.flags.symbolic)\(ke.key) in current")
+                }
+            }
+        }
 
-        let cmd_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.command], characters: nil, charactersIgnoringModifiers: nil)
-        XCTAssertTrue(cmd_a.isEqual(keyEquivalent: "a", modifierFlags: [.command]))
-        XCTAssertFalse(cmd_a.isEqual(keyEquivalent: "A", modifierFlags: [.command]))
-        XCTAssertFalse(cmd_a.isEqual(keyEquivalent: "a", modifierFlags: [.command, .shift]))
-        XCTAssertFalse(cmd_a.isEqual(keyEquivalent: "a", modifierFlags: []))
+        let us_input = TISInputSource.withIdentifier("com.apple.keylayout.US")!
+        let us_transformer = SymbolicKeyCodeTransformer(inputSource: us_input)
 
-        let shift_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.shift], characters: nil, charactersIgnoringModifiers: nil)
-        XCTAssertFalse(shift_a.isEqual(keyEquivalent: "a", modifierFlags: []))
-        XCTAssertTrue(shift_a.isEqual(keyEquivalent: "a", modifierFlags: [.shift]))
-        XCTAssertTrue(shift_a.isEqual(keyEquivalent: "A", modifierFlags: []))
-        XCTAssertTrue(shift_a.isEqual(keyEquivalent: "A", modifierFlags: [.shift]))
+        let ru_input = TISInputSource.withIdentifier("com.apple.keylayout.Russian")!
+        let ru_transformer = SymbolicKeyCodeTransformer(inputSource: ru_input)
+
+        let a = Shortcut(keyEquivalent: "A")!
+        let shift_a = Shortcut(keyEquivalent: "⇧A")!
+        let opt_a = Shortcut(keyEquivalent: "⌥A")!
+        let opt_shift_a = Shortcut(keyEquivalent: "⇧⌥A")!
+
+        /*
+         Note that transformer-less comparisons are done _only_ for ASCII equivalents.
+         All other equivalents are input-source dependent.
+         */
+
+        let a_ke: [KeyEquivalent] = [
+            ("a", [])
+        ]
+
+        AssertEqual(a, a_ke)
+        AssertEqual(a, a_ke, us_transformer)
+        AssertNotEqual(a, a_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, a_ke)
+        AssertNotEqual(shift_a, a_ke, us_transformer)
+        AssertNotEqual(shift_a, a_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, a_ke)
+        AssertNotEqual(opt_a, a_ke, us_transformer)
+        AssertNotEqual(opt_a, a_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, a_ke)
+        AssertNotEqual(opt_shift_a, a_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, a_ke, ru_transformer)
+
+        let A_ke: [KeyEquivalent] = [
+            ("a", [.shift]),
+            ("A", []),
+            ("A", [.shift])
+        ]
+
+        AssertNotEqual(a, A_ke)
+        AssertNotEqual(a, A_ke, us_transformer)
+        AssertNotEqual(a, A_ke, ru_transformer)
+
+        AssertEqual(shift_a, A_ke)
+        AssertEqual(shift_a, A_ke, us_transformer)
+        AssertNotEqual(shift_a, A_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, A_ke)
+        AssertNotEqual(opt_a, A_ke, us_transformer)
+        AssertNotEqual(opt_a, A_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, A_ke)
+        AssertNotEqual(opt_shift_a, A_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, A_ke, ru_transformer)
+
+        let å_ke: [KeyEquivalent] = [
+            ("a", [.option]),
+            ("å", []),
+            ("å", [.option])
+        ]
+
+        AssertNotEqual(a, å_ke, us_transformer)
+        AssertNotEqual(a, å_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, å_ke, us_transformer)
+        AssertNotEqual(shift_a, å_ke, ru_transformer)
+
+        AssertEqual(opt_a, å_ke, us_transformer)
+        AssertNotEqual(opt_a, å_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, å_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, å_ke, ru_transformer)
+
+        let Å_ke: [KeyEquivalent] = [
+            ("a", [.option, .shift]),
+            ("A", [.option]),
+            ("A", [.option, .shift]),
+            ("å", [.shift]),
+            ("å", [.option, .shift]),
+            ("Å", []),
+            ("Å", [.option]),
+            ("Å", [.shift]),
+            ("Å", [.option, .shift])
+        ]
+
+        AssertNotEqual(a, Å_ke, us_transformer)
+        AssertNotEqual(a, Å_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, Å_ke, us_transformer)
+        AssertNotEqual(shift_a, Å_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, Å_ke, us_transformer)
+        AssertNotEqual(opt_a, Å_ke, ru_transformer)
+
+        AssertEqual(opt_shift_a, Å_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, Å_ke, ru_transformer)
+
+        let ф_ke: [KeyEquivalent] = [
+            ("ф", [])
+        ]
+
+        AssertNotEqual(a, ф_ke, us_transformer)
+        AssertEqual(a, ф_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, ф_ke, us_transformer)
+        AssertNotEqual(shift_a, ф_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, ф_ke, us_transformer)
+        AssertNotEqual(opt_a, ф_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, ф_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, ф_ke, ru_transformer)
+
+        let Ф_ke: [KeyEquivalent] = [
+            ("ф", [.shift]),
+            ("Ф", []),
+            ("Ф", [.shift])
+        ]
+
+        AssertNotEqual(a, Ф_ke, us_transformer)
+        AssertNotEqual(a, Ф_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, Ф_ke, us_transformer)
+        AssertEqual(shift_a, Ф_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, Ф_ke, us_transformer)
+        AssertNotEqual(opt_a, Ф_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, Ф_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, Ф_ke, ru_transformer)
+
+        let opt_ф_ke: [KeyEquivalent] = [
+            ("ф", [.option])
+        ]
+
+        AssertNotEqual(a, opt_ф_ke, us_transformer)
+        AssertNotEqual(a, opt_ф_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, opt_ф_ke, us_transformer)
+        AssertNotEqual(shift_a, opt_ф_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, opt_ф_ke, us_transformer)
+        AssertEqual(opt_a, opt_ф_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, opt_ф_ke, us_transformer)
+        AssertNotEqual(opt_shift_a, opt_ф_ke, ru_transformer)
+
+        let ƒ_ke: [KeyEquivalent] = [
+            ("ƒ", []),
+            ("ƒ", [.option]),
+        ]
+
+        AssertNotEqual(a, ƒ_ke, us_transformer)
+        AssertNotEqual(a, ƒ_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, ƒ_ke, us_transformer)
+        AssertNotEqual(shift_a, ƒ_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, ƒ_ke, us_transformer)
+        AssertEqual(opt_a, ƒ_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, ƒ_ke, us_transformer)
+        AssertEqual(opt_shift_a, ƒ_ke, ru_transformer)
+
+        let shift_ƒ_ke: [KeyEquivalent] = [
+            ("ф", [.option, .shift]),
+            ("Ф", [.option]),
+            ("Ф", [.option, .shift]),
+            ("ƒ", [.shift]),
+            ("ƒ", [.option, .shift]),
+        ]
+
+        AssertNotEqual(a, shift_ƒ_ke, us_transformer)
+        AssertNotEqual(a, shift_ƒ_ke, ru_transformer)
+
+        AssertNotEqual(shift_a, shift_ƒ_ke, us_transformer)
+        AssertNotEqual(shift_a, shift_ƒ_ke, ru_transformer)
+
+        AssertNotEqual(opt_a, shift_ƒ_ke, us_transformer)
+        AssertNotEqual(opt_a, shift_ƒ_ke, ru_transformer)
+
+        AssertNotEqual(opt_shift_a, shift_ƒ_ke, us_transformer)
+        AssertEqual(opt_shift_a, shift_ƒ_ke, ru_transformer)
 
         let ctrl_tab = Shortcut(code: UInt16(kVK_Tab), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertTrue(ctrl_tab.isEqual(keyEquivalent: "\u{0009}", modifierFlags: [.control]))

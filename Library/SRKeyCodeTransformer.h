@@ -16,6 +16,9 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransfo
 @interface SRKeyCodeTransformer : NSValueTransformer
 /*!
  Shared transformer.
+
+ @discussion
+ Shared transformers use autoupdating input source.
  */
 @property (class, readonly) SRKeyCodeTransformer *sharedTransformer NS_SWIFT_NAME(shared);
 
@@ -26,6 +29,34 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransfo
  Behavior for unknown key codes may be inconsistent.
  */
 @property (class, readonly) NSArray<NSNumber *> *knownKeyCodes;
+
+/*!
+ The input source used by the transformer.
+
+ @discussion
+ The underlying type is TISInputSourceRef.
+
+ @note Shared transformers autoupdate their input sources to the current.
+ */
+@property (readonly) id inputSource;
+
+- (instancetype)initWithInputSource:(id)anInputSource;
+
+/*!
+ Return literal string for the given key code, modifier flags and layout direction.
+ */
+- (nullable NSString *)literalForKeyCode:(unsigned short)aValue
+               withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
+                   explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
+                         layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
+
+/*!
+ Return symbolic string for the given key code, modifier flags and layout direction.
+ */
+- (nullable NSString *)symbolForKeyCode:(unsigned short)aValue
+              withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
+                  explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
+                        layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
 
 /*!
  Transfrom the given key code into a symbol or a literal by taking into account modifier flags and layout direction.

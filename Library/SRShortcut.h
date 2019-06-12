@@ -4,6 +4,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <ShortcutRecorder/SRKeyCodeTransformer.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -157,10 +158,18 @@ NS_SWIFT_NAME(Shortcut)
 - (BOOL)isEqualToDictionary:(NSDictionary<SRShortcutKey, id> *)aDictionary NS_SWIFT_NAME(isEqual(dictionary:));
 
 /*!
- Compare the shortcut to Cocoa's key equivalent (e.g. NSMenuItem/keyEquivalent) and modifier flags.
+ Compare the shortcut to Cocoa's key equivalent and modifier flags using the current input source.
  */
 - (BOOL)isEqualToKeyEquivalent:(nullable NSString *)aKeyEquivalent
              withModifierFlags:(NSEventModifierFlags)aModifierFlags NS_SWIFT_NAME(isEqual(keyEquivalent:modifierFlags:));
+
+/*!
+ Compare the shortcut to Cocoa's key equivalent and modifier flags using the given key code transformer.
+ */
+- (BOOL)isEqualToKeyEquivalent:(NSString *)aKeyEquivalent
+             withModifierFlags:(NSEventModifierFlags)aModifierFlags
+              usingTransformer:(SRKeyCodeTransformer *)aTransformer NS_SWIFT_NAME(isEqual(keyEquivalent:modifierFlags:transformer:));
+
 
 /*!
  Dictionary-like access to properties.
