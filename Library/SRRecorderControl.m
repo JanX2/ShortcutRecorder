@@ -914,7 +914,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 #pragma mark NSControl
 @dynamic enabled;
-@synthesize refusesFirstResponder = refusesFirstResponder;
+@synthesize refusesFirstResponder = _refusesFirstResponder;
 @synthesize tag = _tag;
 
 + (Class)cellClass
@@ -1201,19 +1201,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return self.enabled && !self.refusesFirstResponder;
 }
 
-- (BOOL)becomeFirstResponder
-{
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
-        [self setKeyboardFocusRingNeedsDisplayInRect:self.bounds];
-
-    return [super becomeFirstResponder];
-}
-
 - (BOOL)resignFirstResponder
 {
-    if (floor(NSAppKitVersionNumber) <= NSAppKitVersionNumber10_6)
-        [self setKeyboardFocusRingNeedsDisplayInRect:self.bounds];
-
     [self endRecording];
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     return [super resignFirstResponder];

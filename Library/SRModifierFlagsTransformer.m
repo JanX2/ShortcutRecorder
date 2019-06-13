@@ -62,9 +62,9 @@
     return nil;
 }
 
-- (id)transformedValue:(id)value
+- (id)transformedValue:(id)aValue
 {
-    return nil;
+    return [self transformedValue:aValue layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
 @end
@@ -83,16 +83,6 @@
 }
 
 #pragma mark NSValueTransformer
-
-+ (BOOL)allowsReverseTransformation
-{
-    return NO;
-}
-
-- (NSString *)transformedValue:(NSNumber *)aValue
-{
-    return [self transformedValue:aValue layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
-}
 
 - (NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
@@ -143,11 +133,6 @@
 + (BOOL)allowsReverseTransformation
 {
     return YES;
-}
-
-- (NSString *)transformedValue:(NSNumber *)aValue
-{
-    return [self transformedValue:aValue layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
 - (NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
