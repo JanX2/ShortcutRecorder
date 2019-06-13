@@ -25,6 +25,10 @@
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="boolean" keyPath="allowsEmptyModifierFlags" value="YES"/>
                     </userDefinedRuntimeAttributes>
+                    <connections>
+                        <accessibilityConnection property="title" destination="iuc-Bz-GfW" id="8Ui-dS-GBI"/>
+                        <outlet property="nextKeyView" destination="biV-fw-I5b" id="qNn-rI-tnI"/>
+                    </connections>
                 </customView>
                 <box title="Computed Properties" translatesAutoresizingMaskIntoConstraints="NO" id="yjf-8M-mH0">
                     <rect key="frame" x="17" y="196" width="405" height="250"/>
@@ -33,155 +37,195 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Lqm-MN-2b0">
-                                <rect key="frame" x="18" y="45" width="145" height="13"/>
+                                <rect key="frame" x="18" y="45" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="symbolicModifierFlags:" id="WlX-d5-cgX">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="LX3-UQ-H6k" id="XvC-me-UvO"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yF3-MD-2XH">
-                                <rect key="frame" x="18" y="95" width="145" height="13"/>
+                                <rect key="frame" x="18" y="95" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="literalModifierFlags:" id="rb4-H4-hg7">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="FYO-sA-1xO" id="zCn-6F-dbX"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ox9-Fv-xA5">
-                                <rect key="frame" x="18" y="120" width="145" height="13"/>
+                                <rect key="frame" x="18" y="120" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="literalASCIIKeyCode:" id="u3y-UO-0XL">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="udc-nE-S0E" id="d7j-nD-cVN"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="99p-BE-E61">
-                                <rect key="frame" x="18" y="70" width="145" height="13"/>
+                                <rect key="frame" x="18" y="70" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="symbolicKeyCode:" id="Jb3-C1-iA9">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="sCW-H7-mGN" id="77i-CQ-L2C"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oZ4-Dg-iHA">
-                                <rect key="frame" x="18" y="145" width="145" height="13"/>
+                                <rect key="frame" x="18" y="145" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="literalKeyCode:" id="UWd-jE-fHl">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="bfH-p7-p41" id="eBg-RD-tFW"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oi3-26-N6K">
-                                <rect key="frame" x="18" y="170" width="145" height="13"/>
+                                <rect key="frame" x="18" y="170" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="keyEquivalentModifierMask:" id="AfZ-GI-sHj">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="Dmi-cN-YDX" id="Kml-fB-BcH"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NSO-Uu-Cew">
-                                <rect key="frame" x="18" y="195" width="145" height="13"/>
+                                <rect key="frame" x="18" y="195" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="keyEquivalent:" id="1qx-q0-osW">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="ywv-FB-NJL" id="q8A-kP-7H0"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D6n-Nn-3m8">
-                                <rect key="frame" x="18" y="20" width="145" height="13"/>
+                                <rect key="frame" x="18" y="20" width="156" height="13"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="symbolicASCIIKeyCode:" id="3T7-Ng-g9A">
                                     <font key="font" size="9" name="Menlo-Regular"/>
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="ZA5-7z-TfS" id="zeZ-uH-qrT"/>
+                                </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ywv-FB-NJL">
-                                <rect key="frame" x="167" y="195" width="214" height="17"/>
+                                <rect key="frame" x="178" y="195" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="a" id="G5D-9l-AD8">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="NSO-Uu-Cew" id="23d-vD-11X"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.keyEquivalent" id="cKp-6Y-tCY"/>
+                                    <outlet property="nextKeyView" destination="oi3-26-N6K" id="y0w-FK-Ze4"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bfH-p7-p41">
-                                <rect key="frame" x="167" y="145" width="214" height="17"/>
+                                <rect key="frame" x="178" y="145" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="A" id="oGC-tQ-WEY">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="oZ4-Dg-iHA" id="ulf-RQ-oo8"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.literalKeyCode" id="2kv-F5-F3d"/>
+                                    <outlet property="nextKeyView" destination="ox9-Fv-xA5" id="OAI-LZ-1Uy"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="udc-nE-S0E">
-                                <rect key="frame" x="167" y="120" width="214" height="17"/>
+                                <rect key="frame" x="178" y="120" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="A" id="Wxz-ad-B09">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="yF3-MD-2XH" id="POu-Gh-guP"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.literalASCIIKeyCode" id="gGd-ju-q1e"/>
+                                    <outlet property="nextKeyView" destination="yF3-MD-2XH" id="UKO-3q-uta"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZA5-7z-TfS">
-                                <rect key="frame" x="167" y="20" width="214" height="17"/>
+                                <rect key="frame" x="178" y="20" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="a" id="GGZ-Ih-aSY">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="D6n-Nn-3m8" id="EUH-xU-JJy"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.symbolicASCIIKeyCode" id="akH-kH-MBz"/>
+                                    <outlet property="nextKeyView" destination="thc-uT-FMQ" id="mIa-Y8-91G"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LX3-UQ-H6k">
-                                <rect key="frame" x="167" y="45" width="214" height="17"/>
+                                <rect key="frame" x="178" y="45" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="⌃⌥⇧⌘" id="VcD-LM-c9Y">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="Lqm-MN-2b0" id="8j9-SH-hLN"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.symbolicModifierFlags" id="pcy-5a-F2F"/>
+                                    <outlet property="nextKeyView" destination="D6n-Nn-3m8" id="KRm-KA-Oxo"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sCW-H7-mGN">
-                                <rect key="frame" x="167" y="70" width="214" height="17"/>
+                                <rect key="frame" x="178" y="70" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="a" id="o2r-iH-UcV">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="99p-BE-E61" id="Qoz-en-q4O"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.symbolicKeyCode" id="QOV-9k-HQg"/>
+                                    <outlet property="nextKeyView" destination="Lqm-MN-2b0" id="dtd-pV-gTp"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FYO-sA-1xO">
-                                <rect key="frame" x="167" y="95" width="214" height="17"/>
+                                <rect key="frame" x="178" y="95" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="Control-Option-Shift-Command" id="4Fd-1y-C8e">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="yF3-MD-2XH" id="6fL-40-E1H"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.literalModifierFlags" id="Xap-cM-vpf"/>
+                                    <outlet property="nextKeyView" destination="99p-BE-E61" id="6lx-Hv-HcP"/>
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Dmi-cN-YDX">
-                                <rect key="frame" x="167" y="170" width="214" height="17"/>
+                                <rect key="frame" x="178" y="170" width="203" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="clipping" title="1966080" id="1Me-fQ-18c">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="oi3-26-N6K" id="alw-Ub-ZMk"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.keyEquivalentModifierMask" id="VCa-0k-HVy"/>
+                                    <outlet property="nextKeyView" destination="oZ4-Dg-iHA" id="HUE-Uf-bmA"/>
                                 </connections>
                             </textField>
                         </subviews>
@@ -250,6 +294,9 @@
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="jbZ-Yw-dKn" id="SMg-iS-PYd"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="z4K-MU-A87">
                                 <rect key="frame" x="18" y="45" width="156" height="13"/>
@@ -258,6 +305,9 @@
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="CbU-LB-kkm" id="fMa-Z1-NjW"/>
+                                </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="uq5-nT-gzQ">
                                 <rect key="frame" x="178" y="20" width="203" height="17"/>
@@ -267,7 +317,9 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="HRe-U9-zER" id="4EM-Lx-js0"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.charactersIgnoringModifiers" id="LHc-Dh-Sxy"/>
+                                    <outlet property="nextKeyView" destination="NSO-Uu-Cew" id="nW6-aV-Dcd"/>
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FTZ-th-7Sx">
@@ -278,7 +330,9 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="biV-fw-I5b" id="u0l-6B-0SW"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.keyCode" id="Acb-35-5Hh"/>
+                                    <outlet property="nextKeyView" destination="Ki6-ap-WqX" id="nOq-Xj-g6b"/>
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jbZ-Yw-dKn">
@@ -289,7 +343,9 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="Ki6-ap-WqX" id="TM6-le-aw8"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.modifierFlags" id="xeD-PJ-UZt"/>
+                                    <outlet property="nextKeyView" destination="z4K-MU-A87" id="s2G-U8-b44"/>
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CbU-LB-kkm">
@@ -300,7 +356,9 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                                 <connections>
+                                    <accessibilityConnection property="title" destination="z4K-MU-A87" id="0Bp-MU-iJK"/>
                                     <binding destination="2ZJ-cF-zhm" name="value" keyPath="selection.characters" id="zLe-f9-jfl"/>
+                                    <outlet property="nextKeyView" destination="HRe-U9-zER" id="EL7-nE-sR8"/>
                                 </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="biV-fw-I5b">
@@ -310,6 +368,9 @@
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="FTZ-th-7Sx" id="GLk-Tg-uKV"/>
+                                </connections>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HRe-U9-zER">
                                 <rect key="frame" x="18" y="20" width="156" height="13"/>
@@ -318,6 +379,9 @@
                                     <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="uq5-nT-gzQ" id="yT4-tL-p7t"/>
+                                </connections>
                             </textField>
                         </subviews>
                         <constraints>
@@ -365,6 +429,20 @@ Real Properties are direct properties of SRShortcut. Computed Properties are gen
                         <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
+                    <connections>
+                        <outlet property="nextKeyView" destination="7o6-Xr-zKS" id="fJQ-Qq-cCO"/>
+                    </connections>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iuc-Bz-GfW">
+                    <rect key="frame" x="70" y="629" width="34" height="17"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Purr:" id="xtW-BR-QSC">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <outlet property="nextKeyView" destination="PKX-Uw-eyP" id="TYz-Ys-4qF"/>
+                    </connections>
                 </textField>
             </subviews>
             <constraints>
@@ -372,15 +450,21 @@ Real Properties are direct properties of SRShortcut. Computed Properties are gen
                 <constraint firstItem="thc-uT-FMQ" firstAttribute="top" secondItem="yjf-8M-mH0" secondAttribute="bottom" constant="20" id="3i3-mF-q4a"/>
                 <constraint firstItem="yjf-8M-mH0" firstAttribute="leading" secondItem="7o6-Xr-zKS" secondAttribute="leading" constant="20" symbolic="YES" id="KzJ-Uf-ys0"/>
                 <constraint firstAttribute="bottom" secondItem="thc-uT-FMQ" secondAttribute="bottom" constant="20" symbolic="YES" id="MKJ-Tv-xQT"/>
+                <constraint firstItem="oi3-26-N6K" firstAttribute="width" secondItem="HRe-U9-zER" secondAttribute="width" id="MSg-ZA-XQI"/>
                 <constraint firstItem="bA0-jr-scd" firstAttribute="top" secondItem="PKX-Uw-eyP" secondAttribute="bottom" constant="8" symbolic="YES" id="MlL-VF-pz6"/>
                 <constraint firstItem="thc-uT-FMQ" firstAttribute="leading" secondItem="7o6-Xr-zKS" secondAttribute="leading" constant="20" symbolic="YES" id="Oai-qY-2by"/>
+                <constraint firstItem="PKX-Uw-eyP" firstAttribute="leading" secondItem="iuc-Bz-GfW" secondAttribute="trailing" constant="8" symbolic="YES" id="Oqp-2D-SK2"/>
                 <constraint firstAttribute="trailing" secondItem="yjf-8M-mH0" secondAttribute="trailing" constant="20" symbolic="YES" id="YAG-yF-i9E"/>
                 <constraint firstItem="bA0-jr-scd" firstAttribute="leading" secondItem="7o6-Xr-zKS" secondAttribute="leading" constant="20" symbolic="YES" id="Yhs-Ui-pKd"/>
                 <constraint firstItem="PKX-Uw-eyP" firstAttribute="centerX" secondItem="7o6-Xr-zKS" secondAttribute="centerX" id="c00-tN-5dm"/>
                 <constraint firstAttribute="trailing" secondItem="thc-uT-FMQ" secondAttribute="trailing" constant="20" symbolic="YES" id="g4c-PC-BG4"/>
+                <constraint firstItem="iuc-Bz-GfW" firstAttribute="firstBaseline" secondItem="PKX-Uw-eyP" secondAttribute="firstBaseline" id="tn1-Lq-dGh"/>
                 <constraint firstItem="PKX-Uw-eyP" firstAttribute="top" secondItem="7o6-Xr-zKS" secondAttribute="top" constant="20" symbolic="YES" id="uVR-L3-KKH"/>
                 <constraint firstAttribute="trailing" secondItem="bA0-jr-scd" secondAttribute="trailing" constant="20" symbolic="YES" id="umT-Ci-ums"/>
             </constraints>
+            <connections>
+                <outlet property="nextKeyView" destination="iuc-Bz-GfW" id="Vdt-G6-doQ"/>
+            </connections>
         </view>
         <objectController objectClassName="SRShortcut" id="2ZJ-cF-zhm" userLabel="SRShortcutController" customClass="SRShortcutController">
             <connections>

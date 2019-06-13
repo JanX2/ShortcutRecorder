@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
-@interface SRRecorderControl : NSControl <NSEditor, NSViewToolTipOwner> /* <NSAccessibility, NSNibLoading, NSKeyValueBindingCreation> */
+@interface SRRecorderControl : NSControl <NSAccessibilityButton, NSEditor, NSViewToolTipOwner> /* <NSNibLoading, NSKeyValueBindingCreation> */
 {
     BOOL _isCompatibilityModeEnabled;
 }
@@ -240,11 +240,6 @@ IB_DESIGNABLE
  Dictionary representation of the shortcut.
  */
 @property (nullable, copy) NSDictionary<SRShortcutKey, __kindof NSObject *> *dictionaryValue;
-
-/*!
- String representation of object value for accessibility.
- */
-@property (nullable, readonly) NSString *accessibilityStringValue;
 
 /*!
  A helper method to propagate view-driven changes back to model.

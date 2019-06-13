@@ -36,6 +36,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSToolTipTag _cancelButtonToolTipTag;
 
     SRShortcut *_objectValue;
+
+    // +NSEvent.modifierFlags may change across run loop calls
+    // Extra care is needed to ensure that all methods will see the same flags.
+    NSEventModifierFlags _currentlyDrawnRecordingModifierFlags;
+    NSEventModifierFlags _accessibilityRecordingModifierFlags;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -209,6 +214,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (!self.isRecording)
     {
         NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
+        NSAccessibilityPostNotification(self, NSAccessibilityValueChangedNotification);
         [self setNeedsDisplayInRect:self.style.labelDrawingGuide.frame];
     }
 }
@@ -317,12 +323,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
+        _currentlyDrawnRecordingModifierFlags = NSEvent.modifierFlags & self.allowedModifierFlags;
 
-        if (modifierFlags)
+        if (_currentlyDrawnRecordingModifierFlags)
         {
             __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
-            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags)
+            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_currentlyDrawnRecordingModifierFlags)
                                                                            layoutDirection:layoutDirection];
         }
         else
@@ -340,27 +346,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
 
     return label;
-}
-
-- (NSString *)accessibilityStringValue
-{
-    if (!_objectValue)
-        return nil;
-
-    __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
-    NSString *f = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
-                                                                        layoutDirection:layoutDirection];
-    NSString *c = nil;
-
-    if (self.drawsASCIIEquivalentOfShortcut)
-        c = [SRASCIILiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
-    else
-        c = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
-
-    if (f.length > 0)
-        return [NSString stringWithFormat:@"%@-%@", f, c];
-    else
-        return [NSString stringWithFormat:@"%@", c];
 }
 
 - (NSDictionary *)drawingLabelAttributes
@@ -399,8 +384,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
             return;
         }
 
-        self.needsDisplay = YES;
-
         BOOL shouldBeginRecording = YES;
 
         if ([self.delegate respondsToSelector:@selector(recorderControlShouldBeginRecording:)])
@@ -423,6 +406,15 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                 [controller objectDidBeginEditing:(id<NSEditor>) self];
         }
 
+        if (![self.window makeFirstResponder:self])
+        {
+            NSBeep();
+            result = NO;
+            return;
+        }
+
+        self.needsDisplay = YES;
+
         [self willChangeValueForKey:@"isRecording"];
         self->_isRecording = YES;
         [self didChangeValueForKey:@"isRecording"];
@@ -430,10 +422,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self updateActiveConstraints];
         [self updateTrackingAreas];
         self.toolTip = SRLoc(@"Type shortcut");
-        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
         if (self.disablesShortcutRegistrationsWhileRecording)
             [SRShortcutRegistration disableShortcutRegistrations];
+
+        NSAccessibilityPostNotificationWithUserInfo(self,
+                                                    NSAccessibilityLayoutChangedNotification,
+                                                    @{NSAccessibilityUIElementsKey: @[self]});
+        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
         result = YES;
     });
@@ -480,12 +476,13 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         [self didChangeValueForKey:@"isRecording"];
 
         self.objectValue = anObjectValue;
+        self->_currentlyDrawnRecordingModifierFlags = 0;
+        self->_accessibilityRecordingModifierFlags = 0;
 
         [self updateActiveConstraints];
         [self updateTrackingAreas];
         self.toolTip = SRLoc(@"Click to record shortcut");
         self.needsDisplay = YES;
-        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
 
         if (self.window.firstResponder == self && !self.canBecomeKeyView)
             [self.window makeFirstResponder:nil];
@@ -499,6 +496,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
         if (self.disablesShortcutRegistrationsWhileRecording)
             [SRShortcutRegistration enableShortcutRegistrations];
+
+        NSAccessibilityPostNotificationWithUserInfo(self,
+                                                    NSAccessibilityLayoutChangedNotification,
+                                                    @{NSAccessibilityUIElementsKey: @[self]});
+        NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
     });
 }
 
@@ -740,126 +742,101 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 #pragma mark NSAccessibility
 
-- (BOOL)accessibilityIsIgnored
+- (BOOL)isAccessibilityElement
 {
-    return NO;
+    return YES;
+}
+
+- (BOOL)isAccessibilityEnabled
+{
+    return self.isEnabled;
 }
 
 - (NSString *)accessibilityLabel
 {
-    NSString *label = nil;
-
     if (self.isRecording)
     {
-        __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
-        NSEventModifierFlags modifierFlags = [NSEvent modifierFlags] & self.allowedModifierFlags;
-        label = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(modifierFlags) layoutDirection:layoutDirection];
-
-        if (!label.length)
-            label = SRLoc(@"Type shortcut");
+        _accessibilityRecordingModifierFlags = _currentlyDrawnRecordingModifierFlags;
+        return [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_accessibilityRecordingModifierFlags)
+                                                                     layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
     }
     else
-    {
-        label = self.accessibilityStringValue;
-
-        if (!label.length)
-            label = SRLoc(@"Click to record shortcut");
-    }
-
-    return label;
+        return super.accessibilityLabel;
 }
 
-- (NSArray *)accessibilityAttributeNames
+- (NSString *)accessibilityTitle
 {
-    static NSArray *AttributeNames = nil;
-    static dispatch_once_t OnceToken;
-    dispatch_once(&OnceToken, ^
-    {
-        AttributeNames = [[super accessibilityAttributeNames] mutableCopy];
-        NSArray *newAttributes = @[
-            NSAccessibilityRoleAttribute,
-            NSAccessibilityTitleAttribute,
-            NSAccessibilityEnabledAttribute
-        ];
-
-        for (NSString *attributeName in newAttributes)
-        {
-            if (![AttributeNames containsObject:attributeName])
-                [(NSMutableArray *)AttributeNames addObject:attributeName];
-        }
-
-        AttributeNames = [AttributeNames copy];
-    });
-    return AttributeNames;
+    return super.accessibilityTitle;
 }
 
-- (id)accessibilityAttributeValue:(NSString *)anAttributeName
+- (id)accessibilityValue
 {
-    if ([anAttributeName isEqualToString:NSAccessibilityRoleAttribute])
-        return NSAccessibilityButtonRole;
-    else if ([anAttributeName isEqualToString:NSAccessibilityTitleAttribute])
-        return self.accessibilityLabel;
-    else if ([anAttributeName isEqualToString:NSAccessibilityEnabledAttribute])
-        return @(self.enabled);
+    if (self.isRecording)
+        return super.accessibilityValue;
     else
-        return [super accessibilityAttributeValue:anAttributeName];
-}
-
-- (NSArray *)accessibilityActionNames
-{
-    static NSArray *AllActions = nil;
-    static NSArray *ButtonStateActionNames = nil;
-    static NSArray *RecorderStateActionNames = nil;
-
-    static dispatch_once_t OnceToken;
-    dispatch_once(&OnceToken, ^
     {
-        AllActions = @[
-            NSAccessibilityPressAction,
-            NSAccessibilityCancelAction,
-            NSAccessibilityDeleteAction
-        ];
+        if (!_objectValue)
+            return SRLoc(@"Empty");
 
-        ButtonStateActionNames = @[
-            NSAccessibilityPressAction
-        ];
+        NSString *f = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
+                                                                            layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
+        NSString *c = nil;
 
-        RecorderStateActionNames = @[
-            NSAccessibilityCancelAction,
-            NSAccessibilityDeleteAction
-        ];
-    });
-
-    // List of supported actions names must be fixed for 10.6, but can vary for 10.7 and above.
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6)
-    {
-        if (self.enabled)
-        {
-            if (self.isRecording)
-                return RecorderStateActionNames;
-            else
-                return ButtonStateActionNames;
-        }
+        if (self.drawsASCIIEquivalentOfShortcut)
+            c = [SRASCIILiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
         else
-            return @[];
+            c = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
+
+        if (f.length > 0)
+            return [NSString stringWithFormat:@"%@-%@", f, c];
+        else
+            return [NSString stringWithFormat:@"%@", c];
+    }
+}
+
+- (NSString *)accessibilityHelp
+{
+    return nil;
+}
+
+- (NSAccessibilityRole)accessibilityRole
+{
+    return NSAccessibilityButtonRole;
+}
+
+- (NSString *)accessibilityRoleDescription
+{
+    if (self.isRecording)
+        return SRLoc(@"Type shortcut").localizedLowercaseString;
+    else
+        return SRLoc(@"Shortcut").localizedLowercaseString;
+}
+
+- (BOOL)accessibilityPerformPress
+{
+    return [self beginRecording];
+}
+
+- (BOOL)accessibilityPerformCancel
+{
+    if (self.isRecording)
+    {
+        [self endRecording];
+        return YES;
     }
     else
-        return AllActions;
+        return NO;
 }
 
-- (NSString *)accessibilityActionDescription:(NSString *)anAction
+- (BOOL)accessibilityPerformDelete
 {
-    return NSAccessibilityActionDescription(anAction);
-}
-
-- (void)accessibilityPerformAction:(NSString *)anAction
-{
-    if ([anAction isEqualToString:NSAccessibilityPressAction])
-        [self beginRecording];
-    else if (self.isRecording && [anAction isEqualToString:NSAccessibilityCancelAction])
-        [self endRecording];
-    else if (self.isRecording && [anAction isEqualToString:NSAccessibilityDeleteAction])
+    if (self.isRecording && _objectValue)
+    {
         [self clearAndEndRecording];
+        return YES;
+    }
+    else
+        return NO;
 }
 
 #pragma mark NSEditor
