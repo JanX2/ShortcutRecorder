@@ -8,6 +8,7 @@
 #import <os/activity.h>
 
 #import "SRShortcutRegistration.h"
+#import "SRCommon.h"
 
 
 const OSType SRShortcutRegistrationSignature = 'SRSR';
@@ -642,7 +643,7 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 + (id)SR_addGlobalMonitorForShortcut:(SRShortcut *)aShortcut handler:(void (^)(NSEvent * _Nonnull))aHandler
 {
     return [self addGlobalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^(NSEvent *anEvent) {
-        if (aShortcut.keyCode == anEvent.keyCode && aShortcut.modifierFlags == anEvent.modifierFlags)
+        if (aShortcut.keyCode == anEvent.keyCode && aShortcut.modifierFlags == (anEvent.modifierFlags & SRCocoaModifierFlagsMask))
             aHandler(anEvent);
     }];
 }
@@ -650,7 +651,7 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
 + (id)SR_addLocalMonitorForShortcut:(SRShortcut *)aShortcut handler:(NSEvent * _Nullable (^)(NSEvent * _Nonnull))aHandler
 {
     return [self addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^(NSEvent *anEvent) {
-        if (aShortcut.keyCode == anEvent.keyCode && aShortcut.modifierFlags == anEvent.modifierFlags)
+        if (aShortcut.keyCode == anEvent.keyCode && aShortcut.modifierFlags == (anEvent.modifierFlags & SRCocoaModifierFlagsMask))
             return aHandler(anEvent);
         else
             return anEvent;
