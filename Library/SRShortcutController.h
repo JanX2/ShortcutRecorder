@@ -68,6 +68,11 @@ NS_SWIFT_NAME(ShortcutController)
 
 @property (nullable, strong) SRShortcut *content;
 
+/*!
+ Called by a designated initializer to set up internal state.
+ */
+- (void)initInternalState;
+
 - (instancetype)initWithContent:(nullable SRShortcut *)aContent;
 - (void)addObject:(SRShortcut *)anObject;
 - (void)removeObject:(SRShortcut *)anObject;

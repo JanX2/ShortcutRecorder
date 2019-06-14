@@ -68,8 +68,20 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 - (instancetype)initWithContent:(SRShortcut *)aContent
 {
     self = [super initWithContent:aContent];
+    [self initInternalState];
+    return self;
+}
 
-    if (self && aContent == nil)
+- (instancetype)initWithCoder:(NSCoder *)aCoder
+{
+    self = [super initWithCoder:aCoder];
+    [self initInternalState];
+    return self;
+}
+
+- (void)initInternalState
+{
+    if (self.content == nil)
     {
         _keyEquivalent = (id)NSNoSelectionMarker;
         _keyEquivalentModifierMask = (id)NSNoSelectionMarker;
@@ -80,8 +92,6 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
         _literalModifierFlags = (id)NSNoSelectionMarker;
         _symbolicModifierFlags = (id)NSNoSelectionMarker;
     }
-
-    return self;
 }
 
 - (void)dealloc
