@@ -1,34 +1,53 @@
 [![CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-orange.svg)](http://creativecommons.org/licenses/by/4.0/)
 ![macOS 10.11](https://img.shields.io/badge/macOS-10.11%2B-black.svg)
+![Mac App Store Approved](https://img.shields.io/badge/Mac%20App%20Store-Approved-success.svg)
+
 
 # ShortcutRecorder
 
 The best control to record shortcuts on macOS
 
-- Interface Builder integration
+- End-to-end Interface Builder integration
 - Designed with Swift in mind
 - Translated into 23 languages
-- Support for macOS Accessibility
+- Supports macOS Accessibility
 - Easily stylable
+- Mac App Store approved
 
 ## What is inside
 
 The framework comes with:
-- `SRRecorderControl` to render and capture user's input
-- `SRShortcut` to represent a shortcut
-- `SRShortcutRegistration` to the shortcut into an action
+- `SRRecorderControl` to render and capture user input
+- `SRRecorderControlStyle` for custom styling
+- `SRShortcut` that represents a shortcut model
+- `SRShortcutRegistration` to turn the shortcut into an action by registering a global hot key
 - `SRShortcutController` for smooth Cocoa Bindings and seamless Interface Builder integration
-- `SRValidator` to check the shortcut against local and global states
+- `SRValidator` to check validity of the shortcut against Cocoa Key Equivalents and global hot keys
 - `NSValueTransformer` and `NSFormatter` subclasses for custom alternations
+- `NSEvent` category that can create [local](https://developer.apple.com/documentation/appkit/nsevent/1534971-addlocalmonitorforeventsmatching) and [global](https://developer.apple.com/documentation/appkit/nsevent/1535472-addglobalmonitorforeventsmatchin) monitors from `SRShortcut`
+
+```swift
+import ShortcutRecorder
+
+let shortcut = Shortcut(withString: "⇧⌘A")
+let recorder = RecorderControl(frame: ...)
+
+let defaults = NSUserDefaultsController.shared
+let keyPath = "values.shortcut"
+let options = [.valueTransformerName: NSValueTransformerName.keyedUnarchiveFromDataTransformerName]
+recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
+
+let registration = ShortcutRegistration.register(keyPath: keyPath, of: defaults) {_ in NSSound.beep() }
+```
 
 ## Integration
 
-First add the framework into your Xcode project. Then modify your main target against ShortcutRecorder.framework
-and `#import <ShortcutRecorder/ShortcutRecorder.h>` / `import ShortcutRecorder`.
+Make sure that your binaries depends ShortcutRecorder.framework  `import ShortcutRecorder` /  `#import <ShortcutRecorder/ShortcutRecorder.h>`
+The framework supports modulemaps, no linking configuration is required.
 
 ### CocoaPods
 
-Just follow your usual routine and add
+Just follow your usual routine:
 
      pod 'ShortcutRecorder', '~> 3.0'
 
@@ -40,18 +59,23 @@ Again, nothing special:
 
 ### Git Submodule
 
+Add the submodule:
+
     git submodule add git://github.com/Kentzo/ShortcutRecorder.git
 
-Then drag'n'drop into your Xcode's workspace and update your targets to link against and include the framework
+Then drag'n'drop into your Xcode's workspace and update your targets.
 
 ## Next Steps
 
-See the Demo playground and play with the Inspector app. Read about [Styling]() and special notes regarding [Cocoa's Key Equivalents]().
+- The Demo playground covers the most useful parts of the framework
+- Play with the Inspector app (extremely useful to debug custom styles!)
+- Public API is throughoutly documented
+- Read about [Styling](https://github.com/Kentzo/ShortcutRecorder/wiki/Styling) and special notes regarding [Cocoa's Key Equivalents](https://github.com/Kentzo/ShortcutRecorder/wiki/Cocoa-Key-Equivalents).
 
-Questions
----------
-Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecorder/issues/new) immediately and feel free to ping me.
+## Questions
 
-Paid Support
-------------
-If functional you need is missing but you're ready to pay for it, feel free to contact me. If not, create an issue anyway, I'll take a look as soon as I can.
+Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecorder/issues/new).
+
+## Paid Support
+
+Paid support is available for custom alternations, help with integration and general advice regarding Cocoa development.
