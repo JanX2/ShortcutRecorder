@@ -100,6 +100,60 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 }
 
 
+#pragma mark Properties
++ (BOOL)automaticallyNotifiesObserversOfShortcutRegistrationTarget
+{
+    return NO;
+}
+
++ (BOOL)automaticallyNotifiesObserversOfShortcutRegistration
+{
+    return NO;
+}
+
+- (id)shortcutRegistrationTarget
+{
+    return _shortcutRegistration.target;
+}
+
+- (void)setShortcutRegistrationTarget:(id)newShortcutRegistrationTarget
+{
+    if (_shortcutRegistration.target == newShortcutRegistrationTarget)
+        return;
+
+    [self willChangeValueForKey:@"shortcutRegistrationTarget"];
+
+    if (!newShortcutRegistrationTarget && _shortcutRegistration)
+    {
+        [self willChangeValueForKey:@"shortcutRegistration"];
+        [_shortcutRegistration invalidate];
+        _shortcutRegistration = nil;
+        [self didChangeValueForKey:@"shortcutRegistration"];
+    }
+    else if (newShortcutRegistrationTarget && !_shortcutRegistration)
+    {
+        [self willChangeValueForKey:@"shortcutRegistration"];
+        SRShortcutRegistration *registration = [[SRShortcutRegistration alloc] init];
+        registration.identifier = self.identifier;
+        registration.target = newShortcutRegistrationTarget;
+        _shortcutRegistration = registration;
+        [self didChangeValueForKey:@"shortcutRegistration"];
+        [registration setObservedObject:self withKeyPath:@"content"];
+    }
+    else
+        _shortcutRegistration.target = newShortcutRegistrationTarget;
+
+    [self didChangeValueForKey:@"shortcutRegistrationTarget"];
+}
+
+- (void)setRecorderControl:(SRRecorderControl *)newRecorderControl
+{
+    [_recorderControl unbind:NSValueBinding];
+    _recorderControl = newRecorderControl;
+    [self _updateRecorderControlValueBinding];
+}
+
+
 #pragma mark SelectedKeyboardInputSourceObserver
 
 - (void)addSelectedKeyboardInputSourceObserverIfNeeded
@@ -179,6 +233,22 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
     }
 }
 
+- (void)_updateRecorderControlValueBinding
+{
+    if (!_recorderControl)
+        return;
+
+    NSDictionary *contentBindingInfo = [self infoForBinding:NSContentObjectBinding];
+    if (!contentBindingInfo)
+        return;
+
+    NSDictionary *bindingOptions = [contentBindingInfo[NSOptionsKey] dictionaryWithValuesForKeys:@[NSValueTransformerBindingOption, NSValueTransformerNameBindingOption]];
+    [_recorderControl bind:NSValueBinding
+                  toObject:contentBindingInfo[NSObservedObjectKey]
+               withKeyPath:contentBindingInfo[NSObservedKeyPathKey]
+                   options:bindingOptions];
+}
+
 
 #pragma mark NSKeyValueCoding
 
@@ -205,6 +275,17 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 }
 
 
+#pragma mark NSKeyValueBindingCreation
+
+- (void)bind:(NSBindingName)aBinding toObject:(id)anObservable withKeyPath:(NSString *)aKeyPath options:(NSDictionary<NSBindingOption, id> *)anOptions
+{
+    [super bind:aBinding toObject:anObservable withKeyPath:aKeyPath options:anOptions];
+
+    if ([aBinding isEqualToString:NSContentObjectBinding])
+        [self _updateRecorderControlValueBinding];
+}
+
+
 #pragma mark NSKeyValueObserving
 
 - (void)didChangeValueForKey:(NSString *)aKey
@@ -223,23 +304,22 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 }
 
 
-#pragma mark NSNibLoading
+#pragma mark NSUserInterfaceItemIdentifier
+@synthesize identifier = _identifier;
 
-- (void)awakeFromNib
+- (NSString *)identifier
 {
-    [super awakeFromNib];
+    return _identifier;
+}
 
-    NSDictionary *contentBindingInfo = [self infoForBinding:NSContentObjectBinding];
-    [self.recorderControl bind:NSValueBinding
-                      toObject:contentBindingInfo[NSObservedObjectKey]
-                   withKeyPath:contentBindingInfo[NSObservedKeyPathKey]
-                       options:[contentBindingInfo[NSOptionsKey] dictionaryWithValuesForKeys:@[NSValueTransformerBindingOption, NSValueTransformerNameBindingOption]]
-    ];
+- (void)setIdentifier:(NSString *)newIdentifier
+{
+    _identifier = [newIdentifier copy];
+    _shortcutRegistration.identifier = newIdentifier;
 }
 
 
 #pragma mark NSObjectController
-
 @dynamic content;
 
 - (Class)objectClass

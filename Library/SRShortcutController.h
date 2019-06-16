@@ -7,6 +7,7 @@
 
 #import <ShortcutRecorder/SRRecorderControl.h>
 #import <ShortcutRecorder/SRShortcut.h>
+#import <ShortcutRecorder/SRShortcutRegistration.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -43,7 +44,7 @@ extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicModi
 
  @discussion
  In addition to providing the common benefits of using NSObjectController over a plain model,
- it implements the following computed properties:
+ it implements the following KVO-compliant computed properties:
  - selection.keyEquivalent
  - selection.keyEquivalentModifierMask
  - selection.literalKeyCode
@@ -53,29 +54,51 @@ extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicModi
  - selection.literalModifierFlags
  - selection.symbolicModifierFlags
 
- These properties are KVO compliant.
- The following properties are also updated whenever kTISNotifySelectedKeyboardInputSourceChanged is posted:
+ Values of the following properties depend on the currently selected input source and
+ also updated whenever kTISNotifySelectedKeyboardInputSourceChanged is posted:
  - selection.keyEquivalent
  - selection.literalKeyCode
  - selection.symbolicKeyCode
  - selection.literalASCIIKeyCode
  - selection.selection.symbolicASCIIKeyCode
 
+ If the shortcutRegistrationTarget property is set, the controller will automatically create and manage
+ an instance of SRShortcutRegistration that will send performShortcutActionForRegistration: to the specified object.
+
  @note To add the controller in Interface Builder, add NSObjectController first and then specialize its class.
  */
 NS_SWIFT_NAME(ShortcutController)
-@interface SRShortcutController : NSObjectController
-
-@property (nullable, strong) SRShortcut *content;
+@interface SRShortcutController : NSObjectController <NSUserInterfaceItemIdentification>
 
 /*!
- Called by a designated initializer to set up internal state.
+ Target of the observing instance of SRShortcutRegistration.
+
+ @discussion
+ If set, the controller will create an observing instance of SRShortcutRegistration bound to Controller's content.
+
+ The instance of SRShortcutRegistration passed to the target will have its identifier set
+ to Controller's identifier.
+
+ @seealso SRShortcutRegistrationTarget
+ */
+@property (nullable, weak) IBOutlet id<SRShortcutRegistrationTarget> shortcutRegistrationTarget;
+
+/*!
+ The shortcut registration created by the controller.
+
+ @note The instance is managed by the controller, do not modify it directly.
+ */
+@property (nullable, readonly) SRShortcutRegistration *shortcutRegistration;
+
+/*!
+ @seealso NSUserInterfaceItemIdentification
+ */
+@property (nullable, copy) IBInspectable NSString *identifier;
+
+/*!
+ Called by the designated initializers to set up internal state.
  */
 - (void)initInternalState;
-
-- (instancetype)initWithContent:(nullable SRShortcut *)aContent;
-- (void)addObject:(SRShortcut *)anObject;
-- (void)removeObject:(SRShortcut *)anObject;
 
 - (void)addSelectedKeyboardInputSourceObserverIfNeeded;
 - (void)removeSelectedKeyboardInputSourceObserverIfNeeded;

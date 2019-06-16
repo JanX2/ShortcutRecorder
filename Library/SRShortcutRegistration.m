@@ -581,14 +581,8 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
     _observedKeyPath = nil;
 }
 
-#pragma mark NSNibLoading
-
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-    if (_observedObject && _observedKeyPath)
-        [self setObservedObject:_observedObject withKeyPath:_observedKeyPath];
-}
+#pragma mark NSUserInterfaceItemIdentification
+@synthesize identifier;
 
 #pragma mark NSObject
 

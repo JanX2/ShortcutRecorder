@@ -8,6 +8,14 @@ import XCTest
 import ShortcutRecorder
 
 
+class Target: ShortcutRegistrationTarget {
+    let expectation = XCTestExpectation()
+    func performShortcutAction(_ aRegistration: ShortcutRegistration) {
+        expectation.fulfill()
+    }
+}
+
+
 class SRShortcutRegistrationTests: XCTestCase {
     override func setUp() {
         UserDefaults.standard.removeObject(forKey: "shortcut")
@@ -101,6 +109,8 @@ class SRShortcutRegistrationTests: XCTestCase {
 
         let action: ShortcutRegistration.Action = {_ in }
 
+        let target = Target()
+
         var actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
         var targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: nil, options: [.new])
         targetExpectation.isInverted = true
@@ -111,7 +121,7 @@ class SRShortcutRegistrationTests: XCTestCase {
 
         actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
         targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: self, options: [.new])
-        registration.target = self
+        registration.target = target
         XCTAssertNotNil(registration.target)
         XCTAssertNil(registration.actionHandler)
         wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
@@ -120,7 +130,7 @@ class SRShortcutRegistrationTests: XCTestCase {
         actionExpectation.isInverted = true
         targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: self, options: [.new])
         targetExpectation.isInverted = true
-        registration.target = self
+        registration.target = target
         XCTAssertNotNil(registration.target)
         XCTAssertNil(registration.actionHandler)
         wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
@@ -136,7 +146,7 @@ class SRShortcutRegistrationTests: XCTestCase {
         actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
         actionExpectation.isInverted = true
         targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: self, options: [.new])
-        registration.target = self
+        registration.target = target
         XCTAssertNotNil(registration.target)
         XCTAssertNil(registration.actionHandler)
         wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
@@ -158,12 +168,6 @@ class SRShortcutRegistrationTests: XCTestCase {
     }
 
     func testFiringWithTargetAction() {
-        class Target: NSObject {
-            let expectation = XCTestExpectation()
-            override func performShortcutAction(_ aRegistration: ShortcutRegistration) {
-                expectation.fulfill()
-            }
-        }
         let registration = ShortcutRegistration()
         let target = Target()
         registration.target = target

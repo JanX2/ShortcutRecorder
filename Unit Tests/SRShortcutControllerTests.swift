@@ -11,7 +11,7 @@ class SRShortcutControllerTests: XCTestCase {
     func testInitialization() {
         let c = ShortcutController(content: Shortcut.default)
         let selection = c.value(forKey: "selection") as! NSObject
-        let shortcutDict: Dictionary = c.content!.dictionaryRepresentation
+        let shortcutDict: Dictionary = (c.content as! Shortcut).dictionaryRepresentation
         let selectionDict = selection.dictionaryWithValues(forKeys: [
             ShortcutKey.keyCode.rawValue,
             ShortcutKey.modifierFlags.rawValue,
@@ -138,5 +138,29 @@ class SRShortcutControllerTests: XCTestCase {
         for o in observers {
             XCTAssertTrue(o.isCalled)
         }
+    }
+
+    func testShortcutRegistrationManagement() {
+        class Target: NSObject, ShortcutRegistrationTarget {
+            func performShortcutAction(_ aRegistration: ShortcutRegistration) {}
+        }
+
+        let shortcut = Shortcut(keyEquivalent: "⌘A")
+        let controller = ShortcutController(content: shortcut)
+        controller.identifier = "shortcut"
+
+        XCTAssertNil(controller.shortcutRegistration)
+
+
+        let target = Target()
+        controller.shortcutRegistrationTarget = target
+
+        XCTAssertEqual(controller.shortcutRegistration?.shortcut, shortcut)
+        XCTAssertTrue(controller.shortcutRegistration?.target === target)
+        XCTAssertTrue(controller.shortcutRegistration?.observedObject === controller)
+        XCTAssertEqual(controller.shortcutRegistration?.observedKeyPath, "content")
+
+        controller.shortcutRegistrationTarget = nil
+        XCTAssertNil(controller.shortcutRegistration)
     }
 }

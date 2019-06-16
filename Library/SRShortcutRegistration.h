@@ -25,14 +25,18 @@ typedef void (^SRShortcutActionHandler)(SRShortcutRegistration *aRegistration) N
 extern const OSType SRShortcutRegistrationSignature NS_SWIFT_NAME(SRShortcutRegistration.Signature);
 
 
+NS_SWIFT_NAME(ShortcutRegistrationTarget)
+@protocol SRShortcutRegistrationTarget;
+
+
 /*!
  Registration of the system-wide shortcut.
 
- The registration aginst happens whenever valid value is set for the shortcut or observed object and key path.
- Changing these values automatically updates the registration.
+ The registration happens whenever valid value is set either for the shortcut
+ or the observed object and key path properties.
  */
 NS_SWIFT_NAME(ShortcutRegistration)
-@interface SRShortcutRegistration : NSObject
+@interface SRShortcutRegistration : NSObject <NSUserInterfaceItemIdentification>
 
 /*!
  Shortcut associated with the registration
@@ -55,7 +59,7 @@ NS_SWIFT_NAME(ShortcutRegistration)
  @discussion
  Setting the target resets the action handler to nil.
  */
-@property (nullable, weak) IBOutlet id target;
+@property (nullable, weak) id<SRShortcutRegistrationTarget> target;
 
 /*!
  The action handler to execute when the shortcut is performed.
@@ -108,7 +112,7 @@ NS_SWIFT_NAME(ShortcutRegistration)
 
 #pragma mark Target-Action
 
-@interface NSObject (SRShortcutRegistration)
+@protocol SRShortcutRegistrationTarget
 
 - (void)performShortcutActionForRegistration:(SRShortcutRegistration *)aRegistration NS_SWIFT_NAME(performShortcutAction(_:));
 
@@ -156,35 +160,6 @@ NS_SWIFT_NAME(ShortcutRegistration)
 + (instancetype)registerShortcutKeyPath:(NSString *)aKeyPath
                                ofObject:(id)anObject
                           actionHandler:(SRShortcutActionHandler)anActionHandler NS_SWIFT_NAME(register(keyPath:of:action:));
-
-@end
-
-
-#pragma mark Interface Builder
-
-@interface SRShortcutRegistration (/* Nib Loading */)
-
-/*!
- The object being observed for autoupdating shortcut.
-
- @discussion
- The setter is reserved for Interface Builder. When setting from code, use setObservedObject:withKeyPath:
- otherwise no shortcut will be registered.
- */
-@property (nullable, weak) IBOutlet id observedObject;
-
-- (void)setObservedObject:(id)observedObject __attribute__((deprecated("Setter is reserved for Interface Builder")));
-
-/*!
- The key path being observed for autoupdating shortcut.
-
- @discussion
- The setter is reserved for Interface Builder. When setting from code, use setObservedObject:withKeyPath:
- otherwise no shortcut will be registered.
- */
-@property (nullable, copy) IBInspectable NSString *observedKeyPath;
-
-- (void)setObservedKeyPath:(NSString *)observedKeyPath __attribute__((deprecated("Setter is reserved for Interface Builder")));
 
 @end
 

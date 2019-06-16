@@ -9,7 +9,7 @@ import ShortcutRecorder
 
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, ShortcutRegistrationTarget {
     let purrSound = NSSound(named: "Purr")!
 
     override func awakeFromNib() {
@@ -78,7 +78,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showWindows()
     }
 
-    override func performShortcutAction(_ aRegistration: ShortcutRegistration) {
+    func performShortcutAction(_ aRegistration: ShortcutRegistration) {
         purrSound.play()
     }
 }
