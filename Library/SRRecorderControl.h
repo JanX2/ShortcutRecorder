@@ -179,6 +179,15 @@ IB_DESIGNABLE
  */
 - (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
+/*!
+ Called whenever the control needs to inform a user about misuse, like pressing invalid modifier flags.
+
+ @discussion
+ Default implementation uses NSBeep.
+ Subclasses can override this method to alter or suppress the sound.
+ */
+- (void)playAlert;
+
 #pragma mark State
 
 /*!

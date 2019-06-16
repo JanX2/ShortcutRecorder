@@ -393,14 +393,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
         if (!shouldBeginRecording)
         {
-            NSBeep();
+            [self playAlert];
             result = NO;
             return;
         }
 
         if (![self.window makeFirstResponder:self])
         {
-            NSBeep();
+            [self playAlert];
             result = NO;
             return;
         }
@@ -670,6 +670,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     });
 
     return allowModifierFlags;
+}
+
+- (void)playAlert
+{
+    NSBeep();
 }
 
 - (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding
@@ -1424,7 +1429,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         NSEventModifierFlags modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
         if (modifierFlags != 0 && ![self areModifierFlagsAllowed:modifierFlags forKeyCode:anEvent.keyCode])
-            NSBeep();
+            [self playAlert];
 
         [self setNeedsDisplayInRect:self.style.labelDrawingGuide.frame];
     }
