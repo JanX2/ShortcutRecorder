@@ -398,14 +398,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
             return;
         }
 
-        NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
-        if (bindingInfo)
-        {
-            id controller = bindingInfo[NSObservedObjectKey];
-            if ([controller respondsToSelector:@selector(objectDidBeginEditing:)])
-                [controller objectDidBeginEditing:(id<NSEditor>) self];
-        }
-
         if (![self.window makeFirstResponder:self])
         {
             NSBeep();
@@ -425,6 +417,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
         if (self.disablesShortcutRegistrationsWhileRecording)
             [SRShortcutRegistration disableShortcutRegistrations];
+
+        NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
+        if (bindingInfo)
+        {
+            id controller = bindingInfo[NSObservedObjectKey];
+            if ([controller respondsToSelector:@selector(objectDidBeginEditing:)])
+                [controller objectDidBeginEditing:(id<NSEditor>) self];
+        }
 
         NSAccessibilityPostNotificationWithUserInfo(self,
                                                     NSAccessibilityLayoutChangedNotification,
@@ -463,14 +463,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return;
 
     os_activity_initiate("endRecording explicitly", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
-        NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
-        if (bindingInfo)
-        {
-            id controller = bindingInfo[NSObservedObjectKey];
-            if ([controller respondsToSelector:@selector(objectDidEndEditing:)])
-                [controller objectDidEndEditing:(id<NSEditor>)self];
-        }
-
         [self willChangeValueForKey:@"isRecording"];
         self->_isRecording = NO;
         [self didChangeValueForKey:@"isRecording"];
@@ -484,6 +476,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         self.toolTip = SRLoc(@"Click to record shortcut");
         self.needsDisplay = YES;
 
+        if (self.disablesShortcutRegistrationsWhileRecording)
+            [SRShortcutRegistration enableShortcutRegistrations];
+
+        NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
+        if (bindingInfo)
+        {
+            id controller = bindingInfo[NSObservedObjectKey];
+            if ([controller respondsToSelector:@selector(objectDidEndEditing:)])
+                [controller objectDidEndEditing:(id<NSEditor>)self];
+        }
+
         if (self.window.firstResponder == self && !self.canBecomeKeyView)
             [self.window makeFirstResponder:nil];
 
@@ -493,9 +496,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
             [self.delegate shortcutRecorderDidEndRecording:self];
 
         [self sendAction:self.action to:self.target];
-
-        if (self.disablesShortcutRegistrationsWhileRecording)
-            [SRShortcutRegistration enableShortcutRegistrations];
 
         NSAccessibilityPostNotificationWithUserInfo(self,
                                                     NSAccessibilityLayoutChangedNotification,
