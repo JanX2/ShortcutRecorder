@@ -22,8 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
  - NSValueTransformerNameBindingOption
  This binding is not a multivalue.
 
- The control conforms to NSEditor. If object bound to NSValueBinding
- also conforms to NSEditorRegistration appropriate methods will be called.
+ If object bound to NSValueBinding also conforms to NSEditorRegistration appropriate methods will be called.
 
  NSControl
  - There is no cell
@@ -38,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
-@interface SRRecorderControl : NSControl <NSAccessibilityButton, NSEditor, NSViewToolTipOwner> /* <NSNibLoading, NSKeyValueBindingCreation> */
+@interface SRRecorderControl : NSControl <NSAccessibilityButton, NSViewToolTipOwner> /* <NSNibLoading, NSKeyValueBindingCreation> */
 {
     BOOL _isCompatibilityModeEnabled;
 }
