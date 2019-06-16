@@ -63,6 +63,8 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
     NSString *_symbolicModifierFlags;
 
     BOOL _isSelectedKeyboardInputSourceObserved;
+
+    __weak SRRecorderControl *_recorderControl;
 }
 
 - (instancetype)initWithContent:(SRShortcut *)aContent
@@ -144,6 +146,11 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
         _shortcutRegistration.target = newShortcutRegistrationTarget;
 
     [self didChangeValueForKey:@"shortcutRegistrationTarget"];
+}
+
+- (SRRecorderControl *)recorderControl
+{
+    return _recorderControl;
 }
 
 - (void)setRecorderControl:(SRRecorderControl *)newRecorderControl
