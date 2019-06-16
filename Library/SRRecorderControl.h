@@ -147,7 +147,7 @@ IB_DESIGNABLE
  */
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
           requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
-       allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags;
+       allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags NS_SWIFT_NAME(set(allowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:));
 
 /*!
  Check whether a given combination is valid.
@@ -163,6 +163,21 @@ IB_DESIGNABLE
  @seealso requiredModifierFlags
  */
 - (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+
+/*!
+ Check whether a given combination is allowed.
+
+ @param  aModifierFlags Proposed modifier flags.
+
+ @param  aKeyCode Code of the pressed key.
+
+ @seealso allowedModifierFlags
+
+ @seealso allowsEmptyModifierFlags
+
+ @seealso requiredModifierFlags
+ */
+- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 #pragma mark State
 

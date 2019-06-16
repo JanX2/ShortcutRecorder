@@ -635,32 +635,41 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
 {
-    __block BOOL allowModifierFlags = NO;
     aModifierFlags &= SRCocoaModifierFlagsMask;
+    __block BOOL allowModifierFlags = YES;
 
     os_activity_initiate("areModifierFlagsValid:forKeyCode:", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        allowModifierFlags = [self areModifierFlagsAllowed:aModifierFlags forKeyCode:aKeyCode];
 
+        if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
+            allowModifierFlags = NO;
+    });
 
-        if ([self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+    return allowModifierFlags;
+}
+
+- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
+{
+    aModifierFlags &= SRCocoaModifierFlagsMask;
+    __block BOOL allowModifierFlags = YES;
+
+    os_activity_initiate("areModifierFlagsAllowed:forKeyCode:", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
+        if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
+            allowModifierFlags = NO;
+        else if ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags)
+            allowModifierFlags = NO;
+
+        if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
             allowModifierFlags = [self.delegate recorderControl:self
                         shouldUnconditionallyAllowModifierFlags:aModifierFlags
                                                      forKeyCode:aKeyCode];
-        else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        else if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
             allowModifierFlags = [self.delegate shortcutRecorder:self
                          shouldUnconditionallyAllowModifierFlags:aModifierFlags
                                                       forKeyCode:aKeyCode];
     });
 
-    if (allowModifierFlags)
-        return YES;
-    else if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
-        return NO;
-    else if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
-        return NO;
-    else if ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags)
-        return NO;
-    else
-        return YES;
+    return allowModifierFlags;
 }
 
 - (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding
@@ -1414,7 +1423,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (self.isRecording)
     {
         NSEventModifierFlags modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
-        if (modifierFlags != 0 && ![self areModifierFlagsValid:modifierFlags forKeyCode:anEvent.keyCode])
+        if (modifierFlags != 0 && ![self areModifierFlagsAllowed:modifierFlags forKeyCode:anEvent.keyCode])
             NSBeep();
 
         [self setNeedsDisplayInRect:self.style.labelDrawingGuide.frame];
