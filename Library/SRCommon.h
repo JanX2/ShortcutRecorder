@@ -12,12 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  Mask representing subset of Cocoa modifier flags suitable for shortcuts.
  */
+NS_SWIFT_NAME(CocoaModifierFlagsMask)
 static const NSEventModifierFlags SRCocoaModifierFlagsMask = NSEventModifierFlagCommand | NSEventModifierFlagOption | NSEventModifierFlagShift | NSEventModifierFlagControl;
 
 
 /*!
  Mask representing subset of Carbon modifier flags suitable for shortcuts.
  */
+NS_SWIFT_NAME(CarbonModifierFlagsMask)
 static const UInt32 SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
 
 
@@ -45,7 +47,7 @@ typedef NS_ENUM(unichar, SRKeyCodeGlyph)
     SRKeyCodeGlyphSoutheastArrow = 0x2198, // ↘
     SRKeyCodeGlyphEscape = 0x238B, // ⎋
     SRKeyCodeGlyphSpace = 0x0020 // ' '
-};
+} NS_SWIFT_NAME(KeyCodeGlyph);
 
 
 /*!
@@ -53,7 +55,7 @@ typedef NS_ENUM(unichar, SRKeyCodeGlyph)
 
  @seealso SRKeyCodeGlyph
  */
-typedef NSString *SRKeyCodeString NS_TYPED_EXTENSIBLE_ENUM;
+typedef NSString *SRKeyCodeString NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(KeyCodeString);
 extern SRKeyCodeString const SRKeyCodeStringTabRight;
 extern SRKeyCodeString const SRKeyCodeStringTabLeft;
 extern SRKeyCodeString const SRKeyCodeStringReturn;
@@ -84,7 +86,7 @@ typedef NS_ENUM(unichar, SRModifierFlagGlyph)
     SRModifierFlagGlyphOption = kOptionUnicode,  // ⌥
     SRModifierFlagGlyphShift = kShiftUnicode, // ⇧
     SRModifierFlagGlyphControl = kControlUnicode // ⌃
-};
+} NS_SWIFT_NAME(ModifierFlagGlyph);
 
 
 /*!
@@ -92,7 +94,7 @@ typedef NS_ENUM(unichar, SRModifierFlagGlyph)
 
  @seealso SRModifierFlagGlyph
  */
-typedef NSString *SRModifierFlagString NS_TYPED_EXTENSIBLE_ENUM;
+typedef NSString *SRModifierFlagString NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(ModifierFlagString);
 extern SRModifierFlagString const SRModifierFlagStringCommand;
 extern SRModifierFlagString const SRModifierFlagStringOption;
 extern SRModifierFlagString const SRModifierFlagStringShift;
@@ -102,6 +104,7 @@ extern SRModifierFlagString const SRModifierFlagStringControl;
 /*!
  Convert Carbon modifier flags to Cocoa.
  */
+NS_SWIFT_NAME(carbonToCocoaFlags(_:))
 NS_INLINE NSEventModifierFlags SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 {
     NSEventModifierFlags cocoaFlags = 0;
@@ -124,6 +127,7 @@ NS_INLINE NSEventModifierFlags SRCarbonToCocoaFlags(UInt32 aCarbonFlags)
 /*!
  Convert Cocoa modifier flags to Carbon.
  */
+NS_SWIFT_NAME(cocoaToCarbonFlags(_:))
 NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 {
     UInt32 carbonFlags = 0;
@@ -151,18 +155,21 @@ NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
 
  @discussion Throws NSInternalInconsistencyException if bundle cannot be found.
  */
+NS_SWIFT_NAME(shortcutRecorderBundle())
 NSBundle * SRBundle(void);
 
 
 /*!
  Convenience method to get localized string from the framework bundle.
  */
+NS_SWIFT_NAME(shortcutRecorderLocalizedString(forKey:))
 NSString * _Nullable SRLoc(NSString * _Nullable aKey);
 
 
 /*!
  Convenience method to get image from the framework bundle.
  */
+NS_SWIFT_NAME(shortcutRecorderImage(forResource:))
 NSImage * _Nullable SRImage(NSString * _Nullable anImageName);
 
 

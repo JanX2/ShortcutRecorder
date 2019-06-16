@@ -11,20 +11,20 @@ import ShortcutRecorder
 class SRCommonTests: XCTestCase {
     func testCocoaModifierFlagsMask() {
         let allFlags = NSEvent.ModifierFlags.init(rawValue: UInt.max)
-        let cocoaFlags = allFlags.intersection(SRCocoaModifierFlagsMask)
+        let cocoaFlags = allFlags.intersection(CocoaModifierFlagsMask)
         let expectedFlags: NSEvent.ModifierFlags = [.command, .control, .option, .shift]
         XCTAssertEqual(cocoaFlags, expectedFlags)
     }
 
     func testCarbonModifierFlagsMask() {
         let allFlags = UInt32.max
-        let carbonFlags = allFlags & SRCarbonModifierFlagsMask
+        let carbonFlags = allFlags & CarbonModifierFlagsMask
         let expectedFlags = UInt32(cmdKey | controlKey | optionKey | shiftKey)
         XCTAssertEqual(carbonFlags, expectedFlags)
     }
 
     func testKeyCodeGlyphAndString() {
-        func compare(glyph: SRKeyCodeGlyph, string: SRKeyCodeString, expected: String) {
+        func compare(glyph: KeyCodeGlyph, string: KeyCodeString, expected: String) {
             XCTContext.runActivity(named: expected) { (_) in
                 XCTAssertEqual(String(format: "%C", glyph.rawValue), string.rawValue)
                 XCTAssertEqual(string.rawValue, expected)
@@ -51,7 +51,7 @@ class SRCommonTests: XCTestCase {
     }
 
     func testModifierFlagGlyphAndString() {
-        func compare(glyph: SRModifierFlagGlyph, string: SRModifierFlagString, expected: String) {
+        func compare(glyph: ModifierFlagGlyph, string: ModifierFlagString, expected: String) {
             XCTContext.runActivity(named: expected) { (_) in
                 XCTAssertEqual(String(format: "%C", glyph.rawValue), string.rawValue)
                 XCTAssertEqual(string.rawValue, expected)
@@ -67,12 +67,12 @@ class SRCommonTests: XCTestCase {
     func testCarbonToCocoaFlags() {
         let carbonFlags = UInt32(cmdKey | controlKey | optionKey | shiftKey)
         let cocoaFlags: NSEvent.ModifierFlags = [.command, .control, .option, .shift]
-        XCTAssertEqual(SRCarbonToCocoaFlags(carbonFlags), cocoaFlags)
+        XCTAssertEqual(carbonToCocoaFlags(carbonFlags), cocoaFlags)
     }
 
     func testCocoaToCarbonFlags() {
         let carbonFlags = UInt32(cmdKey | controlKey | optionKey | shiftKey)
         let cocoaFlags: NSEvent.ModifierFlags = [.command, .control, .option, .shift]
-        XCTAssertEqual(SRCocoaToCarbonFlags(cocoaFlags), carbonFlags)
+        XCTAssertEqual(cocoaToCarbonFlags(cocoaFlags), carbonFlags)
     }
 }

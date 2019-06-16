@@ -10,18 +10,18 @@ import ShortcutRecorder
  Under the hood the framework relies on Carbon to register frameworks since there is no modern replacement in Cocoa.\
  Hence there are methods to convert between Cocoa and Carbom modifier flags:
  */
-let cocoaFlags: NSEvent.ModifierFlags = [.command, .shift]
-let carbonFlags = cmdKey | shiftKey
-assert(SRCocoaToCarbonFlags(cocoaFlags) == carbonFlags)
-assert(SRCarbonToCocoaFlags(carbonFlags) == cocoaFlags)
+var cocoaFlags: NSEvent.ModifierFlags = [.command, .shift]
+var carbonFlags = UInt32(cmdKey | shiftKey)
+assert(cocoaToCarbonFlags(cocoaFlags) == carbonFlags)
+assert(carbonToCocoaFlags(carbonFlags) == cocoaFlags)
 /*:
  Since modifier flags may have other values than command, option, shift and control, there are masks to remove them:
  */
-let cocoaFlags: NSEvent.ModifierFlags = [.command, .shift, .function].intersection(SRCocoaModifierFlagsMask)
+cocoaFlags = NSEvent.ModifierFlags([.command, .shift, .function]).intersection(CocoaModifierFlagsMask)
 assert(cocoaFlags == [.command, .shift])
 
-let carbonFlags = (cmdKey | shiftKey | alphaLock) & SRCarbonModifierFlagsMask
-assert(carbonFlags == (cmdKey | shiftKey))
+carbonFlags = UInt32(cmdKey | shiftKey | alphaLock) & CarbonModifierFlagsMask
+assert(carbonFlags == UInt32(cmdKey | shiftKey))
 /*:
  ## Glyphs
 
@@ -30,11 +30,11 @@ assert(carbonFlags == (cmdKey | shiftKey))
  - `SRKeyCodeGlyph` / `SRKeyCodeString`
  - `SRModifierFlagGlyph` / `SRModifierFlagString`
 */
-assert(SRKeyCodeString.tabRight == "⇥")
-assert(String(format: "%C", SRKeyCodeGlyph.tabRight) == "⇥")
+assert(KeyCodeString.tabRight.rawValue == "⇥")
+assert(String(format: "%C", KeyCodeGlyph.tabRight.rawValue) == "⇥")
 
-assert(SRModifierFlagString.command == "⌘")
-assert(String(format: "%C", SRModifierFlagString.command) == "⌘")
+assert(ModifierFlagString.command.rawValue == "⌘")
+assert(String(format: "%C", ModifierFlagGlyph.command.rawValue) == "⌘")
 /*:
  ## Resources
 
