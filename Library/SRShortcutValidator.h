@@ -10,18 +10,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-NS_SWIFT_NAME(ValidatorDelegate)
-@protocol SRValidatorDelegate;
+NS_SWIFT_NAME(ShortcutValidatorDelegate)
+@protocol SRShortcutValidatorDelegate;
 
 /*!
  Validate shortcut by checking whether it is taken by other parts of the application and system.
  */
-NS_SWIFT_NAME(Validator)
-@interface SRValidator : NSObject <SRRecorderControlDelegate>
+NS_SWIFT_NAME(ShortcutValidator)
+@interface SRShortcutValidator : NSObject <SRRecorderControlDelegate>
 
-@property (nullable, weak) NSObject<SRValidatorDelegate> *delegate;
+@property (nullable, weak) NSObject<SRShortcutValidatorDelegate> *delegate;
 
-- (instancetype)initWithDelegate:(nullable NSObject<SRValidatorDelegate> *)aDelegate NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithDelegate:(nullable NSObject<SRShortcutValidatorDelegate> *)aDelegate NS_DESIGNATED_INITIALIZER;
 
 /*!
  Check whether shortcut is valid.
@@ -34,9 +34,9 @@ NS_SWIFT_NAME(Validator)
      2. If delegate allows, system-wide shortcuts are checked
      3. If delegate allows, application menu it checked
 
- @seealso SRValidatorDelegate
+ @seealso SRShortcutValidatorDelegate
  */
-- (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:));
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validate(shortcut:));
 
 /*!
  Check whether delegate allows the shortcut.
@@ -45,30 +45,30 @@ NS_SWIFT_NAME(Validator)
 
  @discussion Defaults to YES if delegate does not implement the method.
  */
-- (BOOL)validateShortcutAgainstDelegate:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
+- (BOOL)validateShortcutAgainstDelegate:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateAgainstDelegate(shortcut:));
 
 /*!
  Check whether shortcut is taken by system-wide shortcuts.
 
  @return YES if shortcut is valid.
 
- @seealso SRValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
+ @seealso SRShortcutValidatorDelegate/shortcutValidatorShouldCheckSystemShortcuts:
  */
-- (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError;
+- (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateAgainstSystemShortcuts(shortcut:));
 
 /*!
  Check whether shortcut is taken by a menu item.
 
  @return YES if shortcut is valid.
 
- @seealso SRValidatorDelegate/shortcutValidatorShouldCheckMenu:
+ @seealso SRShortcutValidatorDelegate/shortcutValidatorShouldCheckMenu:
  */
-- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:againstMenu:));
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:againstMenu:)) NS_SWIFT_NAME(validate(shortcut:againstMenu:));
 
 @end
 
 
-@interface SRValidator(Deprecated)
+@interface SRShortcutValidator(Deprecated)
 
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcut:error:"))) NS_SWIFT_UNAVAILABLE("validateShortcut(_:)");
 - (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcutAgainstDelegate:error:"))) NS_SWIFT_UNAVAILABLE("validateShortcutAgainstDelegate(_:)");
@@ -78,7 +78,7 @@ NS_SWIFT_NAME(Validator)
 @end
 
 
-@protocol SRValidatorDelegate
+@protocol SRShortcutValidatorDelegate
 
 @optional
 
@@ -93,12 +93,12 @@ NS_SWIFT_NAME(Validator)
 
  @return YES if shortcut is valid; otherwise, NO.
  */
-- (BOOL)shortcutValidator:(SRValidator *)aValidator isShortcutValid:(SRShortcut *)aShortcut reason:(NSString * _Nullable * _Nonnull)outReason;
+- (BOOL)shortcutValidator:(SRShortcutValidator *)aValidator isShortcutValid:(SRShortcut *)aShortcut reason:(NSString * _Nullable * _Nonnull)outReason;
 
 /*!
     Same as -shortcutValidator:isShortcutValid:reason: but return value is flipped. I.e. YES means shortcut is invalid.
  */
-- (BOOL)shortcutValidator:(SRValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags reason:(NSString * _Nullable * _Nonnull)outReason __attribute__((deprecated("", "shortcutValidator:isShortcutValid:reason:")));
+- (BOOL)shortcutValidator:(SRShortcutValidator *)aValidator isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags reason:(NSString * _Nullable * _Nonnull)outReason __attribute__((deprecated("", "shortcutValidator:isShortcutValid:reason:")));
 
 /*!
  Ask the delegate whether validator should check key equivalents of app's menu items.
@@ -109,7 +109,7 @@ NS_SWIFT_NAME(Validator)
 
  @discussion If it is not implemented, checking proceeds as if this method had returned YES.
  */
-- (BOOL)shortcutValidatorShouldCheckMenu:(SRValidator *)aValidator;
+- (BOOL)shortcutValidatorShouldCheckMenu:(SRShortcutValidator *)aValidator;
 
 /*!
  Ask the delegate whether it should check system shortcuts.
@@ -120,7 +120,7 @@ NS_SWIFT_NAME(Validator)
 
  @discussion If it is not implemented, checking proceeds as if this method had returned YES.
  */
-- (BOOL)shortcutValidatorShouldCheckSystemShortcuts:(SRValidator *)aValidator;
+- (BOOL)shortcutValidatorShouldCheckSystemShortcuts:(SRShortcutValidator *)aValidator;
 
 /*!
  Ask the delegate whether it should use ASCII representation of a key code for error messages.
@@ -131,12 +131,12 @@ NS_SWIFT_NAME(Validator)
 
  @discussion If it is not implemented, ASCII representation of a key code is used.
  */
-- (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRValidator *)aValidator;
+- (BOOL)shortcutValidatorShouldUseASCIIStringForKeyCodes:(SRShortcutValidator *)aValidator;
 
 @end
 
 
-@interface NSMenuItem (SRValidator)
+@interface NSMenuItem (SRShortcutValidator)
 
 /*!
     Full path to the menu item. E.g. "Window → Zoom"

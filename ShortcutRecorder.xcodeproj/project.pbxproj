@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */; };
 		939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */; };
-		939837990DA429EC007F53F3 /* SRValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670F0A246B4900B69171 /* SRValidator.m */; };
+		939837990DA429EC007F53F3 /* SRShortcutValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C3670F0A246B4900B69171 /* SRShortcutValidator.m */; };
 		9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = 74C367110A246B4900B69171 /* SRCommon.m */; };
 		939839390DA4350B007F53F3 /* ShortcutRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393B0DA4350B007F53F3 /* SRRecorderControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8E29C009CDB9360085E9ED /* SRRecorderControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670E0A246B4900B69171 /* SRValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9398393F0DA4350B007F53F3 /* SRShortcutValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C3670E0A246B4900B69171 /* SRShortcutValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		939839400DA4350B007F53F3 /* SRCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C367100A246B4900B69171 /* SRCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */; };
 		BA03E78F216A90A40008002D /* SRValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA03E78E216A90A40008002D /* SRValidatorTests.swift */; };
@@ -107,8 +107,8 @@
 		0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRRecorderControl.m; path = Library/SRRecorderControl.m; sourceTree = "<group>"; };
 		74C3670C0A246B4900B69171 /* SRKeyCodeTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRKeyCodeTransformer.h; path = Library/SRKeyCodeTransformer.h; sourceTree = "<group>"; };
 		74C3670D0A246B4900B69171 /* SRKeyCodeTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRKeyCodeTransformer.m; path = Library/SRKeyCodeTransformer.m; sourceTree = "<group>"; };
-		74C3670E0A246B4900B69171 /* SRValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRValidator.h; path = Library/SRValidator.h; sourceTree = "<group>"; };
-		74C3670F0A246B4900B69171 /* SRValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRValidator.m; path = Library/SRValidator.m; sourceTree = "<group>"; };
+		74C3670E0A246B4900B69171 /* SRShortcutValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SRShortcutValidator.h; path = Library/SRShortcutValidator.h; sourceTree = "<group>"; };
+		74C3670F0A246B4900B69171 /* SRShortcutValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SRShortcutValidator.m; path = Library/SRShortcutValidator.m; sourceTree = "<group>"; };
 		74C367100A246B4900B69171 /* SRCommon.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SRCommon.h; path = Library/SRCommon.h; sourceTree = "<group>"; };
 		74C367110A246B4900B69171 /* SRCommon.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SRCommon.m; path = Library/SRCommon.m; sourceTree = "<group>"; };
 		939837800DA42965007F53F3 /* ShortcutRecorder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShortcutRecorder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -236,10 +236,10 @@
 				0B8E29C109CDB9360085E9ED /* SRRecorderControl.m */,
 				BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */,
 				BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */,
-				74C3670E0A246B4900B69171 /* SRValidator.h */,
-				74C3670F0A246B4900B69171 /* SRValidator.m */,
 				BA722EAE21608FB600EFF192 /* SRShortcut.h */,
 				BA722EAF21608FB600EFF192 /* SRShortcut.m */,
+				74C3670E0A246B4900B69171 /* SRShortcutValidator.h */,
+				74C3670F0A246B4900B69171 /* SRShortcutValidator.m */,
 				BA8CFE1322A30E1200C96F79 /* SRShortcutRegistration.h */,
 				BA8CFE1422A30E1200C96F79 /* SRShortcutRegistration.m */,
 				BA722ED32162A4AA00EFF192 /* SRShortcutController.h */,
@@ -381,7 +381,7 @@
 				E2BE924D16ABEFE400827E8C /* SRKeyEquivalentTransformer.h in Headers */,
 				E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */,
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
-				9398393F0DA4350B007F53F3 /* SRValidator.h in Headers */,
+				9398393F0DA4350B007F53F3 /* SRShortcutValidator.h in Headers */,
 				BA8CFE1522A30E1200C96F79 /* SRShortcutRegistration.h in Headers */,
 				BA722EB021608FB600EFF192 /* SRShortcut.h in Headers */,
 				BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */,
@@ -591,7 +591,7 @@
 				939837980DA429EC007F53F3 /* SRKeyCodeTransformer.m in Sources */,
 				BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */,
 				BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */,
-				939837990DA429EC007F53F3 /* SRValidator.m in Sources */,
+				939837990DA429EC007F53F3 /* SRShortcutValidator.m in Sources */,
 				9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */,
 				E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */,
 				E2BE924E16ABEFE400827E8C /* SRKeyEquivalentTransformer.m in Sources */,

@@ -10,12 +10,12 @@
 #import "SRKeyCodeTransformer.h"
 #import "SRShortcut.h"
 
-#import "SRValidator.h"
+#import "SRShortcutValidator.h"
 
 
-@implementation SRValidator
+@implementation SRShortcutValidator
 
-- (instancetype)initWithDelegate:(NSObject<SRValidatorDelegate> *)aDelegate
+- (instancetype)initWithDelegate:(NSObject<SRShortcutValidatorDelegate> *)aDelegate
 {
     self = [super init];
 
@@ -282,7 +282,7 @@
 @end
 
 
-@implementation NSMenuItem (SRValidator)
+@implementation NSMenuItem (SRShortcutValidator)
 
 - (NSString *)SR_path
 {

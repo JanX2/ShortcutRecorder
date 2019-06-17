@@ -406,7 +406,7 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
  @return YES if the shortcut can be recoded; otherwise, NO.
 
- @seealso SRValidator
+ @seealso SRShortcutValidator
  */
 - (BOOL)recorderControl:(SRRecorderControl *)aControl canRecordShortcut:(SRShortcut *)aShortcut;
 
