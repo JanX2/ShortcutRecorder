@@ -859,6 +859,38 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return NO;
 }
 
+#pragma mark NSEditor
+
+- (BOOL)commitEditing
+{
+    // Shortcuts recording is atomic (either all or nothing) and there are no pending changes.
+    [self discardEditing];
+    return YES;
+}
+
+- (void)commitEditingWithDelegate:(id)aDelegate didCommitSelector:(SEL)aDidCommitSelector contextInfo:(void *)aContextInfo
+{
+    BOOL isEditingCommited = [self commitEditing];
+    // See AppKit's __NSSendCommitEditingSelector
+    NSInvocation *i = [NSInvocation invocationWithMethodSignature:[aDelegate methodSignatureForSelector:aDidCommitSelector]];
+    [i setSelector:aDidCommitSelector];
+    [i setArgument:(void*)&self atIndex:2];
+    [i setArgument:&isEditingCommited atIndex:3];
+    [i setArgument:&aContextInfo atIndex:4];
+    [i retainArguments];
+    [i performSelector:@selector(invokeWithTarget:) withObject:aDelegate afterDelay:0 inModes:@[NSRunLoopCommonModes]];
+}
+
+- (BOOL)commitEditingAndReturnError:(NSError * __autoreleasing *)outError
+{
+    return [self commitEditing];
+}
+
+- (void)discardEditing
+{
+    [self endRecording];
+}
+
 #pragma mark NSNibLoading
 
 - (void)prepareForInterfaceBuilder
