@@ -826,6 +826,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return SRLoc(@"Shortcut").localizedLowercaseString;
 }
 
+- (id)accessibilityHitTest:(NSPoint)aPoint
+{
+    // NSControl's implementation relies on its cell which is nil for SRRecorderControl.
+    return self;
+}
+
 - (BOOL)accessibilityPerformPress
 {
     return [self beginRecording];
