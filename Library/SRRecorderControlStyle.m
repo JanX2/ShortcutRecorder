@@ -10,6 +10,9 @@
 #import "SRRecorderControlStyle.h"
 
 
+NSAttributedStringKey const SRMinimalDrawableWidthAttributeName = @"SRMinimalDrawableWidthAttributeName";
+
+
 SRRecorderControlStyleComponentsAppearance SRRecorderControlStyleComponentsAppearanceFromSystem(NSAppearanceName aSystemAppearanceName)
 {
     static NSDictionary<NSAppearanceName, NSNumber *> *Map = nil;
@@ -663,7 +666,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                                                              anObject[@"right"].doubleValue)];
     };
 
-    Transformer TransformLabelAttributes = ^(NSDictionary<NSString *, id> *anObject, NSString *aKey) {
+    Transformer TransformLabelAttributes = ^(NSDictionary<NSAttributedStringKey, id> *anObject, NSString *aKey) {
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
         p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingMiddle;
@@ -671,11 +674,14 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         NSFont *font = [NSFont fontWithName:anObject[@"fontName"] size:[anObject[@"fontSize"] doubleValue]];
         NSColor *fontColor = [NSColor colorWithCatalogName:anObject[@"fontColorCatalogName"] colorName:anObject[@"fontColorName"]];
 
-        return @{
+        NSMutableDictionary *attributes = @{
             NSParagraphStyleAttributeName: p.copy,
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: fontColor
-        };
+        }.mutableCopy;
+        attributes[SRMinimalDrawableWidthAttributeName] = @([@"…" sizeWithAttributes:attributes].width);
+
+        return attributes.copy;
     };
 
     __auto_type Get = ^(NSDictionary *aSource, NSString *aKey, Verifier aVerifier, Transformer aTransformer) {

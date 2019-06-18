@@ -12,6 +12,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
+ Recognized by SRRecorderControl to avoid label drawing if width of the target frame is smaller than the
+ value of this attribute.
+ */
+extern NSAttributedStringKey const SRMinimalDrawableWidthAttributeName;
+
+/*!
  Styling is responsible for providing resources and metrics to draw SRRecorderControl.
  */
 NS_SWIFT_NAME(RecorderControlStyling)

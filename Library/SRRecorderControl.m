@@ -609,7 +609,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                   NSAlignMinYOutward |
                   NSAlignMaxXInward |
                   NSAlignMaxYInward];
-    [label drawWithRect:labelFrame options:0 attributes:labelAttributes context:nil];
+
+    CGFloat minWidth = [labelAttributes[SRMinimalDrawableWidthAttributeName] doubleValue];
+    if (labelFrame.size.width >= minWidth)
+        [label drawWithRect:labelFrame options:0 attributes:labelAttributes context:nil];
+
     [NSGraphicsContext restoreGraphicsState];
 }
 
