@@ -1166,6 +1166,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [super updateConstraints];
 }
 
+- (void)prepareForReuse
+{
+    [self endRecording];
+    [super prepareForReuse];
+}
+
 - (void)viewWillMoveToWindow:(NSWindow *)aWindow
 {
     // We want control to end recording whenever window resigns first responder status.
