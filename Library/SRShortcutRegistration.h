@@ -151,15 +151,15 @@ NS_SWIFT_NAME(ShortcutRegistration)
  is not thread safe. SRShortcutRegistration serializes its own access, but there may still
  be race conditions with outer code. For safety, stick to using these API from the main thread only.
  */
-+ (instancetype)registerShortcut:(SRShortcut *)aShortcut
-                   actionHandler:(SRShortcutActionHandler)anActionHandler NS_SWIFT_NAME(register(shortcut:action:));
++ (instancetype)shortcutRegistrationWithShortcut:(SRShortcut *)aShortcut
+                                   actionHandler:(SRShortcutActionHandler)anActionHandler;
 
 /*!
- Same as the +registerShortcut:actionHandler: but uses KVO and KVC to obtain and update the shortcut.
+ Same as the +shortcutRegistrationWithShortcut:actionHandler: but uses KVO and KVC to obtain and update the shortcut.
  */
-+ (instancetype)registerShortcutKeyPath:(NSString *)aKeyPath
-                               ofObject:(id)anObject
-                          actionHandler:(SRShortcutActionHandler)anActionHandler NS_SWIFT_NAME(register(keyPath:of:action:));
++ (instancetype)shortcutRegistrationWithKeyPath:(NSString *)aKeyPath
+                                       ofObject:(id)anObject
+                                  actionHandler:(SRShortcutActionHandler)anActionHandler;
 
 @end
 

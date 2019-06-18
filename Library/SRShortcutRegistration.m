@@ -340,7 +340,7 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
     });
 }
 
-+ (instancetype)registerShortcut:(SRShortcut *)aShortcut actionHandler:(SRShortcutActionHandler)anActionHandler
++ (instancetype)shortcutRegistrationWithShortcut:(SRShortcut *)aShortcut actionHandler:(SRShortcutActionHandler)anActionHandler
 {
     SRShortcutRegistration *registration = [self new];
     registration.actionHandler = anActionHandler;
@@ -348,9 +348,9 @@ static void *_SRShortcutRegistrationContext = &_SRShortcutRegistrationContext;
     return registration;
 }
 
-+ (instancetype)registerShortcutKeyPath:(NSString *)aKeyPath
-                               ofObject:(id)anObject
-                          actionHandler:(SRShortcutActionHandler)anActionHandler
++ (instancetype)shortcutRegistrationWithKeyPath:(NSString *)aKeyPath
+                                       ofObject:(id)anObject
+                                  actionHandler:(SRShortcutActionHandler)anActionHandler
 {
     SRShortcutRegistration *registration = [self new];
     registration.actionHandler = anActionHandler;
