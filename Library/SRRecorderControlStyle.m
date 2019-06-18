@@ -1009,7 +1009,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                                    NSLayoutAnchor * _Nullable secondItem,
                                    CGFloat constant,
                                    NSLayoutPriority priority,
-                                   NSLayoutRelation relation)
+                                   NSLayoutRelation relation,
+                                   NSString *identifier)
     {
         NSLayoutConstraint *c = nil;
 
@@ -1048,77 +1049,165 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         }
 
         c.priority = priority;
+        c.identifier = identifier;
         return c;
     };
 
-    __auto_type MakeEqConstraint = ^(NSLayoutAnchor * _Nonnull firstItem, NSLayoutAnchor * _Nullable secondItem) {
-        return MakeConstraint(firstItem, secondItem, 0.0, NSLayoutPriorityRequired, NSLayoutRelationEqual);
+    __auto_type MakeEqConstraint = ^(NSLayoutAnchor * _Nonnull firstItem, NSLayoutAnchor * _Nullable secondItem, NSString *identifier) {
+        return MakeConstraint(firstItem, secondItem, 0.0, NSLayoutPriorityRequired, NSLayoutRelationEqual, identifier);
     };
 
-    __auto_type MakeGteConstraint = ^(NSLayoutAnchor * _Nonnull firstItem, NSLayoutAnchor * _Nullable secondItem) {
-        return MakeConstraint(firstItem, secondItem, 0.0, NSLayoutPriorityRequired, NSLayoutRelationGreaterThanOrEqual);
+    __auto_type MakeGteConstraint = ^(NSLayoutAnchor * _Nonnull firstItem, NSLayoutAnchor * _Nullable secondItem, NSString *identifier) {
+        return MakeConstraint(firstItem, secondItem, 0.0, NSLayoutPriorityRequired, NSLayoutRelationGreaterThanOrEqual, identifier);
     };
 
     _alwaysConstraints = @[
-        MakeEqConstraint(self.alignmentGuide.topAnchor, self.recorderControl.topAnchor),
-        MakeEqConstraint(self.alignmentGuide.leftAnchor, self.recorderControl.leftAnchor),
-        MakeEqConstraint(self.alignmentGuide.rightAnchor, self.recorderControl.rightAnchor),
-        MakeConstraint(self.alignmentGuide.bottomAnchor, self.recorderControl.bottomAnchor, 0.0, NSLayoutPriorityDefaultHigh, NSLayoutRelationEqual),
-        SetConstraint(&_alignmentHeightConstraint, MakeEqConstraint(self.alignmentGuide.heightAnchor, nil)),
-        SetConstraint(&_alignmentWidthConstraint, MakeGteConstraint(self.alignmentGuide.widthAnchor, nil)),
-        SetConstraint(&_alignmentSuggestedWidthConstraint, MakeConstraint(self.alignmentGuide.widthAnchor, nil, 0.0, NSLayoutPriorityDefaultLow, NSLayoutRelationEqual)),
+        MakeEqConstraint(self.alignmentGuide.topAnchor,
+                         self.recorderControl.topAnchor,
+                         @"SR_alignmentGuide_topToView"),
+        MakeEqConstraint(self.alignmentGuide.leftAnchor,
+                         self.recorderControl.leftAnchor,
+                         @"SR_alignmentGuide_leftToView"),
+        MakeEqConstraint(self.alignmentGuide.rightAnchor,
+                         self.recorderControl.rightAnchor,
+                         @"SR_alignmentGuide_rightToView"),
+        MakeConstraint(self.alignmentGuide.bottomAnchor,
+                       self.recorderControl.bottomAnchor,
+                       0.0,
+                       NSLayoutPriorityDefaultHigh,
+                       NSLayoutRelationEqual,
+                       @"SR_alignmentGuide_bottomToView"),
+        SetConstraint(&_alignmentHeightConstraint, MakeEqConstraint(self.alignmentGuide.heightAnchor,
+                                                                    nil,
+                                                                    @"SR_alignmentGuide_height")),
+        SetConstraint(&_alignmentWidthConstraint, MakeGteConstraint(self.alignmentGuide.widthAnchor,
+                                                                    nil,
+                                                                    @"SR_alignmentGuide_width")),
+        SetConstraint(&_alignmentSuggestedWidthConstraint, MakeConstraint(self.alignmentGuide.widthAnchor,
+                                                                          nil,
+                                                                          0.0,
+                                                                          NSLayoutPriorityDefaultLow,
+                                                                          NSLayoutRelationEqual,
+                                                                          @"SR_alignmentGuide_suggestedWidth")),
 
-        SetConstraint(&_backgroundTopConstraint, MakeEqConstraint(self.backgroundDrawingGuide.topAnchor, self.alignmentGuide.topAnchor)),
-        SetConstraint(&_backgroundLeftConstraint, MakeEqConstraint(self.backgroundDrawingGuide.leftAnchor, self.alignmentGuide.leftAnchor)),
-        SetConstraint(&_backgroundBottomConstraint, MakeEqConstraint(self.backgroundDrawingGuide.bottomAnchor, self.alignmentGuide.bottomAnchor)),
-        SetConstraint(&_backgroundRightConstraint, MakeEqConstraint(self.backgroundDrawingGuide.rightAnchor, self.alignmentGuide.rightAnchor)),
+        SetConstraint(&_backgroundTopConstraint, MakeEqConstraint(self.backgroundDrawingGuide.topAnchor,
+                                                                  self.alignmentGuide.topAnchor,
+                                                                  @"SR_backgroundDrawingGuide_topToAlignment")),
+        SetConstraint(&_backgroundLeftConstraint, MakeEqConstraint(self.backgroundDrawingGuide.leftAnchor,
+                                                                   self.alignmentGuide.leftAnchor,
+                                                                   @"SR_backgroundDrawingGuide_leftToAlignment")),
+        SetConstraint(&_backgroundBottomConstraint, MakeEqConstraint(self.backgroundDrawingGuide.bottomAnchor,
+                                                                     self.alignmentGuide.bottomAnchor,
+                                                                     @"SR_backgroundDrawingGuide_bottomToAlignment")),
+        SetConstraint(&_backgroundRightConstraint, MakeEqConstraint(self.backgroundDrawingGuide.rightAnchor,
+                                                                    self.alignmentGuide.rightAnchor,
+                                                                    @"SR_backgroundDrawingGuide_rightToAlignment")),
 
-        MakeEqConstraint(self.labelDrawingGuide.topAnchor, self.alignmentGuide.topAnchor),
-        SetConstraint(&_alignmentToLabelConstraint, MakeGteConstraint(self.labelDrawingGuide.leadingAnchor, self.alignmentGuide.leadingAnchor)),
-        MakeEqConstraint(self.labelDrawingGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
-        MakeConstraint(self.labelDrawingGuide.centerXAnchor, self.alignmentGuide.centerXAnchor, 0.0, NSLayoutPriorityDefaultHigh, NSLayoutRelationEqual)
+        MakeEqConstraint(self.labelDrawingGuide.topAnchor,
+                         self.alignmentGuide.topAnchor,
+                         @"SR_labelDrawingGuide_topToAlignment"),
+        SetConstraint(&_alignmentToLabelConstraint, MakeGteConstraint(self.labelDrawingGuide.leadingAnchor,
+                                                                      self.alignmentGuide.leadingAnchor,
+                                                                      @"SR_labelDrawingGuide_leadingToAlignment")),
+        MakeEqConstraint(self.labelDrawingGuide.bottomAnchor,
+                         self.alignmentGuide.bottomAnchor,
+                         @"SR_labelDrawingGuide_bottomToAlignment"),
+        MakeConstraint(self.labelDrawingGuide.centerXAnchor,
+                       self.alignmentGuide.centerXAnchor,
+                       0.0,
+                       NSLayoutPriorityDefaultHigh,
+                       NSLayoutRelationEqual,
+                       @"SR_labelDrawingGuide_centerXToAlignment")
     ];
 
     _displayingConstraints = @[
-        SetConstraint(&_labelToAlignmentConstraint, MakeEqConstraint(self.labelDrawingGuide.trailingAnchor, self.alignmentGuide.trailingAnchor)),
+        SetConstraint(&_labelToAlignmentConstraint, MakeEqConstraint(self.labelDrawingGuide.trailingAnchor,
+                                                                     self.alignmentGuide.trailingAnchor,
+                                                                     @"SR_labelDrawingGuide_trailingToAlignment")),
     ];
 
     _recordingWithNoValueConstraints = @[
-        SetConstraint(&_labelToCancelConstraint, MakeEqConstraint(self.labelDrawingGuide.trailingAnchor, self.cancelButtonDrawingGuide.leadingAnchor)),
+        SetConstraint(&_labelToCancelConstraint, MakeEqConstraint(self.labelDrawingGuide.trailingAnchor,
+                                                                  self.cancelButtonDrawingGuide.leadingAnchor,
+                                                                  @"SR_labelDrawingGuide_trailingToCancel")),
 
-        SetConstraint(&_cancelToAlignmentConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.trailingAnchor, self.alignmentGuide.trailingAnchor)),
-        MakeEqConstraint(self.cancelButtonDrawingGuide.centerYAnchor, self.alignmentGuide.centerYAnchor),
-        SetConstraint(&_cancelButtonWidthConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.widthAnchor, nil)),
-        SetConstraint(&_cancelButtonHeightConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.heightAnchor, nil)),
+        SetConstraint(&_cancelToAlignmentConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.trailingAnchor,
+                                                                      self.alignmentGuide.trailingAnchor,
+                                                                      @"SR_cancelButtonDrawingGuide_trailingToAlignment")),
+        MakeEqConstraint(self.cancelButtonDrawingGuide.centerYAnchor,
+                         self.alignmentGuide.centerYAnchor,
+                         @"SR_cancelButtonDrawingGuide_centerYAlignment"),
+        SetConstraint(&_cancelButtonWidthConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.widthAnchor,
+                                                                      nil,
+                                                                      @"SR_cancelButtonDrawingGuide_width")),
+        SetConstraint(&_cancelButtonHeightConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.heightAnchor,
+                                                                       nil,
+                                                                       @"SR_cancelButtonDrawingGuide_height")),
 
-        MakeEqConstraint(self.cancelButtonLayoutGuide.topAnchor, self.alignmentGuide.topAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.leadingAnchor, self.cancelButtonDrawingGuide.leadingAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.trailingAnchor, self.alignmentGuide.trailingAnchor),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.topAnchor,
+                         self.alignmentGuide.topAnchor,
+                         @"SR_cancelButtonLayoutGuide_topToAlignment"),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.leadingAnchor,
+                         self.cancelButtonDrawingGuide.leadingAnchor,
+                         @"SR_cancelButtonLayoutGuide_leadingToDrawing"),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.bottomAnchor,
+                         self.alignmentGuide.bottomAnchor,
+                         @"SR_cancelButtonLayoutGuide_bottomToAlignment"),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.trailingAnchor,
+                         self.alignmentGuide.trailingAnchor,
+                         @"SR_cancelButtonLayoutGuide_trailingToAlignment"),
     ];
 
     _recordingWithValueConstraints = @[
         _labelToCancelConstraint,
 
-        MakeEqConstraint(self.cancelButtonDrawingGuide.centerYAnchor, self.alignmentGuide.centerYAnchor),
-        SetConstraint(&_cancelToClearConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.trailingAnchor, self.clearButtonDrawingGuide.leadingAnchor)),
+        MakeEqConstraint(self.cancelButtonDrawingGuide.centerYAnchor,
+                         self.alignmentGuide.centerYAnchor,
+                         @"SR_cancelButtonDrawingGuide_centerYToAlignment"),
+        SetConstraint(&_cancelToClearConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.trailingAnchor,
+                                                                  self.clearButtonDrawingGuide.leadingAnchor,
+                                                                  @"SR_cancelButtonDrawingGuide_trailingToClear")),
         _cancelButtonWidthConstraint,
         _cancelButtonHeightConstraint,
 
-        MakeEqConstraint(self.clearButtonDrawingGuide.centerYAnchor, self.alignmentGuide.centerYAnchor),
-        SetConstraint(&_clearToAlignmentConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.trailingAnchor, self.alignmentGuide.trailingAnchor)),
-        SetConstraint(&_clearButtonWidthConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.widthAnchor, nil)),
-        SetConstraint(&_clearButtonHeightConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.heightAnchor, nil)),
+        MakeEqConstraint(self.clearButtonDrawingGuide.centerYAnchor,
+                         self.alignmentGuide.centerYAnchor,
+                         @"SR_clearButtonDrawingGuide_centerYToAlignment"),
+        SetConstraint(&_clearToAlignmentConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.trailingAnchor,
+                                                                     self.alignmentGuide.trailingAnchor,
+                                                                     @"SR_clearButtonDrawingGuide_trailingToAlignment")),
+        SetConstraint(&_clearButtonWidthConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.widthAnchor,
+                                                                     nil,
+                                                                     @"SR_clearButtonDrawingGuide_width")),
+        SetConstraint(&_clearButtonHeightConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.heightAnchor,
+                                                                      nil,
+                                                                      @"SR_clearButtonDrawingGuide_height")),
 
-        MakeEqConstraint(self.cancelButtonLayoutGuide.topAnchor, self.alignmentGuide.topAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.leadingAnchor, self.cancelButtonDrawingGuide.leadingAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
-        MakeEqConstraint(self.cancelButtonLayoutGuide.trailingAnchor, self.cancelButtonDrawingGuide.trailingAnchor),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.topAnchor,
+                         self.alignmentGuide.topAnchor,
+                         @"SR_cancelButtonLayoutGuide_topToAlignment"),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.leadingAnchor,
+                         self.cancelButtonDrawingGuide.leadingAnchor,
+                         @"SR_cancelButtonLayoutGuide_leadingToDrawing"),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.bottomAnchor,
+                         self.alignmentGuide.bottomAnchor,
+                         @"SR_cancelButtonLayoutGuide_bottomToAlignment"),
+        MakeEqConstraint(self.cancelButtonLayoutGuide.trailingAnchor,
+                         self.cancelButtonDrawingGuide.trailingAnchor,
+                         @"SR_cancelButtonLayoutGuide_trailingToDrawing"),
 
-        MakeEqConstraint(self.clearButtonLayoutGuide.topAnchor, self.alignmentGuide.topAnchor),
-        MakeEqConstraint(self.clearButtonLayoutGuide.leadingAnchor, self.clearButtonDrawingGuide.leadingAnchor),
-        MakeEqConstraint(self.clearButtonLayoutGuide.bottomAnchor, self.alignmentGuide.bottomAnchor),
-        MakeEqConstraint(self.clearButtonLayoutGuide.trailingAnchor, self.alignmentGuide.trailingAnchor),
+        MakeEqConstraint(self.clearButtonLayoutGuide.topAnchor,
+                         self.alignmentGuide.topAnchor,
+                         @"SR_clearButtonLayoutGuide_topToAlignment"),
+        MakeEqConstraint(self.clearButtonLayoutGuide.leadingAnchor,
+                         self.clearButtonDrawingGuide.leadingAnchor,
+                         @"SR_clearButtonLayoutGuide_leadingToDrawing"),
+        MakeEqConstraint(self.clearButtonLayoutGuide.bottomAnchor,
+                         self.alignmentGuide.bottomAnchor,
+                         @"SR_clearButtonLayoutGuide_bottomToAlignment"),
+        MakeEqConstraint(self.clearButtonLayoutGuide.trailingAnchor,
+                         self.alignmentGuide.trailingAnchor,
+                         @"SR_clearButtonLayoutGuide_trailingToAlignment"),
     ];
 
     self.recorderControl.needsUpdateConstraints = YES;

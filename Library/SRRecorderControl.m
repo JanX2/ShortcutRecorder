@@ -270,15 +270,21 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (NSBezierPath *)focusRingShape
 {
-    NSRect alignmentFrame = self.style.alignmentGuide.frame;
-    NSEdgeInsets insets = self.style.focusRingInsets;
+    NSRect focusRingFrame = self.style.backgroundDrawingGuide.frame;
+    NSEdgeInsets alignmentInsets = self.alignmentRectInsets;
+    NSEdgeInsets focusRingInsets = self.style.focusRingInsets;
     NSSize cornerRadius = self.style.focusRingCornerRadius;
 
-    alignmentFrame.origin.x += insets.left;
-    alignmentFrame.origin.y += insets.top;
-    alignmentFrame.size.width = fdim(alignmentFrame.size.width, insets.left + insets.right);
-    alignmentFrame.size.height = fdim(alignmentFrame.size.height, insets.top + insets.bottom);
-    return [NSBezierPath bezierPathWithRoundedRect:alignmentFrame xRadius:cornerRadius.width yRadius:cornerRadius.height];
+    focusRingFrame.origin.x += alignmentInsets.left + focusRingInsets.left;
+    focusRingFrame.origin.y += alignmentInsets.top + focusRingInsets.top;
+    focusRingFrame.size.width = fdim(focusRingFrame.size.width,
+                                     alignmentInsets.left + alignmentInsets.right + focusRingInsets.left + focusRingInsets.right);
+    focusRingFrame.size.height = fdim(focusRingFrame.size.height,
+                                      alignmentInsets.top + alignmentInsets.bottom + focusRingInsets.top + focusRingInsets.bottom);
+
+    return [NSBezierPath bezierPathWithRoundedRect:focusRingFrame
+                                           xRadius:cornerRadius.width
+                                           yRadius:cornerRadius.height];
 }
 
 - (BOOL)isMainButtonHighlighted
