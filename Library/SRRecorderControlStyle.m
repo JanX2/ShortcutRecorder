@@ -822,7 +822,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 {
     __block NSImage *image = nil;
     os_activity_initiate("imageNamed:forStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
-        os_trace_debug_with_payload("Fetching lookup prefixes", ^(xpc_object_t d) {
+        os_trace_debug_with_payload("Fetching image name", ^(xpc_object_t d) {
             xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
             xpc_dictionary_set_string(d, "image", aName.UTF8String);
         });
