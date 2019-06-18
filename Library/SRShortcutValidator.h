@@ -63,7 +63,7 @@ NS_SWIFT_NAME(ShortcutValidator)
 
  @seealso SRShortcutValidatorDelegate/shortcutValidatorShouldCheckMenu:
  */
-- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validateShortcut(_:againstMenu:)) NS_SWIFT_NAME(validate(shortcut:againstMenu:));
+- (BOOL)validateShortcut:(SRShortcut *)aShortcut againstMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError NS_SWIFT_NAME(validate(shortcut:againstMenu:));
 
 @end
 
