@@ -788,11 +788,6 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return super.accessibilityLabel;
 }
 
-- (NSString *)accessibilityTitle
-{
-    return super.accessibilityTitle;
-}
-
 - (id)accessibilityValue
 {
     if (self.isRecording)
