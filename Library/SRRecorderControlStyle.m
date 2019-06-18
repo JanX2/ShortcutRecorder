@@ -515,7 +515,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     return self;
 }
 
-- (NSDictionary<NSString *, NSObject *> *)infoForStyle:(SRRecorderControlStyle *)aStyle
+- (NSDictionary<NSString *, id> *)infoForStyle:(SRRecorderControlStyle *)aStyle
 {
     typedef id (^Transformer)(id anObject, NSString *aKey);
     typedef void (^Verifier)(id anObject, NSString *aKey);

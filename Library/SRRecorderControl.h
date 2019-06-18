@@ -263,7 +263,7 @@ IB_DESIGNABLE
 /*!
  Dictionary representation of the shortcut.
  */
-@property (nullable, copy) NSDictionary<SRShortcutKey, __kindof NSObject *> *dictionaryValue;
+@property (nullable, copy) NSDictionary<SRShortcutKey, id> *dictionaryValue;
 
 /*!
  A helper method to propagate view-driven changes back to model.
@@ -298,7 +298,7 @@ IB_DESIGNABLE
 /*!
  Attirbutes for the drawingLabel.
  */
-@property (copy, readonly) NSDictionary<NSAttributedStringKey, __kindof NSObject *> *drawingLabelAttributes;
+@property (copy, readonly) NSDictionary<NSAttributedStringKey, id> *drawingLabelAttributes;
 
 /*!
  Called to make default style for the control.

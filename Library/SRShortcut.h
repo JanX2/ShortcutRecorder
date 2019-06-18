@@ -132,7 +132,7 @@ NS_SWIFT_NAME(Shortcut)
 
  @seealso SRShortcutKey
  */
-@property (nonatomic, readonly, copy) NSDictionary<SRShortcutKey, id> *dictionaryRepresentation;
+@property (readonly) NSDictionary<SRShortcutKey, id> *dictionaryRepresentation;
 
 /*!
  Return readable representation of the shortcut for user dialogs or accessibility.
