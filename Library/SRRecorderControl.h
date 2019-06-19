@@ -374,6 +374,13 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 - (BOOL)recorderControlShouldBeginRecording:(SRRecorderControl *)aControl;
 
 /*!
+ Notify the delegate that recording began.
+
+ @param aControl The control where recording began.
+*/
+- (void)recorderControlDidBeginRecording:(SRRecorderControl *)aControl;
+
+/*!
  Give the delegate the opportunity to bypass rules specified by allowed and required modifier flags.
 
  @param aControl The shortcut recorder for which editing ended.

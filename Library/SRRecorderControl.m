@@ -432,6 +432,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                 [controller objectDidBeginEditing:(id<NSEditor>) self];
         }
 
+        if ([self.delegate respondsToSelector:@selector(recorderControlDidBeginRecording:)])
+            [self.delegate recorderControlDidBeginRecording:self];
+
         NSAccessibilityPostNotificationWithUserInfo(self,
                                                     NSAccessibilityLayoutChangedNotification,
                                                     @{NSAccessibilityUIElementsKey: @[self]});
