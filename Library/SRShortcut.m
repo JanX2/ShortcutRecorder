@@ -134,8 +134,22 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     {
         _keyCode = aKeyCode;
         _modifierFlags = aModifierFlags & SRCocoaModifierFlagsMask;
-        _characters = aCharacters.copy;
-        _charactersIgnoringModifiers = aCharactersIgnoringModifiers.copy;
+
+        if (aCharacters)
+            _characters = [aCharacters copy];
+        else
+            _characters = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:@(aKeyCode)
+                                                                      withImplicitModifierFlags:@(aModifierFlags)
+                                                                          explicitModifierFlags:nil
+                                                                                layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
+
+        if (aCharactersIgnoringModifiers)
+            _charactersIgnoringModifiers = [aCharactersIgnoringModifiers copy];
+        else
+            _charactersIgnoringModifiers = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:@(aKeyCode)
+                                                                                       withImplicitModifierFlags:nil
+                                                                                           explicitModifierFlags:@(aModifierFlags)
+                                                                                                 layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
     }
 
     return self;
