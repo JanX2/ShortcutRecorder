@@ -23,6 +23,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 };
 
 
+static NSInteger _SRStyleUserInterfaceLayoutDirectionObservingContext;
+static NSInteger _SRStyleAppearanceObservingContext;
+
+
+#define _SRIfRespondsGet(obj, sel, default) [obj respondsToSelector:@selector(sel)] ? [obj sel] : (default)
+#define _SRIfRespondsGetProp(obj, sel, prop, default) [obj respondsToSelector:@selector(sel)] ? [[obj sel] prop] : (default)
+
+
 @implementation SRRecorderControl
 {
     SRRecorderControlStyle *_style;
@@ -41,6 +49,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     // Extra care is needed to ensure that all methods will see the same flags.
     NSEventModifierFlags _currentlyDrawnRecordingModifierFlags;
     NSEventModifierFlags _accessibilityRecordingModifierFlags;
+
+    BOOL _isLazilyInitializingStyle;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -246,8 +256,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     if (_style == nil)
     {
-        _style = [self makeDefaultStyle];
-        [_style prepareForRecorderControl:self];
+        _isLazilyInitializingStyle = YES;
+        [self _setStyle:[self makeDefaultStyle]];
+        _isLazilyInitializingStyle = NO;
     }
 
     return _style;
@@ -262,18 +273,47 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     else
         newStyle = newStyle.copy;
 
+    [self _setStyle:newStyle];
+}
+
+- (void)_setStyle:(SRRecorderControlStyle *)newStyle
+{
     [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
-    [_style prepareForRemoval];
+
+    if ([_style respondsToSelector:@selector(prepareForRemoval)])
+        [_style prepareForRemoval];
+
+    if ([_style respondsToSelector:@selector(preferredComponents)])
+    {
+        [_style removeObserver:self forKeyPath:@"preferredComponents.userInterfaceLayoutDirection" context:&_SRStyleUserInterfaceLayoutDirectionObservingContext];
+        [_style removeObserver:self forKeyPath:@"preferredComponents.appearance" context:&_SRStyleAppearanceObservingContext];
+    }
+
     _style = newStyle;
-    [_style prepareForRecorderControl:self];
+
+    if ([_style respondsToSelector:@selector(prepareForRecorderControl:)])
+        [_style prepareForRecorderControl:self];
+
+    if ([_style respondsToSelector:@selector(preferredComponents)])
+    {
+        [_style addObserver:self
+                 forKeyPath:@"preferredComponents.userInterfaceLayoutDirection"
+                    options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionPrior
+                    context:&_SRStyleUserInterfaceLayoutDirectionObservingContext];
+        [_style addObserver:self
+                 forKeyPath:@"preferredComponents.appearance"
+                    options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+                    context:&_SRStyleAppearanceObservingContext];
+    }
 }
 
 - (NSBezierPath *)focusRingShape
 {
-    NSRect focusRingFrame = self.style.backgroundDrawingGuide.frame;
+    NSRect focusRingFrame = _SRIfRespondsGetProp(self.style, backgroundDrawingGuide, frame, self.bounds);
+
     NSEdgeInsets alignmentInsets = self.alignmentRectInsets;
-    NSEdgeInsets focusRingInsets = self.style.focusRingInsets;
-    NSSize cornerRadius = self.style.focusRingCornerRadius;
+    NSEdgeInsets focusRingInsets = _SRIfRespondsGet(self.style, focusRingInsets, NSEdgeInsetsZero);
+    NSSize cornerRadius = _SRIfRespondsGet(self.style, focusRingCornerRadius, NSZeroSize);
 
     focusRingFrame.origin.x += alignmentInsets.left + focusRingInsets.left;
     focusRingFrame.origin.y += alignmentInsets.top + focusRingInsets.top;
@@ -305,7 +345,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
                                            fromView:nil];
-        return [self mouse:locationInView inRect:self.style.cancelButtonLayoutGuide.frame];
+        NSRect cancelButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                      cancelButtonLayoutGuide,
+                                                      frame,
+                                                      _SRIfRespondsGetProp(self.style,
+                                                                         cancelButtonDrawingGuide,
+                                                                         frame,
+                                                                         NSZeroRect));
+        return [self mouse:locationInView inRect:cancelButtonFrame];
     }
     else
         return NO;
@@ -317,7 +364,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         NSPoint locationInView = [self convertPoint:self.window.mouseLocationOutsideOfEventStream
                                            fromView:nil];
-        return [self mouse:locationInView inRect:self.self.style.clearButtonLayoutGuide.frame];
+        NSRect clearButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                     clearButtonLayoutGuide,
+                                                     frame,
+                                                     _SRIfRespondsGetProp(self.style,
+                                                                        clearButtonDrawingGuide,
+                                                                        frame,
+                                                                        NSZeroRect));
+        return [self mouse:locationInView inRect:clearButtonFrame];
     }
     else
         return NO;
@@ -359,12 +413,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (self.enabled)
     {
         if (self.isRecording)
-            return self.style.recordingLabelAttributes;
+            return _SRIfRespondsGet(self.style, recordingLabelAttributes, nil);
         else
-            return self.style.normalLabelAttributes;
+            return _SRIfRespondsGet(self.style, normalLabelAttributes, nil);
     }
     else
-        return self.style.disabledLabelAttributes;
+        return _SRIfRespondsGet(self.style, disabledLabelAttributes, nil);
 }
 
 #pragma mark Methods
@@ -539,7 +593,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)drawBackground:(NSRect)aDirtyRect
 {
-    NSRect backgroundFrame = [self centerScanRect:self.style.backgroundDrawingGuide.frame];
+    NSRect backgroundFrame = [self centerScanRect:_SRIfRespondsGetProp(self.style, backgroundDrawingGuide, frame, self.bounds)];
 
     if (NSIsEmptyRect(backgroundFrame) || ![self needsToDrawRect:backgroundFrame])
         return;
@@ -552,33 +606,49 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        left = self.style.bezelRecordingLeft;
-        center = self.style.bezelRecordingCenter;
-        right = self.style.bezelRecordingRight;
+        left = _SRIfRespondsGet(self.style, bezelRecordingLeft, nil);
+        center = _SRIfRespondsGet(self.style, bezelRecordingCenter, nil);
+        right = _SRIfRespondsGet(self.style, bezelRecordingRight, nil);
     }
     else
     {
         if (self.isMainButtonHighlighted)
         {
-            left = self.style.bezelPressedLeft;
-            center = self.style.bezelPressedCenter;
-            right = self.style.bezelPressedRight;
+            left = _SRIfRespondsGet(self.style, bezelPressedLeft, nil);
+            center = _SRIfRespondsGet(self.style, bezelPressedCenter, nil);
+            right = _SRIfRespondsGet(self.style, bezelPressedRight, nil);
         }
         else if (self.enabled)
         {
-            left = self.style.bezelNormalLeft;
-            center = self.style.bezelNormalCenter;
-            right = self.style.bezelNormalRight;
+            left = _SRIfRespondsGet(self.style, bezelNormalLeft, nil);
+            center = _SRIfRespondsGet(self.style, bezelNormalCenter, nil);
+            right = _SRIfRespondsGet(self.style, bezelNormalRight, nil);
         }
         else
         {
-            left = self.style.bezelDisabledLeft;
-            center = self.style.bezelDisabledCenter;
-            right = self.style.bezelDisabledRight;
+            left = _SRIfRespondsGet(self.style, bezelDisabledLeft, nil);
+            center = _SRIfRespondsGet(self.style, bezelDisabledCenter, nil);
+            right = _SRIfRespondsGet(self.style, bezelDisabledRight, nil);
         }
     }
 
-    NSDrawThreePartImage(backgroundFrame, left, center, right, NO, NSCompositeSourceOver, 1.0, self.isFlipped);
+    if (left && center && right)
+    {
+        os_trace_debug("#Developer drawing background using images");
+        NSDrawThreePartImage(backgroundFrame, left, center, right, NO, NSCompositeSourceOver, 1.0, self.isFlipped);
+    }
+    else
+    {
+        os_trace_debug("#Developer drawing background using color");
+
+        if (self.isOpaque)
+            [NSColor.windowBackgroundColor setFill];
+        else
+            [NSColor.clearColor setFill];
+
+        NSRectFill(NSIntersectionRect(backgroundFrame, aDirtyRect));
+    }
+
     [NSGraphicsContext restoreGraphicsState];
 }
 
@@ -606,7 +676,8 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     NSDictionary *labelAttributes = self.drawingLabelAttributes;
 
     [NSGraphicsContext saveGraphicsState];
-    labelFrame.origin.y = NSMaxY(labelFrame) - self.style.baselineDrawingOffsetFromBottom;
+    CGFloat baselineOffset = _SRIfRespondsGet(self.style, baselineLayoutOffsetFromBottom, self.style.baselineDrawingOffsetFromBottom);
+    labelFrame.origin.y = NSMaxY(labelFrame) - baselineOffset;
     labelFrame = [self backingAlignedRect:labelFrame options:NSAlignRectFlipped |
                   NSAlignMinXOutward |
                   NSAlignMinYOutward |
@@ -622,26 +693,31 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)drawCancelButton:(NSRect)aDirtyRect
 {
-    NSRect cancelButtonFrame = [self centerScanRect:self.style.cancelButtonDrawingGuide.frame];
+    NSRect cancelButtonFrame = [self centerScanRect:_SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect)];
 
     if (NSIsEmptyRect(cancelButtonFrame) || ![self needsToDrawRect:cancelButtonFrame])
         return;
 
+    NSImage *image = self.isCancelButtonHighlighted ? _SRIfRespondsGet(self.style, cancelButtonPressed, nil) : _SRIfRespondsGet(self.style, cancelButton, nil);
+    if (!image)
+        return;
+
     [NSGraphicsContext saveGraphicsState];
-    NSImage *image = self.isCancelButtonHighlighted ? self.style.cancelButtonPressed : self.style.cancelButton;
     [image drawInRect:cancelButtonFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
     [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)drawClearButton:(NSRect)aDirtyRect
 {
-    NSRect clearButtonFrame = [self centerScanRect:self.style.clearButtonDrawingGuide.frame];
-
+    NSRect clearButtonFrame = [self centerScanRect:_SRIfRespondsGetProp(self.style, clearButtonDrawingGuide, frame, NSZeroRect)];
     if (NSIsEmptyRect(clearButtonFrame) || ![self needsToDrawRect:clearButtonFrame])
         return;
 
+    NSImage *image = self.isClearButtonHighlighted ? _SRIfRespondsGet(self.style, clearButtonPressed, nil) : _SRIfRespondsGet(self.style, clearButton, nil);
+    if (!image)
+        return;
+
     [NSGraphicsContext saveGraphicsState];
-    NSImage *image = self.isClearButtonHighlighted ? self.style.clearButtonPressed : self.style.clearButton;
     [image drawInRect:clearButtonFrame fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:YES hints:nil];
     [NSGraphicsContext restoreGraphicsState];
 }
@@ -758,7 +834,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (void)scheduleControlViewAppearanceDidChange:(nullable id)aReason
 {
-    if (_notifyStyle == nil || _style == nil)
+    if (_notifyStyle == nil || ![_style respondsToSelector:@selector(recorderControlAppearanceDidChange:)])
         // recorderControlAppearanceDidChange: is called whenever _style is created.
         return;
 
@@ -965,7 +1041,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     if (!_objectValue)
         return @"";
 
-    __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
+    __auto_type layoutDirection = self.stringValueRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
     NSString *flags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
                                                                              layoutDirection:layoutDirection];
     SRKeyCodeTransformer *transformer = nil;
@@ -1024,6 +1100,20 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     return YES;
 }
 
+- (void)setUserInterfaceLayoutDirection:(NSUserInterfaceLayoutDirection)newUserInterfaceLayoutDirection
+{
+    NSNumber *currentValue = objc_getAssociatedObject(self, @selector(userInterfaceLayoutDirection));
+
+    if (currentValue && currentValue.integerValue == newUserInterfaceLayoutDirection)
+        return;
+
+    objc_setAssociatedObject(self,
+                             @selector(userInterfaceLayoutDirection),
+                             @(newUserInterfaceLayoutDirection),
+                             OBJC_ASSOCIATION_RETAIN);
+    [self scheduleControlViewAppearanceDidChange:nil];
+}
+
 - (NSUserInterfaceLayoutDirection)userInterfaceLayoutDirection
 {
     // NSView uses associated objects to track whether default value was overridden.
@@ -1031,27 +1121,31 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     //     1. View's own value
     //     2. Style's value
     //     3. View's default value that falls back to NSWindow and then NSApp
-    NSNumber *superValue = objc_getAssociatedObject(self, @selector(userInterfaceLayoutDirection));
-    if (superValue)
-        return superValue.integerValue;
+    NSNumber *currentValue = objc_getAssociatedObject(self, @selector(userInterfaceLayoutDirection));
+    if (currentValue)
+        return currentValue.integerValue;
 
-    if (self.style.preferredComponents.layoutDirection != SRRecorderControlStyleComponentsLayoutDirectionUnspecified)
-        return SRRecorderControlStyleComponentsLayoutDirectionToSystem(self.style.preferredComponents.layoutDirection);
-    else
-        return super.userInterfaceLayoutDirection;
+    if (!_isLazilyInitializingStyle && [self.style respondsToSelector:@selector(preferredComponents)])
+    {
+        __auto_type layoutDirection = self.style.preferredComponents.layoutDirection;
+        if (layoutDirection != SRRecorderControlStyleComponentsLayoutDirectionUnspecified)
+            return SRRecorderControlStyleComponentsLayoutDirectionToSystem(layoutDirection);
+    }
+
+    return super.userInterfaceLayoutDirection;
 }
 
 - (void)layout
 {
     NSRect oldLabelFrame = self.style.labelDrawingGuide.frame;
-    NSRect oldCancelButtonFrame = self.style.cancelButtonDrawingGuide.frame;
-    NSRect oldClearButtonFrame = self.style.clearButtonDrawingGuide.frame;
+    NSRect oldCancelButtonFrame = _SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect);
+    NSRect oldClearButtonFrame = _SRIfRespondsGetProp(self.style, clearButtonDrawingGuide, frame, NSZeroRect);
 
     [super layout];
 
     NSRect newLabelFrame = self.style.labelDrawingGuide.frame;
-    NSRect newCancelButtonFrame = self.style.cancelButtonDrawingGuide.frame;
-    NSRect newClearButtonFrame = self.style.clearButtonDrawingGuide.frame;
+    NSRect newCancelButtonFrame = _SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect);
+    NSRect newClearButtonFrame = _SRIfRespondsGetProp(self.style, clearButtonDrawingGuide, frame, NSZeroRect);
 
     if (!NSEqualRects(oldLabelFrame, newLabelFrame))
     {
@@ -1104,7 +1198,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 - (CGFloat)baselineOffsetFromBottom
 {
-    return self.style.baselineLayoutOffsetFromBottom;
+    return _SRIfRespondsGet(self.style, baselineLayoutOffsetFromBottom, self.style.baselineDrawingOffsetFromBottom);
 }
 
 - (CGFloat)firstBaselineOffsetFromTop
@@ -1115,6 +1209,21 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 - (void)updateTrackingAreas
 {
     static const NSTrackingAreaOptions TrackingOptions = NSTrackingMouseEnteredAndExited | NSTrackingActiveWhenFirstResponder | NSTrackingEnabledDuringMouseDrag;
+
+    NSRect cancelButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                  cancelButtonLayoutGuide,
+                                                  frame,
+                                                  _SRIfRespondsGetProp(self.style,
+                                                                     cancelButtonDrawingGuide,
+                                                                     frame,
+                                                                     NSZeroRect));
+    NSRect clearButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                 clearButtonLayoutGuide,
+                                                 frame,
+                                                 _SRIfRespondsGetProp(self.style,
+                                                                    clearButtonDrawingGuide,
+                                                                    frame,
+                                                                    NSZeroRect));
 
     if (_mainButtonTrackingArea)
         [self removeTrackingArea:_mainButtonTrackingArea];
@@ -1145,24 +1254,26 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
     if (self.isRecording)
     {
-        _cancelButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:self.style.cancelButtonLayoutGuide.frame
-                                                                 options:TrackingOptions
-                                                                   owner:self
-                                                                userInfo:nil];
-        [self addTrackingArea:_cancelButtonTrackingArea];
-
-        if (_objectValue)
+        if (!NSIsEmptyRect(cancelButtonFrame))
         {
-            _clearButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:self.style.clearButtonLayoutGuide.frame
+            _cancelButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:cancelButtonFrame
+                                                                     options:TrackingOptions
+                                                                       owner:self
+                                                                    userInfo:nil];
+            [self addTrackingArea:_cancelButtonTrackingArea];
+            // Since this method is used to set up tracking rects of aux buttons, the rest of the code is aware
+            // it should be called whenever geometry or apperance changes. Therefore it's a good place to set up tooltip rects.
+            _cancelButtonToolTipTag = [self addToolTipRect:_cancelButtonTrackingArea.rect owner:self userData:NULL];
+        }
+
+        if (_objectValue && !NSIsEmptyRect(clearButtonFrame))
+        {
+            _clearButtonTrackingArea = [[NSTrackingArea alloc] initWithRect:clearButtonFrame
                                                                     options:TrackingOptions
                                                                       owner:self
                                                                    userInfo:nil];
             [self addTrackingArea:_clearButtonTrackingArea];
         }
-
-        // Since this method is used to set up tracking rects of aux buttons, the rest of the code is aware
-        // it should be called whenever geometry or apperance changes. Therefore it's a good place to set up tooltip rects.
-        _cancelButtonToolTipTag = [self addToolTipRect:_cancelButtonTrackingArea.rect owner:self userData:NULL];
     }
 
     [super updateTrackingAreas];
@@ -1268,18 +1379,32 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     }
 
     NSPoint locationInView = [self convertPoint:anEvent.locationInWindow fromView:nil];
+    NSRect cancelButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                  cancelButtonLayoutGuide,
+                                                  frame,
+                                                  _SRIfRespondsGetProp(self.style,
+                                                                     cancelButtonDrawingGuide,
+                                                                     frame,
+                                                                     NSZeroRect));
+    NSRect clearButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                 clearButtonLayoutGuide,
+                                                 frame,
+                                                 _SRIfRespondsGetProp(self.style,
+                                                                    clearButtonDrawingGuide,
+                                                                    frame,
+                                                                    NSZeroRect));
 
     if (self.isRecording)
     {
-        if ([self mouse:locationInView inRect:self.style.cancelButtonLayoutGuide.frame])
+        if ([self mouse:locationInView inRect:cancelButtonFrame])
         {
             _mouseTrackingButtonTag = _SRRecorderControlCancelButtonTag;
-            [self setNeedsDisplayInRect:self.style.cancelButtonLayoutGuide.frame];
+            [self setNeedsDisplayInRect:_SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect)];
         }
-        else if ([self mouse:locationInView inRect:self.style.clearButtonLayoutGuide.frame])
+        else if ([self mouse:locationInView inRect:clearButtonFrame])
         {
             _mouseTrackingButtonTag = _SRRecorderControlClearButtonTag;
-            [self setNeedsDisplayInRect:self.style.clearButtonLayoutGuide.frame];
+            [self setNeedsDisplayInRect:_SRIfRespondsGetProp(self.style, clearButtonLayoutGuide, frame, NSZeroRect)];
         }
         else
             [super mouseDown:anEvent];
@@ -1301,6 +1426,21 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return;
     }
 
+    NSRect cancelButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                  cancelButtonLayoutGuide,
+                                                  frame,
+                                                  _SRIfRespondsGetProp(self.style,
+                                                                     cancelButtonDrawingGuide,
+                                                                     frame,
+                                                                     NSZeroRect));
+    NSRect clearButtonFrame = _SRIfRespondsGetProp(self.style,
+                                                 clearButtonLayoutGuide,
+                                                 frame,
+                                                 _SRIfRespondsGetProp(self.style,
+                                                                    clearButtonDrawingGuide,
+                                                                    frame,
+                                                                    NSZeroRect));
+
     if (_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
     {
         if (!self.window.isKeyWindow)
@@ -1319,12 +1459,12 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
                 [self beginRecording];
             }
             else if (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag &&
-                     [self mouse:locationInView inRect:self.style.cancelButtonLayoutGuide.frame])
+                     [self mouse:locationInView inRect:cancelButtonFrame])
             {
                 [self endRecording];
             }
             else if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag &&
-                     [self mouse:locationInView inRect:self.style.clearButtonLayoutGuide.frame])
+                     [self mouse:locationInView inRect:clearButtonFrame])
             {
                 [self clearAndEndRecording];
             }
@@ -1528,4 +1668,30 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
         return [super optionDescriptionsForBinding:aBinding];
 }
 
+- (void)observeValueForKeyPath:(NSString *)aKeyPath ofObject:(id)anObject change:(NSDictionary<NSKeyValueChangeKey, id> *)aChange context:(void *)aContext
+{
+    if (aContext == &_SRStyleUserInterfaceLayoutDirectionObservingContext)
+    {
+        if ([aChange objectForKey:NSKeyValueChangeNotificationIsPriorKey])
+            [self willChangeValueForKey:@"userInterfaceLayoutDirection"];
+        else
+            [self didChangeValueForKey:@"userInterfaceLayoutDirection"];
+    }
+    else if (aContext == &_SRStyleAppearanceObservingContext)
+    {
+        __auto_type appearance = [aChange[NSKeyValueChangeNewKey] unsignedIntegerValue];
+
+        if (appearance != SRRecorderControlStyleComponentsAppearanceUnspecified)
+            self.appearance = [NSAppearance appearanceNamed:SRRecorderControlStyleComponentsAppearanceToSystem(appearance)];
+        else
+            self.appearance = nil;
+    }
+    else
+        [super observeValueForKeyPath:aKeyPath ofObject:anObject change:aChange context:aContext];
+}
+
 @end
+
+
+#undef _SRIfRespondsGet
+#undef _SRIfRespondsGetProp

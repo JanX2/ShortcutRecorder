@@ -282,9 +282,9 @@ IB_DESIGNABLE
 /*!
  Current style that determines drawing and layout.
 
- @seealso SRRecorderControlStyle
+ @seealso SRRecorderControlStyling
  */
-@property (null_resettable, copy) SRRecorderControlStyle *style;
+@property (null_resettable, copy) id<NSObject, SRRecorderControlStyling> style;
 
 /*!
  Shape of the control for the focus ring.
@@ -299,7 +299,7 @@ IB_DESIGNABLE
 /*!
  Attirbutes for the drawingLabel.
  */
-@property (copy, readonly) NSDictionary<NSAttributedStringKey, id> *drawingLabelAttributes;
+@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *drawingLabelAttributes;
 
 /*!
  Called to make default style for the control.

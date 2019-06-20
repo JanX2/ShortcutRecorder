@@ -103,8 +103,8 @@ class SRRecorderControlTests: XCTestCase {
 
     func testStyleIsCopied() {
         let s = RecorderControlStyle()
-        let v1 = RecorderControl(frame: .zero)
-        let v2 = RecorderControl(frame: .zero)
+        let v1 = RecorderControl()
+        let v2 = RecorderControl()
 
         v1.style = s
         v2.style = s
@@ -112,8 +112,8 @@ class SRRecorderControlTests: XCTestCase {
         XCTAssertFalse(v1.style === v2.style)
     }
 
-    func testObjectValueAffectsDictionaryValueObservation() {
-        let v = RecorderControl(frame: .zero)
+    func testObjectValueAffectsDictionaryValueKVO() {
+        let v = RecorderControl()
         var calls: [[NSDictionary?]] = []
 
         let observation = v.observe(\RecorderControl.dictionaryValue, options: [.old, .new]) { (_, change) in
@@ -137,6 +137,89 @@ class SRRecorderControlTests: XCTestCase {
 
         let expected = [[nil, s1.dictionaryRepresentation], [s1.dictionaryRepresentation, s2.dictionaryRepresentation]]
         XCTAssertTrue((calls as NSArray).isEqual(to: expected))
+    }
+
+    func testSettingStyleDoesntCauseLazyLoading() {
+        class Control: RecorderControl {
+            let expectation = XCTestExpectation(description: "makeDefaultStyle", isInverted: true)
+
+            override func makeDefaultStyle() -> RecorderControlStyle {
+                expectation.fulfill()
+                return super.makeDefaultStyle()
+            }
+        }
+
+        let control = Control()
+        control.style = RecorderControlStyle()
+        wait(for: [control.expectation], timeout: 0)
+    }
+
+    func testSettingStyleNotifications() {
+        class Style: RecorderControlStyle {
+            let prepareForRecorderControlExpectation = XCTestExpectation(description: "prepareForRecorderControl",
+                                                                         assertForOverFulfill: true)
+            let recorderControlAppearanceDidChangeExpectation = XCTestExpectation(description: "recorderControlAppearanceDidChange",
+                                                                                  assertForOverFulfill: true)
+
+            override func prepareForRecorderControl(_ aControl: RecorderControl) {
+                prepareForRecorderControlExpectation.fulfill()
+                super.prepareForRecorderControl(aControl)
+            }
+
+            override func recorderControlAppearanceDidChange(_ aReason: Any?) {
+                recorderControlAppearanceDidChangeExpectation.fulfill()
+                super.recorderControlAppearanceDidChange(aReason)
+            }
+        }
+
+        let control = RecorderControl()
+        control.style = Style()
+        wait(for: [(control.style as! Style).prepareForRecorderControlExpectation,
+                   (control.style as! Style).recorderControlAppearanceDidChangeExpectation], timeout: 0, enforceOrder: true)
+    }
+
+    func testUserInterfaceLayoutDirectionKVO() {
+        let control = RecorderControl()
+        let leftToRight = RecorderControlStyle.Components(appearance: .unspecified,
+                                                          accessibility: [],
+                                                          layoutDirection: .leftToRight,
+                                                          tint: .unspecified)
+        let rightToLeft = RecorderControlStyle.Components(appearance: .unspecified,
+                                                          accessibility: [],
+                                                          layoutDirection: .rightToLeft,
+                                                          tint: .unspecified)
+
+        control.style = RecorderControlStyle(identifier: nil, components: leftToRight)
+        var expectation = keyValueObservingExpectation(for: control, keyPath: "userInterfaceLayoutDirection",
+                                                       expectedValue: NSUserInterfaceLayoutDirection.rightToLeft.rawValue)
+        control.style = RecorderControlStyle(identifier: nil, components: rightToLeft)
+        wait(for: [expectation], timeout: 0)
+        expectation = keyValueObservingExpectation(for: control, keyPath: "userInterfaceLayoutDirection",
+                                                   expectedValue: NSUserInterfaceLayoutDirection.leftToRight.rawValue)
+        control.style = RecorderControlStyle(identifier: nil, components: leftToRight)
+        wait(for: [expectation], timeout: 0)
+    }
+
+    func testAppearanceKVO() {
+        let control = RecorderControl()
+        let aqua = RecorderControlStyle.Components(appearance: .aqua,
+                                                   accessibility: [],
+                                                   layoutDirection: .unspecified,
+                                                   tint: .unspecified)
+        let darkAqua = RecorderControlStyle.Components(appearance: .darkAqua,
+                                                       accessibility: [],
+                                                       layoutDirection: .unspecified,
+                                                       tint: .unspecified)
+
+        control.style = RecorderControlStyle(identifier: nil, components: aqua)
+        var expectation = keyValueObservingExpectation(for: control, keyPath: "appearance",
+                                                       expectedValue: NSAppearance(named: .darkAqua))
+        control.style = RecorderControlStyle(identifier: nil, components: darkAqua)
+        wait(for: [expectation], timeout: 0)
+        expectation = keyValueObservingExpectation(for: control, keyPath: "appearance",
+                                                   expectedValue: NSAppearance(named: .aqua))
+        control.style = RecorderControlStyle(identifier: nil, components: aqua)
+        wait(for: [expectation], timeout: 0)
     }
 
     func testStringValueKVO() {

@@ -12,205 +12,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
- Recognized by SRRecorderControl to avoid label drawing if width of the target frame is smaller than the
- value of this attribute.
- */
-extern NSAttributedStringKey const SRMinimalDrawableWidthAttributeName;
-
-/*!
- Styling is responsible for providing resources and metrics to draw SRRecorderControl.
- */
-NS_SWIFT_NAME(RecorderControlStyling)
-@protocol SRRecorderControlStyling <NSCopying>
-
-/*!
- Unique identifier of the style.
- */
-@property (readonly) NSString *identifier;
-
-/*!
- @seealso NSView/allowsVibrancy
- */
-@property (readonly) BOOL allowsVibrancy;
-
-/*!
- @seealso NSView/opaque
- */
-@property (getter=isOpaque, readonly) BOOL opaque;
-
-/*!
- Label attributes for displaying when enabled.
- */
-@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *normalLabelAttributes;
-
-/*!
- Label attributes for displaying when recoding.
- */
-@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *recordingLabelAttributes;
-
-/*!
- Label attributes for displaying when disabled.
- */
-@property (nullable, readonly) NSDictionary<NSAttributedStringKey, id> *disabledLabelAttributes;
-
-@property (nullable, readonly) NSImage *bezelNormalLeft;
-@property (nullable, readonly) NSImage *bezelNormalCenter;
-@property (nullable, readonly) NSImage *bezelNormalRight;
-
-@property (nullable, readonly) NSImage *bezelPressedLeft;
-@property (nullable, readonly) NSImage *bezelPressedCenter;
-@property (nullable, readonly) NSImage *bezelPressedRight;
-
-@property (nullable, readonly) NSImage *bezelRecordingLeft;
-@property (nullable, readonly) NSImage *bezelRecordingCenter;
-@property (nullable, readonly) NSImage *bezelRecordingRight;
-
-@property (nullable, readonly) NSImage *bezelDisabledLeft;
-@property (nullable, readonly) NSImage *bezelDisabledCenter;
-@property (nullable, readonly) NSImage *bezelDisabledRight;
-
-@property (nullable, readonly) NSImage *cancelButton;
-@property (nullable, readonly) NSImage *cancelButtonPressed;
-
-@property (nullable, readonly) NSImage *clearButton;
-@property (nullable, readonly) NSImage *clearButtonPressed;
-
-/*!
- Corner radius of the focus ring.
- */
-@property (readonly) NSSize focusRingCornerRadius;
-
-/*!
- Insets of the focus ring relative to the alignment frame.
- */
-@property (readonly) NSEdgeInsets focusRingInsets;
-
-/*!
- @seealso NSView/baselineOffsetFromBottom
- @seealso baselineDrawingOffsetFromBottom
- */
-@property (readonly) CGFloat baselineLayoutOffsetFromBottom;
-
-/*!
- Unlike baselineLayoutOffsetFromBottom this is the true baseline where label is actually drawn.
-
- @seealso baselineLayoutOffsetFromBottom
- */
-@property (readonly) CGFloat baselineDrawingOffsetFromBottom;
-
-/*!
- @seealso NSView/alignmentRectInsets
- */
-@property (readonly) NSEdgeInsets alignmentRectInsets;
-
-/*!
- @seealso NSView/intrinsicContentSize
- */
-@property (readonly) NSSize intrinsicContentSize;
-
-/*!
- The guide that applies alignment insets to view's bounds.
- */
-@property (readonly) NSLayoutGuide *alignmentGuide;
-
-/*!
- The guide to draw view's background.
- */
-@property (readonly) NSLayoutGuide *backgroundDrawingGuide;
-
-/*!
- The guide to draw view's label.
- */
-@property (readonly) NSLayoutGuide *labelDrawingGuide;
-
-/*!
- The guide to draw the cancel button.
-
- Is valid only when either recordingWithNoValueConstraints or recordingWithValueConstraints are active.
-
- @seealso recordingWithNoValueConstraints
- @seealso recordingWithValueConstraints
- */
-@property (readonly) NSLayoutGuide *cancelButtonDrawingGuide;
-
-/*!
- The guide to draw the clear button.
-
- Is valid only when recordingWithValueConstraints are active.
-
- @seealso recordingWithValueConstraints
- */
-@property (readonly) NSLayoutGuide *clearButtonDrawingGuide;
-
-/*!
- The guide for the clickable area of the cancel button.
-
- Is valid only when either recordingWithNoValueConstraints or recordingWithValueConstraints are active.
-
- @seealso recordingWithNoValueConstraints
- @seealso recordingWithValueConstraints
- */
-@property (readonly) NSLayoutGuide *cancelButtonLayoutGuide;
-
-/*!
- The guide for the clickable area of the clear button.
-
- Is valid only when recordingWithValueConstraints are active.
-
- @seealso recordingWithValueConstraints
- */
-@property (readonly) NSLayoutGuide *clearButtonLayoutGuide;
-
-/*!
- Constraints that should be always active.
- */
-@property (readonly) NSArray<NSLayoutConstraint *> *alwaysConstraints;
-
-/*!
- Constraints for not recording states.
- */
-@property (readonly) NSArray<NSLayoutConstraint *> *displayingConstraints;
-
-/*!
- Constraints for the recording state when there is no value and clear button should not be displayed.
- */
-@property (readonly) NSArray<NSLayoutConstraint *> *recordingWithNoValueConstraints;
-
-/*!
- Constraints for the recording state when there is a value and clear button should be displayed.
- */
-@property (readonly) NSArray<NSLayoutConstraint *> *recordingWithValueConstraints;
-
-/*!
- Called just before style is applied to the specified control.
-
- @discussion
- Use this method to locate and cache resources, set up observers and install constraints.
- */
-- (void)prepareForRecorderControl:(SRRecorderControl *)aControl;
-
-/*!
- Called just before style is removed from the control it was added to.
-
- @discussion
- Use this method to free allocated resources, remove observers and remove constraints.
- */
-- (void)prepareForRemoval;
-
-/*!
- Called when view's appearance settings are changed.
-
- @seealso NSView/viewDidChangeBackingProperties
- @seealso NSControlTintDidChangeNotification
- @seealso NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
- @seealso NSView/viewDidChangeEffectiveAppearance
- */
-- (void)recorderControlAppearanceDidChange:(nullable id)aReason;
-
-@end
-
-
-/*!
  @seealso SRRecorderControlStyleComponents/appearance
  */
 typedef NS_ENUM(NSUInteger, SRRecorderControlStyleComponentsAppearance)
@@ -323,7 +124,14 @@ typedef NS_OPTIONS(NSUInteger, SRRecorderControlStyleComponentsAccessibility)
 
 
 /*!
- Components of the style that determine lookup order.
+ Recognized by SRRecorderControl to avoid label drawing if width of the target frame is smaller than the
+ value of this attribute.
+ */
+extern NSAttributedStringKey const SRMinimalDrawableWidthAttributeName;
+
+
+/*!
+ Components of the style that describe visual appearance.
  */
 NS_SWIFT_NAME(RecorderControlStyle.Components)
 @interface SRRecorderControlStyleComponents: NSObject <NSCopying>
@@ -339,10 +147,15 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 @property (readonly) SRRecorderControlStyleComponentsTint tint;
 
 /*!
+ Whether all components are specified.
+ */
+@property (getter=isSpecified, readonly) BOOL specified;
+
+/*!
  String representation for the lookup prefixes.
 
  @discussion Format: [-{aqua, vibrantlight, vibrantdark, darkaqua}][-acc][-{ltr, rtl}][-{blue, graphite}]
-             Fragments are optional and are not included if the corresponding value is either None or Unspecified.
+ Fragments are optional and are not included if the corresponding value is either None or Unspecified.
  */
 @property (readonly) NSString *stringRepresentation;
 
@@ -364,11 +177,242 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
  Compare components against the ideal.
 
  @discussion If the receiver is closer to the ideal, returns NSOrderedAscending.
-             If anOtherComponents is closer, returns NSOrderedDescending.
-             Otherwise, NSOrderedSame.
+ If anOtherComponents is closer, returns NSOrderedDescending.
+ Otherwise, NSOrderedSame.
  */
 - (NSComparisonResult)compare:(SRRecorderControlStyleComponents *)anOtherComponents
          relativeToComponents:(SRRecorderControlStyleComponents *)anIdealComponents;
+
+@end
+
+
+/*!
+ Styling is responsible for providing resources and metrics to draw SRRecorderControl.
+ */
+NS_SWIFT_NAME(RecorderControlStyling)
+@protocol SRRecorderControlStyling <NSCopying>
+
+/*!
+ Unique identifier of the style.
+ */
+@property (readonly) NSString *identifier;
+
+/*!
+ @seealso NSView/allowsVibrancy
+ */
+@property (readonly) BOOL allowsVibrancy;
+
+/*!
+ @seealso NSView/opaque
+ */
+@property (getter=isOpaque, readonly) BOOL opaque;
+
+/*!
+ Unlike baselineLayoutOffsetFromBottom this is the true baseline where label is actually drawn.
+
+ @seealso baselineLayoutOffsetFromBottom
+ */
+@property (readonly) CGFloat baselineDrawingOffsetFromBottom;
+
+/*!
+ @seealso NSView/alignmentRectInsets
+ */
+@property (readonly) NSEdgeInsets alignmentRectInsets;
+
+/*!
+ @seealso NSView/intrinsicContentSize
+ */
+@property (readonly) NSSize intrinsicContentSize;
+
+/*!
+ The guide that applies alignment insets to view's bounds.
+ */
+@property (readonly) NSLayoutGuide *alignmentGuide;
+
+/*!
+ The guide to draw view's label.
+ */
+@property (readonly) NSLayoutGuide *labelDrawingGuide;
+
+/*!
+ Constraints that should be always active.
+ */
+@property (readonly) NSArray<NSLayoutConstraint *> *alwaysConstraints;
+
+/*!
+ Constraints for not recording states.
+ */
+@property (readonly) NSArray<NSLayoutConstraint *> *displayingConstraints;
+
+/*!
+ Constraints for the recording state when there is no value and clear button should not be displayed.
+ */
+@property (readonly) NSArray<NSLayoutConstraint *> *recordingWithNoValueConstraints;
+
+/*!
+ Constraints for the recording state when there is a value and clear button should be displayed.
+ */
+@property (readonly) NSArray<NSLayoutConstraint *> *recordingWithValueConstraints;
+
+@optional
+
+/*!
+ Default visual appearance components for the control.
+
+ @discussion
+ Style may provide custom values for the control properties such as userInterfaceLayoutDirection and appearance.
+ Use the unspecified value to tell the control to use its own defaults.
+ */
+@property (readonly) SRRecorderControlStyleComponents *preferredComponents;
+
+/*!
+ Label attributes for displaying when enabled.
+ */
+@property (readonly) NSDictionary<NSAttributedStringKey, id> *normalLabelAttributes;
+
+/*!
+ Label attributes for displaying when recoding.
+ */
+@property (readonly) NSDictionary<NSAttributedStringKey, id> *recordingLabelAttributes;
+
+/*!
+ Label attributes for displaying when disabled.
+ */
+@property (readonly) NSDictionary<NSAttributedStringKey, id> *disabledLabelAttributes;
+
+@property (readonly) NSImage *bezelNormalLeft;
+@property (readonly) NSImage *bezelNormalCenter;
+@property (readonly) NSImage *bezelNormalRight;
+
+@property (readonly) NSImage *bezelPressedLeft;
+@property (readonly) NSImage *bezelPressedCenter;
+@property (readonly) NSImage *bezelPressedRight;
+
+@property (readonly) NSImage *bezelRecordingLeft;
+@property (readonly) NSImage *bezelRecordingCenter;
+@property (readonly) NSImage *bezelRecordingRight;
+
+@property (readonly) NSImage *bezelDisabledLeft;
+@property (readonly) NSImage *bezelDisabledCenter;
+@property (readonly) NSImage *bezelDisabledRight;
+
+@property (readonly) NSImage *cancelButton;
+@property (readonly) NSImage *cancelButtonPressed;
+
+@property (readonly) NSImage *clearButton;
+@property (readonly) NSImage *clearButtonPressed;
+
+/*!
+ Corner radius of the focus ring.
+
+ @discussion
+ If not implemented, defaults to NSZeroSize.
+ */
+@property (readonly) NSSize focusRingCornerRadius;
+
+/*!
+ Insets of the focus ring relative to the alignment frame.
+
+ @discussion
+ If not implemented, defaults to NSEdgeInsetsZero.
+ */
+@property (readonly) NSEdgeInsets focusRingInsets;
+
+/*!
+ Baseline offset for autolayout alignment.
+
+ @discussion
+ If not implemented, defaults to baselineDrawingOffsetFromBottom.
+
+ @seealso NSView/baselineOffsetFromBottom
+ @seealso baselineDrawingOffsetFromBottom
+ */
+@property (readonly) CGFloat baselineLayoutOffsetFromBottom;
+
+/*!
+ The guide to draw view's background.
+
+ @discussion
+ If not implemented, defaults to control's bounds.
+ */
+@property (readonly) NSLayoutGuide *backgroundDrawingGuide;
+
+/*!
+ The guide to draw the cancel button.
+
+ Is valid only when either recordingWithNoValueConstraints or recordingWithValueConstraints are active.
+
+ @discussion
+ If not implemented, defaults to zero rect.
+
+ @seealso recordingWithNoValueConstraints
+ @seealso recordingWithValueConstraints
+ */
+@property (readonly) NSLayoutGuide *cancelButtonDrawingGuide;
+
+/*!
+ The guide to draw the clear button.
+
+ Is valid only when recordingWithValueConstraints are active.
+
+ @discussion
+ If not implemented, defaults to zero rect.
+
+ @seealso recordingWithValueConstraints
+ */
+@property (readonly) NSLayoutGuide *clearButtonDrawingGuide;
+
+/*!
+ The guide for the clickable area of the cancel button.
+
+ Is valid only when either recordingWithNoValueConstraints or recordingWithValueConstraints are active.
+
+ @discussion
+ If not implemented, defaults to cancelButtonDrawingGuide.
+
+ @seealso recordingWithNoValueConstraints
+ @seealso recordingWithValueConstraints
+ */
+@property (readonly) NSLayoutGuide *cancelButtonLayoutGuide;
+
+/*!
+ The guide for the clickable area of the clear button.
+
+ Is valid only when recordingWithValueConstraints are active.
+
+ @discussion
+ If not implemented, defaults to clearButtonDrawingGuide.
+
+ @seealso recordingWithValueConstraints
+ */
+@property (readonly) NSLayoutGuide *clearButtonLayoutGuide;
+
+/*!
+ Called just before style is applied to the specified control.
+
+ @discussion
+ Use this method to locate and cache resources, set up observers and install constraints.
+ */
+- (void)prepareForRecorderControl:(SRRecorderControl *)aControl NS_SWIFT_NAME(prepareForRecorderControl(_:));
+
+/*!
+ Called just before style is removed from the control it was added to.
+
+ @discussion
+ Use this method to free allocated resources, remove observers and remove constraints.
+ */
+- (void)prepareForRemoval;
+
+/*!
+ Called when view's appearance settings are changed.
+
+ @seealso NSView/viewDidChangeBackingProperties
+ @seealso NSControlTintDidChangeNotification
+ @seealso NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification
+ @seealso NSView/viewDidChangeEffectiveAppearance
+ @seealso NSView/userInterfaceLayoutDirection
+ */
+- (void)recorderControlAppearanceDidChange:(nullable id)aReason;
 
 @end
 
@@ -388,7 +432,7 @@ NS_SWIFT_NAME(SRRecorderControlStyle.ResourceLoader)
 - (NSDictionary<NSString *, id> *)infoForStyle:(SRRecorderControlStyle *)aStyle;
 
 /*!
- Make new lookup prefixes, in order, for the currently effective components.
+ Make new lookup prefixes, ordered by best match to style's effective components.
 
  @seealso RecorderControlStyle/effectiveComponents
  */
@@ -405,11 +449,20 @@ NS_SWIFT_NAME(SRRecorderControlStyle.ResourceLoader)
 /*!
  Load style from resources.
 
- @discussion Searches for resources in:
-                1. ShortcutRecorder Framework
-                2. Main application bundle
+ @discussion
+ Searches for resources in:
+    1. ShortcutRecorder Framework
+    2. Main application bundle
+
+ Resources are resolved according to the notion of style components represented
+ by SRRecorderControlStyleComponents. Each such object defines envionment settings
+ that may alter visual appearance, e.g. appearance and layout direction.
+ Style automatically resolves current (or effective) components and orders available
+ resources accordingly selecting the best match. If automatic resolution is not desirable
+ specific set of components (or preffered) can be set during initialization.
 
  @seealso SRRecorderControlStyleResourceLoader
+ @seealso SRRecorderControlStyleComponents
  */
 NS_SWIFT_NAME(RecorderControlStyle)
 @interface SRRecorderControlStyle : NSObject <SRRecorderControlStyling>
@@ -417,11 +470,6 @@ NS_SWIFT_NAME(RecorderControlStyle)
 @property (class, readonly) SRRecorderControlStyleResourceLoader *resourceLoader;
 
 @property (nullable, weak, readonly) SRRecorderControl *recorderControl;
-
-/*!
- Custom components that override system settings.
- */
-@property (readonly) SRRecorderControlStyleComponents *preferredComponents;
 
 /*!
  Currently effective components used to order lookup prefixes.
@@ -436,8 +484,9 @@ NS_SWIFT_NAME(RecorderControlStyle)
  @param anIdentifier Identifier to locate the style.
                      Defaults to the best available for the system in framework's bundle.
 
- @param aComponents Custom components that override current system settings.
-                    Defaults to unspecified to allow complete fallthrough.
+ @param aComponents Custom components that override current system settings. The unspecified value can be
+                    set for an individual component to allow a fallthrough.
+                    Defaults all componenents to unspecified to allow complete fallthrough.
 
  @seealso effectiveComponents
  */

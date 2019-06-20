@@ -242,7 +242,7 @@ class LayoutInspectorController: NSViewController {
     
     func updateRecorderControlStyle() {
         recorderControl.style = RecorderControlStyle(fromDictionaryRepresentation: style)
-        let components = recorderControl.style.preferredComponents
+        let components = recorderControl.style.preferredComponents!
 
         if components.appearance != .unspecified {
             view.window?.appearance = components.appearance.systemRepresentation

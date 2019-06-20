@@ -120,7 +120,7 @@ extension RecorderControlStyle.Components.Tint: CaseIterable {
 
 
 class SRRecorderControlStyleTests: XCTestCase {
-    func testEffectiveComponentsAlwaysSpecified() {
+        func testEffectiveComponentsAlwaysSpecified() {
         let style = RecorderControlStyle(identifier: "sr-test-", components: nil)
         let currentComponents = RecorderControlStyle.Components.current
 
@@ -130,15 +130,16 @@ class SRRecorderControlStyleTests: XCTestCase {
     }
 
     func testEffectiveComponentsAppearance() {
-        let superview = NSView(frame: NSRect.zero)
-        let control = RecorderControl(frame: NSRect.zero)
-        superview.addSubview(control)
-
-        superview.appearance = NSAppearance(named: .aqua)
-        XCTAssertEqual(control.style.effectiveComponents.appearance, .aqua)
-
-        superview.appearance = NSAppearance(named: .vibrantDark)
-        XCTAssertEqual(control.style.effectiveComponents.appearance, .vibrantDark)
+        XCTAssert(false)
+//        let superview = NSView(frame: NSRect.zero)
+//        let control = RecorderControl(frame: NSRect.zero)
+//        superview.addSubview(control)
+//
+//        superview.appearance = NSAppearance(named: .aqua)
+//        XCTAssertEqual(control.style.effectiveComponents.appearance, .aqua)
+//
+//        superview.appearance = NSAppearance(named: .vibrantDark)
+//        XCTAssertEqual(control.style.effectiveComponents.appearance, .vibrantDark)
     }
 
     func testEffectiveComponentsLayoutDirection() {
@@ -163,6 +164,34 @@ class SRRecorderControlStyleTests: XCTestCase {
         control.style = RecorderControlStyle(identifier: nil, components: RecorderControlStyle.Components())
         XCTAssertEqual(control.userInterfaceLayoutDirection, view.userInterfaceLayoutDirection)
     }
+
+    func testEffectiveComponentsKVO() {
+        let style = RecorderControlStyle()
+        let control = RecorderControl()
+        control.style = style
+
+        let currentComponents = RecorderControlStyle.Components.current
+        let aquaComponents = RecorderControlStyle.Components(appearance: .aqua,
+                                                             accessibility: currentComponents.accessibility,
+                                                             layoutDirection: .leftToRight,
+                                                             tint: currentComponents.tint)
+        let darkAquaComponents = RecorderControlStyle.Components(appearance: .darkAqua,
+                                                                 accessibility: currentComponents.accessibility,
+                                                                 layoutDirection: .rightToLeft,
+                                                                 tint: currentComponents.tint)
+
+        var expectation = XCTKVOExpectation(keyPath: "style.effectiveComponents", object: control,
+                                            expectedValue: aquaComponents, options: [.initial, .new])
+        control.appearance = NSAppearance(named: .aqua)
+        control.userInterfaceLayoutDirection = .leftToRight
+        wait(for: [expectation], timeout: 1.0)
+
+        expectation = XCTKVOExpectation(keyPath: "style.effectiveComponents", object: control,
+                                        expectedValue: darkAquaComponents, options: [.initial, .new])
+        control.appearance = NSAppearance(named: .darkAqua)
+        control.userInterfaceLayoutDirection = .rightToLeft
+        wait(for: [expectation], timeout: 1.0)
+    }
 }
 
 
@@ -180,11 +209,8 @@ class SRRecorderControlStyleComponentsTests: XCTestCase {
                        RecorderControlStyle.Components.Appearance.vibrantLight)
         XCTAssertEqual(RecorderControlStyle.Components.Appearance(fromSystem: .vibrantDark),
                        RecorderControlStyle.Components.Appearance.vibrantDark)
-
-        if #available(OSX 10.14, *) {
-            XCTAssertEqual(RecorderControlStyle.Components.Appearance(fromSystem: .darkAqua),
-                           RecorderControlStyle.Components.Appearance.darkAqua)
-        }
+        XCTAssertEqual(RecorderControlStyle.Components.Appearance(fromSystem: .darkAqua),
+                       RecorderControlStyle.Components.Appearance.darkAqua)
     }
 
     func testTintFromSystem() {

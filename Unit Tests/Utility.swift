@@ -50,3 +50,16 @@ extension NSEvent.ModifierFlags {
         return SymbolicModifierFlagsTransformer.shared.transformedValue(self.rawValue) as! String
     }
 }
+
+
+extension XCTestExpectation {
+    convenience init(description: String, isInverted: Bool) {
+        self.init(description: description)
+        self.isInverted = isInverted
+    }
+
+    convenience init(description: String, assertForOverFulfill: Bool) {
+        self.init(description: description)
+        self.assertForOverFulfill = assertForOverFulfill
+    }
+}

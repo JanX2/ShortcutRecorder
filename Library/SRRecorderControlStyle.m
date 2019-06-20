@@ -208,6 +208,16 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                                tint:SRRecorderControlStyleComponentsTintUnspecified];
 }
 
+#pragma mark Properties
+
+- (BOOL)isSpecified
+{
+    return _appearance != SRRecorderControlStyleComponentsAppearanceUnspecified &&
+        _accessibility != SRRecorderControlStyleComponentsAccessibilityUnspecified &&
+        _layoutDirection != SRRecorderControlStyleComponentsLayoutDirectionUnspecified &&
+        _tint != SRRecorderControlStyleComponentsTintUnspecified;
+}
+
 - (NSString *)stringRepresentation
 {
     NSString *appearance = nil;
@@ -965,35 +975,6 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     return Loader;
 }
 
-- (SRRecorderControlStyleComponents *)effectiveComponents
-{
-    if (_preferredComponents.appearance && _preferredComponents.accessibility && _preferredComponents.layoutDirection && _preferredComponents.tint)
-        return _preferredComponents.copy;
-
-    SRRecorderControlStyleComponents *current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
-
-    __auto_type appearance = _preferredComponents.appearance;
-    if (!appearance)
-        appearance = current.appearance ? current.appearance : SRRecorderControlStyleComponentsAppearanceAqua;
-
-    __auto_type accessibility = _preferredComponents.accessibility;
-    if (!accessibility)
-        accessibility = current.accessibility ? current.accessibility : SRRecorderControlStyleComponentsAccessibilityNone;
-
-    __auto_type layoutDirection = _preferredComponents.layoutDirection;
-    if (!layoutDirection)
-        layoutDirection = current.layoutDirection ? current.layoutDirection : SRRecorderControlStyleComponentsLayoutDirectionLeftToRight;
-
-    __auto_type tint = _preferredComponents.tint;
-    if (!tint)
-        tint = current.tint ? current.tint : SRRecorderControlStyleComponentsTintBlue;
-
-    return [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
-                                                          accessibility:accessibility
-                                                        layoutDirection:layoutDirection
-                                                                   tint:tint];
-}
-
 #pragma mark Methods
 
 - (void)addConstraints
@@ -1259,6 +1240,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @synthesize displayingConstraints = _displayingConstraints;
 @synthesize recordingWithNoValueConstraints = _recordingWithNoValueConstraints;
 @synthesize recordingWithValueConstraints = _recordingWithValueConstraints;
+@synthesize preferredComponents = _preferredComponents;
 
 - (void)prepareForRecorderControl:(SRRecorderControl *)aControl
 {
@@ -1296,6 +1278,44 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 - (void)recorderControlAppearanceDidChange:(nullable id)aReason
 {
+    __auto_type UpdateEffectiveComponents = ^{
+        SRRecorderControlStyleComponents *newComponents = nil;
+
+        if (self->_preferredComponents.isSpecified)
+            newComponents = [self->_preferredComponents copy];
+        else
+        {
+            SRRecorderControlStyleComponents *current = [SRRecorderControlStyleComponents currentComponentsForView:self.recorderControl];
+
+            __auto_type appearance = self->_preferredComponents.appearance;
+            if (appearance == SRRecorderControlStyleComponentsAppearanceUnspecified)
+                appearance = current.appearance ? current.appearance : SRRecorderControlStyleComponentsAppearanceAqua;
+
+            __auto_type accessibility = self->_preferredComponents.accessibility;
+            if (!accessibility)
+                accessibility = current.accessibility ? current.accessibility : SRRecorderControlStyleComponentsAccessibilityNone;
+
+            __auto_type layoutDirection = self->_preferredComponents.layoutDirection;
+            if (!layoutDirection)
+                layoutDirection = current.layoutDirection ? current.layoutDirection : SRRecorderControlStyleComponentsLayoutDirectionLeftToRight;
+
+            __auto_type tint = self->_preferredComponents.tint;
+            if (!tint)
+                tint = current.tint ? current.tint : SRRecorderControlStyleComponentsTintBlue;
+
+            newComponents = [[SRRecorderControlStyleComponents alloc] initWithAppearance:appearance
+                                                                           accessibility:accessibility
+                                                                         layoutDirection:layoutDirection
+                                                                                    tint:tint];
+        }
+
+        [self willChangeValueForKey:@"effectiveComponents"];
+        self->_effectiveComponents = newComponents;
+        [self didChangeValueForKey:@"effectiveComponents"];
+    };
+
+    UpdateEffectiveComponents();
+
     __auto_type newLookupPrefixes = [self.class.resourceLoader lookupPrefixesForStyle:self];
     if ([newLookupPrefixes isEqual:_currentLookupPrefixes])
         return;
