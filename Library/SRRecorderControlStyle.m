@@ -192,9 +192,9 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     if (self)
     {
         _appearance = anAppearance;
-        _tint = aTint;
         _accessibility = anAccessibility;
         _layoutDirection = aDirection;
+        _tint = aTint;
     }
 
     return self;
@@ -299,6 +299,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
     return [NSString stringWithFormat:@"%@%@%@%@", appearance, acc, direction, tint];
 }
+
+#pragma mark Methods
 
 - (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject
 {
@@ -685,13 +687,13 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         NSColor *fontColor = [NSColor colorWithCatalogName:anObject[@"fontColorCatalogName"] colorName:anObject[@"fontColorName"]];
 
         NSMutableDictionary *attributes = @{
-            NSParagraphStyleAttributeName: p.copy,
+            NSParagraphStyleAttributeName: [p copy],
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: fontColor
         }.mutableCopy;
         attributes[SRMinimalDrawableWidthAttributeName] = @([@"…" sizeWithAttributes:attributes].width);
 
-        return attributes.copy;
+        return [attributes copy];
     };
 
     __auto_type Get = ^(NSDictionary *aSource, NSString *aKey, Verifier aVerifier, Transformer aTransformer) {
@@ -751,7 +753,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
                     [components addObject:[SRRecorderControlStyleComponents new]];
 
-                    return (NSArray *)components.copy;
+                    return (NSArray *)[components copy];
                 });
 
                 Set(infoInProgress, json, @"metrics", VerifyIsDictionary, ^(NSDictionary *anObject, NSString *aKey) {
@@ -773,10 +775,10 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                     Set(metricsInProgress, anObject, @"recordingLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
                     Set(metricsInProgress, anObject, @"disabledLabelAttributes", VerifyIsLabelAttributes, TransformLabelAttributes);
 
-                    return (NSDictionary *)metricsInProgress.copy;
+                    return (NSDictionary *)[metricsInProgress copy];
                 });
 
-                info = infoInProgress.copy;
+                info = [infoInProgress copy];
                 [self->_cache setObject:info forKey:aStyle.identifier];
             }
             else
@@ -798,8 +800,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         @synchronized (self)
         {
             __auto_type key = [_SRRecorderControlStyleResourceLoaderCacheLookupPrefixesKey new];
-            key.identifier = aStyle.identifier.copy;
-            key.components = aStyle.effectiveComponents.copy;
+            key.identifier = [aStyle.identifier copy];
+            key.components = [aStyle.effectiveComponents copy];
 
             lookupPrefixes = [self->_cache objectForKey:key];
 
@@ -817,7 +819,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                 for (SRRecorderControlStyleComponents *c in supportedComponents)
                     [(NSMutableArray *)lookupPrefixes addObject:[NSString stringWithFormat:@"%@%@", aStyle.identifier, c.stringRepresentation]];
 
-                lookupPrefixes = lookupPrefixes.copy;
+                lookupPrefixes = [lookupPrefixes copy];
                 [self->_cache setObject:lookupPrefixes forKey:key];
             }
             else
@@ -840,9 +842,9 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         @synchronized (self)
         {
             __auto_type key = [_SRRecorderControlStyleResourceLoaderCacheImageKey new];
-            key.identifier = aStyle.identifier.copy;
-            key.components = aStyle.effectiveComponents.copy;
-            key.name = aName.copy;
+            key.identifier = [aStyle.identifier copy];
+            key.components = [aStyle.effectiveComponents copy];
+            key.name = [aName copy];
             NSArray *imageNameCache = [self->_cache objectForKey:key];
 
             if (!imageNameCache)
@@ -930,7 +932,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     if (self = [super init])
     {
         if (anIdentifier)
-            _identifier = anIdentifier.copy;
+            _identifier = [anIdentifier copy];
         else
         {
             if (@available(macOS 10.14, *))
@@ -940,7 +942,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         }
 
         if (aComponents)
-            _preferredComponents = aComponents.copy;
+            _preferredComponents = [aComponents copy];
         else
             _preferredComponents = [SRRecorderControlStyleComponents new];
 

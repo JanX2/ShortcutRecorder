@@ -213,7 +213,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
         newObjectValue = [SRShortcut shortcutWithDictionary:(NSDictionary *)newObjectValue];
     }
 
-    _objectValue = newObjectValue.copy;
+    _objectValue = [newObjectValue copy];
     [self didChangeValueForKey:@"objectValue"];
 
     if (_isCompatibilityModeEnabled)
@@ -271,7 +271,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     else if ([newStyle isEqual:_style])
         return;
     else
-        newStyle = newStyle.copy;
+        newStyle = [newStyle copy];
 
     [self _setStyle:newStyle];
 }
