@@ -1322,15 +1322,17 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     if ([newLookupPrefixes isEqual:_currentLookupPrefixes])
         return;
 
-    __auto_type UpdateImage = ^(NSString *imageName, NSString *propName, NSRect frame) {
+    // Update image if needed using KVC for KVO notifications.
+    __auto_type UpdateImage = ^(NSString *imageName, SEL propName, NSRect frame) {
         NSImage *newImage = [self.class.resourceLoader imageNamed:imageName forStyle:self];
+        NSString *propNameString = NSStringFromSelector(propName);
 
         NSAssert(newImage != nil, @"Missing image for %@!", imageName);
 
-        if ([newImage isEqual:[self valueForKey:propName]])
+        if ([newImage isEqual:[self valueForKey:propNameString]])
             return;
 
-        [self setValue:newImage forKey:propName];
+        [self setValue:newImage forKey:propNameString];
 
         if (!NSIsEmptyRect(frame))
             [self.recorderControl setNeedsDisplayInRect:frame];
@@ -1338,27 +1340,27 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
     NSRect controlBounds = self.recorderControl.bounds;
 
-    UpdateImage(@"bezel-normal-left", @"bezelNormalLeft", controlBounds);
-    UpdateImage(@"bezel-normal-center", @"bezelNormalCenter", controlBounds);
-    UpdateImage(@"bezel-normal-right", @"bezelNormalRight", controlBounds);
+    UpdateImage(@"bezel-normal-left", @selector(bezelNormalLeft), controlBounds);
+    UpdateImage(@"bezel-normal-center", @selector(bezelNormalCenter), controlBounds);
+    UpdateImage(@"bezel-normal-right", @selector(bezelNormalRight), controlBounds);
 
-    UpdateImage(@"bezel-pressed-left", @"bezelPressedLeft", controlBounds);
-    UpdateImage(@"bezel-pressed-center", @"bezelPressedCenter", controlBounds);
-    UpdateImage(@"bezel-pressed-right", @"bezelPressedRight", controlBounds);
+    UpdateImage(@"bezel-pressed-left", @selector(bezelPressedLeft), controlBounds);
+    UpdateImage(@"bezel-pressed-center", @selector(bezelPressedCenter), controlBounds);
+    UpdateImage(@"bezel-pressed-right", @selector(bezelPressedRight), controlBounds);
 
-    UpdateImage(@"bezel-recording-left", @"bezelRecordingLeft", controlBounds);
-    UpdateImage(@"bezel-recording-center", @"bezelRecordingCenter", controlBounds);
-    UpdateImage(@"bezel-recording-right", @"bezelRecordingRight", controlBounds);
+    UpdateImage(@"bezel-recording-left", @selector(bezelRecordingLeft), controlBounds);
+    UpdateImage(@"bezel-recording-center", @selector(bezelRecordingCenter), controlBounds);
+    UpdateImage(@"bezel-recording-right", @selector(bezelRecordingRight), controlBounds);
 
-    UpdateImage(@"bezel-disabled-left", @"bezelDisabledLeft", controlBounds);
-    UpdateImage(@"bezel-disabled-center", @"bezelDisabledCenter", controlBounds);
-    UpdateImage(@"bezel-disabled-right", @"bezelDisabledRight", controlBounds);
+    UpdateImage(@"bezel-disabled-left", @selector(bezelDisabledLeft), controlBounds);
+    UpdateImage(@"bezel-disabled-center", @selector(bezelDisabledCenter), controlBounds);
+    UpdateImage(@"bezel-disabled-right", @selector(bezelDisabledRight), controlBounds);
 
-    UpdateImage(@"button-cancel-normal", @"cancelButton", self.cancelButtonDrawingGuide.frame);
-    UpdateImage(@"button-cancel-pressed", @"cancelButtonPressed", self.cancelButtonDrawingGuide.frame);
+    UpdateImage(@"button-cancel-normal", @selector(cancelButton), self.cancelButtonDrawingGuide.frame);
+    UpdateImage(@"button-cancel-pressed", @selector(cancelButtonPressed), self.cancelButtonDrawingGuide.frame);
 
-    UpdateImage(@"button-clear-normal", @"clearButton", self.clearButtonDrawingGuide.frame);
-    UpdateImage(@"button-clear-pressed", @"clearButtonPressed", self.clearButtonDrawingGuide.frame);
+    UpdateImage(@"button-clear-normal", @selector(clearButton), self.clearButtonDrawingGuide.frame);
+    UpdateImage(@"button-clear-pressed", @selector(clearButtonPressed), self.clearButtonDrawingGuide.frame);
 
     _cancelButtonWidthConstraint.constant = self.cancelButton.size.width;
     _cancelButtonHeightConstraint.constant = self.cancelButton.size.height;
