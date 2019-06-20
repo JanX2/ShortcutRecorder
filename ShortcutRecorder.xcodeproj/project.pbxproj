@@ -136,7 +136,7 @@
 		BA7D153E22B1719400D42338 /* SRCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRCommonTests.swift; sourceTree = "<group>"; };
 		BA813C9622B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyEquivalentTransformerTests.swift; sourceTree = "<group>"; };
 		BA813C9822B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyEquivalentModifierMaskTransformerTests.swift; sourceTree = "<group>"; };
-		BA8C53D421FFED8D00B40164 /* Demo.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Demo.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		BA8C53D421FFED8D00B40164 /* Documentation.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Documentation.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BA8CFDF222A2645800C96F79 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
 		BA8CFDF422A26DAA00C96F79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutFormatter.h; path = Library/SRShortcutFormatter.h; sourceTree = "<group>"; };
@@ -273,7 +273,7 @@
 		29B97314FDCFA39411CA2CEA /* ShortcutRecorder */ = {
 			isa = PBXGroup;
 			children = (
-				BA8C53D421FFED8D00B40164 /* Demo.playground */,
+				BA8C53D421FFED8D00B40164 /* Documentation.playground */,
 				BAC79C08216FCE8E00E45F23 /* Inspector */,
 				080E96DDFE201D6D7F000001 /* ShortcutRecorder */,
 				BA722EC62161619200EFF192 /* Unit Tests */,
