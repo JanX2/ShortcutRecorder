@@ -235,7 +235,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
         }
         else if (actualLength == 0)
         {
-            os_trace_error("#Error No translation exists for keyCode %hu and modifierFlags %lu",
+            os_trace("#Error No translation exists for keyCode %hu and modifierFlags %lu",
                            aKeyCode,
                            anImplicitModifierFlags);
             return nil;
