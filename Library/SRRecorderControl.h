@@ -289,12 +289,12 @@ IB_DESIGNABLE
 /*!
  Shape of the control for the focus ring.
  */
-@property (copy, readonly) NSBezierPath *focusRingShape;
+@property (readonly) NSBezierPath *focusRingShape;
 
 /*!
  Returns label to be displayed by the receiver.
  */
-@property (copy, readonly) NSString *drawingLabel;
+@property (readonly) NSString *drawingLabel;
 
 /*!
  Attirbutes for the drawingLabel.
