@@ -138,4 +138,31 @@ class SRRecorderControlTests: XCTestCase {
         let expected = [[nil, s1.dictionaryRepresentation], [s1.dictionaryRepresentation, s2.dictionaryRepresentation]]
         XCTAssertTrue((calls as NSArray).isEqual(to: expected))
     }
+
+    func testStringValueKVO() {
+        let control = RecorderControl()
+        control.userInterfaceLayoutDirection = .leftToRight
+        control.stringValueRespectsUserInterfaceLayoutDirection = false
+        control.objectValue = Shortcut(keyEquivalent: "⇧⌘A")!
+
+        var expectation = keyValueObservingExpectation(for: control, keyPath: "stringValue", expectedValue: "⇧⌘A")
+        control.userInterfaceLayoutDirection = .rightToLeft
+        wait(for: [expectation], timeout: 0)
+
+        expectation = keyValueObservingExpectation(for: control, keyPath: "stringValue", expectedValue: "⇧⌘A")
+        control.userInterfaceLayoutDirection = .leftToRight
+        wait(for: [expectation], timeout: 0)
+
+        expectation = keyValueObservingExpectation(for: control, keyPath: "stringValue", expectedValue: "⇧⌘A")
+        control.stringValueRespectsUserInterfaceLayoutDirection = true
+        wait(for: [expectation], timeout: 0)
+
+        expectation = keyValueObservingExpectation(for: control, keyPath: "stringValue", expectedValue: "A⌘⇧")
+        control.userInterfaceLayoutDirection = .rightToLeft
+        wait(for: [expectation], timeout: 0)
+
+        expectation = keyValueObservingExpectation(for: control, keyPath: "stringValue", expectedValue: "⇧⌘A")
+        control.userInterfaceLayoutDirection = .leftToRight
+        wait(for: [expectation], timeout: 0)
+    }
 }

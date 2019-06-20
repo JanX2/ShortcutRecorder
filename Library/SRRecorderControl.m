@@ -124,17 +124,17 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
 + (NSSet<NSString *> *)keyPathsForValuesAffectingStringValue
 {
-    return [NSSet setWithObject:@"objectValue"];
+    return [NSSet setWithObjects:@"objectValue", @"userInterfaceLayoutDirection", @"stringValueRespectsUserInterfaceLayoutDirection", nil];
 }
 
 + (NSSet<NSString *> *)keyPathsForValuesAffectingAttributedStringValue
 {
-    return [NSSet setWithObject:@"objectValue"];
+    return [NSSet setWithObject:@"stringValue"];
 }
 
-+ (NSSet<NSString *> *)keyPathsForValuesAffectingAccessibilityStringValue
++ (NSSet<NSString *> *)keyPathsForValuesAffectingUserInterfaceLayoutDirection
 {
-    return [NSSet setWithObject:@"objectValue"];
+    return [NSSet setWithObject:@"style"];
 }
 
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
@@ -333,7 +333,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 
         if (_currentlyDrawnRecordingModifierFlags)
         {
-            __auto_type layoutDirection = self.drawLabelRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
+            __auto_type layoutDirection = self.stringValueRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
             label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_currentlyDrawnRecordingModifierFlags)
                                                                            layoutDirection:layoutDirection];
         }

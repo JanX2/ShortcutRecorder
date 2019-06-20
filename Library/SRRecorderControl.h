@@ -119,16 +119,17 @@ IB_DESIGNABLE
 @property IBInspectable BOOL disablesShortcutRegistrationsWhileRecording;
 
 /*!
- Whether the label (shortcut's key literal and modifier flags) are drawn with respect to user interface layout direction.
+ Whether the string value respects the user interface layout direction.
 
  @discussion
  Defaults to NO.
+
  The control fully supports right-to-left layouts but macOS is inconsistent. Parts of the system
  draw key equivalents fully right-to-left, that is flags in reverse order and properly
- altered directional keys such as Tab). Yet other parts either support it only partially or not at all.
- Unfortunately the most visible key equivalents, those that appear in NSMenuItem, do not respect right-to-left at all.
+ altered directional keys such as Tab. Yet other parts either support it only partially or not at all.
+ The most visible key equivalents, those that appear in NSMenuItem, do not respect right-to-left at all.
  */
-@property IBInspectable BOOL drawLabelRespectsUserInterfaceLayoutDirection;
+@property IBInspectable BOOL stringValueRespectsUserInterfaceLayoutDirection;
 
 /*!
  Configure allowed and required modifier flags for user interaction.

@@ -11,7 +11,7 @@ import ShortcutRecorder
 class SRKeyCodeTransformerTests: XCTestCase {
     func testUserInterfaceLayoutAltersTabRendering() {
         let c = RecorderControl(frame: .zero)
-        c.drawLabelRespectsUserInterfaceLayoutDirection = true
+        c.stringValueRespectsUserInterfaceLayoutDirection = true
         c.drawsASCIIEquivalentOfShortcut = true
 
         c.userInterfaceLayoutDirection = .leftToRight
