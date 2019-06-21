@@ -1,18 +1,18 @@
-[![CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-orange.svg)](http://creativecommons.org/licenses/by/4.0/)
+[![CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-orange.svg)](http://creativecommons.org/licenses/by/4.0/)
 ![macOS 10.11](https://img.shields.io/badge/macOS-10.11%2B-black.svg)
 ![Mac App Store Approved](https://img.shields.io/badge/Mac%20App%20Store-Approved-success.svg)
-
 
 # ShortcutRecorder
 
 The best control to record shortcuts on macOS
 
-- End-to-end Interface Builder integration
 - Designed with Swift in mind
+- Easily stylable
 - Translated into 23 languages
 - Supports macOS Accessibility
-- Easily stylable
+- Thoroughly documented
 - Mac App Store approved
+- End-to-end Interface Builder integration
 
 ## What is inside
 
@@ -22,22 +22,21 @@ The framework comes with:
 - `SRShortcut` that represents a shortcut model
 - `SRShortcutRegistration` to turn the shortcut into an action by registering a global hot key
 - `SRShortcutController` for smooth Cocoa Bindings and seamless Interface Builder integration
-- `SRValidator` to check validity of the shortcut against Cocoa Key Equivalents and global hot keys
+- `SRShortcutValidator` to check validity of the shortcut against Cocoa key equivalents and global hot keys
 - `NSValueTransformer` and `NSFormatter` subclasses for custom alternations
-- `NSEvent` category that can create [local](https://developer.apple.com/documentation/appkit/nsevent/1534971-addlocalmonitorforeventsmatching) and [global](https://developer.apple.com/documentation/appkit/nsevent/1535472-addglobalmonitorforeventsmatchin) monitors from `SRShortcut`
 
 ```swift
 import ShortcutRecorder
 
-let shortcut = Shortcut(withString: "⇧⌘A")
-let recorder = RecorderControl(frame: ...)
+let shortcut = Shortcut(keyEquivalent: "⇧⌘A")
+let recorder = RecorderControl()
 
 let defaults = NSUserDefaultsController.shared
 let keyPath = "values.shortcut"
-let options = [.valueTransformerName: NSValueTransformerName.keyedUnarchiveFromDataTransformerName]
-recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
+let options = [NSBindingOption.valueTransformerName: NSValueTransformerName.keyedUnarchiveFromDataTransformerName]
 
-let registration = ShortcutRegistration.register(keyPath: keyPath, of: defaults) {_ in NSSound.beep() }
+recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
+let registration = ShortcutRegistration(keyPath: keyPath, of: defaults) {_ in NSSound.beep() }
 ```
 
 ## Integration
@@ -67,9 +66,8 @@ Then drag'n'drop into your Xcode's workspace and update your targets.
 
 ## Next Steps
 
-- The Demo playground covers the most useful parts of the framework
-- Play with the Inspector app (extremely useful to debug custom styles!)
-- Public API is throughoutly documented
+- The Documentation playground covers all parts of the framework
+- The Inspector app gives hands-on experience and is extremely useful for development of custom styles
 - Read about [Styling](https://github.com/Kentzo/ShortcutRecorder/wiki/Styling) and special notes regarding [Cocoa's Key Equivalents](https://github.com/Kentzo/ShortcutRecorder/wiki/Cocoa-Key-Equivalents).
 
 ## Questions
