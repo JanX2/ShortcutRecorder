@@ -20,14 +20,6 @@ extension Shortcut {
 }
 
 
-extension XCTKVOExpectation {
-    convenience init(closureKeyPath: String, object: Any) {
-        self.init(keyPath: closureKeyPath, object: object, expectedValue: nil, options: [.new])
-        handler = { (_, _) in return true }
-    }
-}
-
-
 extension TISInputSource {
     var identifier: String {
         return Unmanaged<CFString>.fromOpaque(TISGetInputSourceProperty(self, kTISPropertyInputSourceID)).takeUnretainedValue() as String

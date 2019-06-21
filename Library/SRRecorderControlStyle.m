@@ -960,6 +960,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         _cancelButtonLayoutGuide = [NSLayoutGuide new];
         _clearButtonLayoutGuide = [NSLayoutGuide new];
         _intrinsicContentSize = NSMakeSize(NSViewNoIntrinsicMetric, NSViewNoIntrinsicMetric);
+        _effectiveComponents = SRRecorderControlStyleComponents.currentComponents;
     }
 
     return self;
@@ -1397,7 +1398,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         _cancelToClearConstraint.constant = -[metrics[@"cancelToClear"] doubleValue];
 
         CGFloat maxExpectedLeadingLabelOffset = _alignmentToLabelConstraint.constant;
-        CGFloat maxExpectedLabelWidth = ceilf([SRLoc(@"Click to record shortcut") sizeWithAttributes:_normalLabelAttributes].width);
+        CGFloat maxExpectedLabelWidth = ceil([SRLoc(@"Click to record shortcut") sizeWithAttributes:_normalLabelAttributes].width);
         CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
         _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
 

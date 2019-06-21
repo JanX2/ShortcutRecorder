@@ -53,6 +53,7 @@
         }
         else if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] ||
                   [self.delegate shortcutValidatorShouldCheckMenu:self]) &&
+                 NSApp.mainMenu &&
                  ![self validateShortcut:aShortcut againstMenu:NSApp.mainMenu error:outError])
         {
             result = NO;
@@ -74,13 +75,25 @@
         return YES;
 
     __block BOOL result = YES;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    __auto_type DelegateIsShortcutValid = ^(NSString * __autoreleasing * aReason) {
+        if ([self.delegate respondsToSelector:@selector(shortcutValidator:isShortcutValid:reason:)])
+            return [self.delegate shortcutValidator:self isShortcutValid:aShortcut reason:aReason];
+        else if ([self.delegate respondsToSelector:@selector(shortcutValidator:isKeyCode:andFlagsTaken:reason:)])
+            return (BOOL)![self.delegate shortcutValidator:self
+                                                 isKeyCode:aShortcut.keyCode
+                                             andFlagsTaken:aShortcut.modifierFlags
+                                                    reason:aReason];
+        else
+            return YES;
+    };
+#pragma clang diagnostic pop
+
     os_activity_initiate("validateShortcutAgainstDelegate:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
         NSString *delegateReason = nil;
-        if (([self.delegate respondsToSelector:@selector(shortcutValidator:isShortcutValid:reason:)] &&
-             ![self.delegate shortcutValidator:self isShortcutValid:aShortcut reason:&delegateReason]) ||
-            ([self.delegate respondsToSelector:@selector(shortcutValidator:isKeyCode:andFlagsTaken:reason:)] &&
-             [self.delegate shortcutValidator:self isKeyCode:aShortcut.keyCode andFlagsTaken:aShortcut.modifierFlags reason:&delegateReason]))
-
+        if (!DelegateIsShortcutValid(&delegateReason))
         {
             if (outError)
             {
@@ -134,7 +147,7 @@
             if ((__bridge CFBooleanRef)symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyEnabled] != kCFBooleanTrue)
                 continue;
 
-            unsigned short symbolicHotKeyCode = [symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyCode] integerValue];
+            NSUInteger symbolicHotKeyCode = [symbolicHotKey[(__bridge NSString *)kHISymbolicHotKeyCode] unsignedIntegerValue];
 
             if (symbolicHotKeyCode == aShortcut.keyCode)
             {

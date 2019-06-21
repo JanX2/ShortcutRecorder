@@ -107,56 +107,46 @@ class SRShortcutRegistrationTests: XCTestCase {
         XCTAssertNil(registration.target)
         XCTAssertNil(registration.actionHandler)
 
+        let target = Target()
         let action: ShortcutRegistration.Action = {_ in }
 
-        let target = Target()
-
-        var actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
         var targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: nil, options: [.new])
         targetExpectation.isInverted = true
         registration.actionHandler = action
         XCTAssertNil(registration.target)
         XCTAssertNotNil(registration.actionHandler)
-        wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
+        wait(for: [targetExpectation], timeout: 0)
 
-        actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
-        targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: self, options: [.new])
+        targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: target, options: [.new])
         registration.target = target
         XCTAssertNotNil(registration.target)
         XCTAssertNil(registration.actionHandler)
-        wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
+        wait(for: [targetExpectation], timeout: 0)
 
-        actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
-        actionExpectation.isInverted = true
-        targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: self, options: [.new])
+        targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: nil, options: [.new])
         targetExpectation.isInverted = true
         registration.target = target
         XCTAssertNotNil(registration.target)
         XCTAssertNil(registration.actionHandler)
-        wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
+        wait(for: [targetExpectation], timeout: 0)
 
-        actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
-        actionExpectation.isInverted = true
         targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: nil, options: [.new])
         registration.target = nil
         XCTAssertNil(registration.target)
         XCTAssertNil(registration.actionHandler)
-        wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
+        wait(for: [targetExpectation], timeout: 0)
 
-        actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
-        actionExpectation.isInverted = true
-        targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: self, options: [.new])
+        targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: target, options: [.new])
         registration.target = target
         XCTAssertNotNil(registration.target)
         XCTAssertNil(registration.actionHandler)
-        wait(for: [actionExpectation, targetExpectation], timeout: 0, enforceOrder: true)
+        wait(for: [targetExpectation], timeout: 0)
 
-        actionExpectation = XCTKVOExpectation(closureKeyPath: "actionHandler", object: registration)
         targetExpectation = XCTKVOExpectation(keyPath: "target", object: registration, expectedValue: nil, options: [.new])
         registration.actionHandler = action
         XCTAssertNil(registration.target)
         XCTAssertNotNil(registration.actionHandler)
-        wait(for: [targetExpectation, actionExpectation], timeout: 0, enforceOrder: true)
+        wait(for: [targetExpectation], timeout: 0)
     }
 
     func testFiringWithActionHandler() {

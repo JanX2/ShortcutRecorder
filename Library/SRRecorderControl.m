@@ -431,6 +431,19 @@ static NSInteger _SRStyleAppearanceObservingContext;
 - (BOOL)beginRecording
 {
     __block BOOL result = NO;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    __auto_type DelegateShouldBeginRecording = ^{
+        if ([self.delegate respondsToSelector:@selector(recorderControlShouldBeginRecording:)])
+            return [self.delegate recorderControlShouldBeginRecording:self];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
+            return [self.delegate shortcutRecorderShouldBeginRecording:self];
+        else
+            return YES;
+    };
+#pragma clang diagnostic pop
+
     os_activity_initiate("beginRecording", OS_ACTIVITY_FLAG_DEFAULT, ^{
         if (!self.enabled)
         {
@@ -444,12 +457,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
             return;
         }
 
-        BOOL shouldBeginRecording = YES;
-
-        if ([self.delegate respondsToSelector:@selector(recorderControlShouldBeginRecording:)])
-            shouldBeginRecording = [self.delegate recorderControlShouldBeginRecording:self];
-        else if ([self.delegate respondsToSelector:@selector(shortcutRecorderShouldBeginRecording:)])
-            shouldBeginRecording = [self.delegate shortcutRecorderShouldBeginRecording:self];
+        BOOL shouldBeginRecording = DelegateShouldBeginRecording();
 
         if (!shouldBeginRecording)
         {
@@ -525,6 +533,16 @@ static NSInteger _SRStyleAppearanceObservingContext;
     if (!self.isRecording)
         return;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    __auto_type DelegateDidEndRecording = ^{
+        if ([self.delegate respondsToSelector:@selector(recorderControlDidEndRecording:)])
+            [self.delegate recorderControlDidEndRecording:self];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
+            [self.delegate shortcutRecorderDidEndRecording:self];
+    };
+#pragma clang diagnostic pop
+
     os_activity_initiate("endRecording explicitly", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
         [self willChangeValueForKey:@"isRecording"];
         self->_isRecording = NO;
@@ -553,10 +571,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
         if (self.window.firstResponder == self && !self.canBecomeKeyView)
             [self.window makeFirstResponder:nil];
 
-        if ([self.delegate respondsToSelector:@selector(recorderControlDidEndRecording:)])
-            [self.delegate recorderControlDidEndRecording:self];
-        else if ([self.delegate respondsToSelector:@selector(shortcutRecorderDidEndRecording:)])
-            [self.delegate shortcutRecorderDidEndRecording:self];
+        DelegateDidEndRecording();
 
         [self sendAction:self.action to:self.target];
 
@@ -742,20 +757,29 @@ static NSInteger _SRStyleAppearanceObservingContext;
     aModifierFlags &= SRCocoaModifierFlagsMask;
     __block BOOL allowModifierFlags = YES;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    __auto_type DelegateShouldUnconditionallyAllowModifierFlags = ^{
+        if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        {
+            return [self.delegate recorderControl:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode];
+        }
+        else if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        {
+            return [self.delegate shortcutRecorder:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode];
+        }
+        else
+            return YES;
+    };
+#pragma clang diagnostic pop
+
     os_activity_initiate("areModifierFlagsAllowed:forKeyCode:", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
         if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
             allowModifierFlags = NO;
         else if ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags)
             allowModifierFlags = NO;
 
-        if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
-            allowModifierFlags = [self.delegate recorderControl:self
-                        shouldUnconditionallyAllowModifierFlags:aModifierFlags
-                                                     forKeyCode:aKeyCode];
-        else if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
-            allowModifierFlags = [self.delegate shortcutRecorder:self
-                         shouldUnconditionallyAllowModifierFlags:aModifierFlags
-                                                      forKeyCode:aKeyCode];
+        allowModifierFlags = DelegateShouldUnconditionallyAllowModifierFlags();
     });
 
     return allowModifierFlags;
@@ -1521,6 +1545,21 @@ static NSInteger _SRStyleAppearanceObservingContext;
 - (BOOL)performKeyEquivalent:(NSEvent *)anEvent
 {
     __block BOOL result = NO;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    __auto_type DelegateCanRecordShortcut = ^(SRShortcut *aShortcut){
+        if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
+            return [self.delegate recorderControl:self canRecordShortcut:aShortcut];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
+            return [self.delegate shortcutRecorder:self canRecordShortcut:aShortcut.dictionaryRepresentation];
+        else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
+            return [self.delegate control:self isValidObject:aShortcut];
+        else
+            return YES;
+    };
+#pragma clang diagnostic pop
+
     os_activity_initiate("performKeyEquivalent:", OS_ACTIVITY_FLAG_DEFAULT, ^{
         if (!self.enabled)
         {
@@ -1575,14 +1614,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
                                                                characters:anEvent.characters
                                               charactersIgnoringModifiers:anEvent.charactersIgnoringModifiers];
 
-                BOOL canRecordShortcut = YES;
-
-                if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
-                    canRecordShortcut = [self.delegate recorderControl:self canRecordShortcut:newObjectValue];
-                else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
-                    canRecordShortcut = [self.delegate shortcutRecorder:self canRecordShortcut:newObjectValue.dictionaryRepresentation];
-                else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
-                    canRecordShortcut = [self.delegate control:self isValidObject:newObjectValue];
+                BOOL canRecordShortcut = DelegateCanRecordShortcut(newObjectValue);
 
                 if (canRecordShortcut)
                 {

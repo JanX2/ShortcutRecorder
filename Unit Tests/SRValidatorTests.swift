@@ -7,78 +7,103 @@ import XCTest
 import ShortcutRecorder
 
 
-class SRValidatorTests: XCTestCase {
-    class RecordingValidator : ShortcutValidator {
-        var calls: [String] = []
+class RecordingValidator : ShortcutValidator {
+    enum FailAt {
+        case delegate
+        case system
+        case menu
+        case none
+    }
 
-        override func validateAgainstDelegate(shortcut aShortcut: Shortcut) throws {
+    let failAt: FailAt
+
+    let againstDelegateExpectation = XCTestExpectation(description: "validate against delegate")
+    let againstSystemShortcutsExpectation = XCTestExpectation(description: "validate against system shortcuts")
+    let againstMenuExpectation = XCTestExpectation(description: "validate against menu")
+
+    init(delegate aDelegate: (NSObjectProtocol & ShortcutValidatorDelegate)? = nil, failAt: FailAt = .none)
+    {
+        self.failAt = failAt
+
+        switch (failAt) {
+        case .delegate:
+            againstDelegateExpectation.isInverted = true
+            againstSystemShortcutsExpectation.isInverted = true
+            againstMenuExpectation.isInverted = true
+        case .system:
+            againstSystemShortcutsExpectation.isInverted = true
+            againstMenuExpectation.isInverted = true
+        case .menu:
+            againstMenuExpectation.isInverted = true
+        case .none:
+            break
+        }
+
+        super.init(delegate: aDelegate)
+    }
+
+    convenience init(failAt: FailAt = .none) {
+        self.init(delegate: nil, failAt: failAt)
+    }
+
+    override convenience init(delegate aDelegate: (NSObjectProtocol & ShortcutValidatorDelegate)?) {
+        self.init(delegate: aDelegate, failAt: .none)
+    }
+
+    func assertExpectations(testCase: XCTestCase) {
+        testCase.wait(for: [againstDelegateExpectation,
+                            againstSystemShortcutsExpectation,
+                            againstMenuExpectation], timeout: 0, enforceOrder: true)
+    }
+
+    override func validateAgainstDelegate(shortcut aShortcut: Shortcut) throws {
+        if self.failAt != .delegate {
+            againstDelegateExpectation.fulfill()
             try super.validateAgainstDelegate(shortcut: aShortcut)
-            self.calls.append("delegate")
         }
-
-        override func validateAgainstSystemShortcuts(shortcut aShortcut: Shortcut) throws {
-            try super.validateAgainstSystemShortcuts(shortcut: aShortcut)
-            self.calls.append("system")
-        }
-
-        override func validate(shortcut aShortcut: Shortcut, againstMenu aMenu: NSMenu) throws {
-            try super.validate(shortcut: aShortcut, againstMenu: aMenu)
-            self.calls.append("menu")
+        else {
+            throw NSError.init(domain: NSCocoaErrorDomain, code: 0, userInfo: nil)
         }
     }
 
-    func testValidationOrder() {
-        class FailingValidator : RecordingValidator {
-            let failAt: String?
-
-            init(_ failAt: String? = nil) {
-                self.failAt = failAt
-                super.init(delegate: nil)
-            }
-
-            override func validateAgainstDelegate(shortcut aShortcut: Shortcut) throws {
-                if self.failAt != "delegate" {
-                    try super.validateAgainstDelegate(shortcut: aShortcut)
-                }
-                else {
-                    throw NSError.init(domain: NSCocoaErrorDomain, code: 0, userInfo: nil)
-                }
-            }
-
-            override func validateAgainstSystemShortcuts(shortcut aShortcut: Shortcut) throws {
-                if self.failAt != "system" {
-                    try super.validateAgainstSystemShortcuts(shortcut: aShortcut)
-                }
-                else {
-                    throw NSError.init(domain: NSCocoaErrorDomain, code: 0, userInfo: nil)
-                }
-            }
-
-            override func validate(shortcut aShortcut: Shortcut, againstMenu aMenu: NSMenu) throws {
-                if self.failAt != "menu" {
-                    try super .validate(shortcut: aShortcut, againstMenu: aMenu)
-                }
-                else {
-                    throw NSError.init(domain: NSCocoaErrorDomain, code: 0, userInfo: nil)
-                }
-            }
+    override func validateAgainstSystemShortcuts(shortcut aShortcut: Shortcut) throws {
+        if self.failAt != .system {
+            againstSystemShortcutsExpectation.fulfill()
+            try super.validateAgainstSystemShortcuts(shortcut: aShortcut)
         }
+        else {
+            throw NSError.init(domain: NSCocoaErrorDomain, code: 0, userInfo: nil)
+        }
+    }
 
-        let v1 = FailingValidator()
+    override func validate(shortcut aShortcut: Shortcut, againstMenu aMenu: NSMenu) throws {
+        if self.failAt != .menu {
+            againstMenuExpectation.fulfill()
+            try super .validate(shortcut: aShortcut, againstMenu: aMenu)
+        }
+        else {
+            throw NSError.init(domain: NSCocoaErrorDomain, code: 0, userInfo: nil)
+        }
+    }
+}
+
+
+class SRValidatorTests: XCTestCase {
+    func testValidationOrder() {
+        let v1 = RecordingValidator()
         try! v1.validate(shortcut: Shortcut.default)
-        XCTAssertEqual(v1.calls, ["delegate", "system", "menu"])
 
-        let v2 = FailingValidator("delegate")
+        let v2 = RecordingValidator(failAt: .delegate)
         try? v2.validate(shortcut: Shortcut.default)
-        XCTAssertEqual(v2.calls, [])
+        v2.assertExpectations(testCase: self)
 
-        let v3 = FailingValidator("system")
+        let v3 = RecordingValidator(failAt: .system)
         try? v3.validate(shortcut: Shortcut.default)
-        XCTAssertEqual(v3.calls, ["delegate"])
+        v3.assertExpectations(testCase: self)
 
-        let v4 = FailingValidator("menu")
+        let v4 = RecordingValidator(failAt: .menu)
         try? v4.validate(shortcut: Shortcut.default)
-        XCTAssertEqual(v4.calls, ["delegate", "system"])
+        v4.assertExpectations(testCase: self)
     }
 
     func testDelegateFailure() {
@@ -96,14 +121,14 @@ class SRValidatorTests: XCTestCase {
 
     func testSystemShortcutsFailure() {
         let v = RecordingValidator()
-        XCTAssertThrowsError(try v.validateAgainstSystemShortcuts(shortcut: Shortcut(code: 48, modifierFlags: [.command], characters: "⇥", charactersIgnoringModifiers: "⇥")))
+        XCTAssertThrowsError(try v.validateAgainstSystemShortcuts(shortcut: Shortcut(keyEquivalent: "⌘⇥")!))
     }
 
     func testMenuFailure() {
         let m = NSMenu()
         m.addItem(NSMenuItem(title: "item", action: nil, keyEquivalent: "a"))
         let v = RecordingValidator()
-        XCTAssertThrowsError(try v.validate(shortcut: Shortcut(code: 0, modifierFlags: [.command], characters: "a", charactersIgnoringModifiers: "a"), againstMenu: m))
+        XCTAssertThrowsError(try v.validate(shortcut: Shortcut(keyEquivalent: "⌘a")!, againstMenu: m))
     }
 
     func testNestedMenuFailure() {
@@ -112,6 +137,6 @@ class SRValidatorTests: XCTestCase {
         m.items[0].submenu = NSMenu()
         m.items[0].submenu!.addItem(NSMenuItem(title: "subitem", action: nil, keyEquivalent: "a"))
         let v = RecordingValidator()
-        XCTAssertThrowsError(try v.validate(shortcut: Shortcut(code: 0, modifierFlags: [.command], characters: "a", charactersIgnoringModifiers: "a"), againstMenu: m))
+        XCTAssertThrowsError(try v.validate(shortcut: Shortcut(keyEquivalent: "⌘a")!, againstMenu: m))
     }
 }

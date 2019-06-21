@@ -123,23 +123,11 @@ class SRRecorderControlStyleTests: XCTestCase {
         func testEffectiveComponentsAlwaysSpecified() {
         let style = RecorderControlStyle(identifier: "sr-test-", components: nil)
         let currentComponents = RecorderControlStyle.Components.current
+        let effectiveComponents = style.effectiveComponents
 
-        XCTAssertEqual(style.effectiveComponents.appearance, currentComponents.appearance)
-        XCTAssertEqual(style.effectiveComponents.tint, currentComponents.tint)
-        XCTAssertEqual(style.effectiveComponents.accessibility, currentComponents.accessibility)
-    }
-
-    func testEffectiveComponentsAppearance() {
-        XCTAssert(false)
-//        let superview = NSView(frame: NSRect.zero)
-//        let control = RecorderControl(frame: NSRect.zero)
-//        superview.addSubview(control)
-//
-//        superview.appearance = NSAppearance(named: .aqua)
-//        XCTAssertEqual(control.style.effectiveComponents.appearance, .aqua)
-//
-//        superview.appearance = NSAppearance(named: .vibrantDark)
-//        XCTAssertEqual(control.style.effectiveComponents.appearance, .vibrantDark)
+        XCTAssertEqual(effectiveComponents.appearance, currentComponents.appearance)
+        XCTAssertEqual(effectiveComponents.tint, currentComponents.tint)
+        XCTAssertEqual(effectiveComponents.accessibility, currentComponents.accessibility)
     }
 
     func testEffectiveComponentsLayoutDirection() {
