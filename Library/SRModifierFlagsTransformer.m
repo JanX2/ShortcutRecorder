@@ -108,9 +108,9 @@
         [flagsStringComponents addObject:SRLoc(@"Command")];
 
     if (aDirection == NSUserInterfaceLayoutDirectionRightToLeft)
-        return [[[flagsStringComponents reverseObjectEnumerator] allObjects] componentsJoinedByString:@"-"];
+        return [[[flagsStringComponents reverseObjectEnumerator] allObjects] componentsJoinedByString:SRLoc(@"-")];
     else
-        return [flagsStringComponents componentsJoinedByString:@"-"];
+        return [flagsStringComponents componentsJoinedByString:SRLoc(@"-")];
 }
 
 @end
