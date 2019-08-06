@@ -43,14 +43,29 @@
     return _actions[aShortcut].pointerValue;
 }
 
+- (SEL)actionForKeyEquivalent:(NSString *)aKeyEquivalent
+{
+    return [self actionForShortcut:[SRShortcut shortcutWithKeyEquivalent:aKeyEquivalent]];
+}
+
 - (void)setAction:(SEL)anAction forShortcut:(SRShortcut *)aShortcut
 {
     _actions[aShortcut] = [NSValue valueWithPointer:anAction];
 }
 
+- (void)setAction:(SEL)anAction forKeyEquivalent:(NSString *)aKeyEquivalent
+{
+    [self setAction:anAction forShortcut:[SRShortcut shortcutWithKeyEquivalent:aKeyEquivalent]];
+}
+
 - (void)removeActionForShortcut:(SRShortcut *)aShortcut
 {
     _actions[aShortcut] = nil;
+}
+
+- (void)removeActionForKeyEquivalent:(NSString *)aKeyEquivalent
+{
+    [self removeActionForShortcut:[SRShortcut shortcutWithKeyEquivalent:aKeyEquivalent]];
 }
 
 - (BOOL)performShortcut:(SRShortcut *)aShortcut onTarget:(id)aTarget
@@ -106,9 +121,14 @@
     return isPerformed;
 }
 
-- (BOOL)performKeyEquivalent:(NSEvent *)anEvent onTarget:(id)aTarget
+- (BOOL)performEvent:(NSEvent *)anEvent onTarget:(id)aTarget
 {
     return [self performShortcut:[SRShortcut shortcutWithEvent:anEvent] onTarget:aTarget];
+}
+
+- (BOOL)performKeyEquivalent:(NSString *)aKeyEquivalent onTarget:(id)aTarget
+{
+    return [self performShortcut:[SRShortcut shortcutWithKeyEquivalent:aKeyEquivalent] onTarget:aTarget];
 }
 
 - (NSValue *)objectForKeyedSubscript:(SRShortcut *)aKey

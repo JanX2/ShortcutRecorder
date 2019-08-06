@@ -93,7 +93,7 @@ class MyController: NSViewController {
     }
 
     override func keyDown(with event: NSEvent) {
-        if (!shortcutActions.performKeyEquivalent(event, onTarget: self)) {
+        if (!shortcutActions.perform(event, onTarget: self)) {
             super.keyDown(with: event)
         }
     }
