@@ -15,3 +15,4 @@
 #import <ShortcutRecorder/SRShortcutValidator.h>
 #import <ShortcutRecorder/SRShortcutFormatter.h>
 #import <ShortcutRecorder/SRShortcutRegistration.h>
+#import <ShortcutRecorder/SRShortcutActions.h>

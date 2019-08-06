@@ -8,7 +8,7 @@ import XCTest
 import ShortcutRecorder
 
 
-class Target: ShortcutRegistrationTarget {
+fileprivate class Target: ShortcutRegistrationTarget {
     let expectation = XCTestExpectation()
     func performShortcutAction(_ aRegistration: ShortcutRegistration) {
         expectation.fulfill()

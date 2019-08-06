@@ -73,4 +73,29 @@ UserDefaults.standard.set(encodedShortcutData, forKey: "shortcut")
  In addition to `actionHandler`, `ShortcutRegistration` can be configured with a target conforming to `ShortcutRegistrationTarget`.
  It will then receive the corresponding message for every matching system-wide shortcut.
  */
+/*:
+ ## Shortcut Actions
+ When implementing custom `NSViewController` and `NSWindowController` subclasses it is often useful to handle
+ custom shortcuts there. `ShortcutActions` allows to associate shortcuts and actions for later execution.
+
+ In the following example a subclass of `NSViewController` handles the next and previous tab shortcuts.
+
+ - Note:
+ The `keyDown(with:)` method is overridden instead of the `performKeyEquivalent(with:)` because the latter is not called for controllers.
+ */
+class MyController: NSViewController {
+    var shortcutActions: ShortcutActions = ShortcutActions()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        shortcutActions.setAction(Selector("selectNextTab:"), for: Shortcut(keyEquivalent: "⇧⌘]"))
+        shortcutActions.setAction(Selector("selectPreviousTab:"), for: Shortcut(keyEquivalent: "⇧⌘["))
+    }
+
+    override func keyDown(with event: NSEvent) {
+        if (!shortcutActions.performKeyEquivalent(event, onTarget: self)) {
+            super.keyDown(with: event)
+        }
+    }
+}
 //: [Next](@next)
