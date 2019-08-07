@@ -11,12 +11,6 @@
 #import "SRKeyCodeTransformer.h"
 
 
-FOUNDATION_STATIC_INLINE NSString* _SRUnicharToString(unichar aChar)
-{
-    return [NSString stringWithFormat: @"%C", aChar];
-}
-
-
 /*!
  Return a retained isntance of Keyboard Layout Input Source.
  */
@@ -611,79 +605,79 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 {
     switch (aValue) {
         case kVK_F1:
-            return _SRUnicharToString(NSF1FunctionKey);
+            return SRUnicharToString(NSF1FunctionKey);
         case kVK_F2:
-            return _SRUnicharToString(NSF2FunctionKey);
+            return SRUnicharToString(NSF2FunctionKey);
         case kVK_F3:
-            return _SRUnicharToString(NSF3FunctionKey);
+            return SRUnicharToString(NSF3FunctionKey);
         case kVK_F4:
-            return _SRUnicharToString(NSF4FunctionKey);
+            return SRUnicharToString(NSF4FunctionKey);
         case kVK_F5:
-            return _SRUnicharToString(NSF5FunctionKey);
+            return SRUnicharToString(NSF5FunctionKey);
         case kVK_F6:
-            return _SRUnicharToString(NSF6FunctionKey);
+            return SRUnicharToString(NSF6FunctionKey);
         case kVK_F7:
-            return _SRUnicharToString(NSF7FunctionKey);
+            return SRUnicharToString(NSF7FunctionKey);
         case kVK_F8:
-            return _SRUnicharToString(NSF8FunctionKey);
+            return SRUnicharToString(NSF8FunctionKey);
         case kVK_F9:
-            return _SRUnicharToString(NSF9FunctionKey);
+            return SRUnicharToString(NSF9FunctionKey);
         case kVK_F10:
-            return _SRUnicharToString(NSF10FunctionKey);
+            return SRUnicharToString(NSF10FunctionKey);
         case kVK_F11:
-            return _SRUnicharToString(NSF11FunctionKey);
+            return SRUnicharToString(NSF11FunctionKey);
         case kVK_F12:
-            return _SRUnicharToString(NSF12FunctionKey);
+            return SRUnicharToString(NSF12FunctionKey);
         case kVK_F13:
-            return _SRUnicharToString(NSF13FunctionKey);
+            return SRUnicharToString(NSF13FunctionKey);
         case kVK_F14:
-            return _SRUnicharToString(NSF14FunctionKey);
+            return SRUnicharToString(NSF14FunctionKey);
         case kVK_F15:
-            return _SRUnicharToString(NSF15FunctionKey);
+            return SRUnicharToString(NSF15FunctionKey);
         case kVK_F16:
-            return _SRUnicharToString(NSF16FunctionKey);
+            return SRUnicharToString(NSF16FunctionKey);
         case kVK_F17:
-            return _SRUnicharToString(NSF17FunctionKey);
+            return SRUnicharToString(NSF17FunctionKey);
         case kVK_F18:
-            return _SRUnicharToString(NSF18FunctionKey);
+            return SRUnicharToString(NSF18FunctionKey);
         case kVK_F19:
-            return _SRUnicharToString(NSF19FunctionKey);
+            return SRUnicharToString(NSF19FunctionKey);
         case kVK_F20:
-            return _SRUnicharToString(NSF20FunctionKey);
+            return SRUnicharToString(NSF20FunctionKey);
         case kVK_Space:
-            return _SRUnicharToString(' ');
+            return SRUnicharToString(' ');
         case kVK_Delete:
-            return _SRUnicharToString(NSBackspaceCharacter);
+            return SRUnicharToString(NSBackspaceCharacter);
         case kVK_ForwardDelete:
-            return _SRUnicharToString(NSDeleteCharacter);
+            return SRUnicharToString(NSDeleteCharacter);
         case kVK_ANSI_KeypadClear:
-            return _SRUnicharToString(NSClearLineFunctionKey);
+            return SRUnicharToString(NSClearLineFunctionKey);
         case kVK_LeftArrow:
-            return _SRUnicharToString(NSLeftArrowFunctionKey);
+            return SRUnicharToString(NSLeftArrowFunctionKey);
         case kVK_RightArrow:
-            return _SRUnicharToString(NSRightArrowFunctionKey);
+            return SRUnicharToString(NSRightArrowFunctionKey);
         case kVK_UpArrow:
-            return _SRUnicharToString(NSUpArrowFunctionKey);
+            return SRUnicharToString(NSUpArrowFunctionKey);
         case kVK_DownArrow:
-            return _SRUnicharToString(NSDownArrowFunctionKey);
+            return SRUnicharToString(NSDownArrowFunctionKey);
         case kVK_End:
-            return _SRUnicharToString(NSEndFunctionKey);
+            return SRUnicharToString(NSEndFunctionKey);
         case kVK_Home:
-            return _SRUnicharToString(NSHomeFunctionKey);
+            return SRUnicharToString(NSHomeFunctionKey);
         case kVK_Escape:
-            return _SRUnicharToString('\e');
+            return SRUnicharToString('\e');
         case kVK_PageDown:
-            return _SRUnicharToString(NSPageDownFunctionKey);
+            return SRUnicharToString(NSPageDownFunctionKey);
         case kVK_PageUp:
-            return _SRUnicharToString(NSPageUpFunctionKey);
+            return SRUnicharToString(NSPageUpFunctionKey);
         case kVK_Return:
-            return _SRUnicharToString(NSCarriageReturnCharacter);
+            return SRUnicharToString(NSCarriageReturnCharacter);
         case kVK_ANSI_KeypadEnter:
-            return _SRUnicharToString(NSEnterCharacter);
+            return SRUnicharToString(NSEnterCharacter);
         case kVK_Tab:
-            return _SRUnicharToString(NSTabCharacter);
+            return SRUnicharToString(NSTabCharacter);
         case kVK_Help:
-            return _SRUnicharToString(NSHelpFunctionKey);
+            return SRUnicharToString(NSHelpFunctionKey);
         default:
             return [_translator translateKeyCode:aValue
                            implicitModifierFlags:anImplicitModifierFlags
@@ -728,43 +722,43 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
         Mapping = @{
-            @(kVK_F1): _SRUnicharToString(NSF1FunctionKey),
-            @(kVK_F2): _SRUnicharToString(NSF2FunctionKey),
-            @(kVK_F3): _SRUnicharToString(NSF3FunctionKey),
-            @(kVK_F4): _SRUnicharToString(NSF4FunctionKey),
-            @(kVK_F5): _SRUnicharToString(NSF5FunctionKey),
-            @(kVK_F6): _SRUnicharToString(NSF6FunctionKey),
-            @(kVK_F7): _SRUnicharToString(NSF7FunctionKey),
-            @(kVK_F8): _SRUnicharToString(NSF8FunctionKey),
-            @(kVK_F9): _SRUnicharToString(NSF9FunctionKey),
-            @(kVK_F10): _SRUnicharToString(NSF10FunctionKey),
-            @(kVK_F11): _SRUnicharToString(NSF11FunctionKey),
-            @(kVK_F12): _SRUnicharToString(NSF12FunctionKey),
-            @(kVK_F13): _SRUnicharToString(NSF13FunctionKey),
-            @(kVK_F14): _SRUnicharToString(NSF14FunctionKey),
-            @(kVK_F15): _SRUnicharToString(NSF15FunctionKey),
-            @(kVK_F16): _SRUnicharToString(NSF16FunctionKey),
-            @(kVK_F17): _SRUnicharToString(NSF17FunctionKey),
-            @(kVK_F18): _SRUnicharToString(NSF18FunctionKey),
-            @(kVK_F19): _SRUnicharToString(NSF19FunctionKey),
-            @(kVK_F20): _SRUnicharToString(NSF20FunctionKey),
-            @(kVK_Space): _SRUnicharToString(' '),
-            @(kVK_Delete): _SRUnicharToString(NSBackspaceCharacter),
-            @(kVK_ForwardDelete): _SRUnicharToString(NSDeleteCharacter),
-            @(kVK_ANSI_KeypadClear): _SRUnicharToString(NSClearLineFunctionKey),
-            @(kVK_LeftArrow): _SRUnicharToString(NSLeftArrowFunctionKey),
-            @(kVK_RightArrow): _SRUnicharToString(NSRightArrowFunctionKey),
-            @(kVK_UpArrow): _SRUnicharToString(NSUpArrowFunctionKey),
-            @(kVK_DownArrow): _SRUnicharToString(NSDownArrowFunctionKey),
-            @(kVK_End): _SRUnicharToString(NSEndFunctionKey),
-            @(kVK_Home): _SRUnicharToString(NSHomeFunctionKey),
-            @(kVK_Escape): _SRUnicharToString('\e'),
-            @(kVK_PageDown): _SRUnicharToString(NSPageDownFunctionKey),
-            @(kVK_PageUp): _SRUnicharToString(NSPageUpFunctionKey),
-            @(kVK_Return): _SRUnicharToString(NSCarriageReturnCharacter),
-            @(kVK_ANSI_KeypadEnter): _SRUnicharToString(NSEnterCharacter),
-            @(kVK_Tab): _SRUnicharToString(NSTabCharacter),
-            @(kVK_Help): _SRUnicharToString(NSHelpFunctionKey)
+            @(kVK_F1): SRUnicharToString(NSF1FunctionKey),
+            @(kVK_F2): SRUnicharToString(NSF2FunctionKey),
+            @(kVK_F3): SRUnicharToString(NSF3FunctionKey),
+            @(kVK_F4): SRUnicharToString(NSF4FunctionKey),
+            @(kVK_F5): SRUnicharToString(NSF5FunctionKey),
+            @(kVK_F6): SRUnicharToString(NSF6FunctionKey),
+            @(kVK_F7): SRUnicharToString(NSF7FunctionKey),
+            @(kVK_F8): SRUnicharToString(NSF8FunctionKey),
+            @(kVK_F9): SRUnicharToString(NSF9FunctionKey),
+            @(kVK_F10): SRUnicharToString(NSF10FunctionKey),
+            @(kVK_F11): SRUnicharToString(NSF11FunctionKey),
+            @(kVK_F12): SRUnicharToString(NSF12FunctionKey),
+            @(kVK_F13): SRUnicharToString(NSF13FunctionKey),
+            @(kVK_F14): SRUnicharToString(NSF14FunctionKey),
+            @(kVK_F15): SRUnicharToString(NSF15FunctionKey),
+            @(kVK_F16): SRUnicharToString(NSF16FunctionKey),
+            @(kVK_F17): SRUnicharToString(NSF17FunctionKey),
+            @(kVK_F18): SRUnicharToString(NSF18FunctionKey),
+            @(kVK_F19): SRUnicharToString(NSF19FunctionKey),
+            @(kVK_F20): SRUnicharToString(NSF20FunctionKey),
+            @(kVK_Space): SRUnicharToString(' '),
+            @(kVK_Delete): SRUnicharToString(NSBackspaceCharacter),
+            @(kVK_ForwardDelete): SRUnicharToString(NSDeleteCharacter),
+            @(kVK_ANSI_KeypadClear): SRUnicharToString(NSClearLineFunctionKey),
+            @(kVK_LeftArrow): SRUnicharToString(NSLeftArrowFunctionKey),
+            @(kVK_RightArrow): SRUnicharToString(NSRightArrowFunctionKey),
+            @(kVK_UpArrow): SRUnicharToString(NSUpArrowFunctionKey),
+            @(kVK_DownArrow): SRUnicharToString(NSDownArrowFunctionKey),
+            @(kVK_End): SRUnicharToString(NSEndFunctionKey),
+            @(kVK_Home): SRUnicharToString(NSHomeFunctionKey),
+            @(kVK_Escape): SRUnicharToString('\e'),
+            @(kVK_PageDown): SRUnicharToString(NSPageDownFunctionKey),
+            @(kVK_PageUp): SRUnicharToString(NSPageUpFunctionKey),
+            @(kVK_Return): SRUnicharToString(NSCarriageReturnCharacter),
+            @(kVK_ANSI_KeypadEnter): SRUnicharToString(NSEnterCharacter),
+            @(kVK_Tab): SRUnicharToString(NSTabCharacter),
+            @(kVK_Help): SRUnicharToString(NSHelpFunctionKey)
         };
     });
     return Mapping;

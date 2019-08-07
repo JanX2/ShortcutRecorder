@@ -102,6 +102,16 @@ extern SRModifierFlagString const SRModifierFlagStringControl;
 
 
 /*!
+ Convert a unichar literal into a NSString.
+ */
+NS_SWIFT_NAME(unicharToString(_:))
+NS_INLINE NSString* SRUnicharToString(unichar aChar)
+{
+    return [NSString stringWithFormat:@"%C", aChar];
+}
+
+
+/*!
  Convert Carbon modifier flags to Cocoa.
  */
 NS_SWIFT_NAME(carbonToCocoaFlags(_:))
