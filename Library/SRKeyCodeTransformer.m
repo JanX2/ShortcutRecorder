@@ -1193,8 +1193,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
         else
         {
             if ([aValue caseInsensitiveCompare:SRLoc(@"Space")] == NSOrderedSame ||
-                [value isEqualToString:@"space"] ||
-                [value isEqualToString:@" "])
+                [value isEqualToString:@"space"])
             {
                 result = @(kVK_Space);
             }
@@ -1204,6 +1203,8 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
                 result = @(kVK_Tab);
             else if ([value isEqualToString:@"help"] || [value isEqualToString:@"?⃝"])
                 result = @(kVK_Help);
+            else if ([value isEqualToString:@"enter"])
+                result = @(kVK_Return);
         }
 
         if (result == nil)
