@@ -18,6 +18,8 @@
 		939839400DA4350B007F53F3 /* SRCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 74C367100A246B4900B69171 /* SRCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */; };
 		BA03E78F216A90A40008002D /* SRValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA03E78E216A90A40008002D /* SRValidatorTests.swift */; };
+		BA1F0D912303721300A487C3 /* SRKeyBindingTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = BA1F0D8F2303721300A487C3 /* SRKeyBindingTransformer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BA1F0D922303721300A487C3 /* SRKeyBindingTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = BA1F0D902303721300A487C3 /* SRKeyBindingTransformer.m */; };
 		BA3711CD22A71DD800738321 /* SRModifierFlagsTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3711CC22A71DD800738321 /* SRModifierFlagsTransformerTests.swift */; };
 		BA6FAD9B229DEFB100B63E4B /* LayoutInspectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6FAD99229DEFB000B63E4B /* LayoutInspectorController.swift */; };
 		BA6FAD9C229DEFB100B63E4B /* LayoutInspectorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BA6FAD9A229DEFB000B63E4B /* LayoutInspectorController.xib */; };
@@ -118,6 +120,8 @@
 		939837B50DA42DFB007F53F3 /* ShortcutRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShortcutRecorder.h; path = Library/ShortcutRecorder.h; sourceTree = SOURCE_ROOT; };
 		BA00CFF3229BA1D400C76551 /* SRKeyCodeTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyCodeTransformerTests.swift; sourceTree = "<group>"; };
 		BA03E78E216A90A40008002D /* SRValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRValidatorTests.swift; sourceTree = "<group>"; };
+		BA1F0D8F2303721300A487C3 /* SRKeyBindingTransformer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRKeyBindingTransformer.h; path = Library/SRKeyBindingTransformer.h; sourceTree = "<group>"; };
+		BA1F0D902303721300A487C3 /* SRKeyBindingTransformer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRKeyBindingTransformer.m; path = Library/SRKeyBindingTransformer.m; sourceTree = "<group>"; };
 		BA3711CC22A71DD800738321 /* SRModifierFlagsTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRModifierFlagsTransformerTests.swift; sourceTree = "<group>"; };
 		BA5B204121FBCA7B00513748 /* SRRecorderControlStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRRecorderControlStyle.h; path = Library/SRRecorderControlStyle.h; sourceTree = "<group>"; };
 		BA5B204221FBCA7B00513748 /* SRRecorderControlStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRRecorderControlStyle.m; path = Library/SRRecorderControlStyle.m; sourceTree = "<group>"; };
@@ -262,6 +266,8 @@
 				E2BE924C16ABEFE400827E8C /* SRKeyEquivalentTransformer.m */,
 				E2BE925016ABF84100827E8C /* SRKeyEquivalentModifierMaskTransformer.h */,
 				E2BE925116ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.m */,
+				BA1F0D8F2303721300A487C3 /* SRKeyBindingTransformer.h */,
+				BA1F0D902303721300A487C3 /* SRKeyBindingTransformer.m */,
 			);
 			name = ShortcutRecorder;
 			sourceTree = "<group>";
@@ -389,6 +395,7 @@
 				E28113AD167B8A9D001E118E /* SRModifierFlagsTransformer.h in Headers */,
 				E2BE924D16ABEFE400827E8C /* SRKeyEquivalentTransformer.h in Headers */,
 				E2BE925216ABF84200827E8C /* SRKeyEquivalentModifierMaskTransformer.h in Headers */,
+				BA1F0D912303721300A487C3 /* SRKeyBindingTransformer.h in Headers */,
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRShortcutValidator.h in Headers */,
 				BA8CFE1522A30E1200C96F79 /* SRShortcutRegistration.h in Headers */,
@@ -594,6 +601,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA1F0D922303721300A487C3 /* SRKeyBindingTransformer.m in Sources */,
 				BA722EB121608FB600EFF192 /* SRShortcut.m in Sources */,
 				939837950DA429EC007F53F3 /* SRRecorderControl.m in Sources */,
 				BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */,

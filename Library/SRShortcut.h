@@ -79,6 +79,13 @@ NS_SWIFT_NAME(Shortcut)
  */
 + (nullable instancetype)shortcutWithKeyEquivalent:(NSString *)aKeyEquivalent;
 
+/*!
+ Initialize the shortcut from a Cocoa Text system key binding.
+
+ @seealso @link https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html Text System Defaults and Key Bindings @/link
+ */
++ (nullable instancetype)shortcutWithKeyBinding:(NSString *)aKeyBinding;
+
 + (instancetype)new NS_UNAVAILABLE;
 
 /*!

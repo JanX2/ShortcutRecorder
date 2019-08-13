@@ -9,6 +9,7 @@
 #import "SRKeyCodeTransformer.h"
 #import "SRShortcutFormatter.h"
 #import "SRModifierFlagsTransformer.h"
+#import "SRKeyBindingTransformer.h"
 
 #import "SRShortcut.h"
 
@@ -99,7 +100,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     NSScanner *parser = [NSScanner scannerWithString:aKeyEquivalent];
     parser.caseSensitive = NO;
 
-    NSString *modifierFlagsString = @"";
+    NSString *modifierFlagsString = nil;
     [parser scanCharactersFromSet:PossibleFlags intoString:&modifierFlagsString];
     NSString *keyCodeString = [aKeyEquivalent substringFromIndex:parser.scanLocation];
 
@@ -121,6 +122,11 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
                     modifierFlags:modifierFlags.unsignedIntegerValue
                        characters:characters
       charactersIgnoringModifiers:charactersIgnoringModifiers];
+}
+
++ (nullable instancetype)shortcutWithKeyBinding:(NSString *)aKeyBinding
+{
+    return [SRKeyBindingTransformer.sharedTransformer transformedValue:aKeyBinding];
 }
 
 - (instancetype)initWithCode:(unsigned short)aKeyCode
