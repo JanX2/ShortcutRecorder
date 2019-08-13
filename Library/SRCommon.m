@@ -25,7 +25,10 @@ SRKeyCodeString const SRKeyCodeStringNorthwestArrow = @"↖";
 SRKeyCodeString const SRKeyCodeStringSoutheastArrow = @"↘";
 SRKeyCodeString const SRKeyCodeStringEscape = @"⎋";
 SRKeyCodeString const SRKeyCodeStringSpace = @" ";
-
+SRKeyCodeString const SRKeyCodeStringHelp = @"?⃝";
+SRKeyCodeString const SRKeyCodeStringJISUnderscore = @"＿";
+SRKeyCodeString const SRKeyCodeStringJISComma = @"、";
+SRKeyCodeString const SRKeyCodeStringJISYen = @"¥";
 
 SRModifierFlagString const SRModifierFlagStringCommand = @"⌘";
 SRModifierFlagString const SRModifierFlagStringOption = @"⌥";

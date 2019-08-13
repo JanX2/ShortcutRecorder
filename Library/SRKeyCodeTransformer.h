@@ -74,6 +74,9 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransfo
                   explicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags
                         layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
 
+- (nullable NSString *)transformedValue:(nullable NSNumber *)aValue;
+- (nullable NSNumber *)reverseTransformedValue:(nullable NSString *)aValue;
+
 @end
 
 
@@ -105,13 +108,15 @@ NS_SWIFT_NAME(ASCIILiteralKeyCodeTransformer)
 
 /*!
  Transform a key code into a symbol in the current ASCII-capable input source.
+
+ @note Allows reverse transformation.
  */
 NS_SWIFT_NAME(ASCIISymbolicKeyCodeTransformer)
 @interface SRASCIISymbolicKeyCodeTransformer : SRKeyCodeTransformer
 @end
 
 
-@interface SRKeyCodeTransformer(Deprecated)
+@interface SRKeyCodeTransformer (Deprecated)
 @property (class, readonly) NSDictionary<NSNumber *, NSString *> *specialKeyCodeToSymbolMapping;
 @property (class, readonly) NSDictionary<NSNumber *, NSString *> *specialKeyCodeToLiteralMapping;
 @property (readonly) BOOL usesPlainStrings __attribute__((deprecated));

@@ -46,7 +46,24 @@ typedef NS_ENUM(unichar, SRKeyCodeGlyph)
     SRKeyCodeGlyphNorthwestArrow = 0x2196, // ↖
     SRKeyCodeGlyphSoutheastArrow = 0x2198, // ↘
     SRKeyCodeGlyphEscape = 0x238B, // ⎋
-    SRKeyCodeGlyphSpace = 0x0020 // ' '
+    SRKeyCodeGlyphSpace = 0x0020, // ' '
+    SRKeyCodeGlyphJISUnderscore = 0xFF3F, // ＿
+    SRKeyCodeGlyphJISComma = 0x3001, // 、
+    SRKeyCodeGlyphJISYen = 0x00A5, // ¥
+    SRKeyCodeGlyphANSI0 = 0x30, // 0
+    SRKeyCodeGlyphANSI1 = 0x31, // 1
+    SRKeyCodeGlyphANSI2 = 0x32, // 2
+    SRKeyCodeGlyphANSI3 = 0x33, // 3
+    SRKeyCodeGlyphANSI4 = 0x34, // 4
+    SRKeyCodeGlyphANSI5 = 0x35, // 5
+    SRKeyCodeGlyphANSI6 = 0x36, // 6
+    SRKeyCodeGlyphANSI7 = 0x37, // 7
+    SRKeyCodeGlyphANSI8 = 0x38, // 8
+    SRKeyCodeGlyphANSI9 = 0x39, // 9
+    SRKeyCodeGlyphANSIEqual = 0x3d, // =
+    SRKeyCodeGlyphANSIMinus = 0x2d, // -
+    SRKeyCodeGlyphANSISlash = 0x2f, // /
+    SRKeyCodeGlyphANSIPeriod = 0x2e // .
 } NS_SWIFT_NAME(KeyCodeGlyph);
 
 
@@ -73,6 +90,10 @@ extern SRKeyCodeString const SRKeyCodeStringNorthwestArrow;
 extern SRKeyCodeString const SRKeyCodeStringSoutheastArrow;
 extern SRKeyCodeString const SRKeyCodeStringEscape;
 extern SRKeyCodeString const SRKeyCodeStringSpace;
+extern SRKeyCodeString const SRKeyCodeStringHelp;
+extern SRKeyCodeString const SRKeyCodeStringJISUnderscore;
+extern SRKeyCodeString const SRKeyCodeStringJISComma;
+extern SRKeyCodeString const SRKeyCodeStringJISYen;
 
 
 /*!
@@ -105,7 +126,7 @@ extern SRModifierFlagString const SRModifierFlagStringControl;
  Convert a unichar literal into a NSString.
  */
 NS_SWIFT_NAME(unicharToString(_:))
-NS_INLINE NSString* SRUnicharToString(unichar aChar)
+NS_INLINE NSString * SRUnicharToString(unichar aChar)
 {
     return [NSString stringWithFormat:@"%C", aChar];
 }
@@ -173,7 +194,7 @@ NSBundle * SRBundle(void);
  Convenience method to get localized string from the framework bundle.
  */
 NS_SWIFT_NAME(shortcutRecorderLocalizedString(forKey:))
-NSString * _Nullable SRLoc(NSString * _Nullable aKey);
+NSString * SRLoc(NSString * _Nullable aKey);
 
 
 /*!
