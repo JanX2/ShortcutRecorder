@@ -26,6 +26,9 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralModifierFlagsTransformer / SRSymbolicModifier
  @param aDirection The layout direction to select an appropriate symbol or literal.
  */
 - (nullable NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
+
+- (nullable NSString *)transformedValue:(nullable NSNumber *)aValue;
+
 @end
 
 

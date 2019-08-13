@@ -4,7 +4,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ShortcutRecorder/SRShortcut.h>
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 /*!
  Transform a shortcut or its dictionary representation into Cocoa's key equivalent modifier mask
@@ -18,4 +21,8 @@ NS_SWIFT_NAME(KeyEquivalentModifierMaskTransformer)
  */
 @property (class, readonly) SRKeyEquivalentModifierMaskTransformer *sharedTransformer NS_SWIFT_NAME(shared);;
 
+- (nullable NSNumber *)transformedValue:(nullable SRShortcut *)aValue;
+
 @end
+
+NS_ASSUME_NONNULL_END
