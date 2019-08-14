@@ -14,23 +14,23 @@ fileprivate class Target: NSObject {
     }
 }
 
-class SRShortcutActionsTest: XCTestCase {
+class SRShortcutItemTest: XCTestCase {
     func testPerformImplementedMethod() {
-        let actions = ShortcutActions()
+        let catalog = ShortcutItemCatalog()
         let shortcut = Shortcut(keyEquivalent: "⌘A")!
-        actions.setAction(Selector("myAction:"), for: shortcut)
+        catalog.addAction(Selector("myAction:"), forShortcut: shortcut)
         let target = Target()
-        actions.perform(shortcut, onTarget: target)
+        catalog.perform(shortcut, onTarget: target)
         self.wait(for: [target.expectation], timeout: 0)
     }
 
     func testPerformNotImplementedMethod() {
-        let actions = ShortcutActions()
+        let catalog = ShortcutItemCatalog()
         let shortcut = Shortcut(keyEquivalent: "⌘A")!
-        actions.setAction(Selector("anotherAction:"), for: shortcut)
+        catalog.addAction(Selector("anotherAction:"), forShortcut: shortcut)
         let target = Target()
         target.expectation.isInverted = true
-        actions.perform(shortcut, onTarget: target)
+        catalog.perform(shortcut, onTarget: target)
         self.wait(for: [target.expectation], timeout: 0)
     }
 }

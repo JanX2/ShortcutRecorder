@@ -21,6 +21,7 @@ The framework comes with:
 - `SRRecorderControlStyle` for custom styling
 - `SRShortcut` that represents a shortcut model
 - `SRShortcutRegistration` to turn the shortcut into an action by registering a global hot key
+- `SRShortcutItem` and `SRShortcutItemCatalog` are indispensable for custom key equivalent handling in subclasses of `NSViewController`
 - `SRShortcutController` for smooth Cocoa Bindings and seamless Interface Builder integration
 - `SRShortcutValidator` to check validity of the shortcut against Cocoa key equivalents and global hot keys
 - `NSValueTransformer` and `NSFormatter` subclasses for custom alternations

@@ -15,5 +15,5 @@
 #import <ShortcutRecorder/SRShortcutValidator.h>
 #import <ShortcutRecorder/SRShortcutFormatter.h>
 #import <ShortcutRecorder/SRShortcutRegistration.h>
-#import <ShortcutRecorder/SRShortcutActions.h>
+#import <ShortcutRecorder/SRShortcutItem.h>
 #import <ShortcutRecorder/SRKeyBindingTransformer.h>

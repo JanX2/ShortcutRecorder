@@ -74,9 +74,9 @@ UserDefaults.standard.set(encodedShortcutData, forKey: "shortcut")
  It will then receive the corresponding message for every matching system-wide shortcut.
  */
 /*:
- ## Shortcut Actions
+ ## Shortcut Items and Catalogs
  When implementing custom `NSViewController` and `NSWindowController` subclasses it is often useful to handle
- custom shortcuts there. `ShortcutActions` allows to associate shortcuts and actions for later execution.
+ custom shortcuts there. `ShortcutItemCatalog` allows to associate shortcuts and actions for later execution.
 
  In the following example a subclass of `NSViewController` handles the next and previous tab shortcuts.
 
@@ -84,18 +84,27 @@ UserDefaults.standard.set(encodedShortcutData, forKey: "shortcut")
  The `keyDown(with:)` method is overridden instead of the `performKeyEquivalent(with:)` because the latter is not called for controllers.
  */
 class MyController: NSViewController {
-    var shortcutActions: ShortcutActions = ShortcutActions()
+    var shortcutCatalog = ShortcutItemCatalog()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        shortcutActions.setAction(Selector("selectNextTab:"), for: Shortcut(keyEquivalent: "⇧⌘]"))
-        shortcutActions.setAction(Selector("selectPreviousTab:"), for: Shortcut(keyEquivalent: "⇧⌘["))
+        shortcutCatalog.addAction(Selector("selectNextTab:"), forKeyEquivalent: "⇧⌘]")
+        shortcutCatalog.addAction(Selector("selectPreviousTab:"), forKeyEquivalent: "⇧⌘[")
     }
 
     override func keyDown(with event: NSEvent) {
-        if (!shortcutActions.perform(event, onTarget: self)) {
+        if (!shortcutCatalog.perform(event, onTarget: self)) {
             super.keyDown(with: event)
         }
+    }
+
+
+    func selectNextTab(_ sender: Any?) {
+        print("selectNextTab")
+    }
+
+    func selectPreviousTab(_ sender: Any?) {
+        print("selectPreviousTab")
     }
 }
 //: [Next](@next)

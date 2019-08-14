@@ -37,9 +37,9 @@
 		BA7D153F22B1719400D42338 /* SRCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA7D153E22B1719400D42338 /* SRCommonTests.swift */; };
 		BA813C9722B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA813C9622B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift */; };
 		BA813C9922B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA813C9822B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift */; };
-		BA8B3B3222F8F3C800CD6F81 /* SRShortcutActions.h in Headers */ = {isa = PBXBuildFile; fileRef = BA8B3B3022F8F3C800CD6F81 /* SRShortcutActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BA8B3B3322F8F3C800CD6F81 /* SRShortcutActions.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8B3B3122F8F3C800CD6F81 /* SRShortcutActions.m */; };
-		BA8B3B3522F930E800CD6F81 /* SRShortcutActionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8B3B3422F930E800CD6F81 /* SRShortcutActionsTest.swift */; };
+		BA8B3B3222F8F3C800CD6F81 /* SRShortcutItem.h in Headers */ = {isa = PBXBuildFile; fileRef = BA8B3B3022F8F3C800CD6F81 /* SRShortcutItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BA8B3B3322F8F3C800CD6F81 /* SRShortcutItem.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8B3B3122F8F3C800CD6F81 /* SRShortcutItem.m */; };
+		BA8B3B3522F930E800CD6F81 /* SRShortcutItemTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8B3B3422F930E800CD6F81 /* SRShortcutItemTest.swift */; };
 		BA8CFDF322A2645800C96F79 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = BA8CFDF222A2645800C96F79 /* LICENSE.md */; };
 		BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BA8CFE0E22A2F08D00C96F79 /* SRShortcutFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */; };
@@ -143,9 +143,9 @@
 		BA7D153E22B1719400D42338 /* SRCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRCommonTests.swift; sourceTree = "<group>"; };
 		BA813C9622B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyEquivalentTransformerTests.swift; sourceTree = "<group>"; };
 		BA813C9822B017DB00BE6A45 /* SRKeyEquivalentModifierMaskTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRKeyEquivalentModifierMaskTransformerTests.swift; sourceTree = "<group>"; };
-		BA8B3B3022F8F3C800CD6F81 /* SRShortcutActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutActions.h; path = Library/SRShortcutActions.h; sourceTree = "<group>"; };
-		BA8B3B3122F8F3C800CD6F81 /* SRShortcutActions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutActions.m; path = Library/SRShortcutActions.m; sourceTree = "<group>"; };
-		BA8B3B3422F930E800CD6F81 /* SRShortcutActionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutActionsTest.swift; sourceTree = "<group>"; };
+		BA8B3B3022F8F3C800CD6F81 /* SRShortcutItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutItem.h; path = Library/SRShortcutItem.h; sourceTree = "<group>"; };
+		BA8B3B3122F8F3C800CD6F81 /* SRShortcutItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutItem.m; path = Library/SRShortcutItem.m; sourceTree = "<group>"; };
+		BA8B3B3422F930E800CD6F81 /* SRShortcutItemTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutItemTest.swift; sourceTree = "<group>"; };
 		BA8C53D421FFED8D00B40164 /* Documentation.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Documentation.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BA8CFDF222A2645800C96F79 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = SOURCE_ROOT; };
 		BA8CFDF422A26DAA00C96F79 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
@@ -252,8 +252,8 @@
 				74C3670F0A246B4900B69171 /* SRShortcutValidator.m */,
 				BA8CFE1322A30E1200C96F79 /* SRShortcutRegistration.h */,
 				BA8CFE1422A30E1200C96F79 /* SRShortcutRegistration.m */,
-				BA8B3B3022F8F3C800CD6F81 /* SRShortcutActions.h */,
-				BA8B3B3122F8F3C800CD6F81 /* SRShortcutActions.m */,
+				BA8B3B3022F8F3C800CD6F81 /* SRShortcutItem.h */,
+				BA8B3B3122F8F3C800CD6F81 /* SRShortcutItem.m */,
 				BA722ED32162A4AA00EFF192 /* SRShortcutController.h */,
 				BA722ED42162A4AA00EFF192 /* SRShortcutController.m */,
 				BA8CFE0B22A2F08D00C96F79 /* SRShortcutFormatter.h */,
@@ -326,7 +326,7 @@
 				BA03E78E216A90A40008002D /* SRValidatorTests.swift */,
 				BA722ED02161625100EFF192 /* SRShortcutTests.swift */,
 				BA8CFE1722A31CBE00C96F79 /* SRShortcutRegistrationTests.swift */,
-				BA8B3B3422F930E800CD6F81 /* SRShortcutActionsTest.swift */,
+				BA8B3B3422F930E800CD6F81 /* SRShortcutItemTest.swift */,
 				BA722EF42164099200EFF192 /* SRShortcutControllerTests.swift */,
 				BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */,
 				BAED4704217007C70008DA80 /* SRRecorderControlTests.swift */,
@@ -399,7 +399,7 @@
 				9398393E0DA4350B007F53F3 /* SRKeyCodeTransformer.h in Headers */,
 				9398393F0DA4350B007F53F3 /* SRShortcutValidator.h in Headers */,
 				BA8CFE1522A30E1200C96F79 /* SRShortcutRegistration.h in Headers */,
-				BA8B3B3222F8F3C800CD6F81 /* SRShortcutActions.h in Headers */,
+				BA8B3B3222F8F3C800CD6F81 /* SRShortcutItem.h in Headers */,
 				BA722EB021608FB600EFF192 /* SRShortcut.h in Headers */,
 				BA8CFE0D22A2F08D00C96F79 /* SRShortcutFormatter.h in Headers */,
 				BA722ED52162A4AA00EFF192 /* SRShortcutController.h in Headers */,
@@ -610,7 +610,7 @@
 				BA722ED62162A4AA00EFF192 /* SRShortcutController.m in Sources */,
 				BAED062121FFEF6F001E483B /* SRRecorderControlStyle.m in Sources */,
 				939837990DA429EC007F53F3 /* SRShortcutValidator.m in Sources */,
-				BA8B3B3322F8F3C800CD6F81 /* SRShortcutActions.m in Sources */,
+				BA8B3B3322F8F3C800CD6F81 /* SRShortcutItem.m in Sources */,
 				9398379A0DA429EC007F53F3 /* SRCommon.m in Sources */,
 				E28113AE167B8A9D001E118E /* SRModifierFlagsTransformer.m in Sources */,
 				E2BE924E16ABEFE400827E8C /* SRKeyEquivalentTransformer.m in Sources */,
@@ -630,7 +630,7 @@
 				BA722ED12161625100EFF192 /* SRShortcutTests.swift in Sources */,
 				BA3711CD22A71DD800738321 /* SRModifierFlagsTransformerTests.swift in Sources */,
 				BA813C9722B016CB00BE6A45 /* SRKeyEquivalentTransformerTests.swift in Sources */,
-				BA8B3B3522F930E800CD6F81 /* SRShortcutActionsTest.swift in Sources */,
+				BA8B3B3522F930E800CD6F81 /* SRShortcutItemTest.swift in Sources */,
 				BA722EF721640D2400EFF192 /* Utility.swift in Sources */,
 				BA00CFF4229BA1D400C76551 /* SRKeyCodeTransformerTests.swift in Sources */,
 				BA03E78F216A90A40008002D /* SRValidatorTests.swift in Sources */,
