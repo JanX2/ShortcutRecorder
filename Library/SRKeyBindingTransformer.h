@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @seealso @link https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html Text System Defaults and Key Bindings @/link
  */
+NS_SWIFT_NAME(KeyBindingTransformer)
 @interface SRKeyBindingTransformer : NSValueTransformer
 
 /*!

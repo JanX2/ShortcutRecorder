@@ -33,4 +33,24 @@ class SRShortcutItemTest: XCTestCase {
         catalog.perform(shortcut, onTarget: target)
         self.wait(for: [target.expectation], timeout: 0)
     }
+
+    func testUpdateCatalog() {
+        class Target: NSObject {
+            let expectation = XCTestExpectation()
+            @objc func selectAll(_ sender: Any) {
+            }
+
+            @objc func moveToBeginningOfParagraphAndModifySelection(_ sender: Any) {
+                expectation.fulfill()
+            }
+        }
+
+        let catalog = ShortcutItemCatalog()
+        let shortcut = Shortcut(keyEquivalent: "⌃⇧A")!
+        catalog.addAction(#selector(NSResponder.selectAll(_:)), forShortcut: shortcut)
+        catalog.updateWithCocoaTextKeyBindings() // changes the action to moveToBeginningOfParagraphAndModifySelection
+        let target = Target()
+        catalog.perform(shortcut, onTarget: target)
+        self.wait(for: [target.expectation], timeout: 0)
+    }
 }
