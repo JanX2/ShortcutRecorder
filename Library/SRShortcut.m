@@ -100,7 +100,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     NSScanner *parser = [NSScanner scannerWithString:aKeyEquivalent];
     parser.caseSensitive = NO;
 
-    NSString *modifierFlagsString = nil;
+    NSString *modifierFlagsString = @"";
     [parser scanCharactersFromSet:PossibleFlags intoString:&modifierFlagsString];
     NSString *keyCodeString = [aKeyEquivalent substringFromIndex:parser.scanLocation];
 
