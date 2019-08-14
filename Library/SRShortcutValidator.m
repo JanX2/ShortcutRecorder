@@ -42,14 +42,12 @@
         if (![self validateShortcutAgainstDelegate:aShortcut error:outError])
         {
             result = NO;
-            return;
         }
         else if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckSystemShortcuts:)] ||
                   [self.delegate shortcutValidatorShouldCheckSystemShortcuts:self]) &&
                  ![self validateShortcutAgainstSystemShortcuts:aShortcut error:outError])
         {
             result = NO;
-            return;
         }
         else if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] ||
                   [self.delegate shortcutValidatorShouldCheckMenu:self]) &&
@@ -57,12 +55,10 @@
                  ![self validateShortcut:aShortcut againstMenu:NSApp.mainMenu error:outError])
         {
             result = NO;
-            return;
         }
         else
         {
             result = YES;
-            return;
         }
     });
 
