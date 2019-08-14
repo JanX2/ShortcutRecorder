@@ -11,7 +11,7 @@ class SRModifierFlagsTransformerTests: XCTestCase {
     func testSymbolicTransformerIsReversible() {
         let flags: NSEvent.ModifierFlags = [.control, .option, .shift, .command]
         let transformer = SymbolicModifierFlagsTransformer.shared
-        let string = transformer.transformedValue(flags.rawValue) as! String
+        let string = transformer.transformedValue(flags.rawValue as NSNumber)!
         let restoredFlags = NSEvent.ModifierFlags(rawValue: transformer.reverseTransformedValue(string) as! UInt)
         XCTAssertEqual(flags, restoredFlags)
 

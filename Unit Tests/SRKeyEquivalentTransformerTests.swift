@@ -9,15 +9,9 @@ import ShortcutRecorder
 
 
 class SRKeyEquivalentTransformerTests: XCTestCase {
-    func testTransformFromDictionary() {
-        let cmd_a = Shortcut(keyEquivalent: "⌘A")!
-        let cmd_a_ke = KeyEquivalentTransformer.shared.transformedValue(cmd_a.dictionaryRepresentation) as! String
-        XCTAssertEqual(cmd_a_ke, "a")
-    }
-
     func testTransformFromShortcut() {
         let cmd_a = Shortcut(keyEquivalent: "⌘A")!
-        let cmd_a_ke = KeyEquivalentTransformer.shared.transformedValue(cmd_a) as! String
+        let cmd_a_ke = KeyEquivalentTransformer.shared.transformedValue(cmd_a)!
         XCTAssertEqual(cmd_a_ke, "a")
     }
 }

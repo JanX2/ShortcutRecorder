@@ -39,7 +39,7 @@ extension TISInputSource {
 
 extension NSEvent.ModifierFlags {
     var symbolic: String {
-        return SymbolicModifierFlagsTransformer.shared.transformedValue(self.rawValue) as! String
+        return SymbolicModifierFlagsTransformer.shared.transformedValue(self.rawValue as NSNumber)!
     }
 }
 
