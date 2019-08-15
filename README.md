@@ -77,4 +77,4 @@ Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecord
 
 ## Paid Support
 
-Paid support is available for custom alternations, help with integration and general advice regarding Cocoa development.
+Paid support is available for custom alterations, help with integration and general advice regarding Cocoa development.
