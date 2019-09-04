@@ -172,7 +172,7 @@
                                 <string key="NSValueTransformerName">NSKeyedUnarchiveFromData</string>
                             </dictionary>
                         </binding>
-                        <outlet property="shortcutRegistrationTarget" destination="Wsw-a9-b4o" id="qTO-wA-EJH"/>
+                        <outlet property="shortcutActionTarget" destination="Wsw-a9-b4o" id="v4l-5m-AP5"/>
                     </connections>
                 </objectController>
             </objects>

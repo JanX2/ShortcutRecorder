@@ -103,49 +103,52 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 
 
 #pragma mark Properties
-+ (BOOL)automaticallyNotifiesObserversOfShortcutRegistrationTarget
++ (BOOL)automaticallyNotifiesObserversOfShortcutActionTarget
 {
     return NO;
 }
 
-+ (BOOL)automaticallyNotifiesObserversOfShortcutRegistration
++ (BOOL)automaticallyNotifiesObserversOfShortcutAction
 {
     return NO;
 }
 
-- (id)shortcutRegistrationTarget
+- (id)shortcutActionTarget
 {
-    return _shortcutRegistration.target;
+    return _shortcutAction.target;
 }
 
-- (void)setShortcutRegistrationTarget:(id)newShortcutRegistrationTarget
+- (void)setShortcutActionTarget:(id)newShortcutActionTarget
 {
-    if (_shortcutRegistration.target == newShortcutRegistrationTarget)
+    if (_shortcutAction.target == newShortcutActionTarget)
         return;
 
-    [self willChangeValueForKey:@"shortcutRegistrationTarget"];
+    [self willChangeValueForKey:@"shortcutActionTarget"];
 
-    if (!newShortcutRegistrationTarget && _shortcutRegistration)
+    if (!newShortcutActionTarget && _shortcutAction)
     {
-        [self willChangeValueForKey:@"shortcutRegistration"];
-        [_shortcutRegistration invalidate];
-        _shortcutRegistration = nil;
-        [self didChangeValueForKey:@"shortcutRegistration"];
+        [self willChangeValueForKey:@"shortcutAction"];
+        [SRGlobalShortcutMonitor.sharedMonitor removeShortcutAction:_shortcutAction];
+        _shortcutAction = nil;
+        [self didChangeValueForKey:@"shortcutAction"];
     }
-    else if (newShortcutRegistrationTarget && !_shortcutRegistration)
+    else if (newShortcutActionTarget && !_shortcutAction)
     {
-        [self willChangeValueForKey:@"shortcutRegistration"];
-        SRShortcutRegistration *registration = [[SRShortcutRegistration alloc] init];
-        registration.identifier = self.identifier;
-        registration.target = newShortcutRegistrationTarget;
-        _shortcutRegistration = registration;
-        [self didChangeValueForKey:@"shortcutRegistration"];
-        [registration setObservedObject:self withKeyPath:@"content"];
+        [self willChangeValueForKey:@"shortcutAction"];
+        SRShortcutAction *action = [SRShortcutAction shortcutActionWithKeyPath:@"content"
+                                                                      ofObject:self
+                                                                        target:newShortcutActionTarget
+                                                                        action:nil
+                                                                           tag:0];
+        action.identifier = self.identifier;
+        _shortcutAction = action;
+        [SRGlobalShortcutMonitor.sharedMonitor addShortcutAction:_shortcutAction];
+        [self didChangeValueForKey:@"shortcutAction"];
     }
     else
-        _shortcutRegistration.target = newShortcutRegistrationTarget;
+        _shortcutAction.target = newShortcutActionTarget;
 
-    [self didChangeValueForKey:@"shortcutRegistrationTarget"];
+    [self didChangeValueForKey:@"shortcutActionTarget"];
 }
 
 - (SRRecorderControl *)recorderControl
@@ -322,7 +325,7 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 - (void)setIdentifier:(NSString *)newIdentifier
 {
     _identifier = [newIdentifier copy];
-    _shortcutRegistration.identifier = newIdentifier;
+    _shortcutAction.identifier = newIdentifier;
 }
 
 

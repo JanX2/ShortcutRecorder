@@ -1,7 +1,7 @@
 //: [Previous](@previous)
 /*:
  ## Interface Builder Integration
- `RecorderControl` and `ShortcutRegistration` can be configured entirely in Xcode's Interface Builder.
+ `RecorderControl` and `ShortcutAction` can be configured entirely in Xcode's Interface Builder.
 
  1. Locate Custom View in the Objects Library and add it to Canvas\
     ![Add View](Step1.heic)
@@ -23,11 +23,11 @@
  In this example content is bound to the Shared User Defaults controller.
  It is therefore necessary to use the `NSKeyedUnarchiveFromData` transformer to store `SRShortcut` inside a plist.
  8. Switch to the Connections inspector and configure the `recorderControl` connection by pointing it to the view
-    and the `shortcutRegistrationTarget` connection to the object that implements the `SRShortcutRegistrationTarget`
+    and the `shortcutActionTarget` connection to the object that implements the `SRShortcutActionTarget`
     protocol (in this example it is File Owner)\
     ![Set Controller's Connections](Step8.heic)
 
  Now, whenever you record a shortcut with the control, it will be saved into user's defaults.
- The system-wide shortcut registration targeting File Owner will be updated accordingly.
+ The system-wide shortcut action targeting File Owner will be updated accordingly.
  */
 //: [Next](@next)

@@ -7,7 +7,7 @@
 
 #import <ShortcutRecorder/SRRecorderControl.h>
 #import <ShortcutRecorder/SRShortcut.h>
-#import <ShortcutRecorder/SRShortcutRegistration.h>
+#import <ShortcutRecorder/SRShortcutAction.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -62,8 +62,8 @@ extern SRShortcutControllerKeyPath const SRShortcutControllerKeyPathSymbolicModi
  - selection.literalASCIIKeyCode
  - selection.selection.symbolicASCIIKeyCode
 
- If the shortcutRegistrationTarget property is set, the controller will automatically create and manage
- an instance of SRShortcutRegistration that will send performShortcutActionForRegistration: to the specified object.
+ If the shortcutActionTarget property is set, the controller will automatically create and manage
+ an instance of SRShortcutAction for that target.
 
  @note To add the controller in Interface Builder, add NSObjectController first and then specialize its class.
  */
@@ -71,24 +71,21 @@ NS_SWIFT_NAME(ShortcutController)
 @interface SRShortcutController : NSObjectController <NSUserInterfaceItemIdentification>
 
 /*!
- Target of the observing instance of SRShortcutRegistration.
+ Target for the shortcutAction.
 
  @discussion
- If set, the controller will create an observing instance of SRShortcutRegistration bound to Controller's content.
+ If set, the controller will create an autoupdating instance of SRShortcutAction bound to Controller's content.
 
- The instance of SRShortcutRegistration passed to the target will have its identifier set
- to Controller's identifier.
-
- @seealso SRShortcutRegistrationTarget
+ @seealso SRShortcutActionTarget
  */
-@property (nullable, weak) IBOutlet id<SRShortcutRegistrationTarget> shortcutRegistrationTarget;
+@property (nullable, weak) IBOutlet id<SRShortcutActionTarget> shortcutActionTarget;
 
 /*!
- The shortcut registration created by the controller.
+ The shortcut action created by the controller.
 
  @note The instance is managed by the controller, do not modify it directly.
  */
-@property (nullable, readonly) SRShortcutRegistration *shortcutRegistration;
+@property (nullable, readonly) SRShortcutAction *shortcutAction;
 
 /*!
  @seealso NSUserInterfaceItemIdentification

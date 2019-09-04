@@ -108,15 +108,14 @@ IB_DESIGNABLE
 @property IBInspectable BOOL allowsDeleteToClearShortcutAndEndRecording;
 
 /*!
- If YES, the shortcut monitoring of all active shortcut registrations is disabled
- for the duration of the recording.
+ If YES, the shared global shortcut monitor is paused for the duration of the recording.
 
  @discussion
  Defaults to YES.
 
- @seealso SRShortcutRegistration
+ @seealso SRShortcutAction
  */
-@property IBInspectable BOOL disablesShortcutRegistrationsWhileRecording;
+@property IBInspectable BOOL pausesGlobalShortcutMonitorWhileRecording;
 
 /*!
  Whether the string value respects the user interface layout direction.
