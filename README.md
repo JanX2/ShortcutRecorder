@@ -4,6 +4,8 @@
 
 # ShortcutRecorder
 
+![Showcase](https://user-images.githubusercontent.com/88809/64389630-418b5480-cff8-11e9-8003-8d2763042e82.gif)
+
 The best control to record shortcuts on macOS
 
 - Designed with Swift in mind

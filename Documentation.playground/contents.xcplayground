@@ -6,5 +6,6 @@
         <page name='Integration with Interface Builder'/>
         <page name='Transformers and Formatters'/>
         <page name='Utility'/>
+        <page name='Showcase'/>
     </pages>
 </playground>
