@@ -9,7 +9,7 @@
 #import <os/activity.h>
 
 #import "SRRecorderControl.h"
-#import "SRShortcutRegistration.h"
+#import "SRShortcutAction.h"
 #import "SRKeyCodeTransformer.h"
 #import "SRModifierFlagsTransformer.h"
 
@@ -76,7 +76,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     _requiredModifierFlags = 0;
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     _cancelButtonToolTipTag = NSIntegerMax;
-    _disablesShortcutRegistrationsWhileRecording = YES;
+    _pausesGlobalShortcutMonitorWhileRecording = YES;
 
     _notifyStyle = [NSInvocation invocationWithMethodSignature:[SRRecorderControlStyle instanceMethodSignatureForSelector:@selector(recorderControlAppearanceDidChange:)]];
     _notifyStyle.selector = @selector(recorderControlAppearanceDidChange:);
@@ -483,8 +483,8 @@ static NSInteger _SRStyleAppearanceObservingContext;
         [self updateTrackingAreas];
         self.toolTip = SRLoc(@"Type shortcut");
 
-        if (self.disablesShortcutRegistrationsWhileRecording)
-            [SRShortcutRegistration disableShortcutRegistrations];
+        if (self.pausesGlobalShortcutMonitorWhileRecording)
+            [SRGlobalShortcutMonitor.sharedMonitor pause];
 
         NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
         if (bindingInfo)
@@ -557,8 +557,8 @@ static NSInteger _SRStyleAppearanceObservingContext;
         self.toolTip = SRLoc(@"Click to record shortcut");
         self.needsDisplay = YES;
 
-        if (self.disablesShortcutRegistrationsWhileRecording)
-            [SRShortcutRegistration enableShortcutRegistrations];
+        if (self.pausesGlobalShortcutMonitorWhileRecording)
+            [SRGlobalShortcutMonitor.sharedMonitor resume];
 
         NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
         if (bindingInfo)

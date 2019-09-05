@@ -10,7 +10,7 @@ The best control to record shortcuts on macOS
 - Easily stylable
 - Translated into 23 languages
 - Supports macOS Accessibility
-- Thoroughly documented
+- Thoroughly documented and tested
 - Mac App Store approved
 - End-to-end Interface Builder integration
 
@@ -20,8 +20,8 @@ The framework comes with:
 - `SRRecorderControl` to render and capture user input
 - `SRRecorderControlStyle` for custom styling
 - `SRShortcut` that represents a shortcut model
-- `SRShortcutRegistration` to turn the shortcut into an action by registering a global hot key
-- `SRShortcutItem` and `SRShortcutItemCatalog` are indispensable for custom key equivalent handling in subclasses of `NSViewController`
+- `SRGlobalShortcutMonitor` to turn the shortcut into an action by registering a global hot key
+- `SRLocalShortcutMonitor` for custom key equivalent handling in subclasses of `NSResponder`
 - `SRShortcutController` for smooth Cocoa Bindings and seamless Interface Builder integration
 - `SRShortcutValidator` to check validity of the shortcut against Cocoa key equivalents and global hot keys
 - `NSValueTransformer` and `NSFormatter` subclasses for custom alternations
@@ -29,21 +29,25 @@ The framework comes with:
 ```swift
 import ShortcutRecorder
 
-let shortcut = Shortcut(keyEquivalent: "⇧⌘A")
-let recorder = RecorderControl()
-
 let defaults = NSUserDefaultsController.shared
 let keyPath = "values.shortcut"
 let options = [NSBindingOption.valueTransformerName: NSValueTransformerName.keyedUnarchiveFromDataTransformerName]
 
+let beepAction = ShortcutAction(keyPath: keyPath, of: defaults) { _ in
+    NSSound.beep()
+    return true
+}
+GlobalShortcutMonitor.shared.addShortcutAction(beepAction)
+
+let recorder = RecorderControl()
 recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
-let registration = ShortcutRegistration(keyPath: keyPath, of: defaults) {_ in NSSound.beep() }
+
+recorder.objectValue = Shortcut(keyEquivalent: "⇧⌘A")
 ```
 
 ## Integration
 
-Make sure that your binaries depends ShortcutRecorder.framework  `import ShortcutRecorder` /  `#import <ShortcutRecorder/ShortcutRecorder.h>`
-The framework supports modulemaps, no linking configuration is required.
+The framework supports [module maps](https://clang.llvm.org/docs/Modules.html), explicit linking is not required: simply `import ShortcutRecorder` /  `#import <ShortcutRecorder/ShortcutRecorder.h>`
 
 ### CocoaPods
 
@@ -77,4 +81,4 @@ Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecord
 
 ## Paid Support
 
-Paid support is available for custom alternations, help with integration and general advice regarding Cocoa development.
+Paid support is available for custom alterations, help with integration and general advice regarding Cocoa development.

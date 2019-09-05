@@ -140,27 +140,29 @@ class SRShortcutControllerTests: XCTestCase {
         }
     }
 
-    func testShortcutRegistrationManagement() {
-        class Target: NSObject, ShortcutRegistrationTarget {
-            func performShortcutAction(_ aRegistration: ShortcutRegistration) {}
+    func testShortcutActionManagement() {
+        class Target: NSObject, ShortcutActionTarget {
+            func perform(shortcutAction anAction: ShortcutAction) -> Bool {
+                return true
+            }
         }
 
         let shortcut = Shortcut(keyEquivalent: "⌘A")
         let controller = ShortcutController(content: shortcut)
         controller.identifier = "shortcut"
 
-        XCTAssertNil(controller.shortcutRegistration)
+        XCTAssertNil(controller.shortcutAction)
 
 
         let target = Target()
-        controller.shortcutRegistrationTarget = target
+        controller.shortcutActionTarget = target
 
-        XCTAssertEqual(controller.shortcutRegistration?.shortcut, shortcut)
-        XCTAssertTrue(controller.shortcutRegistration?.target === target)
-        XCTAssertTrue(controller.shortcutRegistration?.observedObject === controller)
-        XCTAssertEqual(controller.shortcutRegistration?.observedKeyPath, "content")
+        XCTAssertEqual(controller.shortcutAction?.shortcut, shortcut)
+        XCTAssertTrue(controller.shortcutAction?.target === target)
+        XCTAssertTrue(controller.shortcutAction?.observedObject === controller)
+        XCTAssertEqual(controller.shortcutAction?.observedKeyPath, "content")
 
-        controller.shortcutRegistrationTarget = nil
-        XCTAssertNil(controller.shortcutRegistration)
+        controller.shortcutActionTarget = nil
+        XCTAssertNil(controller.shortcutAction)
     }
 }
