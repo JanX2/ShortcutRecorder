@@ -15,7 +15,7 @@
     ![Add NSObjectController](Step4.heic)
  5. Change class of the just added `NSObjectController` to `SRShortcutController`\
     ![Change Controller Class](Step5.heic)
- 6. Switch to the Attributes inspector and set content's class to `SRShortcut`
+ 6. Switch to the Attributes inspector and set content's class to `SRShortcut`\
     ![Change Controller's Content Class](Step6.heic)
  7. Switch to the Bindings inspector and configure the Content Object binding\
     ![Set Controller's Content Object binding](Step7.heic)
