@@ -1,0 +1,6 @@
+language: objective-c
+osx_image: xcode10.3
+script:
+  - xcodebuild -project ShortcutRecorder.xcodeproj -scheme ShortcutRecorder.framework -destination 'platform=macOS' build test
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
