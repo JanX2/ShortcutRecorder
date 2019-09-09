@@ -487,7 +487,7 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
         if (oldShortcut && (id)oldShortcut != NSNull.null)
         {
             NSMutableArray *actions = [_shortcutToActions objectForKey:oldShortcut];
-            [actions removeObject:anObject];
+            [actions removeObject:(SRShortcutAction *)anObject];
 
             if (!actions.count)
             {
@@ -506,7 +506,7 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
                 [_shortcutToActions setObject:actions forKey:newShortcut];
             }
 
-            [actions addObject:anObject];
+            [actions addObject:(SRShortcutAction *)anObject];
 
             if (actions.count == 1)
                 [self didAddShortcut:newShortcut];
@@ -542,16 +542,6 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 {
     return [(__bridge SRGlobalShortcutMonitor *)aUserData handleEvent:anEvent];
 }
-
-
-@interface _SRHotKey : NSObject
-@property SRShortcut *shortcut;
-@property EventHotKeyRef hotKey;
-@end
-
-
-@implementation _SRHotKey
-@end
 
 
 @implementation SRGlobalShortcutMonitor
@@ -627,24 +617,24 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 {
     __block OSStatus error = noErr;
 
-//    os_activity_initiate("Handling Carbon event", OS_ACTIVITY_FLAG_DETACHED, ^{
+    os_activity_initiate("Handling Carbon event", OS_ACTIVITY_FLAG_DETACHED, ^{
         if (self->_disableCounter > 0)
         {
             os_trace_debug("Monitoring is currently disabled");
             error = eventNotHandledErr;
-            return error;
+            return;
         }
         else if (!anEvent)
         {
             os_trace_error("#Error Event is NULL");
             error = eventNotHandledErr;
-            return error;
+            return;
         }
         else if (GetEventClass(anEvent) != kEventClassKeyboard)
         {
             os_trace_error("#Error Not a keyboard event");
             error = eventNotHandledErr;
-            return error;
+            return;
         }
 
         EventHotKeyID hotKeyID;
@@ -660,13 +650,13 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
         {
             os_trace_error("#Critical Failed to get hot key ID: %d", error);
             error = eventNotHandledErr;
-            return error;
+            return;
         }
         else if (hotKeyID.id == 0 || hotKeyID.signature != SRShortcutActionSignature)
         {
             os_trace_error("#Error Unexpected hot key with id %u and signature: %u", hotKeyID.id, hotKeyID.signature);
             error = eventNotHandledErr;
-            return error;
+            return;
         }
 
         @synchronized (self->_shortcutToActions)
@@ -677,7 +667,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
             {
                 os_trace("Unregistered hot key with id %u and signature %u", hotKeyID.id, hotKeyID.signature);
                 error = eventNotHandledErr;
-                return error;
+                return;
             }
 
             __auto_type actions = [self allActionsForShortcut:shortcut];
@@ -686,7 +676,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
             {
                 os_trace("No actions for the shortcut");
                 error = eventNotHandledErr;
-                return error;
+                return;
             }
 
             dispatch_async(self.dispatchQueue, dispatch_block_create(DISPATCH_BLOCK_NO_QOS_CLASS, ^{
@@ -695,7 +685,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
                 }];
             }));
         }
-//    });
+    });
 
     return error;
 }
