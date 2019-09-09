@@ -1,6 +1,8 @@
 language: objective-c
 osx_image: xcode10.3
 script:
-  - xcodebuild -project ShortcutRecorder.xcodeproj -scheme ShortcutRecorder.framework -destination 'platform=macOS' build test
+  - xcodebuild -verbose -project ShortcutRecorder.xcodeproj -scheme ShortcutRecorder.framework -destination 'platform=macOS' build test
+  - sed "s#  s\.source.*#  s\.source = \{ \:git => '$(pwd)' \}#" ShortcutRecorder.podspec > /tmp/ShortcutRecorder.podspec
+  - pod spec lint /tmp/ShortcutRecorder.podspec --allow-warnings --verbose
 after_success:
   - bash <(curl -s https://codecov.io/bash)
