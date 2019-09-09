@@ -397,7 +397,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
 /*!
  Update the monitor with system-wide and user-specific Cocoa Text System key bindings.
 
- @seealso @link https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html Text System Defaults and Key Bindings @/link
+ @seealso https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
  */
 - (void)updateWithCocoaTextKeyBindings;
 

@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  Transform Cocoa Text system key binding into a shortcut.
 
- @seealso @link https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html Text System Defaults and Key Bindings @/link
+ @seealso https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
  */
 NS_SWIFT_NAME(KeyBindingTransformer)
 @interface SRKeyBindingTransformer : NSValueTransformer
