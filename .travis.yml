@@ -11,3 +11,15 @@ script:
   - file Carthage/Build/Mac/ShortcutRecorder.framework
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+before_deploy:
+  - carthage archive ShortcutRecorder
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: pfPyGI+2ocmKugULnUDyjd5SgBaF1xAZfZj6MvJYNXiJBlzjGxvLez8w5qxIFsm/0l63Aql0s8cWpeGfN22ssOhnjQrSpSsHWbQw+fnY7mkfR9UEbuSwVDlDM9mZbGC1HCZBnsZPMI0/h1QUVwRnVsZgK0N7OrnUasXXfNuY3hA=
+  file: ShortcutRecorder.framework.zip
+  on:
+    repo: Kentzo/ShortcutRecorder
+    branch: master
+    tags: true
