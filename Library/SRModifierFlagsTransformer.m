@@ -95,16 +95,16 @@
     NSEventModifierFlags flags = aValue.unsignedIntegerValue;
     NSMutableArray<NSString *> *flagsStringComponents = NSMutableArray.array;
 
-    if (flags & NSControlKeyMask)
+    if (flags & NSEventModifierFlagControl)
         [flagsStringComponents addObject:SRLoc(@"Control")];
 
-    if (flags & NSAlternateKeyMask)
+    if (flags & NSEventModifierFlagOption)
         [flagsStringComponents addObject:SRLoc(@"Option")];
 
-    if (flags & NSShiftKeyMask)
+    if (flags & NSEventModifierFlagShift)
         [flagsStringComponents addObject:SRLoc(@"Shift")];
 
-    if (flags & NSCommandKeyMask)
+    if (flags & NSEventModifierFlagCommand)
         [flagsStringComponents addObject:SRLoc(@"Command")];
 
     if (aDirection == NSUserInterfaceLayoutDirectionRightToLeft)
@@ -146,16 +146,16 @@
     NSEventModifierFlags flags = aValue.unsignedIntegerValue;
     NSMutableArray<NSString *> *flagsStringFragments = NSMutableArray.array;
 
-    if (flags & NSControlKeyMask)
+    if (flags & NSEventModifierFlagControl)
         [flagsStringFragments addObject:SRModifierFlagStringControl];
 
-    if (flags & NSAlternateKeyMask)
+    if (flags & NSEventModifierFlagOption)
         [flagsStringFragments addObject:SRModifierFlagStringOption];
 
-    if (flags & NSShiftKeyMask)
+    if (flags & NSEventModifierFlagShift)
         [flagsStringFragments addObject:SRModifierFlagStringShift];
 
-    if (flags & NSCommandKeyMask)
+    if (flags & NSEventModifierFlagCommand)
         [flagsStringFragments addObject:SRModifierFlagStringCommand];
 
     if (aDirection == NSUserInterfaceLayoutDirectionRightToLeft)
@@ -179,14 +179,14 @@
                                options:NSStringEnumerationByComposedCharacterSequences
                             usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop)
     {
-        if ([substring isEqualToString:SRModifierFlagStringControl] && (flags & NSControlKeyMask) == 0)
-            flags |= NSControlKeyMask;
-        else if ([substring isEqualToString:SRModifierFlagStringOption] && (flags & NSAlternateKeyMask) == 0)
-            flags |= NSAlternateKeyMask;
-        else if ([substring isEqualToString:SRModifierFlagStringShift] && (flags & NSShiftKeyMask) == 0)
-            flags |= NSShiftKeyMask;
-        else if ([substring isEqualToString:SRModifierFlagStringCommand] && (flags & NSCommandKeyMask) == 0)
-            flags |= NSCommandKeyMask;
+        if ([substring isEqualToString:SRModifierFlagStringControl] && (flags & NSEventModifierFlagControl) == 0)
+            flags |= NSEventModifierFlagControl;
+        else if ([substring isEqualToString:SRModifierFlagStringOption] && (flags & NSEventModifierFlagOption) == 0)
+            flags |= NSEventModifierFlagOption;
+        else if ([substring isEqualToString:SRModifierFlagStringShift] && (flags & NSEventModifierFlagShift) == 0)
+            flags |= NSEventModifierFlagShift;
+        else if ([substring isEqualToString:SRModifierFlagStringCommand] && (flags & NSEventModifierFlagCommand) == 0)
+            flags |= NSEventModifierFlagCommand;
         else
         {
             foundInvalidSubstring = YES;
