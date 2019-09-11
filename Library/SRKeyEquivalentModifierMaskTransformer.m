@@ -1,13 +1,7 @@
 //
-//  SRKeyEquivalentModifierMaskTransformer.m
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 4.0
 //
-//  Copyright 2012 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      Ilya Kulakov
 
 #import "SRKeyEquivalentModifierMaskTransformer.h"
 #import "SRKeyCodeTransformer.h"
@@ -15,6 +9,18 @@
 
 
 @implementation SRKeyEquivalentModifierMaskTransformer
+
+#pragma mark Methods
+
++ (instancetype)sharedTransformer
+{
+    static dispatch_once_t OnceToken;
+    static SRKeyEquivalentModifierMaskTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [SRKeyEquivalentModifierMaskTransformer new];
+    });
+    return Transformer;
+}
 
 #pragma mark NSValueTransformer
 
@@ -25,18 +31,18 @@
 
 + (Class)transformedValueClass
 {
-    return [NSNumber class];
+    return NSNumber.class;
 }
 
 - (NSNumber *)transformedValue:(NSDictionary *)aValue
 {
-    if (![aValue isKindOfClass:[NSDictionary class]])
-        return @(0);
+    if (![aValue isKindOfClass:NSDictionary.class] && ![aValue isKindOfClass:SRShortcut.class])
+        return nil;
 
-    NSNumber *modifierFlags = aValue[SRShortcutModifierFlagsKey];
+    NSNumber *modifierFlags = aValue[SRShortcutKeyModifierFlags];
 
-    if (![modifierFlags isKindOfClass:[NSNumber class]])
-        return @(0);
+    if (![modifierFlags isKindOfClass:NSNumber.class])
+        return nil;
 
     return modifierFlags;
 }

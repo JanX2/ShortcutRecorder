@@ -1,13 +1,7 @@
 //
-//  SRKeyEquivalentTransformer.m
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 4.0
 //
-//  Copyright 2012 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      Ilya Kulakov
 
 #import "SRKeyEquivalentTransformer.h"
 #import "SRKeyCodeTransformer.h"
@@ -15,6 +9,18 @@
 
 
 @implementation SRKeyEquivalentTransformer
+
+#pragma mark Methods
+
++ (instancetype)sharedTransformer
+{
+    static dispatch_once_t OnceToken;
+    static SRKeyEquivalentTransformer *Transformer = nil;
+    dispatch_once(&OnceToken, ^{
+        Transformer = [SRKeyEquivalentTransformer new];
+    });
+    return Transformer;
+}
 
 #pragma mark NSValueTransformer
 
@@ -25,29 +31,28 @@
 
 + (Class)transformedValueClass
 {
-    return [NSString class];
+    return NSString.class;
 }
 
 - (NSString *)transformedValue:(NSDictionary *)aValue
 {
-    if (![aValue isKindOfClass:[NSDictionary class]])
-        return @"";
+    if (![aValue isKindOfClass:NSDictionary.class] && ![aValue isKindOfClass:SRShortcut.class])
+        return nil;
 
-    NSNumber *keyCode = aValue[SRShortcutKeyCode];
+    NSNumber *keyCode = aValue[SRShortcutKeyKeyCode];
 
-    if (![keyCode isKindOfClass:[NSNumber class]])
-        return @"";
+    if (![keyCode isKindOfClass:NSNumber.class])
+        return nil;
 
-    NSNumber *modifierFlags = aValue[SRShortcutModifierFlagsKey];
+    NSNumber *modifierFlags = aValue[SRShortcutKeyModifierFlags];
 
-    if (![modifierFlags isKindOfClass:[NSNumber class]])
+    if (![modifierFlags isKindOfClass:NSNumber.class])
         modifierFlags = @(0);
 
-    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedASCIITransformer];
-
-    return [t transformedValue:keyCode
-     withImplicitModifierFlags:nil
-         explicitModifierFlags:modifierFlags];
+    return [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
+                                                       withImplicitModifierFlags:nil
+                                                           explicitModifierFlags:modifierFlags
+                                                                 layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
 @end

@@ -1,37 +1,59 @@
 //
-//  SRModifierFlagsTransformer.h
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 4.0
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      Ilya Kulakov
 
 #import <Cocoa/Cocoa.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
+@class SRLiteralModifierFlagsTransformer;
+
 /*!
-    Transforms mask of Cocoa modifier flags to string of unicode characters.
+ Don't use directly. Use SRLiteralModifierFlagsTransformer / SRSymbolicModifierFlagsTransformer instead.
  */
+NS_SWIFT_UNAVAILABLE("use SRLiteralModifierFlagsTransformer / SRSymbolicModifierFlagsTransformer instead")
 @interface SRModifierFlagsTransformer : NSValueTransformer
-
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings NS_DESIGNATED_INITIALIZER;
+/*!
+ Shared transformer.
+ */
+@property (class, readonly) SRModifierFlagsTransformer* sharedTransformer NS_SWIFT_NAME(shared);
 
 /*!
-    Determines whether modifier flags are transformed to unicode characters or to plain strings.
- */
-@property (readonly) BOOL usesPlainStrings;
+ Order modifier flags according to the user interface layout direction of the view.
 
-/*!
-     Returns the shared transformer.
+ @param aDirection The layout direction to select an appropriate symbol or literal.
  */
-+ (instancetype)sharedTransformer;
+- (nullable NSString *)transformedValue:(NSNumber *)aValue layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
 
-/*!
-     Returns the shared plain transformer.
- */
-+ (instancetype)sharedPlainTransformer;
+- (nullable NSString *)transformedValue:(nullable NSNumber *)aValue;
 
 @end
+
+
+@interface SRModifierFlagsTransformer (Deprecated)
++ (SRLiteralModifierFlagsTransformer *)sharedPlainTransformer __attribute__((deprecated("", "SRLiteralModifierFlagsTransformer.shared")));
+- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
+@property (readonly) BOOL usesPlainStrings __attribute__((deprecated));
+@end
+
+
+/*!
+ Transform modifier flags into a univesal symbolic string such as ⌘⌥.
+
+ @note Allows reverse transformation.
+ */
+NS_SWIFT_NAME(LiteralModifierFlagsTransformer)
+@interface SRLiteralModifierFlagsTransformer: SRModifierFlagsTransformer
+@end
+
+
+/*!
+ Transform modifier flags into a localized literal string such as Command-Option.
+ */
+NS_SWIFT_NAME(SymbolicModifierFlagsTransformer)
+@interface SRSymbolicModifierFlagsTransformer: SRModifierFlagsTransformer
+@end
+
+NS_ASSUME_NONNULL_END

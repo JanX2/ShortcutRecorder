@@ -1,139 +1,139 @@
 //
-//  SRKeyCodeTransformer.h
-//  ShortcutRecorder
+//  Copyright 2012 ShortcutRecorder Contributors
+//  CC BY 4.0
 //
-//  Copyright 2006-2012 Contributors. All rights reserved.
-//
-//  License: BSD
-//
-//  Contributors:
-//      David Dauer
-//      Jesper
-//      Jamie Kirkpatrick
-//      Ilya Kulakov
-//      Silvio Rizzi
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /*!
-    Transforms key code into unicode character or plain string.
+ Don't use directly, use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransformer / SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransformer instead.
  */
+NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransformer / SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransformer instead")
 @interface SRKeyCodeTransformer : NSValueTransformer
-
 /*!
-    Returns initialized key code transformer.
+ Shared transformer.
 
-    @param      aUsesASCII Determines whether transformer uses only ASCII capable keyboard input source.
-
-    @param      aUsesPlainStrings Determines whether key codes without readable glyphs (e.g. F1...F19) are transformed to
-                to unicode characters (NSF1FunctionKey...NSF19FunctionKey) suitable for setting key equivalents
-                of Cocoa controls or to plain strings (@"F1"...@"F19") suitable for drawing, logging and accessibility.
-
-    @discussion This method is the designated initializer for SRKeyCodeTransformer.
+ @discussion
+ Shared transformers use autoupdating input source.
  */
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII plainStrings:(BOOL)aUsesPlainStrings NS_DESIGNATED_INITIALIZER;
+@property (class, readonly) SRKeyCodeTransformer *sharedTransformer NS_SWIFT_NAME(shared);
 
 /*!
-    Determines whether transformer uses ASCII capable keyboard input source.
+ List of the known and expected key codes.
+
+ @discussion
+ Behavior for unknown key codes may be inconsistent.
  */
-@property (readonly) BOOL usesASCIICapableKeyboardInputSource;
+@property (class, readonly) NSArray<NSNumber *> *knownKeyCodes;
 
 /*!
-    Determines whether key codes without readable glyphs are transformed to unicode characters
-    suitable for setting keqEquivalents or to plain strings suitable for drawing, logging and accessibility.
+ The input source used by the transformer.
+
+ @discussion
+ The underlying type is TISInputSourceRef.
+
+ @note Shared transformers autoupdate their input sources to the current.
  */
-@property (readonly) BOOL usesPlainStrings;
+@property (readonly) id inputSource;
+
+- (instancetype)initWithInputSource:(id)anInputSource;
 
 /*!
-    Returns the shared transformer.
+ Return literal string for the given key code, modifier flags and layout direction.
  */
-+ (instancetype)sharedTransformer;
+- (nullable NSString *)literalForKeyCode:(unsigned short)aValue
+               withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
+                   explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
+                         layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
 
 /*!
-    Returns the shared transformer configured to use only ASCII capable keyboard input source.
+ Return symbolic string for the given key code, modifier flags and layout direction.
  */
-+ (instancetype)sharedASCIITransformer;
+- (nullable NSString *)symbolForKeyCode:(unsigned short)aValue
+              withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
+                  explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
+                        layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
 
 /*!
-    Returns the shared transformer configured to transform key codes to plain strings.
+ Transfrom the given key code into a symbol or a literal by taking into account modifier flags and layout direction.
+
+ @param aValue The key code.
+
+ @param anImplicitModifierFlags The implicit modifier flags like Option in å in the U.S. English input source.
+
+ @param anExplicitModifierFlags The explicit modifier flags like Shift in Shift-⇥.
+
+ @param aDirection The layout direction to select an appropriate symbol or literal.
  */
-+ (SRKeyCodeTransformer *)sharedPlainTransformer;
+- (nullable NSString *)transformedValue:(nullable NSNumber *)aValue
+              withImplicitModifierFlags:(nullable NSNumber *)anImplicitModifierFlags
+                  explicitModifierFlags:(nullable NSNumber *)anExplicitModifierFlags
+                        layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
 
-/*!
-    Returns the shared transformer configured to use only ASCII capable keyboard input source
-            and to transform key codes to plain strings.
- */
-+ (SRKeyCodeTransformer *)sharedPlainASCIITransformer;
-
-
-/*!
-    Returns mapping from special key codes to unicode characters.
- */
-+ (NSDictionary *)specialKeyCodesToUnicodeCharactersMapping;
-
-/*!
-    Returns mapping from special key codes to plain strings.
- */
-+ (NSDictionary *)specialKeyCodesToPlainStringsMapping;
-
-/*!
-    Determines whether key code is special.
-
-    @param  aKeyCode Key code to be checked.
- */
-- (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode;
-
-/*!
-    Transforms given special key code into unicode character by taking into account modifier flags.
- 
-    @discussion E.g. the key code 0x30 is transformed to ⇥. But if shift is pressed, it is transformed to ⇤.
- 
-    @result     Unicode character or plain string. nil if not a special key code.
-*/
-- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode withExplicitModifierFlags:(NSNumber *)aModifierFlags;
-
-/*!
-    Shorcut to [self transformedValue:aValue withImplicitModifierFlags:aModifierFlags explicitModifierFlags:0]
- */
-- (NSString *)transformedValue:(NSNumber *)aValue withModifierFlags:(NSNumber *)aModifierFlags;
-
-/*!
-    Transfroms given key code into unicode character by taking into account modifier flags.
- 
-    @param  aValue An instance of NSNumber (unsigned short) that represents key code.
- 
-    @param  anImplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents implicit modifier flags like opt in å.
- 
-    @param  anExplicitModifierFlags An instance of NSNumber (NSEventModifierFlags) that represents explicit modifier flags like shift in shift-⇤.
- */
-- (NSString *)transformedValue:(NSNumber *)aValue withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags explicitModifierFlags:(NSNumber *)anExplicitModifierFlags;
+- (nullable NSString *)transformedValue:(nullable NSNumber *)aValue;
+- (nullable NSNumber *)reverseTransformedValue:(nullable NSString *)aValue;
 
 @end
 
 
 /*!
-    These constants represents drawable unicode characters for key codes that do not have
-    appropriate constants in Carbon and Cocoa.
+ Transformer a key code into a literal in the current input source.
  */
-typedef NS_ENUM(unichar, SRKeyCodeGlyph)
-{
-    SRKeyCodeGlyphTabRight = 0x21E5, // ⇥
-    SRKeyCodeGlyphTabLeft = 0x21E4, // ⇤
-    SRKeyCodeGlyphReturn = 0x2305, // ⌅
-    SRKeyCodeGlyphReturnR2L = 0x21A9, // ↩
-    SRKeyCodeGlyphDeleteLeft = 0x232B, // ⌫
-    SRKeyCodeGlyphDeleteRight = 0x2326, // ⌦
-    SRKeyCodeGlyphPadClear = 0x2327, // ⌧
-    SRKeyCodeGlyphLeftArrow = 0x2190, // ←
-    SRKeyCodeGlyphRightArrow = 0x2192, // →
-    SRKeyCodeGlyphUpArrow = 0x2191, // ↑
-    SRKeyCodeGlyphDownArrow = 0x2193, // ↓
-    SRKeyCodeGlyphPageDown = 0x21DF, // ⇟
-    SRKeyCodeGlyphPageUp = 0x21DE, // ⇞
-    SRKeyCodeGlyphNorthwestArrow = 0x2196, // ↖
-    SRKeyCodeGlyphSoutheastArrow = 0x2198, // ↘
-    SRKeyCodeGlyphEscape = 0x238B, // ⎋
-    SRKeyCodeGlyphSpace = 0x0020, // ' '
-};
+NS_SWIFT_NAME(LiteralKeyCodeTransformer)
+@interface SRLiteralKeyCodeTransformer : SRKeyCodeTransformer
+@end
+
+
+/*!
+ Transform a key code into a symbol in the current input source.
+ */
+NS_SWIFT_NAME(SymbolicKeyCodeTransformer)
+@interface SRSymbolicKeyCodeTransformer : SRKeyCodeTransformer
+@end
+
+
+/*!
+ Transformer a key code into a literal in the current ASCII-capable input source.
+
+ @note Allows reverse transformation.
+ */
+NS_SWIFT_NAME(ASCIILiteralKeyCodeTransformer)
+@interface SRASCIILiteralKeyCodeTransformer : SRKeyCodeTransformer
+@end
+
+
+/*!
+ Transform a key code into a symbol in the current ASCII-capable input source.
+
+ @note Allows reverse transformation.
+ */
+NS_SWIFT_NAME(ASCIISymbolicKeyCodeTransformer)
+@interface SRASCIISymbolicKeyCodeTransformer : SRKeyCodeTransformer
+@end
+
+
+@interface SRKeyCodeTransformer (Deprecated)
+@property (class, readonly) NSDictionary<NSNumber *, NSString *> *specialKeyCodeToSymbolMapping;
+@property (class, readonly) NSDictionary<NSNumber *, NSString *> *specialKeyCodeToLiteralMapping;
+@property (readonly) BOOL usesPlainStrings __attribute__((deprecated));
+@property (readonly) BOOL usesASCIICapableKeyboardInputSource __attribute__((deprecated));
++ (instancetype)sharedASCIITransformer __attribute__((deprecated("", "SRASCIISymbolicKeyCodeTransformer/sharedTransformer")));
++ (SRKeyCodeTransformer *)sharedPlainTransformer __attribute__((deprecated("", "SRLiteralKeyCodeTransformer/sharedTransformer")));
++ (SRKeyCodeTransformer *)sharedPlainASCIITransformer __attribute__((deprecated("", "SRASCIILiteralKeyCodeTransformer/sharedTransformer")));
+- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII
+                                           plainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
+- (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode __attribute__((deprecated));
+- (NSString *)transformedValue:(NSNumber *)aValue
+             withModifierFlags:(NSNumber *)aModifierFlags __attribute__((deprecated));
+- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode
+              withExplicitModifierFlags:(NSNumber *)aModifierFlags __attribute__((deprecated));
+- (NSString *)transformedValue:(NSNumber *)aValue
+     withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags
+         explicitModifierFlags:(NSNumber *)anExplicitModifierFlags __attribute__((deprecated));
+@end
+
+NS_ASSUME_NONNULL_END
