@@ -211,6 +211,12 @@ NS_SWIFT_NAME(ShortcutMonitor)
 @property (readonly) NSSet<SRShortcut *> *allShortcuts;
 
 /*!
+ All associated shortcut actions for a specific key event in no particular order.
+ Valid key events are `kEventHotKeyPressed` and `kEventHotKeyReleased`
+ */
+- (NSArray<SRShortcutAction *> *)shortcutActionsForKeyEvent:(NSInteger)aKeyEvent;
+
+/*!
  Add an action to the monitor.
 
  @note Adding the same action twice has no effect.
@@ -218,14 +224,34 @@ NS_SWIFT_NAME(ShortcutMonitor)
 - (void)addShortcutAction:(SRShortcutAction *)anAction;
 
 /*!
+ Add an action to the monitor for a specific key event.
+ Valid key events are `kEventHotKeyPressed` & `kEventHotKeyReleased`
+
+ @note Adding the same action twice has no effect.
+ */
+- (void)addShortcutAction:(SRShortcutAction *)anAction forKeyEvent:(NSInteger)aKeyEvent;
+
+/*!
  Remove an action from the monitor.
  */
 - (void)removeShortcutAction:(SRShortcutAction *)anAction;
 
 /*!
+ Remove an action from the monitor for a specific key event.
+ Valid key events are `kEventHotKeyPressed` and `kEventHotKeyReleased`
+ */
+- (void)removeShortcutAction:(SRShortcutAction *)anAction forKeyEvent:(NSInteger)aKeyEvent;
+
+/*!
  The most recent action associated with the shortcut.
  */
 - (nullable SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut;
+
+/*!
+ The most recent action associated with the shortcut for a specific key event.
+ Valid key events are `kEventHotKeyPressed` and `kEventHotKeyReleased`
+ */
+- (nullable SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut forKeyEvent:(NSInteger)aKeyEvent;
 
 /*!
  All actions associated with the shortcut.
@@ -236,6 +262,17 @@ NS_SWIFT_NAME(ShortcutMonitor)
  returns an empty array.
  */
 - (NSArray<SRShortcutAction *> *)allActionsForShortcut:(SRShortcut *)aShortcut;
+
+/*!
+ All actions associated with the shortcut for a specific key event.
+ Valid key events are `kEventHotKeyPressed` and `kEventHotKeyReleased`
+
+ @return
+ An array of actions currently associated with the shortcut, for the specific key event, ordered by the time of association
+ such as that the last object is the most recently associated. If the shortcut has no associated actions,
+ returns an empty array.
+ */
+- (NSArray<SRShortcutAction *> *)allActionsForShortcut:(SRShortcut *)aShortcut forKeyEvent:(NSInteger)aKeyEvent;
 
 /*!
  Called after the shortcut gets its first associated action.

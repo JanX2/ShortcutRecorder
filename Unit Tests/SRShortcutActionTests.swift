@@ -341,6 +341,42 @@ class SRShortcutMonitorTests: XCTestCase {
         XCTAssertTrue(monitor.shortcutActions.isEmpty)
     }
 
+    func testAddingActionForKeyEventTwice() {
+        let actionPressed = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let actionReleased = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let monitor = ShortcutMonitor()
+        monitor.addShortcutAction(actionPressed, forKeyEvent: kEventHotKeyPressed)
+        monitor.addShortcutAction(actionPressed, forKeyEvent: kEventHotKeyPressed)
+        monitor.addShortcutAction(actionReleased, forKeyEvent: kEventHotKeyReleased)
+        monitor.addShortcutAction(actionReleased, forKeyEvent: kEventHotKeyReleased)
+        XCTAssertEqual(Set(monitor.shortcutActions), Set([actionPressed, actionReleased]))
+        monitor.removeShortcutAction(actionPressed, forKeyEvent: kEventHotKeyPressed)
+        monitor.removeShortcutAction(actionReleased, forKeyEvent: kEventHotKeyReleased)
+        XCTAssertTrue(monitor.shortcutActions.isEmpty)
+    }
+
+    func testRemovingActionUsedForMultipleKeyEvents() {
+        let action = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let monitor = ShortcutMonitor()
+        monitor.addShortcutAction(action, forKeyEvent: kEventHotKeyPressed)
+        monitor.addShortcutAction(action, forKeyEvent: kEventHotKeyReleased)
+        XCTAssertEqual(monitor.shortcutActions, [action, action])
+        monitor.removeShortcutAction(action)
+        XCTAssertTrue(monitor.shortcutActions.isEmpty)
+    }
+
+    func testRemovingActionForKeyEvent() {
+        let action = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let monitor = ShortcutMonitor()
+        monitor.addShortcutAction(action, forKeyEvent: kEventHotKeyPressed)
+        monitor.addShortcutAction(action, forKeyEvent: kEventHotKeyReleased)
+        XCTAssertEqual(monitor.shortcutActions, [action, action])
+        monitor.removeShortcutAction(action, forKeyEvent: kEventHotKeyPressed)
+        XCTAssertEqual(monitor.shortcutActions, [action])
+        XCTAssertTrue(monitor.shortcutActions(forKeyEvent: kEventHotKeyPressed).isEmpty)
+        XCTAssertEqual(monitor.shortcutActions(forKeyEvent: kEventHotKeyReleased), [action])
+    }
+
     func testMultipleActionsForShortcut() {
         let action1 = ShortcutAction(shortcut: Shortcut.default) {_ in true}
         let action2 = ShortcutAction(shortcut: Shortcut.default) {_ in true}
@@ -350,6 +386,26 @@ class SRShortcutMonitorTests: XCTestCase {
         XCTAssertEqual(Set(monitor.shortcutActions), Set([action1, action2]))
         XCTAssertEqual(monitor.action(for: Shortcut.default)!, action2)
         XCTAssertEqual(monitor.allActions(for: Shortcut.default), [action1, action2])
+    }
+
+    func testMultipleActionsForShortcutByKeyEvent() {
+        let action1 = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let action2 = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let action3 = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let action4 = ShortcutAction(shortcut: Shortcut.default) {_ in true}
+        let monitor = ShortcutMonitor()
+        monitor.addShortcutAction(action1, forKeyEvent: kEventHotKeyPressed)
+        monitor.addShortcutAction(action2, forKeyEvent: kEventHotKeyPressed)
+        monitor.addShortcutAction(action3, forKeyEvent: kEventHotKeyReleased)
+        monitor.addShortcutAction(action4, forKeyEvent: kEventHotKeyReleased)
+        XCTAssertEqual(Set(monitor.shortcutActions), Set([action1, action2, action3, action4]))
+        XCTAssertEqual(monitor.action(for: Shortcut.default)!, action4)
+        XCTAssertEqual(monitor.action(for: Shortcut.default, forKeyEvent: kEventHotKeyPressed), action2);
+        XCTAssertEqual(monitor.action(for: Shortcut.default, forKeyEvent: kEventHotKeyReleased), action4);
+        XCTAssertEqual(monitor.allActions(for: Shortcut.default), [action1, action2, action3, action4])
+        XCTAssertEqual(monitor.allActions(for: Shortcut.default, forKeyEvent: kEventHotKeyPressed), [action1, action2])
+        XCTAssertEqual(monitor.allActions(for: Shortcut.default, forKeyEvent: kEventHotKeyReleased), [action3, action4])
+
     }
 
     func testActionShortcutObservation() {
