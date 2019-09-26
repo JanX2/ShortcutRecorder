@@ -3,10 +3,10 @@ Pod::Spec.new do |s|
   s.version = '3.0'
   s.summary = 'The best control to record shortcuts on macOS'
   s.homepage = 'https://github.com/Kentzo/ShortcutRecorder'
-  s.license = "CC BY 4.0"
+  s.license = { :type => 'CC BY 4.0', :file => 'LICENSE.txt' }
   s.author = { 'Ilya Kulakov' => 'kulakov.ilya@gmail.com' }
 
-  s.source = { :git => 'https://github.com/Kentzo/ShortcutRecorder.git', :branch => 'master' }
+  s.source = { :git => 'https://github.com/Kentzo/ShortcutRecorder.git', :tag => s.version }
 
   s.platform = :osx
   s.osx.deployment_target = "10.11"

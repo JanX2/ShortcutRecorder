@@ -53,8 +53,7 @@ catch let error as NSError {
 /*:
  ## Shortcut Actions
  The `ShortcutAction` class connects shortcuts to actions.
- */
-/*:
+
  Shortcut can be set directly:
  */
 let action = ShortcutAction(shortcut: shortcut) { action in
@@ -76,8 +75,7 @@ UserDefaults.standard.set(encodedShortcutData, forKey: "shortcut")
 let targetAction = ShortcutAction(shortcut: shortcut, target: nil, action: #selector(NSResponder.selectAll(_:)), tag: 0)
 /*:
  If target is not specified it defaults to `NSApp`. See the class documentation for more configuration options.
- */
-/*:
+
  ## Shortcut Monitoring
  The `GlobalShortcutMonitor` and `LocalShortcutMonitor` use actions to observe and react to user's keyboard events.
 
@@ -90,10 +88,10 @@ let targetAction = ShortcutAction(shortcut: shortcut, target: nil, action: #sele
 let globalMonitor = GlobalShortcutMonitor.shared
 globalMonitor.addShortcutAction(action)
 globalMonitor.addShortcutAction(autoupdatingAction)
- /*:
- `LocalShortcutMonitor` organizes actions into a collection that can later by used for a event dispatch
+/*:
+ `LocalShortcutMonitor` organizes actions into a collection that can later by used for event dispatch e.g.
  in the subclasses of `NSResponder` such as `NSView` and `NSViewController`. It's a convenient alternative
- to NSMenu, e.g. when there are too many shortcuts to specify or when the app is headless and lacks
+ to `NSMenu`, e.g. when there are too many shortcuts to specify or when the app is headless and lacks
  the main menu altogether.
  */
 class MyController: NSViewController {
