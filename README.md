@@ -2,7 +2,7 @@
 ![macOS 10.11](https://img.shields.io/badge/macOS-10.11%2B-informational.svg)
 ![Mac App Store Approved](https://img.shields.io/badge/Mac%20App%20Store-Approved-success.svg)
 
-[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-Compatible-success.svg)](https://cocoapods.org/pods/ShortcutRecorder)
+[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-Compatible%201.8+-success.svg)](https://cocoapods.org/pods/ShortcutRecorder)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-success.svg)](https://github.com/Carthage/Carthage)
 
 [![Coverage](https://codecov.io/gh/Kentzo/ShortcutRecorder/branch/master/graph/badge.svg)](https://codecov.io/gh/Kentzo/ShortcutRecorder)
