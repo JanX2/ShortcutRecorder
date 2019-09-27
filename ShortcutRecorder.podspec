@@ -12,9 +12,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.11"
   s.frameworks = 'Carbon', 'Cocoa'
 
-  s.subspec 'Core' do |core|
-    core.source_files = 'Library/*.{h,m}'
-    core.resource_bundles = { "ShortcutRecorder" => ['Resources/*.lproj', 'Resources/*.png'] }
-    core.requires_arc = true
-  end
+  s.source_files = 'Library/*.{h,m}'
+  s.resources = ['Resources/*.lproj', 'Resources/Images.xcassets']
+  s.requires_arc = true
 end
