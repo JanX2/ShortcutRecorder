@@ -3,6 +3,8 @@ osx_image: xcode10.3
 before_install:
   - brew update
   - brew outdated carthage || brew upgrade carthage
+  - gem install cocoapods -v '>= 1.8'
+  - pod --version
 script:
   - xcodebuild -verbose -project ShortcutRecorder.xcodeproj -scheme ShortcutRecorder.framework -destination 'platform=macOS' build test
   - sed "s#  s\.source.*#  s\.source = \{ \:git => '$(pwd)' \}#" ShortcutRecorder.podspec > /tmp/ShortcutRecorder.podspec
