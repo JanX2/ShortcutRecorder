@@ -39,13 +39,13 @@ import ShortcutRecorder
 
 let defaults = NSUserDefaultsController.shared
 let keyPath = "values.shortcut"
-let options = [NSBindingOption.valueTransformerName: NSValueTransformerName.keyedUnarchiveFromDataTransformerName]
+let options = [NSBindingOption.valueTransformerName: .keyedUnarchiveFromDataTransformerName]
 
 let beepAction = ShortcutAction(keyPath: keyPath, of: defaults) { _ in
     NSSound.beep()
     return true
 }
-GlobalShortcutMonitor.shared.addShortcutAction(beepAction)
+GlobalShortcutMonitor.shared.addAction(beepAction, forKeyEvent: .down)
 
 let recorder = RecorderControl()
 recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
