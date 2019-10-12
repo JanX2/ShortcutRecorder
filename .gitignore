@@ -15,5 +15,9 @@ profile
 *.moved-aside
 timeline.xctimeline
 
-## Ignore incredibly annoying .DS_Store files
+# Carthage
+ShortcutRecorder.framework.zip
+Carthage/
+
+# Ignore incredibly annoying .DS_Store files
 .DS_Store
