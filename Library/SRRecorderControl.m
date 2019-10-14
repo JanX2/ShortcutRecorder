@@ -42,6 +42,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
     _SRRecorderControlButtonTag _mouseTrackingButtonTag;
     NSToolTipTag _cancelButtonToolTipTag;
+    NSToolTipTag _clearButtonToolTipTag;
 
     SRShortcut *_objectValue;
 
@@ -76,6 +77,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     _requiredModifierFlags = 0;
     _mouseTrackingButtonTag = _SRRecorderControlInvalidButtonTag;
     _cancelButtonToolTipTag = NSIntegerMax;
+    _clearButtonToolTipTag = NSIntegerMax;
     _pausesGlobalShortcutMonitorWhileRecording = YES;
 
     _notifyStyle = [NSInvocation invocationWithMethodSignature:[SRRecorderControlStyle instanceMethodSignatureForSelector:@selector(recorderControlAppearanceDidChange:)]];
@@ -93,8 +95,6 @@ static NSInteger _SRStyleAppearanceObservingContext;
                                    forOrientation:NSLayoutConstraintOrientationHorizontal];
     [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
                                    forOrientation:NSLayoutConstraintOrientationVertical];
-
-    self.toolTip = SRLoc(@"Click to record shortcut");
 }
 
 - (void)dealloc
@@ -305,6 +305,11 @@ static NSInteger _SRStyleAppearanceObservingContext;
                     options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
                     context:&_SRStyleAppearanceObservingContext];
     }
+
+    if (self.isRecording)
+        self.toolTip = _SRIfRespondsGet(self.style, recordingTooltip, SRLoc(@"Type shortcut"));
+    else
+        self.toolTip = _SRIfRespondsGet(self.style, normalTooltip, SRLoc(@"Click to record shortcut"));
 }
 
 - (NSBezierPath *)focusRingShape
@@ -395,14 +400,14 @@ static NSInteger _SRStyleAppearanceObservingContext;
             label = self.stringValue;
 
         if (!label.length)
-            label = SRLoc(@"Type shortcut");
+            label = _SRIfRespondsGet(self.style, noValueRecordingLabel, SRLoc(@"Type shortcut"));
     }
     else
     {
         label = self.stringValue;
 
         if (!label.length)
-            label = SRLoc(@"Click to record shortcut");
+            label = _SRIfRespondsGet(self.style, noValueNormalLabel, SRLoc(@"Click to record shortcut"));
     }
 
     return label;
@@ -481,7 +486,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
         [self updateActiveConstraints];
         [self updateTrackingAreas];
-        self.toolTip = SRLoc(@"Type shortcut");
+        self.toolTip = _SRIfRespondsGet(self.style, recordingTooltip, SRLoc(@"Type shortcut"));
 
         if (self.pausesGlobalShortcutMonitorWhileRecording)
             [SRGlobalShortcutMonitor.sharedMonitor pause];
@@ -554,7 +559,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
         [self updateActiveConstraints];
         [self updateTrackingAreas];
-        self.toolTip = SRLoc(@"Click to record shortcut");
+        self.toolTip = _SRIfRespondsGet(self.style, normalTooltip, SRLoc(@"Click to record shortcut"));
         self.needsDisplay = YES;
 
         if (self.pausesGlobalShortcutMonitorWhileRecording)
@@ -1015,7 +1020,9 @@ static NSInteger _SRStyleAppearanceObservingContext;
 - (NSString *)view:(NSView *)aView stringForToolTip:(NSToolTipTag)aTag point:(NSPoint)aPoint userData:(void *)aData
 {
     if (aTag == _cancelButtonToolTipTag)
-        return SRLoc(@"Use old shortcut");
+        return _SRIfRespondsGet(self.style, cancelButtonTooltip, SRLoc(@"Use old shortcut"));
+    else if (aTag == _clearButtonToolTipTag)
+        return _SRIfRespondsGet(self.style, clearButtonTooltip, @"");
     else
         return [super view:aView stringForToolTip:aTag point:aPoint userData:aData];
 }
@@ -1149,6 +1156,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     if (currentValue)
         return currentValue.integerValue;
 
+    // If there is no style yet, return macOS's default value.
     if (!_isLazilyInitializingStyle && [self.style respondsToSelector:@selector(preferredComponents)])
     {
         __auto_type layoutDirection = self.style.preferredComponents.layoutDirection;
@@ -1276,6 +1284,12 @@ static NSInteger _SRStyleAppearanceObservingContext;
         _cancelButtonToolTipTag = NSIntegerMax;
     }
 
+    if (_clearButtonToolTipTag != NSIntegerMax)
+    {
+        [self removeToolTip:_clearButtonToolTipTag];
+        _clearButtonToolTipTag = NSIntegerMax;
+    }
+
     if (self.isRecording)
     {
         if (!NSIsEmptyRect(cancelButtonFrame))
@@ -1297,6 +1311,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
                                                                       owner:self
                                                                    userInfo:nil];
             [self addTrackingArea:_clearButtonTrackingArea];
+            _clearButtonToolTipTag = [self addToolTipRect:_clearButtonTrackingArea.rect owner:self userData:NULL];
         }
     }
 
@@ -1317,8 +1332,6 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
 - (void)viewWillMoveToWindow:(NSWindow *)aWindow
 {
-    // We want control to end recording whenever window resigns first responder status.
-    // Otherwise we could end up with "dangling" recording.
     if (self.window)
     {
         [NSNotificationCenter.defaultCenter removeObserver:self

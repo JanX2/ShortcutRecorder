@@ -1245,6 +1245,21 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @synthesize recordingWithValueConstraints = _recordingWithValueConstraints;
 @synthesize preferredComponents = _preferredComponents;
 
+- (NSString *)noValueNormalLabel
+{
+    return SRLoc(@"Click to record shortcut");
+}
+
+- (NSString *)noValueDisableLabel
+{
+    return SRLoc(@"Click to record shortcut");
+}
+
+- (NSString *)noValueRecordingLabel
+{
+    return SRLoc(@"Type shortcut");
+}
+
 - (void)prepareForRecorderControl:(SRRecorderControl *)aControl
 {
     NSAssert(_recorderControl == nil, @"Style was not removed properly.");
@@ -1398,7 +1413,12 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         _cancelToClearConstraint.constant = -[metrics[@"cancelToClear"] doubleValue];
 
         CGFloat maxExpectedLeadingLabelOffset = _alignmentToLabelConstraint.constant;
-        CGFloat maxExpectedLabelWidth = ceil([SRLoc(@"Click to record shortcut") sizeWithAttributes:_normalLabelAttributes].width);
+
+        CGFloat normalLabelWidth = ceil([self.noValueNormalLabel sizeWithAttributes:_normalLabelAttributes].width);
+        CGFloat disabledLabelWidth = ceil([self.noValueDisableLabel sizeWithAttributes:_disabledLabelAttributes].width);
+        CGFloat recordingLabelWidth = ceil([self.noValueRecordingLabel sizeWithAttributes:_recordingLabelAttributes].width);
+        CGFloat maxExpectedLabelWidth = MAX(MAX(normalLabelWidth, disabledLabelWidth), recordingLabelWidth);
+
         CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
         _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
 
