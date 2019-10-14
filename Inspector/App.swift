@@ -10,6 +10,9 @@ import ShortcutRecorder
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, ShortcutActionTarget {
+    var bindingsInspector: NSWindowController!
+    var layoutInspector: NSWindowController!
+
     let purrSound = NSSound(named: "Purr")!
 
     override func awakeFromNib() {
@@ -46,13 +49,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, ShortcutActionTarget {
 
     func showWindows() {
         let s = NSStoryboard(name: "Main", bundle: nil)
-        let layoutInspector = s.instantiateController(withIdentifier: "LayoutInspector") as! NSWindowController
-        let bindingsInspector = s.instantiateController(withIdentifier: "BindingsInspector") as! NSWindowController
+
+        layoutInspector = s.instantiateController(withIdentifier: "LayoutInspector") as? NSWindowController
+        bindingsInspector = s.instantiateController(withIdentifier: "BindingsInspector") as? NSWindowController
 
         let layoutWindow = layoutInspector.window!
         let bindingsWindow = bindingsInspector.window!
 
-        // The Window submenu alraedy lists all available windows.
+        // The Window submenu already lists all available windows.
         layoutWindow.isExcludedFromWindowsMenu = true
         bindingsWindow.isExcludedFromWindowsMenu = true
 
@@ -72,6 +76,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, ShortcutActionTarget {
 
         layoutWindow.setFrameAutosaveName("SRLayoutInspector")
         bindingsWindow.setFrameAutosaveName("SRBindingsInspector")
+    }
+
+    @IBAction func showBindingsInspector(_ sender: Any) {
+        bindingsInspector.showWindow(sender)
+    }
+
+    @IBAction func showLayoutInspector(_ sender: Any) {
+        layoutInspector.showWindow(sender)
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
