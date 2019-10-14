@@ -26,23 +26,10 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES"
       enableAddressSanitizer = "YES"
       enableUBSanitizer = "YES"
-      codeCoverageEnabled = "YES"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BA722EC42161619200EFF192"
-               BuildableName = "Unit Tests.xctest"
-               BlueprintName = "Unit Tests"
-               ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      codeCoverageEnabled = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
@@ -59,6 +46,19 @@
             isEnabled = "YES">
          </AdditionalOption>
       </AdditionalOptions>
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BA722EC42161619200EFF192"
+               BuildableName = "Unit Tests.xctest"
+               BlueprintName = "Unit Tests"
+               ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -79,8 +79,6 @@
             ReferencedContainer = "container:ShortcutRecorder.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
