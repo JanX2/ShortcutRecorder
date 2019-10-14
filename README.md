@@ -19,6 +19,7 @@ The best control to record shortcuts on macOS
 - Translated into 23 languages
 - Supports macOS Accessibility
 - Thoroughly documented and tested
+- Global and Local shortcuts for both key up and key down actions
 - Mac App Store approved
 - End-to-end Interface Builder integration
 
