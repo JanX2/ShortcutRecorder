@@ -274,7 +274,7 @@ IB_DESIGNABLE
 
  @seealso http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
  */
-- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
+- (void)propagateValue:(nullable id)aValue forBinding:(NSString *)aBinding;
 
 #pragma mark Drawing
 
