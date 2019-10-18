@@ -60,11 +60,11 @@ The framework supports [module maps](https://clang.llvm.org/docs/Modules.html), 
 
 ### CocoaPods
 
-     pod 'ShortcutRecorder', '~> 3.0'
+     pod 'ShortcutRecorder', '~> 3.1'
 
 ### Carthage
 
-    github "Kentzo/ShortcutRecorder" ~> 3.0
+    github "Kentzo/ShortcutRecorder" ~> 3.1
 
 Prebuilt frameworks are available.
 
