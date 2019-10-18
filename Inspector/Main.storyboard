@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -133,14 +133,14 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Window" systemMenu="window" id="6Of-6M-fTi">
                                     <items>
-                                        <menuItem title="Bindings" keyEquivalent="1" id="2qY-rK-6sD">
+                                        <menuItem title="Bindings" tag="1" keyEquivalent="1" id="2qY-rK-6sD">
                                             <connections>
-                                                <segue destination="Cfg-6J-0Ka" kind="show" id="9al-81-MHy"/>
+                                                <action selector="showBindingsInspector:" target="Wsw-a9-b4o" id="bkv-oW-7Re"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Layout" keyEquivalent="2" id="Ojw-ek-jdx" userLabel="Layout">
+                                        <menuItem title="Layout" tag="2" keyEquivalent="2" id="Ojw-ek-jdx" userLabel="Layout">
                                             <connections>
-                                                <segue destination="WGQ-I6-9sj" kind="show" id="Hdq-El-fs4"/>
+                                                <action selector="showLayoutInspector:" target="Wsw-a9-b4o" id="DAQ-o0-IaF"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="6Pk-IW-yqa"/>

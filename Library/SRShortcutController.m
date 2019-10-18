@@ -128,7 +128,7 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
     if (!newShortcutActionTarget && _shortcutAction)
     {
         [self willChangeValueForKey:@"shortcutAction"];
-        [SRGlobalShortcutMonitor.sharedMonitor removeShortcutAction:_shortcutAction];
+        [SRGlobalShortcutMonitor.sharedMonitor removeAction:_shortcutAction];
         _shortcutAction = nil;
         [self didChangeValueForKey:@"shortcutAction"];
     }
@@ -142,7 +142,7 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
                                                                            tag:0];
         action.identifier = self.identifier;
         _shortcutAction = action;
-        [SRGlobalShortcutMonitor.sharedMonitor addShortcutAction:_shortcutAction];
+        [SRGlobalShortcutMonitor.sharedMonitor addAction:_shortcutAction forKeyEvent:SRKeyEventTypeDown];
         [self didChangeValueForKey:@"shortcutAction"];
     }
     else

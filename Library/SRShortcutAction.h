@@ -190,9 +190,14 @@ NS_SWIFT_NAME(ShortcutAction)
  Observes shortcuts assigned to actions and automatically rearranges internal storage.
 
  The monitor supports multiple actions associated with the same shortcut. When that happens,
- the monitor attempts to perform the most recent action that claimed the shortcut first. If it fails,
- it tries the next most recent one and so on until either an action is succesfully performed or the list
- of candidates is exhousted.
+ the monitor attempts to perform the most recent action that claimed the shortcut. If it fails,
+ it tries the next most recent one and so on until either the action is succesfully performed or the list
+ of candidates is exhausted.
+
+ There are two key events supported by the monitor: key down and key up.
+
+ The same action (identical object) may be associated with multiple shortcuts as well as both key events for the same
+ shortcut.
 
  The recency of actions is established first by the order of addition and then by the recency
  of the dynamic shortcut change (both direct and through observation).
@@ -200,52 +205,90 @@ NS_SWIFT_NAME(ShortcutAction)
 NS_SWIFT_NAME(ShortcutMonitor)
 @interface SRShortcutMonitor : NSObject
 
-/*!
- All associated shortcut actions in no particular order.
- */
-@property (readonly) NSArray<SRShortcutAction *> *shortcutActions;
+
+typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
+{
+    SRKeyEventTypeUp = NSEventTypeKeyUp,
+    SRKeyEventTypeDown = NSEventTypeKeyDown
+} NS_SWIFT_NAME(KeyEventType);
+
 
 /*!
- All shortcuts being currently monitored in no particular order.
+ All shortcut actions.
  */
-@property (readonly) NSSet<SRShortcut *> *allShortcuts;
+@property (copy, readonly) NSArray<SRShortcutAction *> *actions;
 
 /*!
- Add an action to the monitor.
-
- @note Adding the same action twice has no effect.
+ All shortcuts being monitored.
  */
-- (void)addShortcutAction:(SRShortcutAction *)anAction;
+@property (copy, readonly) NSArray<SRShortcut *> *shortcuts;
+
+/*!
+ All actions for a given key event in no particular order.
+ */
+- (NSArray<SRShortcutAction *> *)actionsForKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(actions(forKeyEvent:));
+
+/*!
+ All actions for a given shortcut and key event.
+
+ @return
+ Order is determined by the time of association such as that the last object is the most recently associated.
+ If the shortcut has no associated actions, returns an empty set.
+ */
+- (NSArray<SRShortcutAction *> *)actionsForShortcut:(SRShortcut *)aShortcut
+                                           keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(actions(forShortcut:keyEvent:));
+
+/*!
+ The most recent action associated with a given shortcut and key event.
+ */
+- (nullable SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent;
+
+/*!
+ Add an action to the monitor for a key event.
+
+ @note Adding the same action twice for the same key event makes it the most recent.
+ */
+- (void)addAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(addAction(_:forKeyEvent:));
+
+/*!
+ Remove an action, if present, from the monitor for a specific key event.
+ */
+- (void)removeAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAction(_:forKeyEvent:));
 
 /*!
  Remove an action from the monitor.
  */
-- (void)removeShortcutAction:(SRShortcutAction *)anAction;
+- (void)removeAction:(SRShortcutAction *)anAction NS_SWIFT_NAME(removeAction(_:));
 
 /*!
- The most recent action associated with the shortcut.
+ Remove all actions for a given shortcut and key event.
  */
-- (nullable SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut;
+- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAllActions(forShortcut:keyEvent:));
 
 /*!
- All actions associated with the shortcut.
-
- @return
- An array of actions currently associated with the shortcut ordered by the time of association
- such as that the last object is the most recently associated. If the shortcut has no associated actions,
- returns an empty array.
+ Remove all actions for a given key event.
  */
-- (NSArray<SRShortcutAction *> *)allActionsForShortcut:(SRShortcut *)aShortcut;
+- (void)removeAllActionsForKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAllActions(forKeyEvent:));
+
+/*!
+ Remove all actions for a given shortcut.
+ */
+- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(removeAllActions(forShortcut:));
+
+/*!
+ Remove all actions from the monitor.
+ */
+- (void)removeAllActions;
 
 /*!
  Called after the shortcut gets its first associated action.
  */
-- (void)didAddShortcut:(SRShortcut *)aShortcut;
+- (void)didAddShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(didAddShortcut(_:));
 
 /*!
  Called after the shortcut loses its last associated action.
  */
-- (void)didRemoveShortcut:(SRShortcut *)aShortcut;
+- (void)didRemoveShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(didRemoveShortcut(_:));
 
 @end
 
@@ -253,7 +296,7 @@ NS_SWIFT_NAME(ShortcutMonitor)
 @interface SRShortcutMonitor (SRShortcutMonitorConveniences)
 
 /*!
- Create and add new shortcut action with the given parameters.
+ Create and add new action with given parameters.
  */
 - (nullable SRShortcutAction *)addAction:(SEL)anAction forKeyEquivalent:(NSString *)aKeyEquivalent tag:(NSInteger)aTag;
 
@@ -302,15 +345,27 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
 - (void)pause;
 
 /*!
- Perform the action associated with the event, if any.
+ Perform the action associated with a given event.
 
  @param anEvent A Carbon hot key event.
+
+ @return noErr if event is handeled; one of the Carbon errors otherwise.
 
  @discussion
  If there is more than one action associated with the event, they are performed one by one
  either until one of them returns YES or the iteration is exhausted.
  */
 - (OSStatus)handleEvent:(nullable EventRef)anEvent;
+
+/*!
+ Called after the carbon event handler is installed.
+*/
+- (void)didAddEventHandler;
+
+/*!
+ Called after the carbon event handler is removed.
+*/
+- (void)didRemoveEventHandler;
 
 @end
 

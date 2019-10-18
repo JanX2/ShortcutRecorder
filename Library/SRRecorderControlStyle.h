@@ -132,6 +132,12 @@ extern NSAttributedStringKey const SRMinimalDrawableWidthAttributeName;
 
 /*!
  Components of the style that describe visual appearance.
+
+ The control may be in one of the following states:
+    - Normal: the control is enabled but unpressed
+    - Pressed: the control is enabled and pressed
+    - Recording: the control is enabled and recording
+    - Disabled: the control is disabled
  */
 NS_SWIFT_NAME(RecorderControlStyle.Components)
 @interface SRRecorderControlStyleComponents: NSObject <NSCopying>
@@ -301,6 +307,16 @@ NS_SWIFT_NAME(RecorderControlStyling)
 
 @property (readonly) NSImage *clearButton;
 @property (readonly) NSImage *clearButtonPressed;
+
+@property (readonly) NSString *noValueNormalLabel;
+@property (readonly) NSString *noValueDisableLabel;
+@property (readonly) NSString *noValueRecordingLabel;
+
+@property (readonly) NSString *normalTooltip;
+@property (readonly) NSString *disabledTooltip;
+@property (readonly) NSString *recordingTooltip;
+@property (readonly) NSString *cancelButtonTooltip;
+@property (readonly) NSString *clearButtonTooltip;
 
 /*!
  Corner radius of the focus ring.

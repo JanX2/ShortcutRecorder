@@ -274,7 +274,7 @@ IB_DESIGNABLE
 
  @seealso http://tomdalling.com/blog/cocoa/implementing-your-own-cocoa-bindings/
  */
-- (void)propagateValue:(id)aValue forBinding:(NSString *)aBinding;
+- (void)propagateValue:(nullable id)aValue forBinding:(NSString *)aBinding;
 
 #pragma mark Drawing
 
@@ -293,7 +293,7 @@ IB_DESIGNABLE
 /*!
  Returns label to be displayed by the receiver.
  */
-@property (readonly) NSString *drawingLabel;
+@property (readonly) NSString *drawingLabel __attribute__((annotate("returns_localized_nsstring")));
 
 /*!
  Attirbutes for the drawingLabel.

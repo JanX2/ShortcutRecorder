@@ -1080,11 +1080,11 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                                                                           NSLayoutRelationEqual,
                                                                           @"SR_alignmentGuide_suggestedWidth")),
 
-        SetConstraint(&_backgroundTopConstraint, MakeEqConstraint(self.backgroundDrawingGuide.topAnchor,
-                                                                  self.alignmentGuide.topAnchor,
+        SetConstraint(&_backgroundTopConstraint, MakeEqConstraint(self.alignmentGuide.topAnchor,
+                                                                  self.backgroundDrawingGuide.topAnchor,
                                                                   @"SR_backgroundDrawingGuide_topToAlignment")),
-        SetConstraint(&_backgroundLeftConstraint, MakeEqConstraint(self.backgroundDrawingGuide.leftAnchor,
-                                                                   self.alignmentGuide.leftAnchor,
+        SetConstraint(&_backgroundLeftConstraint, MakeEqConstraint(self.alignmentGuide.leftAnchor,
+                                                                   self.backgroundDrawingGuide.leftAnchor,
                                                                    @"SR_backgroundDrawingGuide_leftToAlignment")),
         SetConstraint(&_backgroundBottomConstraint, MakeEqConstraint(self.backgroundDrawingGuide.bottomAnchor,
                                                                      self.alignmentGuide.bottomAnchor,
@@ -1111,18 +1111,18 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     ];
 
     _displayingConstraints = @[
-        SetConstraint(&_labelToAlignmentConstraint, MakeEqConstraint(self.labelDrawingGuide.trailingAnchor,
-                                                                     self.alignmentGuide.trailingAnchor,
+        SetConstraint(&_labelToAlignmentConstraint, MakeEqConstraint(self.alignmentGuide.trailingAnchor,
+                                                                     self.labelDrawingGuide.trailingAnchor,
                                                                      @"SR_labelDrawingGuide_trailingToAlignment")),
     ];
 
     _recordingWithNoValueConstraints = @[
-        SetConstraint(&_labelToCancelConstraint, MakeEqConstraint(self.labelDrawingGuide.trailingAnchor,
-                                                                  self.cancelButtonDrawingGuide.leadingAnchor,
+        SetConstraint(&_labelToCancelConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.leadingAnchor,
+                                                                  self.labelDrawingGuide.trailingAnchor,
                                                                   @"SR_labelDrawingGuide_trailingToCancel")),
 
-        SetConstraint(&_cancelToAlignmentConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.trailingAnchor,
-                                                                      self.alignmentGuide.trailingAnchor,
+        SetConstraint(&_cancelToAlignmentConstraint, MakeEqConstraint(self.alignmentGuide.trailingAnchor,
+                                                                      self.cancelButtonDrawingGuide.trailingAnchor,
                                                                       @"SR_cancelButtonDrawingGuide_trailingToAlignment")),
         MakeEqConstraint(self.cancelButtonDrawingGuide.centerYAnchor,
                          self.alignmentGuide.centerYAnchor,
@@ -1154,8 +1154,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         MakeEqConstraint(self.cancelButtonDrawingGuide.centerYAnchor,
                          self.alignmentGuide.centerYAnchor,
                          @"SR_cancelButtonDrawingGuide_centerYToAlignment"),
-        SetConstraint(&_cancelToClearConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.trailingAnchor,
-                                                                  self.clearButtonDrawingGuide.leadingAnchor,
+        SetConstraint(&_cancelToClearConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.leadingAnchor,
+                                                                  self.cancelButtonDrawingGuide.trailingAnchor,
                                                                   @"SR_cancelButtonDrawingGuide_trailingToClear")),
         _cancelButtonWidthConstraint,
         _cancelButtonHeightConstraint,
@@ -1163,8 +1163,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         MakeEqConstraint(self.clearButtonDrawingGuide.centerYAnchor,
                          self.alignmentGuide.centerYAnchor,
                          @"SR_clearButtonDrawingGuide_centerYToAlignment"),
-        SetConstraint(&_clearToAlignmentConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.trailingAnchor,
-                                                                     self.alignmentGuide.trailingAnchor,
+        SetConstraint(&_clearToAlignmentConstraint, MakeEqConstraint(self.alignmentGuide.trailingAnchor,
+                                                                     self.clearButtonDrawingGuide.trailingAnchor,
                                                                      @"SR_clearButtonDrawingGuide_trailingToAlignment")),
         SetConstraint(&_clearButtonWidthConstraint, MakeEqConstraint(self.clearButtonDrawingGuide.widthAnchor,
                                                                      nil,
@@ -1244,6 +1244,21 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @synthesize recordingWithNoValueConstraints = _recordingWithNoValueConstraints;
 @synthesize recordingWithValueConstraints = _recordingWithValueConstraints;
 @synthesize preferredComponents = _preferredComponents;
+
+- (NSString *)noValueNormalLabel
+{
+    return SRLoc(@"Record Shortcut");
+}
+
+- (NSString *)noValueDisableLabel
+{
+    return SRLoc(@"Record Shortcut");
+}
+
+- (NSString *)noValueRecordingLabel
+{
+    return SRLoc(@"Type shortcut");
+}
 
 - (void)prepareForRecorderControl:(SRRecorderControl *)aControl
 {
@@ -1385,21 +1400,32 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         _alignmentWidthConstraint.constant = fdim(minSize.width, _alignmentRectInsets.left + _alignmentRectInsets.right);
         _alignmentHeightConstraint.constant = fdim(minSize.height, _alignmentRectInsets.top + _alignmentRectInsets.bottom);
 
-        _backgroundTopConstraint.constant = -_alignmentRectInsets.top;
-        _backgroundLeftConstraint.constant = -_alignmentRectInsets.left;
+        _backgroundTopConstraint.constant = _alignmentRectInsets.top;
+        _backgroundLeftConstraint.constant = _alignmentRectInsets.left;
         _backgroundBottomConstraint.constant = _alignmentRectInsets.bottom;
         _backgroundRightConstraint.constant = _alignmentRectInsets.right;
 
         _alignmentToLabelConstraint.constant = [metrics[@"alignmentToLabel"] doubleValue];
-        _labelToAlignmentConstraint.constant = -[metrics[@"labelToAlignment"] doubleValue];
-        _labelToCancelConstraint.constant = -[metrics[@"labelToCancel"] doubleValue];
-        _cancelToAlignmentConstraint.constant = -[metrics[@"buttonToAlignment"] doubleValue];
-        _clearToAlignmentConstraint.constant = -[metrics[@"buttonToAlignment"] doubleValue];
-        _cancelToClearConstraint.constant = -[metrics[@"cancelToClear"] doubleValue];
+        _labelToAlignmentConstraint.constant = [metrics[@"labelToAlignment"] doubleValue];
+        _labelToCancelConstraint.constant = [metrics[@"labelToCancel"] doubleValue];
+        _cancelToAlignmentConstraint.constant = [metrics[@"buttonToAlignment"] doubleValue];
+        _clearToAlignmentConstraint.constant = [metrics[@"buttonToAlignment"] doubleValue];
+        _cancelToClearConstraint.constant = [metrics[@"cancelToClear"] doubleValue];
 
         CGFloat maxExpectedLeadingLabelOffset = _alignmentToLabelConstraint.constant;
-        CGFloat maxExpectedLabelWidth = ceil([SRLoc(@"Click to record shortcut") sizeWithAttributes:_normalLabelAttributes].width);
-        CGFloat maxExpectedTrailingLabelOffset = MAX(_alignmentToLabelConstraint.constant, _labelToCancelConstraint.constant + _cancelButtonWidthConstraint.constant + _cancelToClearConstraint.constant + _clearButtonWidthConstraint.constant + _clearToAlignmentConstraint.constant);
+
+        CGFloat normalLabelWidth = ceil([self.noValueNormalLabel sizeWithAttributes:_normalLabelAttributes].width);
+        CGFloat disabledLabelWidth = ceil([self.noValueDisableLabel sizeWithAttributes:_disabledLabelAttributes].width);
+        CGFloat recordingLabelWidth = ceil([self.noValueRecordingLabel sizeWithAttributes:_recordingLabelAttributes].width);
+        CGFloat maxExpectedLabelWidth = MAX(MAX(normalLabelWidth, disabledLabelWidth), recordingLabelWidth);
+
+        CGFloat maxExpectedTrailingLabelOffset = MAX(_labelToAlignmentConstraint.constant,
+                                                     _labelToCancelConstraint.constant +
+                                                     _cancelButtonWidthConstraint.constant +
+                                                     _cancelToClearConstraint.constant +
+                                                     _clearButtonWidthConstraint.constant +
+                                                     _clearToAlignmentConstraint.constant);
+
         _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
 
         _intrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant, _alignmentHeightConstraint.constant);

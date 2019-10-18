@@ -86,8 +86,8 @@ let targetAction = ShortcutAction(shortcut: shortcut, target: nil, action: #sele
  ⌥⇧⌘A and ⌃⇧⌘B will be globally overridden until you terminate the Playground
  */
 let globalMonitor = GlobalShortcutMonitor.shared
-globalMonitor.addShortcutAction(action)
-globalMonitor.addShortcutAction(autoupdatingAction)
+globalMonitor.addAction(action, forKeyEvent: .down)
+globalMonitor.addAction(autoupdatingAction, forKeyEvent: .down)
 /*:
  `LocalShortcutMonitor` organizes actions into a collection that can later by used for event dispatch e.g.
  in the subclasses of `NSResponder` such as `NSView` and `NSViewController`. It's a convenient alternative

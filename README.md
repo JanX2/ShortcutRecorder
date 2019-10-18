@@ -2,7 +2,7 @@
 ![macOS 10.11](https://img.shields.io/badge/macOS-10.11%2B-informational.svg)
 ![Mac App Store Approved](https://img.shields.io/badge/Mac%20App%20Store-Approved-success.svg)
 
-[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-Compatible-success.svg)](https://cocoapods.org/pods/ShortcutRecorder)
+[![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-Compatible%201.8+-success.svg)](https://cocoapods.org/pods/ShortcutRecorder)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-success.svg)](https://github.com/Carthage/Carthage)
 
 [![Coverage](https://codecov.io/gh/Kentzo/ShortcutRecorder/branch/master/graph/badge.svg)](https://codecov.io/gh/Kentzo/ShortcutRecorder)
@@ -10,15 +10,16 @@
 
 # ShortcutRecorder
 
-![Showcase](https://user-images.githubusercontent.com/88809/64389630-418b5480-cff8-11e9-8003-8d2763042e82.gif)
+![Showcase](https://user-images.githubusercontent.com/88809/67132003-e4b8b780-f1bb-11e9-984d-2c88fc8c2286.gif)
 
 The best control to record shortcuts on macOS
 
 - Objective-C framework developed with Swift in mind
 - Easily stylable
-- Translated into 23 languages
+- Translated into 22 languages
 - Supports macOS Accessibility
 - Thoroughly documented and tested
+- Global and Local shortcuts for both key up and key down actions
 - Mac App Store approved
 - End-to-end Interface Builder integration
 
@@ -39,13 +40,13 @@ import ShortcutRecorder
 
 let defaults = NSUserDefaultsController.shared
 let keyPath = "values.shortcut"
-let options = [NSBindingOption.valueTransformerName: NSValueTransformerName.keyedUnarchiveFromDataTransformerName]
+let options = [NSBindingOption.valueTransformerName: .keyedUnarchiveFromDataTransformerName]
 
 let beepAction = ShortcutAction(keyPath: keyPath, of: defaults) { _ in
     NSSound.beep()
     return true
 }
-GlobalShortcutMonitor.shared.addShortcutAction(beepAction)
+GlobalShortcutMonitor.shared.addAction(beepAction, forKeyEvent: .down)
 
 let recorder = RecorderControl()
 recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
@@ -59,11 +60,11 @@ The framework supports [module maps](https://clang.llvm.org/docs/Modules.html), 
 
 ### CocoaPods
 
-     pod 'ShortcutRecorder', '~> 3.0'
+     pod 'ShortcutRecorder', '~> 3.1'
 
 ### Carthage
 
-    github "Kentzo/ShortcutRecorder" ~> 3.0
+    github "Kentzo/ShortcutRecorder" ~> 3.1
 
 Prebuilt frameworks are available.
 

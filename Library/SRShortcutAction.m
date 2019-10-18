@@ -362,8 +362,12 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
 @interface SRShortcutMonitor ()
 {
     @protected
-    NSMapTable<SRShortcut *, NSMutableArray<SRShortcutAction *> *> *_shortcutToActions;
-    NSHashTable<SRShortcutAction *> *_shortcutActions;
+    NSMutableDictionary<SRShortcut *, NSMutableOrderedSet<SRShortcutAction *> *> *_shortcutToKeyDownActions;
+    NSMutableDictionary<SRShortcut *, NSMutableOrderedSet<SRShortcutAction *> *> *_shortcutToKeyUpActions;
+    NSCountedSet<SRShortcut *> *_shortcuts;
+    NSCountedSet<SRShortcutAction *> *_actions;
+    NSMutableSet<SRShortcutAction *> *_keyUpActions;
+    NSMutableSet<SRShortcutAction *> *_keyDownActions;
 }
 @end
 
@@ -376,8 +380,12 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
 
     if (self)
     {
-        _shortcutToActions = [NSMapTable strongToStrongObjectsMapTable];
-        _shortcutActions = [NSHashTable hashTableWithOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPointerPersonality];
+        _shortcutToKeyDownActions = [NSMutableDictionary new];
+        _shortcutToKeyUpActions = [NSMutableDictionary new];
+        _shortcuts = [NSCountedSet new];
+        _actions = [NSCountedSet new];
+        _keyUpActions = [NSMutableSet new];
+        _keyDownActions = [NSMutableSet new];
     }
 
     return self;
@@ -385,7 +393,7 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
 
 - (void)dealloc
 {
-    for (SRShortcutAction *action in _shortcutActions)
+    for (SRShortcutAction *action in _actions)
     {
         [action removeObserver:self forKeyPath:@"shortcut" context:_SRShortcutMonitorContext];
     }
@@ -393,68 +401,164 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
 
 #pragma mark Properties
 
-- (NSArray<SRShortcutAction *> *)shortcutActions
+- (NSArray<SRShortcutAction *> *)actions
 {
-    return _shortcutActions.allObjects;
+    @synchronized (_actions)
+    {
+        return _actions.allObjects;
+    }
 }
 
-- (NSSet<SRShortcut *> *)allShortcuts
+- (NSArray<SRShortcut *> *)shortcuts
 {
-    NSMutableSet *shortcuts = [NSMutableSet new];
-
-    for (SRShortcutAction *action in _shortcutActions)
+    @synchronized (_actions)
     {
-        if (action.shortcut)
-            [shortcuts addObject:action.shortcut];
+        return _shortcuts.allObjects;
     }
-
-    return [shortcuts copy];
 }
 
 #pragma mark Methods
 
-- (void)addShortcutAction:(SRShortcutAction *)anAction
+- (NSArray<SRShortcutAction *> *)actionsForKeyEvent:(SRKeyEventType)aKeyEvent
 {
-    @synchronized (_shortcutToActions)
+    @synchronized (_actions)
     {
-        if ([_shortcutActions containsObject:anAction])
+        return [self _actionsForKeyEvent:aKeyEvent].allObjects;
+    }
+}
+
+- (NSArray<SRShortcutAction *> *)actionsForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent
+{
+    @synchronized (_actions)
+    {
+        __auto_type result = [self _actionsForShortcut:aShortcut keyEvent:aKeyEvent];
+        return result != nil ? [NSArray arrayWithArray:result.array] : [NSArray new];
+    }
+}
+
+- (SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent
+{
+    @synchronized (_actions)
+    {
+        return [[self _actionsForShortcut:aShortcut keyEvent:aKeyEvent] lastObject];
+    }
+}
+
+- (void)addAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent
+{
+    @synchronized (_actions)
+    {
+        __auto_type keyEventActions = [self _actionsForKeyEvent:aKeyEvent];
+
+        if (![keyEventActions containsObject:anAction])
+        {
+            [_actions addObject:anAction];
+            NSAssert([_actions countForObject:anAction] <= 2, @"Action is added too many times");
+            [keyEventActions addObject:anAction];
+
+            if ([_actions countForObject:anAction] == 1)
+            {
+                [anAction addObserver:self
+                           forKeyPath:@"shortcut"
+                              options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                              context:_SRShortcutMonitorContext];
+            }
+
+            if (anAction.shortcut)
+                [self _addAction:anAction toShortcut:anAction.shortcut forKeyEvent:aKeyEvent];
+        }
+        else if (anAction.shortcut)
+        {
+            __auto_type shortcutActions = [self _actionsForShortcut:anAction.shortcut keyEvent:aKeyEvent];
+            NSAssert(shortcutActions.count, @"Action was not added to the shortcut");
+            NSUInteger fromIndex = [shortcutActions indexOfObject:anAction];
+            NSAssert(fromIndex != NSNotFound, @"Action was not added to the shortcut");
+            [shortcutActions moveObjectsAtIndexes:[NSIndexSet indexSetWithIndex:fromIndex] toIndex:shortcutActions.count - 1];
+        }
+    }
+}
+
+- (void)removeAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent
+{
+    @synchronized (_actions)
+    {
+        __auto_type keyEventActions = [self _actionsForKeyEvent:aKeyEvent];
+        if (![keyEventActions containsObject:anAction])
             return;
 
-        [_shortcutActions addObject:anAction];
-        [anAction addObserver:self
-                   forKeyPath:@"shortcut"
-                      options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-                      context:_SRShortcutMonitorContext];
+        [keyEventActions removeObject:anAction];
+        [_actions removeObject:anAction];
+
+        if (![_actions countForObject:anAction])
+            [anAction removeObserver:self forKeyPath:@"shortcut" context:_SRShortcutMonitorContext];
+
+        if (anAction.shortcut)
+            [self _removeAction:anAction fromShortcut:anAction.shortcut forKeyEvent:aKeyEvent];
     }
 }
 
-- (void)removeShortcutAction:(SRShortcutAction *)anAction
+- (void)removeAction:(SRShortcutAction *)anAction
 {
-    @synchronized (_shortcutToActions)
+    @synchronized (_actions)
     {
-        if (![_shortcutActions containsObject:anAction])
-            return;
-
-        [_shortcutActions removeObject:anAction];
-        [[_shortcutToActions objectForKey:anAction.shortcut] removeObject:anAction];
-        [anAction removeObserver:self forKeyPath:@"shortcut" context:_SRShortcutMonitorContext];
+        [self removeAction:anAction forKeyEvent:SRKeyEventTypeDown];
+        [self removeAction:anAction forKeyEvent:SRKeyEventTypeUp];
     }
 }
 
-- (SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut
+- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent
 {
-    @synchronized (_shortcutToActions)
+    @synchronized (_actions)
     {
-        return [[_shortcutToActions objectForKey:aShortcut] lastObject];
+        for (SRShortcutAction *action in [self actionsForShortcut:aShortcut keyEvent:aKeyEvent])
+        {
+            [self removeAction:action forKeyEvent:aKeyEvent];
+        }
     }
 }
 
-- (NSArray<SRShortcutAction *> *)allActionsForShortcut:(SRShortcut *)aShortcut
+- (void)removeAllActionsForKeyEvent:(SRKeyEventType)aKeyEvent
 {
-    @synchronized (_shortcutToActions)
+    @synchronized (_actions)
     {
-        NSMutableArray *actions = [_shortcutToActions objectForKey:aShortcut];
-        return actions != nil ? [actions copy] : @[];
+        for (SRShortcutAction *action in [self actionsForKeyEvent:aKeyEvent])
+        {
+            [self removeAction:action forKeyEvent:aKeyEvent];
+        }
+    }
+}
+
+- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut
+{
+    @synchronized (_actions)
+    {
+        [self removeAllActionsForShortcut:aShortcut keyEvent:SRKeyEventTypeDown];
+        [self removeAllActionsForShortcut:aShortcut keyEvent:SRKeyEventTypeUp];
+    }
+}
+
+- (void)removeAllActions
+{
+    @synchronized (_actions)
+    {
+        for (SRShortcutAction *action in _actions)
+        {
+            [action removeObserver:self forKeyPath:@"shortcut" context:_SRShortcutMonitorContext];
+        }
+
+        [_shortcutToKeyDownActions removeAllObjects];
+        [_shortcutToKeyUpActions removeAllObjects];
+        [_actions removeAllObjects];
+        [_keyUpActions removeAllObjects];
+        [_keyDownActions removeAllObjects];
+
+        __auto_type oldShortcuts = _shortcuts;
+        _shortcuts = [NSCountedSet new];
+
+        for (SRShortcut *shortcut in oldShortcuts)
+        {
+            [self didRemoveShortcut:shortcut];
+        }
     }
 }
 
@@ -466,6 +570,112 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
 {
 }
 
+#pragma mark Private
+
+- (NSMutableSet<SRShortcutAction *> *)_actionsForKeyEvent:(SRKeyEventType)aKeyEvent
+{
+    switch (aKeyEvent)
+    {
+        case SRKeyEventTypeDown:
+            return _keyDownActions;
+        case SRKeyEventTypeUp:
+            return _keyUpActions;
+        default:
+            [NSException raise:NSInvalidArgumentException format:@"Unexpected keyboard event type %lu", aKeyEvent];
+            return nil;
+    }
+}
+
+- (NSMutableDictionary<SRShortcut *, NSMutableOrderedSet<SRShortcutAction *> *> *)_shortcutToActionsForKeyEvent:(SRKeyEventType)aKeyEvent
+{
+    switch (aKeyEvent)
+    {
+        case SRKeyEventTypeDown:
+            return _shortcutToKeyDownActions;
+        case SRKeyEventTypeUp:
+            return _shortcutToKeyUpActions;
+        default:
+            [NSException raise:NSInvalidArgumentException format:@"Unexpected keyboard event type %lu", aKeyEvent];
+            return nil;
+    }
+}
+
+- (nullable NSMutableOrderedSet<SRShortcutAction *> *)_actionsForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent
+{
+    return [[self _shortcutToActionsForKeyEvent:aKeyEvent] objectForKey:aShortcut];
+}
+
+- (void)_actionDidChangeShortcut:(SRShortcutAction *)anAction from:(SRShortcut *)oldShortcut to:(SRShortcut *)newShortcut
+{
+    BOOL isKeyDownAction = [_keyDownActions containsObject:anAction];
+    BOOL isKeyUpAction = [_keyUpActions containsObject:anAction];
+
+    if (oldShortcut)
+    {
+        if (isKeyDownAction)
+            [self _removeAction:anAction fromShortcut:oldShortcut forKeyEvent:SRKeyEventTypeDown];
+
+        if (isKeyUpAction)
+            [self _removeAction:anAction fromShortcut:oldShortcut forKeyEvent:SRKeyEventTypeUp];
+    }
+
+    if (newShortcut)
+    {
+        if (isKeyDownAction)
+            [self _addAction:anAction toShortcut:newShortcut forKeyEvent:SRKeyEventTypeDown];
+
+        if (isKeyUpAction)
+            [self _addAction:anAction toShortcut:newShortcut forKeyEvent:SRKeyEventTypeUp];
+    }
+}
+
+/*!
+ Add the action to the shortcut, optionally calling the hook.
+ */
+- (void)_addAction:(SRShortcutAction *)anAction toShortcut:(SRShortcut *)aShortcut forKeyEvent:(SRKeyEventType)aKeyEvent
+{
+    __auto_type shortcutToActions = [self _shortcutToActionsForKeyEvent:aKeyEvent];
+    __auto_type shortcutActions = shortcutToActions[aShortcut];
+    NSParameterAssert(![shortcutActions containsObject:anAction]);
+
+    BOOL isNewShortcut = [_shortcuts countForObject:aShortcut] == 0;
+
+    if (!shortcutActions)
+    {
+        shortcutActions = [NSMutableOrderedSet orderedSetWithObject:anAction];
+        shortcutToActions[aShortcut] = shortcutActions;
+        [_shortcuts addObject:aShortcut];
+    }
+    else
+        [shortcutActions addObject:anAction];
+
+    if (isNewShortcut)
+        [self didAddShortcut:aShortcut];
+}
+
+/*!
+ Remove the action from the shortcut, optionally calling the hook.
+ */
+- (void)_removeAction:(SRShortcutAction *)anAction fromShortcut:(SRShortcut *)aShortcut forKeyEvent:(SRKeyEventType)aKeyEvent
+{
+    NSParameterAssert([_shortcuts containsObject:aShortcut]);
+
+    __auto_type shortcutToActions = [self _shortcutToActionsForKeyEvent:aKeyEvent];
+    __auto_type shortcutActions = shortcutToActions[aShortcut];
+    NSParameterAssert([shortcutActions containsObject:anAction]);
+
+    [shortcutActions removeObject:anAction];
+
+    if (!shortcutActions.count)
+    {
+        shortcutToActions[aShortcut] = nil;
+        [_shortcuts removeObject:aShortcut];
+    }
+
+    if (![_shortcuts countForObject:aShortcut])
+        [self didRemoveShortcut:aShortcut];
+}
+
 #pragma mark NSObject
 
 - (void)observeValueForKeyPath:(NSString *)aKeyPath
@@ -473,45 +683,20 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
                         change:(NSDictionary<NSKeyValueChangeKey, id> *)aChange
                        context:(void *)aContext
 {
-    if (aContext != _SRShortcutMonitorContext)
+    if (aContext == _SRShortcutMonitorContext)
     {
+        SRShortcut *oldShortcut = aChange[NSKeyValueChangeOldKey];
+        SRShortcut *newShortcut = aChange[NSKeyValueChangeNewKey];
+
+        @synchronized (_actions)
+        {
+            [self _actionDidChangeShortcut:(SRShortcutAction *)anObject
+                                      from:((id)oldShortcut == NSNull.null) ? nil : oldShortcut
+                                        to:((id)newShortcut == NSNull.null) ? nil : newShortcut];
+        }
+    }
+    else
         [super observeValueForKeyPath:aKeyPath ofObject:anObject change:aChange context:aContext];
-        return;
-    }
-
-    SRShortcut *oldShortcut = aChange[NSKeyValueChangeOldKey];
-    SRShortcut *newShortcut = aChange[NSKeyValueChangeNewKey];
-
-    @synchronized (_shortcutToActions)
-    {
-        if (oldShortcut && (id)oldShortcut != NSNull.null)
-        {
-            NSMutableArray *actions = [_shortcutToActions objectForKey:oldShortcut];
-            [actions removeObject:(SRShortcutAction *)anObject];
-
-            if (!actions.count)
-            {
-                [_shortcutToActions removeObjectForKey:oldShortcut];
-                [self didRemoveShortcut:oldShortcut];
-            }
-        }
-
-        if (newShortcut && (id)newShortcut != NSNull.null)
-        {
-            NSMutableArray *actions = [_shortcutToActions objectForKey:newShortcut];
-
-            if (!actions)
-            {
-                actions = [NSMutableArray new];
-                [_shortcutToActions setObject:actions forKey:newShortcut];
-            }
-
-            [actions addObject:(SRShortcutAction *)anObject];
-
-            if (actions.count == 1)
-                [self didAddShortcut:newShortcut];
-        }
-    }
 }
 
 @end
@@ -527,7 +712,7 @@ static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
         return nil;
 
     SRShortcutAction *action = [SRShortcutAction shortcutActionWithShortcut:shortcut target:nil action:anAction tag:aTag];
-    [self addShortcutAction:action];
+    [self addAction:action forKeyEvent:SRKeyEventTypeDown];
     return action;
 }
 
@@ -546,9 +731,9 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
 @implementation SRGlobalShortcutMonitor
 {
-    NSMapTable<NSNumber *, SRShortcut *> *_hotKeyIdToShortcut;
+    NSMutableDictionary<NSNumber *, SRShortcut *> *_hotKeyIdToShortcut;
     NSMapTable<SRShortcut *, id> *_shortcutToHotKeyRef;
-    NSMapTable<SRShortcut *, NSNumber *> *_shortcutToHotKeyId;
+    NSMutableDictionary<SRShortcut *, NSNumber *> *_shortcutToHotKeyId;
     EventHandlerRef _carbonEventHandler;
     NSInteger _disableCounter;
 }
@@ -569,47 +754,57 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
     if (self)
     {
-        _hotKeyIdToShortcut = [NSMapTable strongToStrongObjectsMapTable];
+        _hotKeyIdToShortcut = [NSMutableDictionary new];
         _shortcutToHotKeyRef = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality
                                                      valueOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality];
-        _shortcutToHotKeyId = [NSMapTable strongToStrongObjectsMapTable];
+        _shortcutToHotKeyId = [NSMutableDictionary new];
         _dispatchQueue = dispatch_get_main_queue();
     }
 
     return self;
 }
 
+- (void)dealloc
+{
+    for (SRShortcut *shortcut in _shortcuts)
+        [self _unregisterHotKeyForShortcutIfNeeded:shortcut];
+
+    [self _removeEventHandlerIfNeeded];
+}
+
 #pragma mark Methods
 
 - (void)resume
 {
-    @synchronized (_shortcutToActions)
+    @synchronized (_actions)
     {
         os_trace_debug("Global Shortcut Monitor counter: %ld -> %ld", _disableCounter, _disableCounter - 1);
         _disableCounter -= 1;
 
+        [self _installEventHandlerIfNeeded];
+
         if (_disableCounter == 0)
         {
-            [self installEventHandlerIfNeeded];
-
-            for (SRShortcut *shortcut in self.allShortcuts)
-                [self registerHotKeyForShortcutIfNeeded:shortcut];
+            for (SRShortcut *shortcut in _shortcuts)
+                [self _registerHotKeyForShortcutIfNeeded:shortcut];
         }
     }
 }
 
 - (void)pause
 {
-    @synchronized (_shortcutToActions)
+    @synchronized (_actions)
     {
         os_trace_debug("Global Shortcut Monitor counter: %ld -> %ld", _disableCounter, _disableCounter + 1);
         _disableCounter += 1;
 
         if (_disableCounter == 1)
         {
-            [self unregisterAllHotKeys];
-            [self removeEventHandlerIfNeeded];
+            for (SRShortcut *shortcut in _shortcuts)
+                [self _unregisterHotKeyForShortcutIfNeeded:shortcut];
         }
+
+        [self _removeEventHandlerIfNeeded];
     }
 }
 
@@ -659,7 +854,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
             return;
         }
 
-        @synchronized (self->_shortcutToActions)
+        @synchronized (self->_actions)
         {
             SRShortcut *shortcut = [self->_hotKeyIdToShortcut objectForKey:@(hotKeyID.id)];
 
@@ -670,7 +865,22 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
                 return;
             }
 
-            __auto_type actions = [self allActionsForShortcut:shortcut];
+            SRKeyEventType eventType = 0;
+            switch (GetEventKind(anEvent))
+            {
+                case kEventHotKeyPressed:
+                    eventType = SRKeyEventTypeDown;
+                    break;
+                case kEventHotKeyReleased:
+                    eventType = SRKeyEventTypeUp;
+                    break;
+                default:
+                    os_trace("#Error Unexpected key event of type %u", GetEventKind(anEvent));
+                    error = eventNotHandledErr;
+                    return;
+            }
+
+            __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
 
             if (!actions.count)
             {
@@ -690,14 +900,29 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     return error;
 }
 
+- (void)didAddEventHandler
+{
+}
+
+- (void)didRemoveEventHandler
+{
+}
+
 #pragma mark Private
 
-- (void)installEventHandlerIfNeeded
+- (void)_installEventHandlerIfNeeded
 {
     if (_carbonEventHandler)
         return;
 
-    static const EventTypeSpec eventSpec[] = { { kEventClassKeyboard, kEventHotKeyPressed } };
+    // _shortcuts is checked instead of _shortcutToHotKeyRef because the handler is added before the registration.
+    if (_disableCounter > 0 || !_shortcuts.count)
+        return;
+
+    static const EventTypeSpec eventSpec[] = {
+        { kEventClassKeyboard, kEventHotKeyPressed },
+        { kEventClassKeyboard, kEventHotKeyReleased }
+    };
     os_trace("Installing Carbon hot key event handler");
     OSStatus error = InstallEventHandler(GetEventDispatcherTarget(),
                                          (EventHandlerProcPtr)SRCarbonEventHandler,
@@ -711,11 +936,17 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
         os_trace_error("#Critical Failed to install event handler: %d", error);
         _carbonEventHandler = NULL;
     }
+    else
+        [self didAddEventHandler];
 }
 
-- (void)removeEventHandlerIfNeeded
+- (void)_removeEventHandlerIfNeeded
 {
     if (!_carbonEventHandler)
+        return;
+
+    // _shortcutToHotKeyRef is checked instead of _shortcuts because the handler is removed after the registrations.
+    if (_disableCounter <= 0 && _shortcutToHotKeyRef.count)
         return;
 
     os_trace("Removing Carbon hot key event handler");
@@ -726,9 +957,10 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
     // Assume that an error to remove the handler is due to the latter being invalid.
     _carbonEventHandler = NULL;
+    [self didRemoveEventHandler];
 }
 
-- (void)registerHotKeyForShortcutIfNeeded:(SRShortcut *)aShortcut
+- (void)_registerHotKeyForShortcutIfNeeded:(SRShortcut *)aShortcut
 {
     EventHotKeyRef hotKey = (__bridge EventHotKeyRef)([_shortcutToHotKeyRef objectForKey:aShortcut]);
 
@@ -764,7 +996,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     [_shortcutToHotKeyId setObject:@(hotKeyID.id) forKey:aShortcut];
 }
 
-- (void)unregisterHotKeyForShortcutIfNeeded:(SRShortcut *)aShortcut
+- (void)_unregisterHotKeyForShortcutIfNeeded:(SRShortcut *)aShortcut
 {
     EventHotKeyRef hotKey = (__bridge EventHotKeyRef)([_shortcutToHotKeyRef objectForKey:aShortcut]);
 
@@ -797,37 +1029,18 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     [_hotKeyIdToShortcut removeObjectForKey:@(hotKeyID)];
 }
 
-- (void)unregisterAllHotKeys
-{
-    NSEnumerator *hotKeys = [_shortcutToHotKeyRef objectEnumerator];
-    EventHotKeyRef hotKey = NULL;
-
-    while ((hotKey = (__bridge EventHotKeyRef)[hotKeys nextObject]))
-    {
-        UnregisterEventHotKey(hotKey);
-    }
-
-    [_shortcutToHotKeyId removeAllObjects];
-    [_shortcutToHotKeyRef removeAllObjects];
-    [_hotKeyIdToShortcut removeAllObjects];
-}
-
 #pragma mark SRShortcutMonitor
 
 - (void)didAddShortcut:(SRShortcut *)aShortcut
 {
-    [self registerHotKeyForShortcutIfNeeded:aShortcut];
-
-    if (_shortcutToHotKeyRef.count > 0)
-        [self installEventHandlerIfNeeded];
+    [self _registerHotKeyForShortcutIfNeeded:aShortcut];
+    [self _installEventHandlerIfNeeded];
 }
 
 - (void)didRemoveShortcut:(SRShortcut *)aShortcut
 {
-    [self unregisterHotKeyForShortcutIfNeeded:aShortcut];
-
-    if (_shortcutToHotKeyRef.count == 0)
-        [self removeEventHandlerIfNeeded];
+    [self _unregisterHotKeyForShortcutIfNeeded:aShortcut];
+    [self _removeEventHandlerIfNeeded];
 }
 
 @end
@@ -1010,14 +1223,26 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 - (BOOL)handleEvent:(nullable NSEvent *)anEvent withTarget:(nullable id)aTarget
 {
     SRShortcut *shortcut = [SRShortcut shortcutWithEvent:anEvent];
-
     if (!shortcut)
     {
         os_trace_error("#Error Not a keyboard event");
         return NO;
     }
 
-    __auto_type actions = [self allActionsForShortcut:shortcut];
+    SRKeyEventType eventType = 0;
+    switch (anEvent.type) {
+        case NSEventTypeKeyDown:
+            eventType = SRKeyEventTypeDown;
+            break;
+        case NSEventTypeKeyUp:
+            eventType = SRKeyEventTypeUp;
+            break;
+        default:
+            os_trace("#Error Unexpected key event of type %lu", anEvent.type);
+            return NO;
+    }
+
+    __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
     __block BOOL isHandled = NO;
     [actions enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop) {
         *stop = isHandled = [obj performActionOnTarget:aTarget];
@@ -1033,7 +1258,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     NSMutableDictionary *keyBindings = [systemKeyBindings mutableCopy];
     [keyBindings addEntriesFromDictionary:userKeyBindings];
 
-    @synchronized (_shortcutToActions) {
+    @synchronized (_actions) {
         [keyBindings enumerateKeysAndObjectsUsingBlock:^(NSString *aKey, id aValue, BOOL *aStop) {
             if (![aKey isKindOfClass:NSString.class] || !aKey.length)
                 return;
@@ -1051,15 +1276,16 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
                     continue;
                 else if (!keyBinding.length || [keyBinding isEqualToString:@"noop:"])
                 {
-                    // Only remove actions with non-observed shortcuts.
-                    __auto_type actions = [self->_shortcutToActions objectForKey:shortcut];
+                    // Only remove actions with static shortcuts.
+                    __auto_type actions = [self->_shortcutToKeyDownActions objectForKey:shortcut];
                     NSIndexSet *actionsToRemove = [actions indexesOfObjectsPassingTest:^BOOL(SRShortcutAction *obj, NSUInteger idx, BOOL *stop) {
                         return obj.observedObject == nil;
                     }];
                     [actions removeObjectsAtIndexes:actionsToRemove];
                 }
                 else
-                    [self addShortcutAction:[SRShortcutAction shortcutActionWithShortcut:shortcut target:nil action:NSSelectorFromString(aValue) tag:0]];
+                    [self addAction:[SRShortcutAction shortcutActionWithShortcut:shortcut target:nil action:NSSelectorFromString(aValue) tag:0]
+                        forKeyEvent:SRKeyEventTypeDown];
             }
         }];
     }

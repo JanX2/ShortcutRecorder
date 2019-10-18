@@ -42,39 +42,15 @@ NSBundle *SRBundle()
     static NSBundle *Bundle = nil;
     dispatch_once(&onceToken, ^{
         Bundle = [NSBundle bundleWithIdentifier:@"com.kulakov.ShortcutRecorder"];
-
-        if (!Bundle)
-        {
-            // Could be a CocoaPods framework with embedded resources bundle.
-            // Look up "use_frameworks!" and "resources_bundle" in CocoaPods documentation.
-            Bundle = [NSBundle bundleWithIdentifier:@"org.cocoapods.ShortcutRecorder"];
-
-            if (!Bundle)
-            {
-                Class c = NSClassFromString(@"SRRecorderControl");
-
-                if (c)
-                {
-                    Bundle = [NSBundle bundleForClass:c];
-                }
-            }
-
-            if (Bundle)
-            {
-                Bundle = [NSBundle bundleWithPath:[Bundle pathForResource:@"ShortcutRecorder" ofType:@"bundle"]];
-            }
-        }
     });
 
-    if (!Bundle)
+    if (Bundle)
+        return Bundle;
+    else
     {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                        reason:@"Unable to find bundle with resources."
                                      userInfo:nil];
-    }
-    else
-    {
-        return Bundle;
     }
 }
 
