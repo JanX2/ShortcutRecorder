@@ -206,6 +206,12 @@ NS_SWIFT_NAME(ShortcutMonitor)
 @interface SRShortcutMonitor : NSObject
 
 
+/*!
+ Type of the keyboard event.
+
+ @const SRKeyEventTypeUp Keyboard key is released.
+ @const SRKeyEventTypeDown Keyboard key is pressed.
+ */
 typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 {
     SRKeyEventTypeUp = NSEventTypeKeyUp,

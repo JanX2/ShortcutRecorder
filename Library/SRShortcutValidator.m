@@ -38,7 +38,7 @@
 - (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     __block BOOL result = NO;
-    os_activity_initiate("validateShortcut:error:", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcut:error:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         if (![self validateShortcutAgainstDelegate:aShortcut error:outError])
         {
             result = NO;
@@ -87,7 +87,7 @@
     };
 #pragma clang diagnostic pop
 
-    os_activity_initiate("validateShortcutAgainstDelegate:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcutAgainstDelegate:error:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         NSString *delegateReason = nil;
         if (!DelegateIsShortcutValid(&delegateReason))
         {
@@ -125,7 +125,7 @@
 - (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     __block BOOL result = NO;
-    os_activity_initiate("validateShortcutAgainstSystemShortcuts:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcutAgainstSystemShortcuts:error:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         CFArrayRef s = NULL;
         OSStatus err = CopySymbolicHotKeys(&s);
 
@@ -189,7 +189,7 @@
 {
     __block BOOL result = NO;
 
-    os_activity_initiate("validateShortcut:againstMenu:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcut:againstMenu:error:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         for (NSMenuItem *menuItem in aMenu.itemArray)
         {
             if (menuItem.hasSubmenu && ![self validateShortcut:aShortcut againstMenu:menuItem.submenu error:outError])

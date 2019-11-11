@@ -449,7 +449,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     };
 #pragma clang diagnostic pop
 
-    os_activity_initiate("beginRecording", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRRecorderControl beginRecording]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         if (!self.enabled)
         {
             result = NO;
@@ -518,7 +518,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     if (!self.isRecording)
         return;
 
-    os_activity_initiate("endRecording via cancel", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRRecorderControl endRecording]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         [self endRecordingWithObjectValue:self->_objectValue];
     });
 }
@@ -528,7 +528,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     if (!self.isRecording)
         return;
 
-    os_activity_initiate("endRecording via clear", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRRecorderControl clearAndEndRecording]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         [self endRecordingWithObjectValue:nil];
     });
 }
@@ -548,7 +548,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     };
 #pragma clang diagnostic pop
 
-    os_activity_initiate("endRecording explicitly", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
+    os_activity_initiate("-[SRRecorderControl endRecordingWithObjectValue:]", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
         [self willChangeValueForKey:@"isRecording"];
         self->_isRecording = NO;
         [self didChangeValueForKey:@"isRecording"];
@@ -752,7 +752,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     aModifierFlags &= SRCocoaModifierFlagsMask;
     __block BOOL allowModifierFlags = YES;
 
-    os_activity_initiate("areModifierFlagsValid:forKeyCode:", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRRecorderControl areModifierFlagsValid:forKeyCode:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         allowModifierFlags = [self areModifierFlagsAllowed:aModifierFlags forKeyCode:aKeyCode];
 
         if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
@@ -783,7 +783,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     };
 #pragma clang diagnostic pop
 
-    os_activity_initiate("areModifierFlagsAllowed:forKeyCode:", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
+    os_activity_initiate("-[SRRecorderControl areModifierFlagsAllowed:forKeyCode:]", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
         if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
             allowModifierFlags = NO;
         else if ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags)
@@ -1578,24 +1578,24 @@ static NSInteger _SRStyleAppearanceObservingContext;
     };
 #pragma clang diagnostic pop
 
-    os_activity_initiate("performKeyEquivalent:", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRRecorderControl performKeyEquivalent:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         if (!self.enabled)
         {
-            os_trace_debug("The control is disabled -> NO");
+            os_trace_debug("The control is disabled");
             result = NO;
             return;
         }
 
         if (self.window.firstResponder != self)
         {
-            os_trace_debug("The control is not the first responder -> NO");
+            os_trace_debug("The control is not the first responder");
             result = NO;
             return;
         }
 
         if (self->_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
         {
-            os_trace_debug("The control is tracking %lu -> NO", self->_mouseTrackingButtonTag);
+            os_trace_debug("The control is tracking %lu", self->_mouseTrackingButtonTag);
             result = NO;
             return;
         }
@@ -1606,14 +1606,14 @@ static NSInteger _SRStyleAppearanceObservingContext;
             {
                 // This shouldn't really happen ever, but was rarely observed.
                 // See https://github.com/Kentzo/ShortcutRecorder/issues/40
-                os_trace_debug("Invalid keyCode -> NO");
+                os_trace_debug("Invalid key code");
                 result = NO;
             }
             else if (self.allowsEscapeToCancelRecording &&
                 anEvent.keyCode == kVK_Escape &&
                 (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
             {
-                os_trace_debug("Cancel via Esc -> YES");
+                os_trace_debug("Cancel via Esc");
                 [self endRecording];
                 result = YES;
             }
@@ -1621,7 +1621,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
                     (anEvent.keyCode == kVK_Delete || anEvent.keyCode == kVK_ForwardDelete) &&
                     (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
             {
-                os_trace_debug("Clear via Delete -> YES");
+                os_trace_debug("Clear via Delete");
                 [self clearAndEndRecording];
                 result = YES;
             }
@@ -1636,26 +1636,26 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
                 if (canRecordShortcut)
                 {
-                    os_trace_debug("Valid and accepted shortcut -> YES");
+                    os_trace_debug("Valid and accepted shortcut");
                     [self endRecordingWithObjectValue:newObjectValue];
                     result = YES;
                 }
                 else
                 {
                     // Do not end editing and allow the client to make another attempt.
-                    os_trace_debug("Valid but rejected shortcut -> YES");
+                    os_trace_debug("Valid but rejected shortcut");
                     result = YES;
                 }
             }
             else
             {
-                os_trace_debug("Modifier flags %lu rejected -> NO", anEvent.modifierFlags);
+                os_trace_debug("Modifier flags %lu rejected", anEvent.modifierFlags);
                 result = NO;
             }
         }
         else if (anEvent.keyCode == kVK_Space)
         {
-            os_trace_debug("Begin recording via Space -> YES");
+            os_trace_debug("Begin recording via Space");
             result = [self beginRecording];
         }
         else

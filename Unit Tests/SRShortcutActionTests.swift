@@ -675,11 +675,13 @@ class SRGlobalShortcutMonitorTests: XCTestCase {
         var didRemoveExpectation: XCTestExpectation?
 
         override func didAddEventHandler() {
+            super.didAddEventHandler()
             changes.append(.add)
             didAddExpectation?.fulfill()
         }
 
         override func didRemoveEventHandler() {
+            super.didRemoveEventHandler()()
             changes.append(.remove)
             didRemoveExpectation?.fulfill()
         }

@@ -111,7 +111,7 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 - (void)setShortcut:(SRShortcut *)aShortcut
 {
-    os_activity_initiate("Setting raw shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRShortcutAction setShortcut:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         @synchronized (self)
         {
             [self willChangeValueForKey:@"observedObject"];
@@ -135,7 +135,7 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 - (void)setObservedObject:(id)newObservedObject withKeyPath:(NSString *)newKeyPath
 {
-    os_activity_initiate("Setting autoupdating shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRShortcutAction setObservedObject:withKeyPath:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         @synchronized (self)
         {
             if (newObservedObject == self->_observedObject && [self->_observedKeyPath isEqualToString:newKeyPath])
@@ -218,7 +218,7 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 - (BOOL)performActionOnTarget:(id)aTarget
 {
     __block BOOL isPerformed = NO;
-    os_activity_initiate("Performing shortcut action", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRShortcutAction performActionOnTarget:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         if (!self.isEnabled)
         {
             os_trace_debug("Not performed: disabled");
@@ -324,7 +324,7 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
         return;
     }
 
-    os_activity_initiate("Observing new shortcut", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRShortcutAction observeValueForKeyPath:ofObject:change:context:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
         SRShortcut *newShortcut = aChange[NSKeyValueChangeNewKey];
 
         // NSController subclasses are notable for not setting the New and Old keys of the change dictionary.
@@ -812,7 +812,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 {
     __block OSStatus error = noErr;
 
-    os_activity_initiate("Handling Carbon event", OS_ACTIVITY_FLAG_DETACHED, ^{
+    os_activity_initiate("-[SRGlobalShortcutMonitor handleEvent:]", OS_ACTIVITY_FLAG_DETACHED, ^{
         if (self->_disableCounter > 0)
         {
             os_trace_debug("Monitoring is currently disabled");
@@ -902,10 +902,12 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
 - (void)didAddEventHandler
 {
+    os_trace_debug("Added Carbon HotKey Event Handler");
 }
 
 - (void)didRemoveEventHandler
 {
+    os_trace_debug("Removed Carbon HotKey Event Handler");
 }
 
 #pragma mark Private

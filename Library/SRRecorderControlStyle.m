@@ -713,7 +713,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     };
 
     __block NSDictionary *info = nil;
-    os_activity_initiate("infoForStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRRecorderControlStyleResourceLoader infoForStyle:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         os_trace_debug_with_payload("Fetching info", ^(xpc_object_t d) {
             xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
         });
@@ -792,7 +792,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 - (NSArray<NSString *> *)lookupPrefixesForStyle:(SRRecorderControlStyle *)aStyle
 {
     __block NSArray *lookupPrefixes = nil;
-    os_activity_initiate("lookupPrefixesForStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRRecorderControlStyleResourceLoader lookupPrefixesForStyle:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         os_trace_debug_with_payload("Fetching lookup prefixes", ^(xpc_object_t d) {
             xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
         });
@@ -833,7 +833,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 - (NSImage *)imageNamed:(NSString *)aName forStyle:(SRRecorderControlStyle *)aStyle
 {
     __block NSImage *image = nil;
-    os_activity_initiate("imageNamed:forStyle:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRRecorderControlStyleResourceLoader imageNamed:forStyle:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         os_trace_debug_with_payload("Fetching image name", ^(xpc_object_t d) {
             xpc_dictionary_set_string(d, "identifier", aStyle.identifier.UTF8String);
             xpc_dictionary_set_string(d, "image", aName.UTF8String);
