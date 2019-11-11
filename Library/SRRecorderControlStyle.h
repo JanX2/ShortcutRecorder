@@ -214,6 +214,20 @@ NS_SWIFT_NAME(RecorderControlStyling)
 @property (getter=isOpaque, readonly) BOOL opaque;
 
 /*!
+ Whether area under the label drawing frame is opaque.
+
+ @discussion
+ AppKit disables LCD smoothing for non-opaque layer-backed views. Styles that guarantee that area under
+ the label is opaque want to enable LCD smoothing.
+
+ @note Target context may still elect to disallow LCD smoothing
+
+ @see CGContextSetShouldSmoothFonts
+ @see CGContextSetAllowsFontSmoothing
+ */
+@property (getter=isLabelDrawingFrameOpaque, readonly) BOOL labelDrawingFrameOpaque;
+
+/*!
  Unlike baselineLayoutOffsetFromBottom this is the true baseline where label is actually drawn.
 
  @seealso baselineLayoutOffsetFromBottom

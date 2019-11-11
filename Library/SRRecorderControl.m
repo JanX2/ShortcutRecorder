@@ -706,7 +706,12 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
     CGFloat minWidth = [labelAttributes[SRMinimalDrawableWidthAttributeName] doubleValue];
     if (labelFrame.size.width >= minWidth)
+    {
+        if (!self.isOpaque && self.style.isLabelDrawingFrameOpaque)
+            CGContextSetShouldSmoothFonts(NSGraphicsContext.currentContext.CGContext, true);
+
         [label drawWithRect:labelFrame options:0 attributes:labelAttributes context:nil];
+    }
 
     [NSGraphicsContext restoreGraphicsState];
 }

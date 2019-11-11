@@ -948,6 +948,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
         _allowsVibrancy = NO;
         _opaque = NO;
+        _labelDrawingFrameOpaque = YES;
         _alwaysConstraints = @[];
         _displayingConstraints = @[];
         _recordingWithValueConstraints = @[];
@@ -1207,6 +1208,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 @synthesize identifier = _identifier;
 @synthesize allowsVibrancy = _allowsVibrancy;
 @synthesize opaque = _opaque;
+@synthesize labelDrawingFrameOpaque = _labelDrawingFrameOpaque;
 @synthesize normalLabelAttributes = _normalLabelAttributes;
 @synthesize recordingLabelAttributes = _recordingLabelAttributes;
 @synthesize disabledLabelAttributes = _disabledLabelAttributes;
