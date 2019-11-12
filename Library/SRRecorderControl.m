@@ -919,6 +919,9 @@ static NSInteger _SRStyleAppearanceObservingContext;
         else
             c = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
 
+        if (!c)
+            c = [NSString stringWithFormat:@"%hu", _objectValue.keyCode];
+
         if (f.length > 0)
             return [NSString stringWithFormat:@"%@-%@", f, c];
         else
@@ -1091,6 +1094,9 @@ static NSInteger _SRStyleAppearanceObservingContext;
                          withImplicitModifierFlags:nil
                              explicitModifierFlags:@(_objectValue.modifierFlags)
                                    layoutDirection:layoutDirection];
+
+    if (!code)
+        code = [NSString stringWithFormat:@"<%hu>", _objectValue.keyCode];
 
     if (layoutDirection == NSUserInterfaceLayoutDirectionRightToLeft)
         return [NSString stringWithFormat:@"%@%@", code, flags];
