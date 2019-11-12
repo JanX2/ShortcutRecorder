@@ -92,11 +92,11 @@ class SRRecorderControlTests: XCTestCase {
     func testComaptibilityBindingAndViewChangeWithShortcut() {
         let v = RecorderControl()
         v.bind(NSBindingName.value, to: NSUserDefaultsController.shared, withKeyPath: "values.shortcut", options: nil)
-        let keyCode: UInt16 = 0
+        let keyCode = KeyCode.ansiA
         let modifierFlags: NSEvent.ModifierFlags = [.command, .option]
         let objectValue = Shortcut(code: keyCode, modifierFlags: modifierFlags, characters: nil, charactersIgnoringModifiers: nil)
         v.setValue(objectValue, forKey: "objectValue")
-        XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.keyCode") as! UInt16, keyCode)
+        XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.keyCode") as! UInt16, keyCode.rawValue)
         XCTAssertEqual(UserDefaults.standard.value(forKeyPath: "shortcut.modifierFlags") as! UInt, modifierFlags.rawValue)
         XCTAssertTrue(v.value(forKey: "isCompatibilityModeEnabled") as! Bool)
     }
@@ -124,12 +124,12 @@ class SRRecorderControlTests: XCTestCase {
             observation.invalidate()
         }
 
-        let s1 = Shortcut(code: UInt16(kVK_ANSI_A),
+        let s1 = Shortcut(code: KeyCode.ansiA,
                           modifierFlags: .command,
                           characters: "A",
                           charactersIgnoringModifiers: "a")
         v.objectValue = s1
-        let s2 = Shortcut(code: UInt16(kVK_ANSI_B),
+        let s2 = Shortcut(code: KeyCode.ansiB,
                           modifierFlags: .command,
                           characters: "B",
                           charactersIgnoringModifiers: "b")

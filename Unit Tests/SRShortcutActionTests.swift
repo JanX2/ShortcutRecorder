@@ -671,8 +671,8 @@ class SRGlobalShortcutMonitorTests: XCTestCase {
         enum Change: Equatable { case add, remove }
 
         var changes: [Change] = []
-        var didAddExpectation: XCTestExpectation?
-        var didRemoveExpectation: XCTestExpectation?
+        var didAddExpectation: XCTestExpectation!
+        var didRemoveExpectation: XCTestExpectation!
 
         override func didAddEventHandler() {
             super.didAddEventHandler()
@@ -681,7 +681,7 @@ class SRGlobalShortcutMonitorTests: XCTestCase {
         }
 
         override func didRemoveEventHandler() {
-            super.didRemoveEventHandler()()
+            super.didRemoveEventHandler()
             changes.append(.remove)
             didRemoveExpectation?.fulfill()
         }
@@ -782,5 +782,18 @@ class SRGlobalShortcutMonitorTests: XCTestCase {
         XCTAssertEqual(monitor.changes, [.add, .remove])
         monitor.resume()
         XCTAssertEqual(monitor.changes, [.add, .remove, .add])
+    }
+
+    func testAddingKeylessShortcutDoesNotInstallHandler() {
+        let monitor = TrackingMonitor()
+        monitor.didAddExpectation = XCTestExpectation(description: "did add", isInverted: true)
+        monitor.didRemoveExpectation = XCTestExpectation(description: "did remove", isInverted: true)
+        let shortcut = Shortcut(code: .none, modifierFlags: .shift, characters: nil, charactersIgnoringModifiers: nil)
+        let action = ShortcutAction(shortcut: shortcut) { _ in true }
+
+        monitor.addAction(action, forKeyEvent: .down)
+        monitor.removeAllActions()
+
+        wait(for: [monitor.didAddExpectation, monitor.didRemoveExpectation], timeout: 0, enforceOrder: true)
     }
 }

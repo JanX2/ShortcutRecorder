@@ -20,7 +20,7 @@ class SRShortcutTests: XCTestCase {
 
     func testInitialization() {
         let s = Shortcut.default
-        XCTAssertEqual(s.keyCode, 0)
+        XCTAssertEqual(s.keyCode, KeyCode.ansiA)
         XCTAssertEqual(s.modifierFlags, [.option, .command])
         XCTAssertEqual(s.characters, "å")
         XCTAssertEqual(s.charactersIgnoringModifiers, "a")
@@ -38,7 +38,7 @@ class SRShortcutTests: XCTestCase {
                                  isARepeat: false,
                                  keyCode: 0)
         let s = ShortcutRecorder.Shortcut(event: e!)!
-        XCTAssertEqual(s.keyCode, 0)
+        XCTAssertEqual(s.keyCode, KeyCode.ansiA)
         XCTAssertEqual(s.modifierFlags, .option)
         XCTAssertEqual(s.characters, "å")
         XCTAssertEqual(s.charactersIgnoringModifiers, "a")
@@ -62,27 +62,27 @@ class SRShortcutTests: XCTestCase {
 
     func testDictionaryInitialization() {
         let s1 = Shortcut(dictionary: [ShortcutKey.keyCode: 0])!
-        XCTAssertEqual(s1.keyCode, 0)
+        XCTAssertEqual(s1.keyCode, KeyCode.ansiA)
         XCTAssertEqual(s1.modifierFlags, [])
         XCTAssertEqual(s1.characters, "a")
         XCTAssertEqual(s1.charactersIgnoringModifiers, "a")
 
         let s2 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue])!
-        XCTAssertEqual(s2.keyCode, 0)
+        XCTAssertEqual(s2.keyCode, KeyCode.ansiA)
         XCTAssertEqual(s2.modifierFlags, NSEvent.ModifierFlags.option)
         XCTAssertEqual(s2.characters, "å")
         XCTAssertEqual(s2.charactersIgnoringModifiers, "a")
 
         let s3 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
                                        ShortcutKey.characters: NSNull(), ShortcutKey.charactersIgnoringModifiers: NSNull()])!
-        XCTAssertEqual(s3.keyCode, 0)
+        XCTAssertEqual(s3.keyCode, KeyCode.ansiA)
         XCTAssertEqual(s3.modifierFlags, NSEvent.ModifierFlags.option)
         XCTAssertEqual(s3.characters, "å")
         XCTAssertEqual(s3.charactersIgnoringModifiers, "a")
 
         let s4 = Shortcut(dictionary: [ShortcutKey.keyCode: 0, ShortcutKey.modifierFlags: NSEvent.ModifierFlags.option.rawValue,
                                        ShortcutKey.characters: "å", ShortcutKey.charactersIgnoringModifiers: "a"])!
-        XCTAssertEqual(s4.keyCode, 0)
+        XCTAssertEqual(s4.keyCode, KeyCode.ansiA)
         XCTAssertEqual(s4.modifierFlags, NSEvent.ModifierFlags.option)
         XCTAssertEqual(s4.characters, "å")
         XCTAssertEqual(s4.charactersIgnoringModifiers, "a")
@@ -115,7 +115,7 @@ class SRShortcutTests: XCTestCase {
 
         XCTAssertEqual(s, s)
         XCTAssertEqual(s, Shortcut.default)
-        XCTAssertNotEqual(s, Shortcut(code: 0, modifierFlags: .command, characters: nil, charactersIgnoringModifiers: nil));
+        XCTAssertNotEqual(s, Shortcut(code: KeyCode.ansiA, modifierFlags: .command, characters: nil, charactersIgnoringModifiers: nil));
         XCTAssertTrue(s.isEqual(dictionary: [ShortcutKey.keyCode: 0,
                                              ShortcutKey.modifierFlags: modifierFlags.rawValue,
                                              ShortcutKey.characters: "å",
@@ -446,24 +446,24 @@ class SRShortcutTests: XCTestCase {
         AssertNotEqual(opt_shift_a, shift_ƒ_ke, us_transformer)
         AssertEqual(opt_shift_a, shift_ƒ_ke, ru_transformer)
 
-        let ctrl_tab = Shortcut(code: UInt16(kVK_Tab), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        let ctrl_tab = Shortcut(code: KeyCode.tab, modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertTrue(ctrl_tab.isEqual(keyEquivalent: "\u{0009}", modifierFlags: [.control]))
         XCTAssertTrue(ctrl_tab.isEqual(keyEquivalent: "\u{0019}", modifierFlags: [.control]))
 
-        let ctrl_del = Shortcut(code: UInt16(kVK_Delete), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        let ctrl_del = Shortcut(code: KeyCode.delete, modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertTrue(ctrl_del.isEqual(keyEquivalent: "\u{0008}", modifierFlags: [.control]));
         XCTAssertFalse(ctrl_del.isEqual(keyEquivalent: "\u{007f}", modifierFlags: [.control]));
 
-        let ctrl_fdel = Shortcut(code: UInt16(kVK_ForwardDelete), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        let ctrl_fdel = Shortcut(code: KeyCode.forwardDelete, modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertFalse(ctrl_fdel.isEqual(keyEquivalent: "\u{0008}", modifierFlags: [.control]));
         XCTAssertTrue(ctrl_fdel.isEqual(keyEquivalent: "\u{007f}", modifierFlags: [.control]));
     }
 
     func testInitializationWithKeyEquivalent() {
-        let shift_cmd_a = Shortcut(code: UInt16(kVK_ANSI_A), modifierFlags: [.shift, .command], characters: nil, charactersIgnoringModifiers: nil)
+        let shift_cmd_a = Shortcut(code: KeyCode.ansiA, modifierFlags: [.shift, .command], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertEqual(Shortcut(keyEquivalent: "⇧⌘A"), shift_cmd_a)
 
-        let ctrl_esc = Shortcut(code: UInt16(kVK_Escape), modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
+        let ctrl_esc = Shortcut(code: KeyCode.escape, modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertEqual(Shortcut(keyEquivalent: "⌃Escape"), ctrl_esc)
     }
 }

@@ -747,7 +747,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     [NSGraphicsContext restoreGraphicsState];
 }
 
-- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
     __block BOOL allowModifierFlags = YES;
@@ -762,7 +762,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     return allowModifierFlags;
 }
 
-- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode
+- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode
 {
     aModifierFlags &= SRCocoaModifierFlagsMask;
     __block BOOL allowModifierFlags = YES;
@@ -877,6 +877,69 @@ static NSInteger _SRStyleAppearanceObservingContext;
     [_notifyStyle performSelector:@selector(invokeWithTarget:) withObject:_style afterDelay:0.0 inModes:@[NSRunLoopCommonModes]];
 }
 
+- (BOOL)canCaptureKeyEvent
+{
+    if (!self.enabled)
+    {
+        os_trace_debug("The control is disabled");
+        return NO;
+    }
+    else if (self.window.firstResponder != self)
+    {
+        os_trace_debug("The control is not the first responder");
+        return NO;
+    }
+    else if (self->_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
+    {
+        os_trace_debug("The control is tracking %lu", self->_mouseTrackingButtonTag);
+        return NO;
+    }
+    else
+        return YES;
+}
+
+- (BOOL)canEndRecordingWithObjectValue:(nullable SRShortcut *)aShortcut
+{
+    __block BOOL result = NO;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    __auto_type DelegateCanRecordShortcut = ^(SRShortcut *aShortcut){
+        if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
+            return [self.delegate recorderControl:self canRecordShortcut:aShortcut];
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
+            return [self.delegate shortcutRecorder:self canRecordShortcut:aShortcut.dictionaryRepresentation];
+        else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
+            return [self.delegate control:self isValidObject:aShortcut];
+        else
+            return YES;
+    };
+#pragma clang diagnostic pop
+
+    os_activity_initiate("-[SRRecorderControl canEndRecordingWithObjectValue:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        if ([self areModifierFlagsValid:aShortcut.modifierFlags forKeyCode:aShortcut.keyCode])
+        {
+            if (DelegateCanRecordShortcut(aShortcut))
+            {
+                os_trace_debug("Valid and accepted shortcut");
+                result = YES;
+            }
+            else
+            {
+                os_trace_debug("Delegate rejected");
+                result = NO;
+            }
+        }
+        else
+        {
+            os_trace_debug("Modifier flags %lu rejected", aShortcut.modifierFlags);
+            result = NO;
+        }
+    });
+
+    return result;
+}
+
 #pragma mark NSAccessibility
 
 - (BOOL)isAccessibilityElement
@@ -910,22 +973,25 @@ static NSInteger _SRStyleAppearanceObservingContext;
         if (!_objectValue)
             return SRLoc(@"Empty");
 
-        NSString *f = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
-                                                                            layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
-        NSString *c = nil;
+        NSString *flags = [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)
+                                                                                layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
+
+        SRKeyCodeTransformer *transformer = nil;
 
         if (self.drawsASCIIEquivalentOfShortcut)
-            c = [SRASCIILiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
+            transformer = SRASCIILiteralKeyCodeTransformer.sharedTransformer;
         else
-            c = [SRLiteralKeyCodeTransformer.sharedTransformer transformedValue:@(_objectValue.keyCode)];
+            transformer = SRLiteralKeyCodeTransformer.sharedTransformer;
 
-        if (!c)
-            c = [NSString stringWithFormat:@"%hu", _objectValue.keyCode];
+        NSString *code = [transformer transformedValue:@(_objectValue.keyCode)];
 
-        if (f.length > 0)
-            return [NSString stringWithFormat:@"%@-%@", f, c];
+        if (!code)
+            code = [NSString stringWithFormat:@"%hu", _objectValue.keyCode];
+
+        if (flags.length > 0)
+            return [NSString stringWithFormat:@"%@-%@", flags, code];
         else
-            return [NSString stringWithFormat:@"%@", c];
+            return [NSString stringWithFormat:@"%@", code];
     }
 }
 
@@ -1570,41 +1636,9 @@ static NSInteger _SRStyleAppearanceObservingContext;
 {
     __block BOOL result = NO;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    __auto_type DelegateCanRecordShortcut = ^(SRShortcut *aShortcut){
-        if ([self.delegate respondsToSelector:@selector(recorderControl:canRecordShortcut:)])
-            return [self.delegate recorderControl:self canRecordShortcut:aShortcut];
-        else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:canRecordShortcut:)])
-            return [self.delegate shortcutRecorder:self canRecordShortcut:aShortcut.dictionaryRepresentation];
-        else if ([self.delegate respondsToSelector:@selector(control:isValidObject:)])
-            return [self.delegate control:self isValidObject:aShortcut];
-        else
-            return YES;
-    };
-#pragma clang diagnostic pop
-
     os_activity_initiate("-[SRRecorderControl performKeyEquivalent:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
-        if (!self.enabled)
-        {
-            os_trace_debug("The control is disabled");
-            result = NO;
+        if (![self canCaptureKeyEvent])
             return;
-        }
-
-        if (self.window.firstResponder != self)
-        {
-            os_trace_debug("The control is not the first responder");
-            result = NO;
-            return;
-        }
-
-        if (self->_mouseTrackingButtonTag != _SRRecorderControlInvalidButtonTag)
-        {
-            os_trace_debug("The control is tracking %lu", self->_mouseTrackingButtonTag);
-            result = NO;
-            return;
-        }
 
         if (self.isRecording)
         {
@@ -1616,7 +1650,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
                 result = NO;
             }
             else if (self.allowsEscapeToCancelRecording &&
-                anEvent.keyCode == kVK_Escape &&
+                anEvent.keyCode == SRKeyCodeEscape &&
                 (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
             {
                 os_trace_debug("Cancel via Esc");
@@ -1624,42 +1658,29 @@ static NSInteger _SRStyleAppearanceObservingContext;
                 result = YES;
             }
             else if (self.allowsDeleteToClearShortcutAndEndRecording &&
-                    (anEvent.keyCode == kVK_Delete || anEvent.keyCode == kVK_ForwardDelete) &&
+                    (anEvent.keyCode == SRKeyCodeDelete || anEvent.keyCode == SRKeyCodeForwardDelete) &&
                     (anEvent.modifierFlags & SRCocoaModifierFlagsMask) == 0)
             {
                 os_trace_debug("Clear via Delete");
                 [self clearAndEndRecording];
                 result = YES;
             }
-            else if ([self areModifierFlagsValid:anEvent.modifierFlags forKeyCode:anEvent.keyCode])
+            else
             {
-                SRShortcut *newObjectValue = [SRShortcut shortcutWithCode:anEvent.keyCode
-                                                            modifierFlags:anEvent.modifierFlags
-                                                               characters:anEvent.characters
-                                              charactersIgnoringModifiers:anEvent.charactersIgnoringModifiers];
+                SRShortcut *newObjectValue = [SRShortcut shortcutWithEvent:anEvent];
 
-                BOOL canRecordShortcut = DelegateCanRecordShortcut(newObjectValue);
-
-                if (canRecordShortcut)
-                {
-                    os_trace_debug("Valid and accepted shortcut");
+                if ([self canEndRecordingWithObjectValue:newObjectValue])
                     [self endRecordingWithObjectValue:newObjectValue];
-                    result = YES;
-                }
                 else
                 {
                     // Do not end editing and allow the client to make another attempt.
-                    os_trace_debug("Valid but rejected shortcut");
-                    result = YES;
+                    [self playAlert];
                 }
-            }
-            else
-            {
-                os_trace_debug("Modifier flags %lu rejected", anEvent.modifierFlags);
-                result = NO;
+
+                result = YES;
             }
         }
-        else if (anEvent.keyCode == kVK_Space)
+        else if (anEvent.keyCode == SRKeyCodeSpace)
         {
             os_trace_debug("Begin recording via Space");
             result = [self beginRecording];
@@ -1673,8 +1694,16 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
 - (void)flagsChanged:(NSEvent *)anEvent
 {
-    if (self.isRecording)
+    if ([self canCaptureKeyEvent] && self.isRecording)
     {
+        if (self.allowsModifierFlagsOnlyShortcut)
+        {
+            SRShortcut *newObjectValue = [SRShortcut shortcutWithEvent:anEvent];
+
+            if ([self canEndRecordingWithObjectValue:newObjectValue])
+                [self endRecordingWithObjectValue:newObjectValue];
+        }
+
         NSEventModifierFlags modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
         if (modifierFlags != 0 && ![self areModifierFlagsAllowed:modifierFlags forKeyCode:anEvent.keyCode])
             [self playAlert];

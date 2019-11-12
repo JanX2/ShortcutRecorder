@@ -61,6 +61,8 @@ IB_DESIGNABLE
  Return an integer bit field indicating allowed modifier flags.
 
  @discussion Defaults to SRCocoaModifierFlagsMask.
+
+ @see -setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) IBInspectable NSEventModifierFlags allowedModifierFlags;
 
@@ -68,6 +70,8 @@ IB_DESIGNABLE
  Return an integer bit field indicating required modifier flags.
 
  @discussion Defaults to 0.
+
+ @see -setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) IBInspectable NSEventModifierFlags requiredModifierFlags;
 
@@ -75,6 +79,8 @@ IB_DESIGNABLE
  Whether shortcuts without modifier flags are allowed.
 
  @discussion Defaults to NO.
+
+ @see -setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) IBInspectable BOOL allowsEmptyModifierFlags;
 
@@ -126,9 +132,21 @@ IB_DESIGNABLE
  The control fully supports right-to-left layouts but macOS is inconsistent. Parts of the system
  draw key equivalents fully right-to-left, that is flags in reverse order and properly
  altered directional keys such as Tab. Yet other parts either support it only partially or not at all.
+
  The most visible key equivalents, those that appear in NSMenuItem, do not respect right-to-left at all.
  */
 @property IBInspectable BOOL stringValueRespectsUserInterfaceLayoutDirection;
+
+/*!
+ Whether the control allows to record shortcuts without a key code.
+
+ @discussion
+ Defaults to NO.
+
+ Normally the control uses a non modifier flags key event as a trigger to end recording. To end the recording
+ with modifier flags only the -recorderControl:canRecordShortcut: method is sent to the delegate repeatedly.
+ */
+@property IBInspectable BOOL allowsModifierFlagsOnlyShortcut;
 
 /*!
  Configure allowed and required modifier flags for user interaction.
@@ -149,36 +167,6 @@ IB_DESIGNABLE
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
           requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags NS_SWIFT_NAME(set(allowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:));
-
-/*!
- Check whether a given combination is valid.
-
- @param  aModifierFlags Proposed modifier flags.
-
- @param  aKeyCode Code of the pressed key.
-
- @seealso allowedModifierFlags
-
- @seealso allowsEmptyModifierFlags
-
- @seealso requiredModifierFlags
- */
-- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
-
-/*!
- Check whether a given combination is allowed.
-
- @param  aModifierFlags Proposed modifier flags.
-
- @param  aKeyCode Code of the pressed key.
-
- @seealso allowedModifierFlags
-
- @seealso allowsEmptyModifierFlags
-
- @seealso requiredModifierFlags
- */
-- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
  Called whenever the control needs to inform a user about misuse, like pressing invalid modifier flags.
@@ -225,6 +213,55 @@ IB_DESIGNABLE
  Whetehr the clear button is being highlighted.
  */
 @property (getter=isClearButtonHighlighted, readonly) BOOL clearButtonHighlighted;
+
+/*!
+ Check whether a given combination is valid.
+
+ @param  aModifierFlags Proposed modifier flags.
+
+ @param  aKeyCode Code of the pressed key.
+
+ @seealso allowedModifierFlags
+
+ @seealso allowsEmptyModifierFlags
+
+ @seealso requiredModifierFlags
+ */
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
+
+/*!
+ Check whether a given combination is allowed.
+
+ @param  aModifierFlags Proposed modifier flags.
+
+ @param  aKeyCode Code of the pressed key.
+
+ @seealso allowedModifierFlags
+
+ @seealso allowsEmptyModifierFlags
+
+ @seealso requiredModifierFlags
+ */
+- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
+
+/*!
+ Check whether the control is in a state to to capture key events.
+
+ @discussion
+ To avoid "stray" events the control must be:
+    1. Enabled
+    2. The first responder
+    3. Not tracking mouse events
+ */
+- (BOOL)canCaptureKeyEvent;
+
+/*!
+ Check if recording can be ended by capturing a given shortcut.
+
+ @discussion
+ Recording must be in progress and other criteria such as being a first responder must be satisfied too.
+ */
+- (BOOL)canEndRecordingWithObjectValue:(nullable SRShortcut *)aShortcut;
 
 /*!
  Called when a user begins recording.
@@ -403,7 +440,7 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
  @seealso requiredModifierFlags
  */
-- (BOOL)recorderControl:(SRRecorderControl *)aControl shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+- (BOOL)recorderControl:(SRRecorderControl *)aControl shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
 
 /*!
  Ask the delegate if the shortcut can be set.
@@ -427,7 +464,7 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
 
 - (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlShouldBeginRecording:")));
 

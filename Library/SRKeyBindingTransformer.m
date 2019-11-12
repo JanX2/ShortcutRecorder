@@ -86,41 +86,41 @@
     if (isNumPad)
     {
         switch (keyCode.unsignedShortValue) {
-            case kVK_ANSI_0:
-                keyCode = @(kVK_ANSI_Keypad0);
+            case SRKeyCode0:
+                keyCode = @(SRKeyCodeKeypad0);
                 break;
-            case kVK_ANSI_1:
-                keyCode = @(kVK_ANSI_Keypad1);
+            case SRKeyCode1:
+                keyCode = @(SRKeyCodeKeypad1);
                 break;
-            case kVK_ANSI_2:
-                keyCode = @(kVK_ANSI_Keypad2);
+            case SRKeyCode2:
+                keyCode = @(SRKeyCodeKeypad2);
                 break;
-            case kVK_ANSI_3:
-                keyCode = @(kVK_ANSI_Keypad3);
+            case SRKeyCode3:
+                keyCode = @(SRKeyCodeKeypad3);
                 break;
-            case kVK_ANSI_4:
-                keyCode = @(kVK_ANSI_Keypad4);
+            case SRKeyCode4:
+                keyCode = @(SRKeyCodeKeypad4);
                 break;
-            case kVK_ANSI_5:
-                keyCode = @(kVK_ANSI_Keypad5);
+            case SRKeyCode5:
+                keyCode = @(SRKeyCodeKeypad5);
                 break;
-            case kVK_ANSI_6:
-                keyCode = @(kVK_ANSI_Keypad6);
+            case SRKeyCode6:
+                keyCode = @(SRKeyCodeKeypad6);
                 break;
-            case kVK_ANSI_7:
-                keyCode = @(kVK_ANSI_Keypad7);
+            case SRKeyCode7:
+                keyCode = @(SRKeyCodeKeypad7);
                 break;
-            case kVK_ANSI_8:
-                keyCode = @(kVK_ANSI_Keypad8);
+            case SRKeyCode8:
+                keyCode = @(SRKeyCodeKeypad8);
                 break;
-            case kVK_ANSI_9:
-                keyCode = @(kVK_ANSI_Keypad9);
+            case SRKeyCode9:
+                keyCode = @(SRKeyCodeKeypad9);
                 break;
-            case kVK_ANSI_Minus:
-                keyCode = @(kVK_ANSI_KeypadMinus);
+            case SRKeyCodeMinus:
+                keyCode = @(SRKeyCodeKeypadMinus);
                 break;
-            case kVK_ANSI_Equal:
-                keyCode = @(kVK_ANSI_KeypadEquals);
+            case SRKeyCodeEqual:
+                keyCode = @(SRKeyCodeKeypadEquals);
                 break;
             default:
                 break;
@@ -170,30 +170,30 @@
     if (![modifierFlags isKindOfClass:NSNumber.class])
         modifierFlags = @(0);
 
-    unsigned short keyCodeValue = keyCode.unsignedShortValue;
+    SRKeyCode keyCodeValue = keyCode.unsignedShortValue;
     NSEventModifierFlags modifierFlagsValue = modifierFlags.unsignedIntegerValue;
 
     BOOL isNumPad = NO;
     switch (keyCodeValue)
     {
-        case kVK_ANSI_Keypad0:
-        case kVK_ANSI_Keypad1:
-        case kVK_ANSI_Keypad2:
-        case kVK_ANSI_Keypad3:
-        case kVK_ANSI_Keypad4:
-        case kVK_ANSI_Keypad5:
-        case kVK_ANSI_Keypad6:
-        case kVK_ANSI_Keypad7:
-        case kVK_ANSI_Keypad8:
-        case kVK_ANSI_Keypad9:
-        case kVK_ANSI_KeypadDecimal:
-        case kVK_ANSI_KeypadMultiply:
-        case kVK_ANSI_KeypadPlus:
-        case kVK_ANSI_KeypadClear:
-        case kVK_ANSI_KeypadDivide:
-        case kVK_ANSI_KeypadEnter:
-        case kVK_ANSI_KeypadMinus:
-        case kVK_ANSI_KeypadEquals:
+        case SRKeyCodeKeypad0:
+        case SRKeyCodeKeypad1:
+        case SRKeyCodeKeypad2:
+        case SRKeyCodeKeypad3:
+        case SRKeyCodeKeypad4:
+        case SRKeyCodeKeypad5:
+        case SRKeyCodeKeypad6:
+        case SRKeyCodeKeypad7:
+        case SRKeyCodeKeypad8:
+        case SRKeyCodeKeypad9:
+        case SRKeyCodeKeypadDecimal:
+        case SRKeyCodeKeypadMultiply:
+        case SRKeyCodeKeypadPlus:
+        case SRKeyCodeKeypadClear:
+        case SRKeyCodeKeypadDivide:
+        case SRKeyCodeKeypadEnter:
+        case SRKeyCodeKeypadMinus:
+        case SRKeyCodeKeypadEquals:
             isNumPad = YES;
         default:
             break;

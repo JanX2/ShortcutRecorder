@@ -4,7 +4,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
+#import <ShortcutRecorder/SRCommon.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -45,7 +45,7 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransfo
 /*!
  Return literal string for the given key code, modifier flags and layout direction.
  */
-- (nullable NSString *)literalForKeyCode:(unsigned short)aValue
+- (nullable NSString *)literalForKeyCode:(SRKeyCode)aValue
                withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
                    explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                          layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
@@ -53,7 +53,7 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransfo
 /*!
  Return symbolic string for the given key code, modifier flags and layout direction.
  */
-- (nullable NSString *)symbolForKeyCode:(unsigned short)aValue
+- (nullable NSString *)symbolForKeyCode:(SRKeyCode)aValue
               withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
                   explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                         layoutDirection:(NSUserInterfaceLayoutDirection)aDirection;
@@ -126,7 +126,7 @@ NS_SWIFT_NAME(ASCIISymbolicKeyCodeTransformer)
 + (SRKeyCodeTransformer *)sharedPlainASCIITransformer __attribute__((deprecated("", "SRASCIILiteralKeyCodeTransformer/sharedTransformer")));
 - (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII
                                            plainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
-- (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode __attribute__((deprecated));
+- (BOOL)isKeyCodeSpecial:(SRKeyCode)aKeyCode __attribute__((deprecated));
 - (NSString *)transformedValue:(NSNumber *)aValue
              withModifierFlags:(NSNumber *)aModifierFlags __attribute__((deprecated));
 - (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode

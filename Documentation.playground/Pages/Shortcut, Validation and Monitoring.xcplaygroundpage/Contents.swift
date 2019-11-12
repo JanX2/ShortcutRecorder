@@ -13,7 +13,7 @@ PlaygroundPage.current.needsIndefiniteExecution = true
  The easiest way to create one in code is by using an ASCII key equivalent:
  */
 let shortcut = Shortcut(keyEquivalent: "⌥⇧⌘A")!
-assert(shortcut.keyCode == kVK_ANSI_A)
+assert(shortcut.keyCode == .ansiA)
 assert(shortcut.modifierFlags == [.option, .shift, .command])
 /*:
  The `characters` and `charactersIgnoringModifiers` are convenience properties similar to those of `NSEvent`

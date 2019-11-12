@@ -781,13 +781,13 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
         os_trace_debug("Global Shortcut Monitor counter: %ld -> %ld", _disableCounter, _disableCounter - 1);
         _disableCounter -= 1;
 
-        [self _installEventHandlerIfNeeded];
-
         if (_disableCounter == 0)
         {
             for (SRShortcut *shortcut in _shortcuts)
                 [self _registerHotKeyForShortcutIfNeeded:shortcut];
         }
+
+        [self _installEventHandlerIfNeeded];
     }
 }
 
@@ -917,8 +917,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     if (_carbonEventHandler)
         return;
 
-    // _shortcuts is checked instead of _shortcutToHotKeyRef because the handler is added before the registration.
-    if (_disableCounter > 0 || !_shortcuts.count)
+    if (_disableCounter > 0 || !_shortcutToHotKeyRef.count)
         return;
 
     static const EventTypeSpec eventSpec[] = {
@@ -968,6 +967,12 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
     if (hotKey)
         return;
+
+    if (aShortcut.keyCode == SRKeyCodeNone)
+    {
+        os_trace_error("#Error Shortcut without a key code cannot be registered as Carbon hot key");
+        return;
+    }
 
     static UInt32 CarbonID = _SRInvalidHotKeyID;
     EventHotKeyID hotKeyID = {SRShortcutActionSignature, ++CarbonID};

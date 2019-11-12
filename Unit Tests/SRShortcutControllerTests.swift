@@ -116,8 +116,8 @@ class SRShortcutControllerTests: XCTestCase {
             ])
         }
 
-        let s1 = Shortcut(code: 0, modifierFlags: .option, characters: "å", charactersIgnoringModifiers: "a")
-        let s2 = Shortcut(code: 1, modifierFlags: .command, characters: "b", charactersIgnoringModifiers: "b")
+        let s1 = Shortcut(code: KeyCode.ansiA, modifierFlags: .option, characters: "å", charactersIgnoringModifiers: "a")
+        let s2 = Shortcut(code: KeyCode.ansiS, modifierFlags: .command, characters: "b", charactersIgnoringModifiers: "b")
 
         let s1Computed = getComputed(s1)
         let s2Computed = getComputed(s2)

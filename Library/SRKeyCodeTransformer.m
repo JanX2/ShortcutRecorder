@@ -21,11 +21,11 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 @property (copy, readonly) NSString *identifier;
 @property (readonly) NSEventModifierFlags implicitModifierFlags;
 @property (readonly) NSEventModifierFlags explicitModifierFlags;
-@property (readonly) unsigned short keyCode;
+@property (readonly) SRKeyCode keyCode;
 - (instancetype)initWithIdentifier:(NSString *)anIdentifier
              implicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
              explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
-                           keyCode:(unsigned short)aKeyCode;
+                           keyCode:(SRKeyCode)aKeyCode;
 @end
 
 
@@ -34,7 +34,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 - (instancetype)initWithIdentifier:(NSString *)anIdentifier
              implicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
              explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
-                           keyCode:(unsigned short)aKeyCode
+                           keyCode:(SRKeyCode)aKeyCode
 {
     self = [super init];
 
@@ -66,7 +66,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 {
     NSUInteger implicitFlagsBitSize = 4;
     NSUInteger explicitFlagsBitSize = 4;
-    NSUInteger keyCodeBitSize = sizeof(unsigned short) * CHAR_BIT;
+    NSUInteger keyCodeBitSize = sizeof(SRKeyCode) * CHAR_BIT;
 
     NSUInteger identifierHash = _identifier.hash;
     NSUInteger implicitFlagsHash = _implicitModifierFlags >> 17;
@@ -98,7 +98,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
  */
 - (instancetype)initWithInputSourceCreator:(_SRKeyCodeTransformerCacheInputSourceCreate)aCreator NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithInputSource:(id)anInputSource NS_DESIGNATED_INITIALIZER;
-- (nullable NSString *)translateKeyCode:(unsigned short)aKeyCode
+- (nullable NSString *)translateKeyCode:(SRKeyCode)aKeyCode
                   implicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
                   explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                              usingCache:(BOOL)anIsUsingCache;
@@ -156,11 +156,14 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
         return (__bridge_transfer id)_inputSourceCreator();
 }
 
-- (nullable NSString *)translateKeyCode:(unsigned short)aKeyCode
+- (nullable NSString *)translateKeyCode:(SRKeyCode)aKeyCode
                   implicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
                   explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                              usingCache:(BOOL)anIsUsingCache
 {
+    if (aKeyCode == SRKeyCodeNone)
+        return @"";
+
     anImplicitModifierFlags &= SRCocoaModifierFlagsMask;
     anExplicitModifierFlags &= SRCocoaModifierFlagsMask;
 
@@ -373,109 +376,109 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
         KnownKeyCodes = @[
-            @(kVK_ANSI_0),
-            @(kVK_ANSI_1),
-            @(kVK_ANSI_2),
-            @(kVK_ANSI_3),
-            @(kVK_ANSI_4),
-            @(kVK_ANSI_5),
-            @(kVK_ANSI_6),
-            @(kVK_ANSI_7),
-            @(kVK_ANSI_8),
-            @(kVK_ANSI_9),
-            @(kVK_ANSI_A),
-            @(kVK_ANSI_B),
-            @(kVK_ANSI_Backslash),
-            @(kVK_ANSI_C),
-            @(kVK_ANSI_Comma),
-            @(kVK_ANSI_D),
-            @(kVK_ANSI_E),
-            @(kVK_ANSI_Equal),
-            @(kVK_ANSI_F),
-            @(kVK_ANSI_G),
-            @(kVK_ANSI_Grave),
-            @(kVK_ANSI_H),
-            @(kVK_ANSI_I),
-            @(kVK_ANSI_J),
-            @(kVK_ANSI_K),
-            @(kVK_ANSI_Keypad0),
-            @(kVK_ANSI_Keypad1),
-            @(kVK_ANSI_Keypad2),
-            @(kVK_ANSI_Keypad3),
-            @(kVK_ANSI_Keypad4),
-            @(kVK_ANSI_Keypad5),
-            @(kVK_ANSI_Keypad6),
-            @(kVK_ANSI_Keypad7),
-            @(kVK_ANSI_Keypad8),
-            @(kVK_ANSI_Keypad9),
-            @(kVK_ANSI_KeypadDecimal),
-            @(kVK_ANSI_KeypadDivide),
-            @(kVK_ANSI_KeypadEnter),
-            @(kVK_ANSI_KeypadEquals),
-            @(kVK_ANSI_KeypadMinus),
-            @(kVK_ANSI_KeypadMultiply),
-            @(kVK_ANSI_KeypadPlus),
-            @(kVK_ANSI_L),
-            @(kVK_ANSI_LeftBracket),
-            @(kVK_ANSI_M),
-            @(kVK_ANSI_Minus),
-            @(kVK_ANSI_N),
-            @(kVK_ANSI_O),
-            @(kVK_ANSI_P),
-            @(kVK_ANSI_Period),
-            @(kVK_ANSI_Q),
-            @(kVK_ANSI_Quote),
-            @(kVK_ANSI_R),
-            @(kVK_ANSI_RightBracket),
-            @(kVK_ANSI_S),
-            @(kVK_ANSI_Semicolon),
-            @(kVK_ANSI_Slash),
-            @(kVK_ANSI_T),
-            @(kVK_ANSI_U),
-            @(kVK_ANSI_V),
-            @(kVK_ANSI_W),
-            @(kVK_ANSI_X),
-            @(kVK_ANSI_Y),
-            @(kVK_ANSI_Z),
-            @(kVK_Delete),
-            @(kVK_DownArrow),
-            @(kVK_End),
-            @(kVK_Escape),
-            @(kVK_F1),
-            @(kVK_F2),
-            @(kVK_F3),
-            @(kVK_F4),
-            @(kVK_F5),
-            @(kVK_F6),
-            @(kVK_F7),
-            @(kVK_F8),
-            @(kVK_F9),
-            @(kVK_F10),
-            @(kVK_F11),
-            @(kVK_F12),
-            @(kVK_F13),
-            @(kVK_F14),
-            @(kVK_F15),
-            @(kVK_F16),
-            @(kVK_F17),
-            @(kVK_F18),
-            @(kVK_F19),
-            @(kVK_F20),
-            @(kVK_ForwardDelete),
-            @(kVK_Help),
-            @(kVK_Home),
-            @(kVK_ISO_Section),
-            @(kVK_JIS_KeypadComma),
-            @(kVK_JIS_Underscore),
-            @(kVK_JIS_Yen),
-            @(kVK_LeftArrow),
-            @(kVK_PageDown),
-            @(kVK_PageUp),
-            @(kVK_Return),
-            @(kVK_RightArrow),
-            @(kVK_Space),
-            @(kVK_Tab),
-            @(kVK_UpArrow)
+            @(SRKeyCode0),
+            @(SRKeyCode1),
+            @(SRKeyCode2),
+            @(SRKeyCode3),
+            @(SRKeyCode4),
+            @(SRKeyCode5),
+            @(SRKeyCode6),
+            @(SRKeyCode7),
+            @(SRKeyCode8),
+            @(SRKeyCode9),
+            @(SRKeyCodeA),
+            @(SRKeyCodeB),
+            @(SRKeyCodeBackslash),
+            @(SRKeyCodeC),
+            @(SRKeyCodeComma),
+            @(SRKeyCodeD),
+            @(SRKeyCodeE),
+            @(SRKeyCodeEqual),
+            @(SRKeyCodeF),
+            @(SRKeyCodeG),
+            @(SRKeyCodeGrave),
+            @(SRKeyCodeH),
+            @(SRKeyCodeI),
+            @(SRKeyCodeJ),
+            @(SRKeyCodeK),
+            @(SRKeyCodeKeypad0),
+            @(SRKeyCodeKeypad1),
+            @(SRKeyCodeKeypad2),
+            @(SRKeyCodeKeypad3),
+            @(SRKeyCodeKeypad4),
+            @(SRKeyCodeKeypad5),
+            @(SRKeyCodeKeypad6),
+            @(SRKeyCodeKeypad7),
+            @(SRKeyCodeKeypad8),
+            @(SRKeyCodeKeypad9),
+            @(SRKeyCodeKeypadDecimal),
+            @(SRKeyCodeKeypadDivide),
+            @(SRKeyCodeKeypadEnter),
+            @(SRKeyCodeKeypadEquals),
+            @(SRKeyCodeKeypadMinus),
+            @(SRKeyCodeKeypadMultiply),
+            @(SRKeyCodeKeypadPlus),
+            @(SRKeyCodeL),
+            @(SRKeyCodeLeftBracket),
+            @(SRKeyCodeM),
+            @(SRKeyCodeMinus),
+            @(SRKeyCodeN),
+            @(SRKeyCodeO),
+            @(SRKeyCodeP),
+            @(SRKeyCodePeriod),
+            @(SRKeyCodeQ),
+            @(SRKeyCodeQuote),
+            @(SRKeyCodeR),
+            @(SRKeyCodeRightBracket),
+            @(SRKeyCodeS),
+            @(SRKeyCodeSemicolon),
+            @(SRKeyCodeSlash),
+            @(SRKeyCodeT),
+            @(SRKeyCodeU),
+            @(SRKeyCodeV),
+            @(SRKeyCodeW),
+            @(SRKeyCodeX),
+            @(SRKeyCodeY),
+            @(SRKeyCodeZ),
+            @(SRKeyCodeDelete),
+            @(SRKeyCodeDownArrow),
+            @(SRKeyCodeEnd),
+            @(SRKeyCodeEscape),
+            @(SRKeyCodeF1),
+            @(SRKeyCodeF2),
+            @(SRKeyCodeF3),
+            @(SRKeyCodeF4),
+            @(SRKeyCodeF5),
+            @(SRKeyCodeF6),
+            @(SRKeyCodeF7),
+            @(SRKeyCodeF8),
+            @(SRKeyCodeF9),
+            @(SRKeyCodeF10),
+            @(SRKeyCodeF11),
+            @(SRKeyCodeF12),
+            @(SRKeyCodeF13),
+            @(SRKeyCodeF14),
+            @(SRKeyCodeF15),
+            @(SRKeyCodeF16),
+            @(SRKeyCodeF17),
+            @(SRKeyCodeF18),
+            @(SRKeyCodeF19),
+            @(SRKeyCodeF20),
+            @(SRKeyCodeForwardDelete),
+            @(SRKeyCodeHelp),
+            @(SRKeyCodeHome),
+            @(SRKeyCodeISOSection),
+            @(SRKeyCodeJISKeypadComma),
+            @(SRKeyCodeJISUnderscore),
+            @(SRKeyCodeJISYen),
+            @(SRKeyCodeLeftArrow),
+            @(SRKeyCodePageDown),
+            @(SRKeyCodePageUp),
+            @(SRKeyCodeReturn),
+            @(SRKeyCodeRightArrow),
+            @(SRKeyCodeSpace),
+            @(SRKeyCodeTab),
+            @(SRKeyCodeUpArrow)
         ];
     });
 
@@ -494,96 +497,96 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 
 #pragma mark Methods
 
-- (NSString *)literalForKeyCode:(unsigned short)aValue
+- (NSString *)literalForKeyCode:(SRKeyCode)aValue
       withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
           explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                 layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
     switch (aValue) {
-        case kVK_F1:
+        case SRKeyCodeF1:
             return @"F1";
-        case kVK_F2:
+        case SRKeyCodeF2:
             return @"F2";
-        case kVK_F3:
+        case SRKeyCodeF3:
             return @"F3";
-        case kVK_F4:
+        case SRKeyCodeF4:
             return @"F4";
-        case kVK_F5:
+        case SRKeyCodeF5:
             return @"F5";
-        case kVK_F6:
+        case SRKeyCodeF6:
             return @"F6";
-        case kVK_F7:
+        case SRKeyCodeF7:
             return @"F7";
-        case kVK_F8:
+        case SRKeyCodeF8:
             return @"F8";
-        case kVK_F9:
+        case SRKeyCodeF9:
             return @"F9";
-        case kVK_F10:
+        case SRKeyCodeF10:
             return @"F10";
-        case kVK_F11:
+        case SRKeyCodeF11:
             return @"F11";
-        case kVK_F12:
+        case SRKeyCodeF12:
             return @"F12";
-        case kVK_F13:
+        case SRKeyCodeF13:
             return @"F13";
-        case kVK_F14:
+        case SRKeyCodeF14:
             return @"F14";
-        case kVK_F15:
+        case SRKeyCodeF15:
             return @"F15";
-        case kVK_F16:
+        case SRKeyCodeF16:
             return @"F16";
-        case kVK_F17:
+        case SRKeyCodeF17:
             return @"F17";
-        case kVK_F18:
+        case SRKeyCodeF18:
             return @"F18";
-        case kVK_F19:
+        case SRKeyCodeF19:
             return @"F19";
-        case kVK_F20:
+        case SRKeyCodeF20:
             return @"F20";
-        case kVK_Space:
+        case SRKeyCodeSpace:
             return SRLoc(@"Space");
-        case kVK_Delete:
+        case SRKeyCodeDelete:
             return aDirection == NSUserInterfaceLayoutDirectionRightToLeft ? SRKeyCodeStringDeleteRight : SRKeyCodeStringDeleteLeft;
-        case kVK_ForwardDelete:
+        case SRKeyCodeForwardDelete:
             return aDirection == NSUserInterfaceLayoutDirectionRightToLeft ? SRKeyCodeStringDeleteLeft : SRKeyCodeStringDeleteRight;
-        case kVK_ANSI_KeypadClear:
+        case SRKeyCodeKeypadClear:
             return SRKeyCodeStringPadClear;
-        case kVK_LeftArrow:
+        case SRKeyCodeLeftArrow:
             return SRKeyCodeStringLeftArrow;
-        case kVK_RightArrow:
+        case SRKeyCodeRightArrow:
             return SRKeyCodeStringRightArrow;
-        case kVK_UpArrow:
+        case SRKeyCodeUpArrow:
             return SRKeyCodeStringUpArrow;
-        case kVK_DownArrow:
+        case SRKeyCodeDownArrow:
             return SRKeyCodeStringDownArrow;
-        case kVK_End:
+        case SRKeyCodeEnd:
             return SRKeyCodeStringSoutheastArrow;
-        case kVK_Home:
+        case SRKeyCodeHome:
             return SRKeyCodeStringNorthwestArrow;
-        case kVK_Escape:
+        case SRKeyCodeEscape:
             return SRKeyCodeStringEscape;
-        case kVK_PageDown:
+        case SRKeyCodePageDown:
             return SRKeyCodeStringPageDown;
-        case kVK_PageUp:
+        case SRKeyCodePageUp:
             return SRKeyCodeStringPageUp;
-        case kVK_Return:
+        case SRKeyCodeReturn:
             return SRKeyCodeStringReturnR2L;
-        case kVK_ANSI_KeypadEnter:
+        case SRKeyCodeKeypadEnter:
             return SRKeyCodeStringReturn;
-        case kVK_Tab:
+        case SRKeyCodeTab:
         {
             if (anImplicitModifierFlags & NSEventModifierFlagShift)
                 return aDirection == NSUserInterfaceLayoutDirectionRightToLeft ? SRKeyCodeStringTabRight : SRKeyCodeStringTabLeft;
             else
                 return aDirection == NSUserInterfaceLayoutDirectionRightToLeft ? SRKeyCodeStringTabLeft : SRKeyCodeStringTabRight;
         }
-        case kVK_Help:
+        case SRKeyCodeHelp:
             return SRKeyCodeStringHelp;
-        case kVK_JIS_Underscore:
+        case SRKeyCodeJISUnderscore:
             return SRKeyCodeStringJISUnderscore;
-        case kVK_JIS_KeypadComma:
+        case SRKeyCodeJISKeypadComma:
             return SRKeyCodeStringJISComma;
-        case kVK_JIS_Yen:
+        case SRKeyCodeJISYen:
             return SRKeyCodeStringJISYen;
         default:
             return [_translator translateKeyCode:aValue
@@ -593,91 +596,91 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
     }
 }
 
-- (NSString *)symbolForKeyCode:(unsigned short)aValue
+- (NSString *)symbolForKeyCode:(SRKeyCode)aValue
      withImplicitModifierFlags:(NSEventModifierFlags)anImplicitModifierFlags
          explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
     switch (aValue) {
-        case kVK_F1:
+        case SRKeyCodeF1:
             return SRUnicharToString(NSF1FunctionKey);
-        case kVK_F2:
+        case SRKeyCodeF2:
             return SRUnicharToString(NSF2FunctionKey);
-        case kVK_F3:
+        case SRKeyCodeF3:
             return SRUnicharToString(NSF3FunctionKey);
-        case kVK_F4:
+        case SRKeyCodeF4:
             return SRUnicharToString(NSF4FunctionKey);
-        case kVK_F5:
+        case SRKeyCodeF5:
             return SRUnicharToString(NSF5FunctionKey);
-        case kVK_F6:
+        case SRKeyCodeF6:
             return SRUnicharToString(NSF6FunctionKey);
-        case kVK_F7:
+        case SRKeyCodeF7:
             return SRUnicharToString(NSF7FunctionKey);
-        case kVK_F8:
+        case SRKeyCodeF8:
             return SRUnicharToString(NSF8FunctionKey);
-        case kVK_F9:
+        case SRKeyCodeF9:
             return SRUnicharToString(NSF9FunctionKey);
-        case kVK_F10:
+        case SRKeyCodeF10:
             return SRUnicharToString(NSF10FunctionKey);
-        case kVK_F11:
+        case SRKeyCodeF11:
             return SRUnicharToString(NSF11FunctionKey);
-        case kVK_F12:
+        case SRKeyCodeF12:
             return SRUnicharToString(NSF12FunctionKey);
-        case kVK_F13:
+        case SRKeyCodeF13:
             return SRUnicharToString(NSF13FunctionKey);
-        case kVK_F14:
+        case SRKeyCodeF14:
             return SRUnicharToString(NSF14FunctionKey);
-        case kVK_F15:
+        case SRKeyCodeF15:
             return SRUnicharToString(NSF15FunctionKey);
-        case kVK_F16:
+        case SRKeyCodeF16:
             return SRUnicharToString(NSF16FunctionKey);
-        case kVK_F17:
+        case SRKeyCodeF17:
             return SRUnicharToString(NSF17FunctionKey);
-        case kVK_F18:
+        case SRKeyCodeF18:
             return SRUnicharToString(NSF18FunctionKey);
-        case kVK_F19:
+        case SRKeyCodeF19:
             return SRUnicharToString(NSF19FunctionKey);
-        case kVK_F20:
+        case SRKeyCodeF20:
             return SRUnicharToString(NSF20FunctionKey);
-        case kVK_Space:
+        case SRKeyCodeSpace:
             return SRUnicharToString(' ');
-        case kVK_Delete:
+        case SRKeyCodeDelete:
             return SRUnicharToString(NSBackspaceCharacter);
-        case kVK_ForwardDelete:
+        case SRKeyCodeForwardDelete:
             return SRUnicharToString(NSDeleteCharacter);
-        case kVK_ANSI_KeypadClear:
+        case SRKeyCodeKeypadClear:
             return SRUnicharToString(NSClearLineFunctionKey);
-        case kVK_LeftArrow:
+        case SRKeyCodeLeftArrow:
             return SRUnicharToString(NSLeftArrowFunctionKey);
-        case kVK_RightArrow:
+        case SRKeyCodeRightArrow:
             return SRUnicharToString(NSRightArrowFunctionKey);
-        case kVK_UpArrow:
+        case SRKeyCodeUpArrow:
             return SRUnicharToString(NSUpArrowFunctionKey);
-        case kVK_DownArrow:
+        case SRKeyCodeDownArrow:
             return SRUnicharToString(NSDownArrowFunctionKey);
-        case kVK_End:
+        case SRKeyCodeEnd:
             return SRUnicharToString(NSEndFunctionKey);
-        case kVK_Home:
+        case SRKeyCodeHome:
             return SRUnicharToString(NSHomeFunctionKey);
-        case kVK_Escape:
+        case SRKeyCodeEscape:
             return SRUnicharToString('\e');
-        case kVK_PageDown:
+        case SRKeyCodePageDown:
             return SRUnicharToString(NSPageDownFunctionKey);
-        case kVK_PageUp:
+        case SRKeyCodePageUp:
             return SRUnicharToString(NSPageUpFunctionKey);
-        case kVK_Return:
+        case SRKeyCodeReturn:
             return SRUnicharToString(NSCarriageReturnCharacter);
-        case kVK_ANSI_KeypadEnter:
+        case SRKeyCodeKeypadEnter:
             return SRUnicharToString(NSEnterCharacter);
-        case kVK_Tab:
+        case SRKeyCodeTab:
             return SRUnicharToString(NSTabCharacter);
-        case kVK_Help:
+        case SRKeyCodeHelp:
             return SRUnicharToString(NSHelpFunctionKey);
-        case kVK_JIS_Underscore:
+        case SRKeyCodeJISUnderscore:
             return SRKeyCodeStringJISUnderscore;
-        case kVK_JIS_KeypadComma:
+        case SRKeyCodeJISKeypadComma:
             return SRKeyCodeStringJISComma;
-        case kVK_JIS_Yen:
+        case SRKeyCodeJISYen:
             return SRKeyCodeStringJISYen;
         default:
             return [_translator translateKeyCode:aValue
@@ -723,43 +726,43 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
         Mapping = @{
-            @(kVK_F1): SRUnicharToString(NSF1FunctionKey),
-            @(kVK_F2): SRUnicharToString(NSF2FunctionKey),
-            @(kVK_F3): SRUnicharToString(NSF3FunctionKey),
-            @(kVK_F4): SRUnicharToString(NSF4FunctionKey),
-            @(kVK_F5): SRUnicharToString(NSF5FunctionKey),
-            @(kVK_F6): SRUnicharToString(NSF6FunctionKey),
-            @(kVK_F7): SRUnicharToString(NSF7FunctionKey),
-            @(kVK_F8): SRUnicharToString(NSF8FunctionKey),
-            @(kVK_F9): SRUnicharToString(NSF9FunctionKey),
-            @(kVK_F10): SRUnicharToString(NSF10FunctionKey),
-            @(kVK_F11): SRUnicharToString(NSF11FunctionKey),
-            @(kVK_F12): SRUnicharToString(NSF12FunctionKey),
-            @(kVK_F13): SRUnicharToString(NSF13FunctionKey),
-            @(kVK_F14): SRUnicharToString(NSF14FunctionKey),
-            @(kVK_F15): SRUnicharToString(NSF15FunctionKey),
-            @(kVK_F16): SRUnicharToString(NSF16FunctionKey),
-            @(kVK_F17): SRUnicharToString(NSF17FunctionKey),
-            @(kVK_F18): SRUnicharToString(NSF18FunctionKey),
-            @(kVK_F19): SRUnicharToString(NSF19FunctionKey),
-            @(kVK_F20): SRUnicharToString(NSF20FunctionKey),
-            @(kVK_Space): SRUnicharToString(' '),
-            @(kVK_Delete): SRUnicharToString(NSBackspaceCharacter),
-            @(kVK_ForwardDelete): SRUnicharToString(NSDeleteCharacter),
-            @(kVK_ANSI_KeypadClear): SRUnicharToString(NSClearLineFunctionKey),
-            @(kVK_LeftArrow): SRUnicharToString(NSLeftArrowFunctionKey),
-            @(kVK_RightArrow): SRUnicharToString(NSRightArrowFunctionKey),
-            @(kVK_UpArrow): SRUnicharToString(NSUpArrowFunctionKey),
-            @(kVK_DownArrow): SRUnicharToString(NSDownArrowFunctionKey),
-            @(kVK_End): SRUnicharToString(NSEndFunctionKey),
-            @(kVK_Home): SRUnicharToString(NSHomeFunctionKey),
-            @(kVK_Escape): SRUnicharToString('\e'),
-            @(kVK_PageDown): SRUnicharToString(NSPageDownFunctionKey),
-            @(kVK_PageUp): SRUnicharToString(NSPageUpFunctionKey),
-            @(kVK_Return): SRUnicharToString(NSCarriageReturnCharacter),
-            @(kVK_ANSI_KeypadEnter): SRUnicharToString(NSEnterCharacter),
-            @(kVK_Tab): SRUnicharToString(NSTabCharacter),
-            @(kVK_Help): SRUnicharToString(NSHelpFunctionKey)
+            @(SRKeyCodeF1): SRUnicharToString(NSF1FunctionKey),
+            @(SRKeyCodeF2): SRUnicharToString(NSF2FunctionKey),
+            @(SRKeyCodeF3): SRUnicharToString(NSF3FunctionKey),
+            @(SRKeyCodeF4): SRUnicharToString(NSF4FunctionKey),
+            @(SRKeyCodeF5): SRUnicharToString(NSF5FunctionKey),
+            @(SRKeyCodeF6): SRUnicharToString(NSF6FunctionKey),
+            @(SRKeyCodeF7): SRUnicharToString(NSF7FunctionKey),
+            @(SRKeyCodeF8): SRUnicharToString(NSF8FunctionKey),
+            @(SRKeyCodeF9): SRUnicharToString(NSF9FunctionKey),
+            @(SRKeyCodeF10): SRUnicharToString(NSF10FunctionKey),
+            @(SRKeyCodeF11): SRUnicharToString(NSF11FunctionKey),
+            @(SRKeyCodeF12): SRUnicharToString(NSF12FunctionKey),
+            @(SRKeyCodeF13): SRUnicharToString(NSF13FunctionKey),
+            @(SRKeyCodeF14): SRUnicharToString(NSF14FunctionKey),
+            @(SRKeyCodeF15): SRUnicharToString(NSF15FunctionKey),
+            @(SRKeyCodeF16): SRUnicharToString(NSF16FunctionKey),
+            @(SRKeyCodeF17): SRUnicharToString(NSF17FunctionKey),
+            @(SRKeyCodeF18): SRUnicharToString(NSF18FunctionKey),
+            @(SRKeyCodeF19): SRUnicharToString(NSF19FunctionKey),
+            @(SRKeyCodeF20): SRUnicharToString(NSF20FunctionKey),
+            @(SRKeyCodeSpace): SRUnicharToString(' '),
+            @(SRKeyCodeDelete): SRUnicharToString(NSBackspaceCharacter),
+            @(SRKeyCodeForwardDelete): SRUnicharToString(NSDeleteCharacter),
+            @(SRKeyCodeKeypadClear): SRUnicharToString(NSClearLineFunctionKey),
+            @(SRKeyCodeLeftArrow): SRUnicharToString(NSLeftArrowFunctionKey),
+            @(SRKeyCodeRightArrow): SRUnicharToString(NSRightArrowFunctionKey),
+            @(SRKeyCodeUpArrow): SRUnicharToString(NSUpArrowFunctionKey),
+            @(SRKeyCodeDownArrow): SRUnicharToString(NSDownArrowFunctionKey),
+            @(SRKeyCodeEnd): SRUnicharToString(NSEndFunctionKey),
+            @(SRKeyCodeHome): SRUnicharToString(NSHomeFunctionKey),
+            @(SRKeyCodeEscape): SRUnicharToString('\e'),
+            @(SRKeyCodePageDown): SRUnicharToString(NSPageDownFunctionKey),
+            @(SRKeyCodePageUp): SRUnicharToString(NSPageUpFunctionKey),
+            @(SRKeyCodeReturn): SRUnicharToString(NSCarriageReturnCharacter),
+            @(SRKeyCodeKeypadEnter): SRUnicharToString(NSEnterCharacter),
+            @(SRKeyCodeTab): SRUnicharToString(NSTabCharacter),
+            @(SRKeyCodeHelp): SRUnicharToString(NSHelpFunctionKey)
         };
     });
     return Mapping;
@@ -771,43 +774,43 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
         Mapping = @{
-            @(kVK_F1): @"F1",
-            @(kVK_F2): @"F2",
-            @(kVK_F3): @"F3",
-            @(kVK_F4): @"F4",
-            @(kVK_F5): @"F5",
-            @(kVK_F6): @"F6",
-            @(kVK_F7): @"F7",
-            @(kVK_F8): @"F8",
-            @(kVK_F9): @"F9",
-            @(kVK_F10): @"F10",
-            @(kVK_F11): @"F11",
-            @(kVK_F12): @"F12",
-            @(kVK_F13): @"F13",
-            @(kVK_F14): @"F14",
-            @(kVK_F15): @"F15",
-            @(kVK_F16): @"F16",
-            @(kVK_F17): @"F17",
-            @(kVK_F18): @"F18",
-            @(kVK_F19): @"F19",
-            @(kVK_F20): @"F20",
-            @(kVK_Space): SRLoc(@"Space"),
-            @(kVK_Delete): SRKeyCodeStringDeleteLeft,
-            @(kVK_ForwardDelete): SRKeyCodeStringDeleteRight,
-            @(kVK_ANSI_KeypadClear): SRKeyCodeStringPadClear,
-            @(kVK_LeftArrow): SRKeyCodeStringLeftArrow,
-            @(kVK_RightArrow): SRKeyCodeStringRightArrow,
-            @(kVK_UpArrow): SRKeyCodeStringUpArrow,
-            @(kVK_DownArrow): SRKeyCodeStringDownArrow,
-            @(kVK_End): SRKeyCodeStringSoutheastArrow,
-            @(kVK_Home): SRKeyCodeStringNorthwestArrow,
-            @(kVK_Escape): SRKeyCodeStringEscape,
-            @(kVK_PageDown): SRKeyCodeStringPageDown,
-            @(kVK_PageUp): SRKeyCodeStringPageUp,
-            @(kVK_Return): SRKeyCodeStringReturnR2L,
-            @(kVK_ANSI_KeypadEnter): SRKeyCodeStringReturn,
-            @(kVK_Tab): SRKeyCodeStringTabRight,
-            @(kVK_Help): @"?⃝"
+            @(SRKeyCodeF1): @"F1",
+            @(SRKeyCodeF2): @"F2",
+            @(SRKeyCodeF3): @"F3",
+            @(SRKeyCodeF4): @"F4",
+            @(SRKeyCodeF5): @"F5",
+            @(SRKeyCodeF6): @"F6",
+            @(SRKeyCodeF7): @"F7",
+            @(SRKeyCodeF8): @"F8",
+            @(SRKeyCodeF9): @"F9",
+            @(SRKeyCodeF10): @"F10",
+            @(SRKeyCodeF11): @"F11",
+            @(SRKeyCodeF12): @"F12",
+            @(SRKeyCodeF13): @"F13",
+            @(SRKeyCodeF14): @"F14",
+            @(SRKeyCodeF15): @"F15",
+            @(SRKeyCodeF16): @"F16",
+            @(SRKeyCodeF17): @"F17",
+            @(SRKeyCodeF18): @"F18",
+            @(SRKeyCodeF19): @"F19",
+            @(SRKeyCodeF20): @"F20",
+            @(SRKeyCodeSpace): SRLoc(@"Space"),
+            @(SRKeyCodeDelete): SRKeyCodeStringDeleteLeft,
+            @(SRKeyCodeForwardDelete): SRKeyCodeStringDeleteRight,
+            @(SRKeyCodeKeypadClear): SRKeyCodeStringPadClear,
+            @(SRKeyCodeLeftArrow): SRKeyCodeStringLeftArrow,
+            @(SRKeyCodeRightArrow): SRKeyCodeStringRightArrow,
+            @(SRKeyCodeUpArrow): SRKeyCodeStringUpArrow,
+            @(SRKeyCodeDownArrow): SRKeyCodeStringDownArrow,
+            @(SRKeyCodeEnd): SRKeyCodeStringSoutheastArrow,
+            @(SRKeyCodeHome): SRKeyCodeStringNorthwestArrow,
+            @(SRKeyCodeEscape): SRKeyCodeStringEscape,
+            @(SRKeyCodePageDown): SRKeyCodeStringPageDown,
+            @(SRKeyCodePageUp): SRKeyCodeStringPageUp,
+            @(SRKeyCodeReturn): SRKeyCodeStringReturnR2L,
+            @(SRKeyCodeKeypadEnter): SRKeyCodeStringReturn,
+            @(SRKeyCodeTab): SRKeyCodeStringTabRight,
+            @(SRKeyCodeHelp): @"?⃝"
         };
     });
     return Mapping;
@@ -862,7 +865,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
                   layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
 }
 
-- (BOOL)isKeyCodeSpecial:(unsigned short)aKeyCode
+- (BOOL)isKeyCodeSpecial:(SRKeyCode)aKeyCode
 {
     return self.class.specialKeyCodeToSymbolMapping[@(aKeyCode)] != nil;
 }
@@ -1076,103 +1079,103 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
             {
                 case SRKeyCodeGlyphTabRight:
                 case SRKeyCodeGlyphTabLeft:
-                    result = @(kVK_Tab);
+                    result = @(SRKeyCodeTab);
                     break;
                 case SRKeyCodeGlyphReturn:
-                    result = @(kVK_ANSI_KeypadEnter);
+                    result = @(SRKeyCodeKeypadEnter);
                     break;
                 case SRKeyCodeGlyphReturnR2L:
-                    result = @(kVK_Return);
+                    result = @(SRKeyCodeReturn);
                     break;
                 case SRKeyCodeGlyphDeleteLeft:
-                    result = @(kVK_Delete);
+                    result = @(SRKeyCodeDelete);
                     break;
                 case SRKeyCodeGlyphDeleteRight:
-                    result = @(kVK_ForwardDelete);
+                    result = @(SRKeyCodeForwardDelete);
                     break;
                 case SRKeyCodeGlyphPadClear:
-                    result = @(kVK_ANSI_KeypadClear);
+                    result = @(SRKeyCodeKeypadClear);
                     break;
                 case SRKeyCodeGlyphLeftArrow:
-                    result = @(kVK_LeftArrow);
+                    result = @(SRKeyCodeLeftArrow);
                     break;
                 case SRKeyCodeGlyphRightArrow:
-                    result = @(kVK_RightArrow);
+                    result = @(SRKeyCodeRightArrow);
                     break;
                 case SRKeyCodeGlyphUpArrow:
-                    result = @(kVK_UpArrow);
+                    result = @(SRKeyCodeUpArrow);
                     break;
                 case SRKeyCodeGlyphDownArrow:
-                    result = @(kVK_DownArrow);
+                    result = @(SRKeyCodeDownArrow);
                     break;
                 case SRKeyCodeGlyphPageDown:
-                    result = @(kVK_PageDown);
+                    result = @(SRKeyCodePageDown);
                     break;
                 case SRKeyCodeGlyphPageUp:
-                    result = @(kVK_PageUp);
+                    result = @(SRKeyCodePageUp);
                     break;
                 case SRKeyCodeGlyphNorthwestArrow:
-                    result = @(kVK_Home);
+                    result = @(SRKeyCodeHome);
                     break;
                 case SRKeyCodeGlyphSoutheastArrow:
-                    result = @(kVK_End);
+                    result = @(SRKeyCodeEnd);
                     break;
                 case SRKeyCodeGlyphEscape:
-                    result = @(kVK_Escape);
+                    result = @(SRKeyCodeEscape);
                     break;
                 case SRKeyCodeGlyphSpace:
-                    result = @(kVK_Space);
+                    result = @(SRKeyCodeSpace);
                     break;
                 case SRKeyCodeGlyphJISUnderscore:
-                    result = @(kVK_JIS_Underscore);
+                    result = @(SRKeyCodeJISUnderscore);
                     break;
                 case SRKeyCodeGlyphJISComma:
-                    result = @(kVK_JIS_KeypadComma);
+                    result = @(SRKeyCodeJISKeypadComma);
                     break;
                 case SRKeyCodeGlyphJISYen:
-                    result = @(kVK_JIS_Yen);
+                    result = @(SRKeyCodeJISYen);
                     break;
                 case SRKeyCodeGlyphANSI0:
-                    result = @(kVK_ANSI_0);
+                    result = @(SRKeyCode0);
                     break;
                 case SRKeyCodeGlyphANSI1:
-                    result = @(kVK_ANSI_1);
+                    result = @(SRKeyCode1);
                     break;
                 case SRKeyCodeGlyphANSI2:
-                    result = @(kVK_ANSI_2);
+                    result = @(SRKeyCode2);
                     break;
                 case SRKeyCodeGlyphANSI3:
-                    result = @(kVK_ANSI_3);
+                    result = @(SRKeyCode3);
                     break;
                 case SRKeyCodeGlyphANSI4:
-                    result = @(kVK_ANSI_4);
+                    result = @(SRKeyCode4);
                     break;
                 case SRKeyCodeGlyphANSI5:
-                    result = @(kVK_ANSI_5);
+                    result = @(SRKeyCode5);
                     break;
                 case SRKeyCodeGlyphANSI6:
-                    result = @(kVK_ANSI_6);
+                    result = @(SRKeyCode6);
                     break;
                 case SRKeyCodeGlyphANSI7:
-                    result = @(kVK_ANSI_7);
+                    result = @(SRKeyCode7);
                     break;
                 case SRKeyCodeGlyphANSI8:
-                    result = @(kVK_ANSI_8);
+                    result = @(SRKeyCode8);
                     break;
                 case SRKeyCodeGlyphANSI9:
-                    result = @(kVK_ANSI_9);
+                    result = @(SRKeyCode9);
                     break;
                 case SRKeyCodeGlyphANSIEqual:
-                    result = @(kVK_ANSI_Equal);
+                    result = @(SRKeyCodeEqual);
                     break;
                 case SRKeyCodeGlyphANSIMinus:
-                    result = @(kVK_ANSI_Minus);
+                    result = @(SRKeyCodeMinus);
                     break;
                 case SRKeyCodeGlyphANSISlash:
-                    result = @(kVK_ANSI_Slash);
+                    result = @(SRKeyCodeSlash);
                     break;
                 case SRKeyCodeGlyphANSIPeriod:
-                    result = @(kVK_ANSI_Period);
+                    result = @(SRKeyCodePeriod);
                     break;
                 default:
                     break;
@@ -1186,64 +1189,64 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
                 switch (fNumber)
                 {
                     case 1:
-                        result = @(kVK_F1);
+                        result = @(SRKeyCodeF1);
                         break;
                     case 2:
-                        result = @(kVK_F2);
+                        result = @(SRKeyCodeF2);
                         break;
                     case 3:
-                        result = @(kVK_F3);
+                        result = @(SRKeyCodeF3);
                         break;
                     case 4:
-                        result = @(kVK_F4);
+                        result = @(SRKeyCodeF4);
                         break;
                     case 5:
-                        result = @(kVK_F5);
+                        result = @(SRKeyCodeF5);
                         break;
                     case 6:
-                        result = @(kVK_F6);
+                        result = @(SRKeyCodeF6);
                         break;
                     case 7:
-                        result = @(kVK_F7);
+                        result = @(SRKeyCodeF7);
                         break;
                     case 8:
-                        result = @(kVK_F8);
+                        result = @(SRKeyCodeF8);
                         break;
                     case 9:
-                        result = @(kVK_F9);
+                        result = @(SRKeyCodeF9);
                         break;
                     case 10:
-                        result = @(kVK_F10);
+                        result = @(SRKeyCodeF10);
                         break;
                     case 11:
-                        result = @(kVK_F11);
+                        result = @(SRKeyCodeF11);
                         break;
                     case 12:
-                        result = @(kVK_F12);
+                        result = @(SRKeyCodeF12);
                         break;
                     case 13:
-                        result = @(kVK_F13);
+                        result = @(SRKeyCodeF13);
                         break;
                     case 14:
-                        result = @(kVK_F14);
+                        result = @(SRKeyCodeF14);
                         break;
                     case 15:
-                        result = @(kVK_F15);
+                        result = @(SRKeyCodeF15);
                         break;
                     case 16:
-                        result = @(kVK_F16);
+                        result = @(SRKeyCodeF16);
                         break;
                     case 17:
-                        result = @(kVK_F17);
+                        result = @(SRKeyCodeF17);
                         break;
                     case 18:
-                        result = @(kVK_F18);
+                        result = @(SRKeyCodeF18);
                         break;
                     case 19:
-                        result = @(kVK_F19);
+                        result = @(SRKeyCodeF19);
                         break;
                     case 20:
-                        result = @(kVK_F20);
+                        result = @(SRKeyCodeF20);
                         break;
                     default:
                         break;
@@ -1255,16 +1258,16 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
             if ([lowercaseValue caseInsensitiveCompare:SRLoc(@"Space")] == NSOrderedSame ||
                 [lowercaseValue isEqualToString:@"space"])
             {
-                result = @(kVK_Space);
+                result = @(SRKeyCodeSpace);
             }
             else if ([lowercaseValue isEqualToString:@"esc"] || [lowercaseValue isEqualToString:@"escape"])
-                result = @(kVK_Escape);
+                result = @(SRKeyCodeEscape);
             else if ([lowercaseValue isEqualToString:@"tab"])
-                result = @(kVK_Tab);
+                result = @(SRKeyCodeTab);
             else if ([lowercaseValue isEqualToString:@"help"] || [lowercaseValue isEqualToString:@"?⃝"])
-                result = @(kVK_Help);
+                result = @(SRKeyCodeHelp);
             else if ([lowercaseValue isEqualToString:@"enter"])
-                result = @(kVK_Return);
+                result = @(SRKeyCodeReturn);
         }
 
         if (result == nil)
@@ -1351,145 +1354,145 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
         switch (glyph)
         {
             case NSF1FunctionKey:
-                result = @(kVK_F1);
+                result = @(SRKeyCodeF1);
                 break;
             case NSF2FunctionKey:
-                result = @(kVK_F2);
+                result = @(SRKeyCodeF2);
                 break;
             case NSF3FunctionKey:
-                result = @(kVK_F3);
+                result = @(SRKeyCodeF3);
                 break;
             case NSF4FunctionKey:
-                result = @(kVK_F4);
+                result = @(SRKeyCodeF4);
                 break;
             case NSF5FunctionKey:
-                result = @(kVK_F5);
+                result = @(SRKeyCodeF5);
                 break;
             case NSF6FunctionKey:
-                result = @(kVK_F6);
+                result = @(SRKeyCodeF6);
                 break;
             case NSF7FunctionKey:
-                result = @(kVK_F7);
+                result = @(SRKeyCodeF7);
                 break;
             case NSF8FunctionKey:
-                result = @(kVK_F8);
+                result = @(SRKeyCodeF8);
                 break;
             case NSF9FunctionKey:
-                result = @(kVK_F9);
+                result = @(SRKeyCodeF9);
                 break;
             case NSF10FunctionKey:
-                result = @(kVK_F10);
+                result = @(SRKeyCodeF10);
                 break;
             case NSF11FunctionKey:
-                result = @(kVK_F11);
+                result = @(SRKeyCodeF11);
                 break;
             case NSF12FunctionKey:
-                result = @(kVK_F12);
+                result = @(SRKeyCodeF12);
                 break;
             case NSF13FunctionKey:
-                result = @(kVK_F13);
+                result = @(SRKeyCodeF13);
                 break;
             case NSF14FunctionKey:
-                result = @(kVK_F14);
+                result = @(SRKeyCodeF14);
                 break;
             case NSF15FunctionKey:
-                result = @(kVK_F15);
+                result = @(SRKeyCodeF15);
                 break;
             case NSF16FunctionKey:
-                result = @(kVK_F16);
+                result = @(SRKeyCodeF16);
                 break;
             case NSF17FunctionKey:
-                result = @(kVK_F17);
+                result = @(SRKeyCodeF17);
                 break;
             case NSF18FunctionKey:
-                result = @(kVK_F18);
+                result = @(SRKeyCodeF18);
                 break;
             case NSF19FunctionKey:
-                result = @(kVK_F19);
+                result = @(SRKeyCodeF19);
                 break;
             case NSF20FunctionKey:
-                result = @(kVK_F20);
+                result = @(SRKeyCodeF20);
                 break;
             case NSUpArrowFunctionKey:
-                result = @(kVK_UpArrow);
+                result = @(SRKeyCodeUpArrow);
                 break;
             case NSDownArrowFunctionKey:
-                result = @(kVK_DownArrow);
+                result = @(SRKeyCodeDownArrow);
                 break;
             case NSLeftArrowFunctionKey:
-                result = @(kVK_LeftArrow);
+                result = @(SRKeyCodeLeftArrow);
                 break;
             case NSRightArrowFunctionKey:
-                result = @(kVK_RightArrow);
+                result = @(SRKeyCodeRightArrow);
                 break;
             case NSEndFunctionKey:
-                result = @(kVK_End);
+                result = @(SRKeyCodeEnd);
                 break;
             case NSHelpFunctionKey:
-                result = @(kVK_Help);
+                result = @(SRKeyCodeHelp);
                 break;
             case NSHomeFunctionKey:
-                result = @(kVK_Home);
+                result = @(SRKeyCodeHome);
                 break;
             case NSPageDownFunctionKey:
-                result = @(kVK_PageDown);
+                result = @(SRKeyCodePageDown);
                 break;
             case NSPageUpFunctionKey:
-                result = @(kVK_PageUp);
+                result = @(SRKeyCodePageUp);
                 break;
             case NSBackTabCharacter:
-                result = @(kVK_Tab);
+                result = @(SRKeyCodeTab);
                 break;
             case SRKeyCodeGlyphJISUnderscore:
-                result = @(kVK_JIS_Underscore);
+                result = @(SRKeyCodeJISUnderscore);
                 break;
             case SRKeyCodeGlyphJISComma:
-                result = @(kVK_JIS_KeypadComma);
+                result = @(SRKeyCodeJISKeypadComma);
                 break;
             case SRKeyCodeGlyphJISYen:
-                result = @(kVK_JIS_Yen);
+                result = @(SRKeyCodeJISYen);
                 break;
             case SRKeyCodeGlyphANSI0:
-                result = @(kVK_ANSI_0);
+                result = @(SRKeyCode0);
                 break;
             case SRKeyCodeGlyphANSI1:
-                result = @(kVK_ANSI_1);
+                result = @(SRKeyCode1);
                 break;
             case SRKeyCodeGlyphANSI2:
-                result = @(kVK_ANSI_2);
+                result = @(SRKeyCode2);
                 break;
             case SRKeyCodeGlyphANSI3:
-                result = @(kVK_ANSI_3);
+                result = @(SRKeyCode3);
                 break;
             case SRKeyCodeGlyphANSI4:
-                result = @(kVK_ANSI_4);
+                result = @(SRKeyCode4);
                 break;
             case SRKeyCodeGlyphANSI5:
-                result = @(kVK_ANSI_5);
+                result = @(SRKeyCode5);
                 break;
             case SRKeyCodeGlyphANSI6:
-                result = @(kVK_ANSI_6);
+                result = @(SRKeyCode6);
                 break;
             case SRKeyCodeGlyphANSI7:
-                result = @(kVK_ANSI_7);
+                result = @(SRKeyCode7);
                 break;
             case SRKeyCodeGlyphANSI8:
-                result = @(kVK_ANSI_8);
+                result = @(SRKeyCode8);
                 break;
             case SRKeyCodeGlyphANSI9:
-                result = @(kVK_ANSI_9);
+                result = @(SRKeyCode9);
                 break;
             case SRKeyCodeGlyphANSIEqual:
-                result = @(kVK_ANSI_Equal);
+                result = @(SRKeyCodeEqual);
                 break;
             case SRKeyCodeGlyphANSIMinus:
-                result = @(kVK_ANSI_Minus);
+                result = @(SRKeyCodeMinus);
                 break;
             case SRKeyCodeGlyphANSISlash:
-                result = @(kVK_ANSI_Slash);
+                result = @(SRKeyCodeSlash);
                 break;
             case SRKeyCodeGlyphANSIPeriod:
-                result = @(kVK_ANSI_Period);
+                result = @(SRKeyCodePeriod);
                 break;
             default:
                 result = [(_SRKeyCodeASCIITranslator *)self->_translator keyCodeForTranslation:aValue.lowercaseString];

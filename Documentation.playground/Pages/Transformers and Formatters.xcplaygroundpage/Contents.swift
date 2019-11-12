@@ -37,10 +37,10 @@ label.objectValue = shortcut
  ### KeyCodeTransformer
  `KeyCodeTransformer` is a class-cluster that transforms the given numeric key code into a `String`.
 
- Translation of a key code varies across combinations of keyboards and input sources. E.g. `kVK_ANSI_A` corresponds
+ Translation of a key code varies across combinations of keyboards and input sources. E.g. `KeyCode.ansiA` corresponds
  to "a" in the U.S. English input source but to "ф" in the Russian input source. In addition, some keys, like
- `kVK_Tab`, have dual representation: as an input character (`\u{9}`) and as a drawable glyph (`⇥`). Some glyphs may be
- sensitive to layout direction, e.g. `kVK_Tab` glyph for right-to-left languages is `⇤`.
+ `KeyCode.tab`, have dual representation: as an input character (`\u{9}`) and as a drawable glyph (`⇥`). Some glyphs may be
+ sensitive to layout direction, e.g. `KeyCode.tab` glyph for right-to-left languages is `⇤`.
 
  The class-cluster is split into 2 main groups:
  - `*` uses current input source
@@ -70,10 +70,10 @@ label.objectValue = shortcut
 
  Explicit modifier may alter environment settings, e.g. ⇧ is sometimes used to alter the input direction.
 
- Layout direction can alter appearance of key codes like `kVK_Tab`.
+ Layout direction can alter appearance of key codes like `KeyCode.tab`.
 */
-print("Symbolic Key Code: \"\(ASCIISymbolicKeyCodeTransformer.shared.transformedValue(kVK_Tab) as! String)\"")
-print("Literal Key Code: \"\(ASCIILiteralKeyCodeTransformer.shared.transformedValue(kVK_Tab) as! String)\"")
+print("Symbolic Key Code: \"\(ASCIISymbolicKeyCodeTransformer.shared.transformedValue(KeyCode.tab) as! String)\"")
+print("Literal Key Code: \"\(ASCIILiteralKeyCodeTransformer.shared.transformedValue(KeyCode.tab) as! String)\"")
 /*:
  ### ModifierFlagsTransformer
  `ModifierFlagsTransformer` is a class-cluster that transforms a combination of modifier flags into a `String`.

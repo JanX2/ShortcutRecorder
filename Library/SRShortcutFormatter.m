@@ -68,7 +68,12 @@
                            withImplicitModifierFlags:nil
                                explicitModifierFlags:@(aShortcut.modifierFlags)
                                      layoutDirection:self.layoutDirection];
+
+    if (!key)
+        key = [NSString stringWithFormat:@"<%hu>", aShortcut.keyCode];
+
     NSString *flags = [flagsTransformer transformedValue:@(aShortcut.modifierFlags)];
+
     return [NSString stringWithFormat:@"%@%@", flags, key];
 }
 

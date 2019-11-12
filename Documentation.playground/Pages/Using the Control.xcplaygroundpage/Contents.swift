@@ -93,7 +93,7 @@ bindingsRecorder.set(allowedModifierFlags: [.command, .option],
 /*:
  The requirements can be bypassed by implementing either the `recorderControl(_:,shouldUnconditionallyAllow:,forKeyCode:)` delegate method or by setting `objectValue` directly.
 
- ## Configuring Key Code Handling
+ ## Handling Escape and Delete
  Some keys are natural shortcuts with consistent actions assigned to them throughout the system and well-designed apps.
  The `RecorderControl` recognizes Escape to cancel the recording and Delete to end the recording by clearing current value.
  This behavior can be altered with `allowsEscapeToCancelRecording` and `allowsDeleteToClearShortcutAndEndRecording` respectively.
@@ -149,6 +149,30 @@ class Delegate: NSObject, RecorderControlDelegate {
 }
 let delegate = Delegate()
 delegateRecorder.delegate = delegate
+/*:
+ ## Recording Shortcuts without Key Codes
+ Some apps may need to record shortcuts that contain modifier flags only. This feature is off by default and must be enabled first:
+ */
+delegateRecorder.allowsModifierFlagsOnlyShortcut = true
+/*:
+ The delegate may implement `recorderControl(_:,canRecord:)` to allow only some combinations of modifier flags.
+ */
+
+extension Delegate {
+    /// Allows shortcuts with key codes or a modifier flag short
+    func recorderControl(_ aControl: RecorderControl, canRecord aShortcut: Shortcut) -> Bool {
+        if aShortcut.keyCode != .none {
+            return true
+        }
+        else if aShortcut.modifierFlags == .shift {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+}
+
 /*:
  ## Styling
  Appearance of the control is controller by the `style` property which can be any object conforming to the `RecorderControlStyling` protocol.
