@@ -202,6 +202,7 @@ class RecorderControlTableViewStyle: NSObject, RecorderControlStyling {
     let identifier = "sr-tableview"
     let allowsVibrancy = false
     let isOpaque = false
+    let isLabelDrawingFrameOpaque = false
     let baselineDrawingOffsetFromBottom: CGFloat = 3.0
     let alignmentRectInsets = NSEdgeInsetsZero
     let intrinsicContentSize = NSSize(width: 20.0, height: 17.0)
