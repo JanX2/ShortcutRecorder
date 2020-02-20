@@ -82,6 +82,10 @@ Then drag'n'drop into Xcode workspace of your project.
 - The Inspector app is useful during development of custom styles
 - Read about [Styling](https://github.com/Kentzo/ShortcutRecorder/wiki/Styling) and special notes regarding [Cocoa's Key Equivalents](https://github.com/Kentzo/ShortcutRecorder/wiki/Cocoa-Key-Equivalents).
 
+## Coding Style
+
+Please use (four) spaces for indentation. It's not that all contributors prefer spaces over tabs or vice versa. Most of the code in the project used spaces at one point and it was easier to convert the occasional tab than all the spaces.
+
 ## Questions
 
 Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecorder/issues/new).
