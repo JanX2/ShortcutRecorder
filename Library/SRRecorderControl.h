@@ -143,8 +143,10 @@ IB_DESIGNABLE
  @discussion
  Defaults to NO.
 
- Normally the control uses a non modifier flags key event as a trigger to end recording. To end the recording
- with modifier flags only the -recorderControl:canRecordShortcut: method is sent to the delegate repeatedly.
+ When YES changes the control behavior to allow recording of a shortcut without a key code.
+ In this mode recording ends either when key code is pressed (as usual) or when all modifier flags are relased.
+ Instead of capturing only currently pressed modifier flags, the control XORs its internal value whenever
+ a modifier key is pressed. I.e. whenever a modifier key is pressed it either added or removed.
  */
 @property IBInspectable BOOL allowsModifierFlagsOnlyShortcut;
 
@@ -215,22 +217,26 @@ IB_DESIGNABLE
 @property (getter=isClearButtonHighlighted, readonly) BOOL clearButtonHighlighted;
 
 /*!
- Check whether a given combination is valid.
+ Check whether a given combination can be recorded.
+
+ @discussion
+ Subclasses may override to provide custom verfication logic for a proposed shortcut.
 
  @param  aModifierFlags Proposed modifier flags.
 
  @param  aKeyCode Code of the pressed key.
 
- @seealso allowedModifierFlags
-
- @seealso allowsEmptyModifierFlags
-
  @seealso requiredModifierFlags
+
+ @seealso -areModifierFlagsAllowed:forKeyCode:
  */
 - (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
 
 /*!
- Check whether a given combination is allowed.
+ Check whether given modifier flags are allowed by control's configuration and delegate.
+
+ @discussion
+ Subclasses may override to provide custom verification logic for allowed modifier flags.
 
  @param  aModifierFlags Proposed modifier flags.
 
@@ -240,7 +246,7 @@ IB_DESIGNABLE
 
  @seealso allowsEmptyModifierFlags
 
- @seealso requiredModifierFlags
+ @seealso -[SRRecorderControlDelegate recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:];
  */
 - (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
 
@@ -424,13 +430,13 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
  @param aModifierFlags Proposed modifier flags.
 
- @param aKeyCode Code of the pressed key.
+ @param aKeyCode Code of the pressed key, if any.
 
  @return YES if the control should ignore the rules; otherwise, NO.
 
  @discussion
- Normally, you wouldn't allow a user to record a shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
- However, some keys are designed to be key shortcuts by itself, e.g. functional keys.
+ Normally, you wouldn't allow a user to record a shortcut without modifier flags set.
+ However, some keys, like functional keys, are designed to be key shortcuts by itself.
  By implementing this method the delegate can allow these special keys to be set without modifier flags
  even when the control is configured to disallow empty modifier flags.
 

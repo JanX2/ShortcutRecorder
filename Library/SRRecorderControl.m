@@ -48,8 +48,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
     // +NSEvent.modifierFlags may change across run loop calls
     // Extra care is needed to ensure that all methods will see the same flags.
-    NSEventModifierFlags _currentlyDrawnRecordingModifierFlags;
-    NSEventModifierFlags _accessibilityRecordingModifierFlags;
+    NSEventModifierFlags _lastSeenModifierFlags;
 
     BOOL _isLazilyInitializingStyle;
 }
@@ -388,12 +387,10 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
     if (self.isRecording)
     {
-        _currentlyDrawnRecordingModifierFlags = NSEvent.modifierFlags & self.allowedModifierFlags;
-
-        if (_currentlyDrawnRecordingModifierFlags)
+        if (_lastSeenModifierFlags)
         {
             __auto_type layoutDirection = self.stringValueRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
-            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_currentlyDrawnRecordingModifierFlags)
+            label = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_lastSeenModifierFlags)
                                                                            layoutDirection:layoutDirection];
         }
         else
@@ -478,6 +475,8 @@ static NSInteger _SRStyleAppearanceObservingContext;
             return;
         }
 
+        self->_lastSeenModifierFlags = NSEvent.modifierFlags & self.allowedModifierFlags;
+
         self.needsDisplay = YES;
 
         [self willChangeValueForKey:@"isRecording"];
@@ -554,8 +553,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
         [self didChangeValueForKey:@"isRecording"];
 
         self.objectValue = anObjectValue;
-        self->_currentlyDrawnRecordingModifierFlags = 0;
-        self->_accessibilityRecordingModifierFlags = 0;
+        self->_lastSeenModifierFlags = 0;
 
         [self updateActiveConstraints];
         [self updateTrackingAreas];
@@ -753,10 +751,10 @@ static NSInteger _SRStyleAppearanceObservingContext;
     __block BOOL allowModifierFlags = YES;
 
     os_activity_initiate("-[SRRecorderControl areModifierFlagsValid:forKeyCode:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
-        allowModifierFlags = [self areModifierFlagsAllowed:aModifierFlags forKeyCode:aKeyCode];
-
         if ((aModifierFlags & self.requiredModifierFlags) != self.requiredModifierFlags)
             allowModifierFlags = NO;
+        else
+            allowModifierFlags = [self areModifierFlagsAllowed:aModifierFlags forKeyCode:aKeyCode];
     });
 
     return allowModifierFlags;
@@ -770,11 +768,11 @@ static NSInteger _SRStyleAppearanceObservingContext;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     __auto_type DelegateShouldUnconditionallyAllowModifierFlags = ^{
-        if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        if ([self.delegate respondsToSelector:@selector(recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
         {
             return [self.delegate recorderControl:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode];
         }
-        else if (!allowModifierFlags && [self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
+        else if ([self.delegate respondsToSelector:@selector(shortcutRecorder:shouldUnconditionallyAllowModifierFlags:forKeyCode:)])
         {
             return [self.delegate shortcutRecorder:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode];
         }
@@ -784,12 +782,11 @@ static NSInteger _SRStyleAppearanceObservingContext;
 #pragma clang diagnostic pop
 
     os_activity_initiate("-[SRRecorderControl areModifierFlagsAllowed:forKeyCode:]", OS_ACTIVITY_FLAG_IF_NONE_PRESENT, ^{
-        if (aModifierFlags == 0 && !self.allowsEmptyModifierFlags)
-            allowModifierFlags = NO;
-        else if ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags)
-            allowModifierFlags = NO;
-
-        allowModifierFlags = DelegateShouldUnconditionallyAllowModifierFlags();
+        if ((aModifierFlags == 0 && !self.allowsEmptyModifierFlags) ||
+            ((aModifierFlags & self.allowedModifierFlags) != aModifierFlags))
+        {
+            allowModifierFlags = DelegateShouldUnconditionallyAllowModifierFlags();
+        }
     });
 
     return allowModifierFlags;
@@ -956,8 +953,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 {
     if (self.isRecording)
     {
-        _accessibilityRecordingModifierFlags = _currentlyDrawnRecordingModifierFlags;
-        return [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_accessibilityRecordingModifierFlags)
+        return [SRLiteralModifierFlagsTransformer.sharedTransformer transformedValue:@(_lastSeenModifierFlags)
                                                                      layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
     }
     else
@@ -1694,19 +1690,47 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
 - (void)flagsChanged:(NSEvent *)anEvent
 {
-    if ([self canCaptureKeyEvent] && self.isRecording)
+    if (self.isRecording && [self canCaptureKeyEvent])
     {
+        __auto_type modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
+
         if (self.allowsModifierFlagsOnlyShortcut)
         {
-            SRShortcut *newObjectValue = [SRShortcut shortcutWithEvent:anEvent];
+            __auto_type keyCode = anEvent.keyCode;
+            __auto_type nextModifierFlags = _lastSeenModifierFlags;
 
-            if ([self canEndRecordingWithObjectValue:newObjectValue])
-                [self endRecordingWithObjectValue:newObjectValue];
+            // Only XOR when flag is added.
+            if ((modifierFlags & NSEventModifierFlagCommand) && (keyCode == kVK_Command || keyCode == kVK_RightCommand))
+                nextModifierFlags ^= NSEventModifierFlagCommand;
+            else if ((modifierFlags & NSEventModifierFlagOption) && (keyCode == kVK_Option || keyCode == kVK_RightOption))
+                nextModifierFlags ^= NSEventModifierFlagOption;
+            else if ((modifierFlags & NSEventModifierFlagShift) && (keyCode == kVK_Shift || keyCode == kVK_RightShift))
+                nextModifierFlags ^= NSEventModifierFlagShift;
+            else if ((modifierFlags & NSEventModifierFlagControl) && (keyCode == kVK_Control || keyCode == kVK_RightControl))
+                nextModifierFlags ^= NSEventModifierFlagControl;
+            else if (modifierFlags == 0 && _lastSeenModifierFlags != 0)
+            {
+                SRShortcut *newObjectValue = [SRShortcut shortcutWithCode:SRKeyCodeNone
+                                                            modifierFlags:_lastSeenModifierFlags
+                                                               characters:nil
+                                              charactersIgnoringModifiers:nil];
+
+                if ([self canEndRecordingWithObjectValue:newObjectValue])
+                    [self endRecordingWithObjectValue:newObjectValue];
+            }
+
+            if (nextModifierFlags != _lastSeenModifierFlags && ![self areModifierFlagsAllowed:nextModifierFlags forKeyCode:SRKeyCodeNone])
+                [self playAlert];
+            else
+                _lastSeenModifierFlags = nextModifierFlags;
         }
-
-        NSEventModifierFlags modifierFlags = anEvent.modifierFlags & SRCocoaModifierFlagsMask;
-        if (modifierFlags != 0 && ![self areModifierFlagsAllowed:modifierFlags forKeyCode:anEvent.keyCode])
-            [self playAlert];
+        else
+        {
+            if (![self areModifierFlagsAllowed:modifierFlags forKeyCode:SRKeyCodeNone])
+                [self playAlert];
+            else
+                _lastSeenModifierFlags = modifierFlags;
+        }
 
         [self setNeedsDisplayInRect:self.style.labelDrawingGuide.frame];
     }
