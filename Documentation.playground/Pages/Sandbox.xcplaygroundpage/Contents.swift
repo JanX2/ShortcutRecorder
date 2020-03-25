@@ -214,6 +214,8 @@ extension Controller: RecorderControlDelegate {
  - `NSResponder/keyUp(with:)`
  - `NSResponder/performKeyEquivalent(with:)`
  - `NSResponder/flagsChanged(with:)`
+ - `NSEvent/addLocalMonitorForEvents(matching:handler:)`
+ - `NSEvent/addGlobalMonitorForEvents(matching:handler:)`
  */
 //let localMonitor = LocalShortcutMonitor()
 //let shortcut = Shortcut(keyEquivalent: "⌥⇧⌘A")!
@@ -232,4 +234,25 @@ extension Controller: RecorderControlDelegate {
 //                             charactersIgnoringModifiers: "a",
 //                             isARepeat: false,
 //                             keyCode: UInt16(shortcut.keyCode.rawValue))
+//localMonitor.handle(event, withTarget: nil)
+/*:
+ It can be used to recognize and handle `keyCode`-less shortcuts
+ */
+//let localMonitor = LocalShortcutMonitor()
+//let shortcut = Shortcut(keyEquivalent: "⌥⇧⌘")!
+//let action = ShortcutAction(shortcut: shortcut) { action in
+//    print("Handle local shortcut")
+//    return true
+//}
+//localMonitor.addAction(action, forKeyEvent: .down)
+//let event = NSEvent.keyEvent(with: .flagsChanged,
+//                             location: NSPoint(x: 0, y: 0),
+//                             modifierFlags: shortcut.modifierFlags,
+//                             timestamp: 0,
+//                             windowNumber: 0,
+//                             context: nil,
+//                             characters: "A",
+//                             charactersIgnoringModifiers: "a",
+//                             isARepeat: false,
+//                             keyCode: UInt16(kVK_Command))
 //localMonitor.handle(event, withTarget: nil)
