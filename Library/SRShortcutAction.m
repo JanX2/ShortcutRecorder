@@ -1227,7 +1227,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
 #pragma mark Methods
 
-- (BOOL)handleEvent:(nullable NSEvent *)anEvent withTarget:(nullable id)aTarget
+- (BOOL)handleEvent:(NSEvent *)anEvent withTarget:(nullable id)aTarget
 {
     SRShortcut *shortcut = [SRShortcut shortcutWithEvent:anEvent];
     if (!shortcut)

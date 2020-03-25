@@ -233,7 +233,7 @@ extension Controller: RecorderControlDelegate {
 //                             characters: "A",
 //                             charactersIgnoringModifiers: "a",
 //                             isARepeat: false,
-//                             keyCode: UInt16(shortcut.keyCode.rawValue))
+//                             keyCode: UInt16(shortcut.keyCode.rawValue))!
 //localMonitor.handle(event, withTarget: nil)
 /*:
  It can be used to recognize and handle `keyCode`-less shortcuts
@@ -254,5 +254,5 @@ extension Controller: RecorderControlDelegate {
 //                             characters: "A",
 //                             charactersIgnoringModifiers: "a",
 //                             isARepeat: false,
-//                             keyCode: UInt16(kVK_Command))
+//                             keyCode: UInt16(kVK_Command))!
 //localMonitor.handle(event, withTarget: nil)

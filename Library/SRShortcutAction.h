@@ -459,7 +459,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  If there are more than one action associated with the event, they are performed one by one
  either until one of them returns YES or the iteration is exhausted.
  */
-- (BOOL)handleEvent:(nullable NSEvent *)anEvent withTarget:(nullable id)aTarget;
+- (BOOL)handleEvent:(NSEvent *)anEvent withTarget:(nullable id)aTarget;
 
 /*!
  Update the monitor with system-wide and user-specific Cocoa Text System key bindings.
