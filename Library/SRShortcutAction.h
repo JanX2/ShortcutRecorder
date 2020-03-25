@@ -184,6 +184,26 @@ NS_SWIFT_NAME(ShortcutAction)
 
 
 /*!
+ Type of the keyboard event.
+
+ @const SRKeyEventTypeUp Keyboard key is released.
+ @const SRKeyEventTypeDown Keyboard key is pressed.
+ */
+typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
+{
+    SRKeyEventTypeUp = NSEventTypeKeyUp,
+    SRKeyEventTypeDown = NSEventTypeKeyDown
+} NS_SWIFT_NAME(KeyEventType);
+
+
+typedef NS_ENUM(NSUInteger, SRModifierFlagsMatch)
+{
+    SRModifierFlagsMatchExact,
+    SRModifierFlagsMatchPartial
+} NS_SWIFT_NAME(ModifierFlagsMatch);
+
+
+/*!
  Base class for the SRGlobalShortcutMonitor and SRLocalShortcutMonitor.
 
  @discussion
@@ -204,20 +224,6 @@ NS_SWIFT_NAME(ShortcutAction)
  */
 NS_SWIFT_NAME(ShortcutMonitor)
 @interface SRShortcutMonitor : NSObject
-
-
-/*!
- Type of the keyboard event.
-
- @const SRKeyEventTypeUp Keyboard key is released.
- @const SRKeyEventTypeDown Keyboard key is pressed.
- */
-typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
-{
-    SRKeyEventTypeUp = NSEventTypeKeyUp,
-    SRKeyEventTypeDown = NSEventTypeKeyDown
-} NS_SWIFT_NAME(KeyEventType);
-
 
 /*!
  All shortcut actions.

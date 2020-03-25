@@ -149,7 +149,7 @@ typedef NS_ENUM(uint16_t, SRKeyCode) {
     SRKeyCodeRightBracket NS_SWIFT_NAME(ansiRightBracket) = kVK_ANSI_RightBracket,
     SRKeyCodeO NS_SWIFT_NAME(ansiO) = kVK_ANSI_O,
     SRKeyCodeU NS_SWIFT_NAME(ansiU) = kVK_ANSI_U,
-    SRKeyCodeLeftBracket NS_SWIFT_NAME(ansiLeftBracket) =  kVK_ANSI_LeftBracket,
+    SRKeyCodeLeftBracket NS_SWIFT_NAME(ansiLeftBracket) = kVK_ANSI_LeftBracket,
     SRKeyCodeI NS_SWIFT_NAME(ansiI) = kVK_ANSI_I,
     SRKeyCodeP NS_SWIFT_NAME(ansiP) = kVK_ANSI_P,
     SRKeyCodeL NS_SWIFT_NAME(ansiL) = kVK_ANSI_L,
