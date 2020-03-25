@@ -97,8 +97,16 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     [parser scanCharactersFromSet:PossibleFlags intoString:&modifierFlagsString];
     NSString *keyCodeString = [aKeyEquivalent substringFromIndex:parser.scanLocation];
 
-    NSNumber *modifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer reverseTransformedValue:modifierFlagsString];
-    NSNumber *keyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer reverseTransformedValue:keyCodeString];
+    if (!modifierFlagsString.length && !keyCodeString.length)
+        return nil;
+
+    NSNumber *modifierFlags = @0;
+    if (modifierFlagsString.length)
+        modifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer reverseTransformedValue:modifierFlagsString];
+
+    NSNumber *keyCode = @(SRKeyCodeNone);
+    if (keyCodeString.length)
+        keyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer reverseTransformedValue:keyCodeString];
 
     if (!modifierFlags || !keyCode)
         return nil;
