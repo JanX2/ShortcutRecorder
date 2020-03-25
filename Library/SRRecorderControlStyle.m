@@ -89,7 +89,8 @@ SRRecorderControlStyleComponentsTint SRRecorderControlStyleComponentsTintFromSys
 
 NSControlTint SRRecorderControlStyleComponentsTintToSystem(SRRecorderControlStyleComponentsTint aTint)
 {
-    switch (aTint) {
+    switch (aTint)
+    {
         case SRRecorderControlStyleComponentsTintBlue:
             return NSBlueControlTint;
             break;

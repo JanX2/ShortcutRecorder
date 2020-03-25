@@ -502,7 +502,8 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
           explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                 layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
-    switch (aValue) {
+    switch (aValue)
+    {
         case SRKeyCodeF1:
             return @"F1";
         case SRKeyCodeF2:
@@ -601,7 +602,8 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
          explicitModifierFlags:(NSEventModifierFlags)anExplicitModifierFlags
                layoutDirection:(NSUserInterfaceLayoutDirection)aDirection
 {
-    switch (aValue) {
+    switch (aValue)
+    {
         case SRKeyCodeF1:
             return SRUnicharToString(NSF1FunctionKey);
         case SRKeyCodeF2:

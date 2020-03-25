@@ -85,7 +85,8 @@
     BOOL isNumPad = [modifierFlagsString containsString:@"#"];
     if (isNumPad)
     {
-        switch (keyCode.unsignedShortValue) {
+        switch (keyCode.unsignedShortValue)
+        {
             case SRKeyCode0:
                 keyCode = @(SRKeyCodeKeypad0);
                 break;

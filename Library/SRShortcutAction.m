@@ -1284,7 +1284,8 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     NSMutableDictionary *keyBindings = [systemKeyBindings mutableCopy];
     [keyBindings addEntriesFromDictionary:userKeyBindings];
 
-    @synchronized (_actions) {
+    @synchronized (_actions)
+    {
         [keyBindings enumerateKeysAndObjectsUsingBlock:^(NSString *aKey, id aValue, BOOL *aStop) {
             if (![aKey isKindOfClass:NSString.class] || !aKey.length)
                 return;
