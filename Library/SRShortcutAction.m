@@ -1237,13 +1237,32 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
     }
 
     SRKeyEventType eventType = 0;
-    switch (anEvent.type) {
+    switch (anEvent.type)
+    {
         case NSEventTypeKeyDown:
             eventType = SRKeyEventTypeDown;
             break;
         case NSEventTypeKeyUp:
             eventType = SRKeyEventTypeUp;
             break;
+        case NSEventTypeFlagsChanged:
+        {
+            __auto_type keyCode = anEvent.keyCode;
+            if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
+                eventType = anEvent.modifierFlags & NSEventModifierFlagCommand ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else if (keyCode == kVK_Option || keyCode == kVK_RightOption)
+                eventType = anEvent.modifierFlags & NSEventModifierFlagOption ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else if (keyCode == kVK_Shift || keyCode == kVK_RightShift)
+                eventType = anEvent.modifierFlags & NSEventModifierFlagShift ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else if (keyCode == kVK_Control || keyCode == kVK_RightControl)
+                eventType = anEvent.modifierFlags & NSEventModifierFlagControl ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else
+            {
+                os_trace("#Error Unexpected key code %hu for the FlagsChanged event", keyCode);
+                return NO;
+            }
+            break;
+        }
         default:
             os_trace("#Error Unexpected key event of type %lu", anEvent.type);
             return NO;
