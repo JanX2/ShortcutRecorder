@@ -466,4 +466,30 @@ class SRShortcutTests: XCTestCase {
         let ctrl_esc = Shortcut(code: KeyCode.escape, modifierFlags: [.control], characters: nil, charactersIgnoringModifiers: nil)
         XCTAssertEqual(Shortcut(keyEquivalent: "⌃Escape"), ctrl_esc)
     }
+
+    func testInitializationWithFlagsChangedEvent() {
+        let shift_cmd_down_event = NSEvent.keyEvent(with: .flagsChanged,
+                                              location: NSPoint(),
+                                              modifierFlags: [.shift, .command],
+                                              timestamp: 0,
+                                              windowNumber: 0,
+                                              context: nil,
+                                              characters: "",
+                                              charactersIgnoringModifiers: "",
+                                              isARepeat: false,
+                                              keyCode: UInt16(kVK_Command))!
+        let shift_cmd_up_event = NSEvent.keyEvent(with: .flagsChanged,
+                                            location: NSPoint(),
+                                            modifierFlags: [.shift],
+                                            timestamp: 0,
+                                            windowNumber: 0,
+                                            context: nil,
+                                            characters: "",
+                                            charactersIgnoringModifiers: "",
+                                            isARepeat: false,
+                                            keyCode: UInt16(kVK_Command))!
+        let shift_cmd = Shortcut(keyEquivalent: "⇧⌘")
+        XCTAssertEqual(shift_cmd, Shortcut(event: shift_cmd_down_event))
+        XCTAssertEqual(shift_cmd, Shortcut(event: shift_cmd_up_event))
+    }
 }

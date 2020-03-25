@@ -40,16 +40,33 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 + (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent
 {
-    if (((1 << aKeyboardEvent.type) & (NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged)) == 0)
+    __auto_type eventType = aKeyboardEvent.type;
+    if (((1 << eventType) & (NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged)) == 0)
     {
         os_trace_error("#Error aKeyboardEvent must be either NSEventTypeKeyUp, NSEventTypeKeyDown or NSEventTypeFlagsChanged, but got %lu", aKeyboardEvent.type);
         return nil;
     }
 
-    return [self shortcutWithCode:aKeyboardEvent.type != NSEventTypeFlagsChanged ? aKeyboardEvent.keyCode : SRKeyCodeNone
-                    modifierFlags:aKeyboardEvent.modifierFlags
-                       characters:aKeyboardEvent.type != NSEventTypeFlagsChanged ? aKeyboardEvent.characters : @""
-      charactersIgnoringModifiers:aKeyboardEvent.type != NSEventTypeFlagsChanged ? aKeyboardEvent.charactersIgnoringModifiers : @""];
+    __auto_type keyCode = aKeyboardEvent.keyCode;
+    __auto_type modifierFlags = aKeyboardEvent.modifierFlags;
+    if (eventType == NSEventTypeFlagsChanged)
+    {
+        if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
+            modifierFlags |= NSEventModifierFlagCommand;
+        else if (keyCode == kVK_Option || keyCode == kVK_RightOption)
+            modifierFlags |= NSEventModifierFlagOption;
+        else if (keyCode == kVK_Shift || keyCode == kVK_RightShift)
+            modifierFlags |= NSEventModifierFlagShift;
+        else if (keyCode == kVK_Control || keyCode == kVK_RightControl)
+            modifierFlags |= NSEventModifierFlagControl;
+
+        keyCode = SRKeyCodeNone;
+    }
+
+    return [self shortcutWithCode:keyCode
+                    modifierFlags:modifierFlags
+                       characters:eventType != NSEventTypeFlagsChanged ? aKeyboardEvent.characters : @""
+      charactersIgnoringModifiers:eventType != NSEventTypeFlagsChanged ? aKeyboardEvent.charactersIgnoringModifiers : @""];
 }
 
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary
