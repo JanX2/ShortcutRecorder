@@ -217,13 +217,11 @@ extension Controller: RecorderControlDelegate {
  - `NSEvent/addLocalMonitorForEvents(matching:handler:)`
  - `NSEvent/addGlobalMonitorForEvents(matching:handler:)`
  */
-//let localMonitor = LocalShortcutMonitor()
 //let shortcut = Shortcut(keyEquivalent: "⌥⇧⌘A")!
 //let action = ShortcutAction(shortcut: shortcut) { action in
 //    print("Handle local shortcut")
 //    return true
 //}
-//localMonitor.addAction(action, forKeyEvent: .down)
 //let event = NSEvent.keyEvent(with: .keyDown,
 //                             location: NSPoint(x: 0, y: 0),
 //                             modifierFlags: shortcut.modifierFlags,
@@ -234,20 +232,15 @@ extension Controller: RecorderControlDelegate {
 //                             charactersIgnoringModifiers: "a",
 //                             isARepeat: false,
 //                             keyCode: UInt16(shortcut.keyCode.rawValue))!
+//let localMonitor = LocalShortcutMonitor()
+//localMonitor.addAction(action, forKeyEvent: .down)
 //localMonitor.handle(event, withTarget: nil)
 /*:
  It can be used to recognize and handle `keyCode`-less shortcuts
  */
-//let localMonitor = LocalShortcutMonitor()
-//let shortcut = Shortcut(keyEquivalent: "⌥⇧⌘")!
-//let action = ShortcutAction(shortcut: shortcut) { action in
-//    print("Handle local shortcut")
-//    return true
-//}
-//localMonitor.addAction(action, forKeyEvent: .down)
 //let event = NSEvent.keyEvent(with: .flagsChanged,
 //                             location: NSPoint(x: 0, y: 0),
-//                             modifierFlags: shortcut.modifierFlags,
+//                             modifierFlags: [.shift, .command],
 //                             timestamp: 0,
 //                             windowNumber: 0,
 //                             context: nil,
@@ -255,4 +248,11 @@ extension Controller: RecorderControlDelegate {
 //                             charactersIgnoringModifiers: "a",
 //                             isARepeat: false,
 //                             keyCode: UInt16(kVK_Command))!
+//let shortcut = Shortcut(event: event)!
+//let action = ShortcutAction(shortcut: shortcut) { action in
+//    print("Handle local shortcut")
+//    return true
+//}
+//let localMonitor = LocalShortcutMonitor()
+//localMonitor.addAction(action, forKeyEvent: .down)
 //localMonitor.handle(event, withTarget: nil)
