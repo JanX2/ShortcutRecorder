@@ -386,12 +386,12 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
 
  @seealso NSStandardKeyBindingResponding
  */
-@property (class, readonly) SRLocalShortcutMonitor *standardShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *standardShortcuts;
 
 /*!
  Shortcuts that mimic default main menu for a new Cocoa Applications.
  */
-@property (class, readonly) SRLocalShortcutMonitor *mainMenuShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *mainMenuShortcuts;
 
 /*!
  Shortcuts associated with the clipboard.
@@ -403,7 +403,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - redo:
  - undo:
  */
-@property (class, readonly) SRLocalShortcutMonitor *clipboardShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *clipboardShortcuts;
 
 /*!
  Shortcuts associated with window management.
@@ -412,7 +412,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - performMiniaturize:
  - toggleFullScreen:
  */
-@property (class, readonly) SRLocalShortcutMonitor *windowShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *windowShortcuts;
 
 /*!
  Key bindings associated with document management.
@@ -425,7 +425,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - duplicateDocument:
  - openDocument:
  */
-@property (class, readonly) SRLocalShortcutMonitor *documentShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *documentShortcuts;
 
 /*!
  Key bindings associated with application management.
@@ -434,7 +434,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - hideOtherApplications:
  - terminate:
  */
-@property (class, readonly) SRLocalShortcutMonitor *appShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *appShortcuts;
 
 /*!
  Perform the action associated with the event, if any.
