@@ -327,18 +327,6 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
 @property (class, readonly) SRGlobalShortcutMonitor *sharedMonitor NS_SWIFT_NAME(shared);
 
 /*!
- Target dispatch queue for the action.
-
- @discussion:
- Defaults to the main queue.
-
- The action block is detached and submitted asynchronously to the given queue.
-
- @seealso DISPATCH_BLOCK_NO_QOS_CLASS
- */
-@property dispatch_queue_t dispatchQueue;
-
-/*!
  Enable system-wide shortcut monitoring.
 
  @discussion

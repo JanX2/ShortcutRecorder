@@ -764,7 +764,6 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
         _shortcutToHotKeyRef = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory | NSPointerFunctionsObjectPersonality
                                                      valueOptions:NSPointerFunctionsOpaqueMemory | NSPointerFunctionsOpaquePersonality];
         _shortcutToHotKeyId = [NSMutableDictionary new];
-        _dispatchQueue = dispatch_get_main_queue();
     }
 
     return self;
@@ -895,11 +894,16 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
                 return;
             }
 
-            dispatch_async(self.dispatchQueue, dispatch_block_create(DISPATCH_BLOCK_NO_QOS_CLASS, ^{
-                [actions enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop) {
-                    *stop = [obj performActionOnTarget:nil];
-                }];
-            }));
+            __block BOOL isHandled = NO;
+
+            [actions enumerateObjectsWithOptions:NSEnumerationReverse
+                                      usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)
+            {
+                *stop = isHandled = [obj performActionOnTarget:nil];
+            }];
+
+            if (!isHandled)
+                error = eventNotHandledErr;
         }
     });
 
@@ -1276,9 +1280,12 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
     __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
     __block BOOL isHandled = NO;
-    [actions enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop) {
+    [actions enumerateObjectsWithOptions:NSEnumerationReverse
+                              usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)
+    {
         *stop = isHandled = [obj performActionOnTarget:aTarget];
     }];
+
     return isHandled;
 }
 
