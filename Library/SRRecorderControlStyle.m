@@ -984,13 +984,14 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
 - (void)addConstraints
 {
-    [self.recorderControl addLayoutGuide:self.alignmentGuide];
-    [self.recorderControl addLayoutGuide:self.backgroundDrawingGuide];
-    [self.recorderControl addLayoutGuide:self.labelDrawingGuide];
-    [self.recorderControl addLayoutGuide:self.cancelButtonDrawingGuide];
-    [self.recorderControl addLayoutGuide:self.clearButtonDrawingGuide];
-    [self.recorderControl addLayoutGuide:self.cancelButtonLayoutGuide];
-    [self.recorderControl addLayoutGuide:self.clearButtonLayoutGuide];
+    __auto_type strongRecorderControl = self.recorderControl;
+    [strongRecorderControl addLayoutGuide:self.alignmentGuide];
+    [strongRecorderControl addLayoutGuide:self.backgroundDrawingGuide];
+    [strongRecorderControl addLayoutGuide:self.labelDrawingGuide];
+    [strongRecorderControl addLayoutGuide:self.cancelButtonDrawingGuide];
+    [strongRecorderControl addLayoutGuide:self.clearButtonDrawingGuide];
+    [strongRecorderControl addLayoutGuide:self.cancelButtonLayoutGuide];
+    [strongRecorderControl addLayoutGuide:self.clearButtonLayoutGuide];
 
     __auto_type SetConstraint = ^(NSLayoutConstraint * __strong *var, NSLayoutConstraint *value) {
         *var = value;
@@ -1055,16 +1056,16 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
     _alwaysConstraints = @[
         MakeEqConstraint(self.alignmentGuide.topAnchor,
-                         self.recorderControl.topAnchor,
+                         strongRecorderControl.topAnchor,
                          @"SR_alignmentGuide_topToView"),
         MakeEqConstraint(self.alignmentGuide.leftAnchor,
-                         self.recorderControl.leftAnchor,
+                         strongRecorderControl.leftAnchor,
                          @"SR_alignmentGuide_leftToView"),
         MakeEqConstraint(self.alignmentGuide.rightAnchor,
-                         self.recorderControl.rightAnchor,
+                         strongRecorderControl.rightAnchor,
                          @"SR_alignmentGuide_rightToView"),
         MakeConstraint(self.alignmentGuide.bottomAnchor,
-                       self.recorderControl.bottomAnchor,
+                       strongRecorderControl.bottomAnchor,
                        0.0,
                        NSLayoutPriorityDefaultHigh,
                        NSLayoutRelationEqual,
@@ -1202,7 +1203,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                          @"SR_clearButtonLayoutGuide_trailingToAlignment"),
     ];
 
-    self.recorderControl.needsUpdateConstraints = YES;
+    strongRecorderControl.needsUpdateConstraints = YES;
 }
 
 #pragma mark SRRecorderControlStyling
@@ -1271,29 +1272,30 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     _recorderControl = aControl;
     [self didChangeValueForKey:@"recorderControl"];
 
-    if (!_recorderControl)
+    if (!aControl)
         return;
 
     [self addConstraints];
     [self recorderControlAppearanceDidChange:nil];
 
-    _recorderControl.needsDisplay = YES;
+    aControl.needsDisplay = YES;
 }
 
 - (void)prepareForRemoval
 {
-    NSAssert(_recorderControl != nil, @"Style was not applied properly.");
+    __auto_type strongRecorderControl = _recorderControl;
+    NSAssert(strongRecorderControl != nil, @"Style was not applied properly.");
 
-    [_recorderControl removeLayoutGuide:_alignmentGuide];
-    [_recorderControl removeLayoutGuide:_backgroundDrawingGuide];
-    [_recorderControl removeLayoutGuide:_labelDrawingGuide];
-    [_recorderControl removeLayoutGuide:_cancelButtonDrawingGuide];
-    [_recorderControl removeLayoutGuide:_clearButtonDrawingGuide];
-    [_recorderControl removeLayoutGuide:_cancelButtonLayoutGuide];
-    [_recorderControl removeLayoutGuide:_clearButtonLayoutGuide];
+    [strongRecorderControl removeLayoutGuide:_alignmentGuide];
+    [strongRecorderControl removeLayoutGuide:_backgroundDrawingGuide];
+    [strongRecorderControl removeLayoutGuide:_labelDrawingGuide];
+    [strongRecorderControl removeLayoutGuide:_cancelButtonDrawingGuide];
+    [strongRecorderControl removeLayoutGuide:_clearButtonDrawingGuide];
+    [strongRecorderControl removeLayoutGuide:_cancelButtonLayoutGuide];
+    [strongRecorderControl removeLayoutGuide:_clearButtonLayoutGuide];
 
     [self willChangeValueForKey:@"recorderControl"];
-    _recorderControl = nil;
+    strongRecorderControl = nil;
     [self didChangeValueForKey:@"recorderControl"];
 }
 
@@ -1357,7 +1359,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
             [self.recorderControl setNeedsDisplayInRect:frame];
     };
 
-    NSRect controlBounds = self.recorderControl.bounds;
+    __auto_type strongRecorderControl = self.recorderControl;
+    NSRect controlBounds = strongRecorderControl.bounds;
 
     UpdateImage(@"bezel-normal-left", @selector(bezelNormalLeft), controlBounds);
     UpdateImage(@"bezel-normal-center", @selector(bezelNormalCenter), controlBounds);
@@ -1433,9 +1436,9 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
 
         _intrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant, _alignmentHeightConstraint.constant);
 
-        [self.recorderControl noteFocusRingMaskChanged];
-        [self.recorderControl invalidateIntrinsicContentSize];
-        self.recorderControl.needsDisplay = YES;
+        [strongRecorderControl noteFocusRingMaskChanged];
+        [strongRecorderControl invalidateIntrinsicContentSize];
+        strongRecorderControl.needsDisplay = YES;
     }
 
     _currentLookupPrefixes = newLookupPrefixes;

@@ -86,12 +86,9 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
  Cache of the key code translation with respect to input source identifier.
  */
 @interface _SRKeyCodeTranslator : NSObject
-{
-    NSCache<_SRKeyCodeTranslatorCacheKey *, NSString *> *_translationCache;
-    _SRKeyCodeTransformerCacheInputSourceCreate _inputSourceCreator;
-    id _inputSource;
-}
+
 @property (class, readonly) _SRKeyCodeTranslator *shared;
+@property (readonly) _SRKeyCodeTransformerCacheInputSourceCreate inputSourceCreator;
 @property (readonly) id inputSource;
 /*!
  @param aCreator Lazily instantiates an instance of input source.
@@ -106,6 +103,10 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 
 
 @implementation _SRKeyCodeTranslator
+{
+    NSCache<_SRKeyCodeTranslatorCacheKey *, NSString *> *_translationCache;
+    id _inputSource;
+}
 
 + (_SRKeyCodeTranslator *)shared
 {
@@ -282,7 +283,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 {
     NSAssert([aTranslation.lowercaseString isEqualToString:aTranslation], @"aTranslation must be a lowercase string");
 
-    TISInputSourceRef inputSource = _inputSourceCreator();
+    TISInputSourceRef inputSource = self.inputSourceCreator();
 
     if (!inputSource)
     {

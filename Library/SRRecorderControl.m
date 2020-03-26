@@ -33,6 +33,8 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
 @implementation SRRecorderControl
 {
+    BOOL _isCompatibilityModeEnabled;
+
     SRRecorderControlStyle *_style;
     NSInvocation *_notifyStyle;
 
@@ -1140,7 +1142,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 - (NSString *)stringValue
 {
     if (!_objectValue)
-        return @"";
+        return SRLoc(@"");
 
     __auto_type layoutDirection = self.stringValueRespectsUserInterfaceLayoutDirection ? self.userInterfaceLayoutDirection : NSUserInterfaceLayoutDirectionLeftToRight;
     NSString *flags = [SRSymbolicModifierFlagsTransformer.sharedTransformer transformedValue:@(_objectValue.modifierFlags)

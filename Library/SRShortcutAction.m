@@ -186,23 +186,27 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 - (id)target
 {
+    id strongTarget = _target;
+
     @synchronized (self)
     {
-        return _target != nil ? _target : NSApplication.sharedApplication;
+        return strongTarget != nil ? strongTarget : NSApplication.sharedApplication;
     }
 }
 
 - (void)setTarget:(id)newTarget
 {
+    id strongTarget = _target;
+
     @synchronized (self)
     {
-        if (newTarget == _target)
+        if (newTarget == strongTarget)
             return;
 
         [self willChangeValueForKey:@"target"];
-        _target = newTarget;
+        strongTarget = newTarget;
 
-        if (_target && _actionHandler)
+        if (strongTarget && _actionHandler)
         {
             [self willChangeValueForKey:@"actionHandler"];
             _actionHandler = nil;
@@ -304,8 +308,10 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 - (void)_invalidateObserving
 {
-    if (_observedObject)
-        [_observedObject removeObserver:self forKeyPath:_observedKeyPath context:_SRShortcutActionContext];
+    id strongObservedObject = _observedObject;
+
+    if (strongObservedObject)
+        [strongObservedObject removeObserver:self forKeyPath:_observedKeyPath context:_SRShortcutActionContext];
 
     _observedObject = nil;
     _observedKeyPath = nil;

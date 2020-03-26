@@ -39,9 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
 @interface SRRecorderControl : NSControl <NSAccessibilityButton, NSEditor, NSViewToolTipOwner> /* <NSNibLoading, NSKeyValueBindingCreation> */
-{
-    BOOL _isCompatibilityModeEnabled;
-}
 
 /*!
  Called by a designated initializer to set up internal state.
@@ -298,6 +295,8 @@ IB_DESIGNABLE
  If the very first non-nil value is an instance of NSDictionary the control will
  enter compatibility mode where objectValue and NSValueBinding accessors will
  accept and return instances of NSDictionary.
+
+ To check whether the control has compatibility mode enabled use KVC with the "isCompatibilityModeEnabled" key.
 
  @seealso SRShortcutKey
  */
