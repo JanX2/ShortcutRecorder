@@ -196,15 +196,17 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 - (void)setTarget:(id)newTarget
 {
-    id strongTarget = _target;
-
     @synchronized (self)
     {
+        id strongTarget = _target;
+
         if (newTarget == strongTarget)
             return;
 
-        [self willChangeValueForKey:@"target"];
         strongTarget = newTarget;
+
+        [self willChangeValueForKey:@"target"];
+        _target = strongTarget;
 
         if (strongTarget && _actionHandler)
         {
