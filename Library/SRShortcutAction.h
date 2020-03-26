@@ -196,6 +196,16 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 } NS_SWIFT_NAME(KeyEventType);
 
 
+@interface NSEvent (SRShortcutAction)
+
+/*!
+ Keyboard event type as recognized by the shortcut recorder.
+ */
+@property (readonly) SRKeyEventType SR_keyEventType;
+
+@end
+
+
 /*!
  Base class for the SRGlobalShortcutMonitor and SRLocalShortcutMonitor.
 
@@ -309,10 +319,11 @@ NS_SWIFT_NAME(ShortcutMonitor)
 
 
 /*!
- Handle shortcuts regardless of the currently active application.
+ Handle shortcuts regardless of the currently active application via Carbon Hot Key API.
 
- @discussion
- Action that corresponds to the shortcut is performed asyncrhonoysly in the specified dispatch queue.
+ @note Does not support shortcuts with the SRKeyCodeNone key code.
+
+ @see SRAXGlobalShortcutMonitor
  */
 NS_SWIFT_NAME(GlobalShortcutMonitor)
 @interface SRGlobalShortcutMonitor : SRShortcutMonitor
@@ -348,7 +359,7 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  If there is more than one action associated with the event, they are performed one by one
  either until one of them returns YES or the iteration is exhausted.
  */
-- (OSStatus)handleEvent:(nullable EventRef)anEvent;
+- (OSStatus)handleEvent:(EventRef)anEvent;
 
 /*!
  Called after the carbon event handler is installed.
@@ -359,6 +370,47 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  Called after the carbon event handler is removed.
 */
 - (void)didRemoveEventHandler;
+
+@end
+
+
+/*!
+ Handle shortcuts regardless of the currently active application via Quartz Event Service API.
+
+ @discussion
+ Unlike SRGlobalShortcutMonitor it can handle shortcuts with the SRKeyCodeNone key code. But it has
+ security implications as this API requires the app to either run under the root user or been allowed
+ the Accessibility permission.
+
+ @see SRGlobalShortcutMonitor
+ @see AXIsProcessTrustedWithOptions
+ @see NSAppleEventsUsageDescription
+ */
+@interface SRAXGlobalShortcutMonitor : SRShortcutMonitor
+
+@property (readonly) CFMachPortRef eventTap;
+- (CFMachPortRef)eventTap NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
+
+/*!
+ @discussion
+ Initialization may fail if it's impossible to create an event tap.
+
+ @see https://stackoverflow.com/q/52738506/188530
+ */
+- (nullable instancetype)init;
+
+/*!
+ Perform the action associated with a given event.
+
+ @param anEvent A Quartz keyboard event.
+
+ @return nil if event is handled; unchanged anEvent otherwise.
+
+ @discussion
+ If there is more than one action associated with the event, they are performed one by one
+ either until one of them returns YES or the iteration is exhausted.
+ */
+- (nullable CGEventRef)handleEvent:(CGEventRef)anEvent;
 
 @end
 

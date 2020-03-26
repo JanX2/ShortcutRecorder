@@ -364,6 +364,46 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 #pragma mark -
 
 
+@implementation NSEvent (SRShortcutAction)
+
+- (SRKeyEventType)SR_keyEventType
+{
+    SRKeyEventType eventType = 0;
+
+    switch (self.type)
+    {
+        case NSEventTypeKeyDown:
+            eventType = SRKeyEventTypeDown;
+            break;
+        case NSEventTypeKeyUp:
+            eventType = SRKeyEventTypeUp;
+            break;
+        case NSEventTypeFlagsChanged:
+        {
+            __auto_type keyCode = self.keyCode;
+            if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
+                eventType = self.modifierFlags & NSEventModifierFlagCommand ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else if (keyCode == kVK_Option || keyCode == kVK_RightOption)
+                eventType = self.modifierFlags & NSEventModifierFlagOption ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else if (keyCode == kVK_Shift || keyCode == kVK_RightShift)
+                eventType = self.modifierFlags & NSEventModifierFlagShift ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else if (keyCode == kVK_Control || keyCode == kVK_RightControl)
+                eventType = self.modifierFlags & NSEventModifierFlagControl ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+            else
+                os_trace("#Error Unexpected key code %hu for the FlagsChanged event", keyCode);
+            break;
+        }
+        default:
+            os_trace("#Error Unexpected key event of type %lu", self.type);
+            break;
+    }
+
+    return eventType;
+}
+
+@end
+
+
 static void *_SRShortcutMonitorContext = &_SRShortcutMonitorContext;
 
 
@@ -1065,6 +1105,91 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 @end
 
 
+@implementation SRAXGlobalShortcutMonitor
+
+CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEventRef anEvent, void * _Nullable aUserInfo)
+{
+    __auto_type self = (__bridge SRAXGlobalShortcutMonitor *)aUserInfo;
+    return [self handleEvent:anEvent];
+}
+
+- (instancetype)init
+{
+    static const CGEventMask Mask = (CGEventMaskBit(kCGEventKeyDown) |
+                                     CGEventMaskBit(kCGEventKeyUp) |
+                                     CGEventMaskBit(kCGEventFlagsChanged));
+    __auto_type eventTap = CGEventTapCreate(kCGSessionEventTap,
+                                            kCGHeadInsertEventTap,
+                                            kCGEventTapOptionDefault,
+                                            Mask,
+                                            TapCallback,
+                                            (__bridge void *)self);
+    if (!eventTap)
+    {
+        os_trace_error("#Critical Unable to create event tap: make sure Accessibility is enabled");
+        return nil;
+    }
+
+    self = [super init];
+
+    if (self)
+    {
+        _eventTap = eventTap;
+    }
+
+    return self;
+}
+
+- (void)dealloc
+{
+    if (_eventTap)
+        CFRelease(_eventTap);
+}
+
+#pragma mark Methods
+
+- (CGEventRef)handleEvent:(CGEventRef)anEvent
+{
+    __auto_type nsEvent = [NSEvent eventWithCGEvent:anEvent];
+    __auto_type shortcut = [SRShortcut shortcutWithEvent:nsEvent];
+    if (!shortcut)
+    {
+        os_trace_error("#Error Not a keyboard event");
+        return anEvent;
+    }
+
+    SRKeyEventType eventType = nsEvent.SR_keyEventType;
+    if (eventType == 0)
+        return anEvent;
+
+    __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
+    __block BOOL isHandled = NO;
+    [actions enumerateObjectsWithOptions:NSEnumerationReverse
+                              usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)
+     {
+        *stop = isHandled = [obj performActionOnTarget:nil];
+    }];
+
+    return isHandled ? nil : anEvent;
+}
+
+#pragma mark SRShortcutMonitor
+
+- (void)didAddShortcut:(SRShortcut *)aShortcut
+{
+    if (_shortcuts.count)
+        CGEventTapEnable(_eventTap, true);
+}
+
+- (void)didRemoveShortcut:(SRShortcut *)aShortcut
+{
+    if (!_shortcuts.count)
+        CGEventTapEnable(_eventTap, false);
+}
+
+@end
+
+
 @interface NSObject (_SRShortcutAction)
 - (void)undo:(id)aSender;
 - (void)redo:(id)aSender;
@@ -1248,37 +1373,9 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
         return NO;
     }
 
-    SRKeyEventType eventType = 0;
-    switch (anEvent.type)
-    {
-        case NSEventTypeKeyDown:
-            eventType = SRKeyEventTypeDown;
-            break;
-        case NSEventTypeKeyUp:
-            eventType = SRKeyEventTypeUp;
-            break;
-        case NSEventTypeFlagsChanged:
-        {
-            __auto_type keyCode = anEvent.keyCode;
-            if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
-                eventType = anEvent.modifierFlags & NSEventModifierFlagCommand ? SRKeyEventTypeDown : SRKeyEventTypeUp;
-            else if (keyCode == kVK_Option || keyCode == kVK_RightOption)
-                eventType = anEvent.modifierFlags & NSEventModifierFlagOption ? SRKeyEventTypeDown : SRKeyEventTypeUp;
-            else if (keyCode == kVK_Shift || keyCode == kVK_RightShift)
-                eventType = anEvent.modifierFlags & NSEventModifierFlagShift ? SRKeyEventTypeDown : SRKeyEventTypeUp;
-            else if (keyCode == kVK_Control || keyCode == kVK_RightControl)
-                eventType = anEvent.modifierFlags & NSEventModifierFlagControl ? SRKeyEventTypeDown : SRKeyEventTypeUp;
-            else
-            {
-                os_trace("#Error Unexpected key code %hu for the FlagsChanged event", keyCode);
-                return NO;
-            }
-            break;
-        }
-        default:
-            os_trace("#Error Unexpected key event of type %lu", anEvent.type);
-            return NO;
-    }
+    SRKeyEventType eventType = anEvent.SR_keyEventType;
+    if (eventType == 0)
+        return NO;
 
     __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
     __block BOOL isHandled = NO;
