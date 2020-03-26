@@ -196,13 +196,6 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 } NS_SWIFT_NAME(KeyEventType);
 
 
-typedef NS_ENUM(NSUInteger, SRModifierFlagsMatch)
-{
-    SRModifierFlagsMatchExact,
-    SRModifierFlagsMatchPartial
-} NS_SWIFT_NAME(ModifierFlagsMatch);
-
-
 /*!
  Base class for the SRGlobalShortcutMonitor and SRLocalShortcutMonitor.
 
