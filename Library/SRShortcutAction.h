@@ -382,14 +382,22 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  security implications as this API requires the app to either run under the root user or been allowed
  the Accessibility permission.
 
+ The monitor automatically enables and disables the tap when needed.
+
  @see SRGlobalShortcutMonitor
  @see AXIsProcessTrustedWithOptions
  @see NSAppleEventsUsageDescription
  */
 @interface SRAXGlobalShortcutMonitor : SRShortcutMonitor
 
+/*!
+ Mach port that corresponds to the event tap used under the hood.
+ */
 @property (readonly) CFMachPortRef eventTap;
 - (CFMachPortRef)eventTap NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
+
+@property (readonly) CFRunLoopSourceRef eventTapSource;
+- (CFRunLoopSourceRef)eventTapSource NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
 
 /*!
  @discussion
@@ -398,6 +406,8 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  @see https://stackoverflow.com/q/52738506/188530
  */
 - (nullable instancetype)init;
+
+- (nullable instancetype)initWithRunLoop:(nullable NSRunLoop *)aRunLoop NS_DESIGNATED_INITIALIZER;
 
 /*!
  Perform the action associated with a given event.

@@ -1110,10 +1110,23 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEventRef anEvent, void * _Nullable aUserInfo)
 {
     __auto_type self = (__bridge SRAXGlobalShortcutMonitor *)aUserInfo;
-    return [self handleEvent:anEvent];
+
+    if (aType == kCGEventTapDisabledByTimeout || aType == kCGEventTapDisabledByUserInput)
+    {
+        os_trace("#Error #Developer The system disabled event tap due to %u", aType);
+        CGEventTapEnable(self.eventTap, true);
+        return anEvent;
+    }
+    else
+        return [self handleEvent:anEvent];
 }
 
 - (instancetype)init
+{
+    return [self initWithRunLoop:nil];
+}
+
+- (instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop
 {
     static const CGEventMask Mask = (CGEventMaskBit(kCGEventKeyDown) |
                                      CGEventMaskBit(kCGEventKeyUp) |
@@ -1135,6 +1148,12 @@ CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEv
     if (self)
     {
         _eventTap = eventTap;
+        _eventTapSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
+
+        if (aRunLoop)
+            CFRunLoopAddSource(aRunLoop.getCFRunLoop, _eventTapSource, kCFRunLoopDefaultMode);
+        else
+            CFRunLoopAddSource(CFRunLoopGetCurrent(), _eventTapSource, kCFRunLoopDefaultMode);
     }
 
     return self;
@@ -1144,33 +1163,47 @@ CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEv
 {
     if (_eventTap)
         CFRelease(_eventTap);
+
+    CFRelease(_eventTapSource);
 }
 
 #pragma mark Methods
 
 - (CGEventRef)handleEvent:(CGEventRef)anEvent
 {
-    __auto_type nsEvent = [NSEvent eventWithCGEvent:anEvent];
-    __auto_type shortcut = [SRShortcut shortcutWithEvent:nsEvent];
-    if (!shortcut)
-    {
-        os_trace_error("#Error Not a keyboard event");
-        return anEvent;
-    }
+    __block __auto_type result = anEvent;
 
-    SRKeyEventType eventType = nsEvent.SR_keyEventType;
-    if (eventType == 0)
-        return anEvent;
+    os_activity_initiate("-[SRAXGlobalShortcutMonitor handleEvent:]", OS_ACTIVITY_FLAG_DETACHED, ^{
+        __auto_type nsEvent = [NSEvent eventWithCGEvent:anEvent];
+        if (!nsEvent)
+        {
+            os_trace_error("#Error Unexpected event");
+            return;
+        }
 
-    __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
-    __block BOOL isHandled = NO;
-    [actions enumerateObjectsWithOptions:NSEnumerationReverse
-                              usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)
-     {
-        *stop = isHandled = [obj performActionOnTarget:nil];
-    }];
+        __auto_type shortcut = [SRShortcut shortcutWithEvent:nsEvent];
+        if (!shortcut)
+        {
+            os_trace_error("#Error Not a keyboard event");
+            return;
+        }
 
-    return isHandled ? nil : anEvent;
+        SRKeyEventType eventType = nsEvent.SR_keyEventType;
+        if (eventType == 0)
+            return;
+
+        __auto_type actions = [self actionsForShortcut:shortcut keyEvent:eventType];
+        __block BOOL isHandled = NO;
+        [actions enumerateObjectsWithOptions:NSEnumerationReverse
+                                  usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)
+        {
+            *stop = isHandled = [obj performActionOnTarget:nil];
+        }];
+
+        result = isHandled ? nil : anEvent;
+    });
+
+    return result;
 }
 
 #pragma mark SRShortcutMonitor
