@@ -1107,7 +1107,7 @@ static OSStatus SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anEv
 
 @implementation SRAXGlobalShortcutMonitor
 
-CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEventRef anEvent, void * _Nullable aUserInfo)
+CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType aType, CGEventRef anEvent, void * _Nullable aUserInfo)
 {
     __auto_type self = (__bridge SRAXGlobalShortcutMonitor *)aUserInfo;
 
@@ -1115,6 +1115,11 @@ CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEv
     {
         os_trace("#Error #Developer The system disabled event tap due to %u", aType);
         CGEventTapEnable(self.eventTap, true);
+        return anEvent;
+    }
+    else if (aType != kCGEventKeyDown && aType != kCGEventKeyUp && aType != kCGEventFlagsChanged)
+    {
+        os_trace("#Error #Developer Unexpected event of type %u", aType);
         return anEvent;
     }
     else
@@ -1135,7 +1140,7 @@ CGEventRef _Nullable TapCallback(CGEventTapProxy aProxy, CGEventType aType, CGEv
                                             kCGHeadInsertEventTap,
                                             kCGEventTapOptionDefault,
                                             Mask,
-                                            TapCallback,
+                                            _SRQuartzEventHandler,
                                             (__bridge void *)self);
     if (!eventTap)
     {
