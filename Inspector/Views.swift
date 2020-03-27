@@ -122,7 +122,7 @@ extension NSView {
         }
     }
 
-    var scale: CGFloat {
+    @objc var scale: CGFloat {
         get {
             return objc_getAssociatedObject(self, &NSView.scaleToken) as? CGFloat ?? 2.0
         }
