@@ -318,6 +318,9 @@ NS_SWIFT_NAME(ShortcutMonitor)
 @end
 
 
+extern const OSType SRShortcutActionSignature;
+
+
 /*!
  Handle shortcuts regardless of the currently active application via Carbon Hot Key API.
 
@@ -396,18 +399,36 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
 @property (readonly) CFMachPortRef eventTap;
 - (CFMachPortRef)eventTap NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
 
+/*!
+ Run loop source that corresponds to the eventTap.
+ */
 @property (readonly) CFRunLoopSourceRef eventTapSource;
 - (CFRunLoopSourceRef)eventTapSource NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
 
 /*!
+ Run loop that corresponds to the eventTap.
+ */
+@property (readonly) NSRunLoop *eventTapRunLoop;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnullability"
+/*!
+ Initialize the monitor by installing the event tap in the current run loop.
+ */
+- (nullable instancetype)init;
+#pragma clang diagnostic pop
+
+/*!
+ Initialize the monitor by installing the event tap in a given run loop.
+
+ @param aRunLoop Run loop for the event tap.
+
  @discussion
- Initialization may fail if it's impossible to create an event tap.
+ Initialization may fail if it's impossible to create the event tap.
 
  @see https://stackoverflow.com/q/52738506/188530
  */
-- (nullable instancetype)init;
-
-- (nullable instancetype)initWithRunLoop:(nullable NSRunLoop *)aRunLoop NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop NS_DESIGNATED_INITIALIZER;
 
 /*!
  Perform the action associated with a given event.
