@@ -63,24 +63,25 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
         keyCode = SRKeyCodeNone;
     }
 
-    NSString *characters = nil;
-    NSString *charactersIgnoringModifiers = nil;
-    @try
+    NSString *characters = @"";
+    NSString *charactersIgnoringModifiers = @"";
+    if (eventType != NSEventTypeFlagsChanged)
     {
-        characters = eventType != NSEventTypeFlagsChanged ? aKeyboardEvent.characters : @"";
-        charactersIgnoringModifiers = eventType != NSEventTypeFlagsChanged ? aKeyboardEvent.charactersIgnoringModifiers : @"";
-    }
-    @catch (NSException *e)
-    {
-        if (!NSThread.isMainThread)
+        @try
         {
-            NSParameterAssert(NO);
-            os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in non-main thread");
-            characters = @"";
-            charactersIgnoringModifiers = @"";
+            characters = aKeyboardEvent.characters;
+            charactersIgnoringModifiers = aKeyboardEvent.charactersIgnoringModifiers;
         }
-        else
-            @throw;
+        @catch (NSException *e)
+        {
+            if (!NSThread.isMainThread)
+            {
+                NSParameterAssert(NO);
+                os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in non-main thread");
+            }
+            else
+                @throw;
+        }
     }
 
     return [self shortcutWithCode:keyCode
