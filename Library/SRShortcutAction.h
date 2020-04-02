@@ -244,24 +244,20 @@ NS_SWIFT_NAME(ShortcutMonitor)
 - (NSArray<SRShortcutAction *> *)actionsForKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(actions(forKeyEvent:));
 
 /*!
- All actions for a given shortcut and key event.
+ Enabled actions for a given shortcut and key event.
 
  @return
  Order is determined by the time of association such as that the last object is the most recently associated.
- If the shortcut has no associated actions, returns an empty set.
+ If the shortcut has no associated actions, returns an empty array.
  */
-- (NSArray<SRShortcutAction *> *)actionsForShortcut:(SRShortcut *)aShortcut
-                                           keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(actions(forShortcut:keyEvent:));
-
-/*!
- The most recent action associated with a given shortcut and key event.
- */
-- (nullable SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent;
+- (NSArray<SRShortcutAction *> *)enabledActionsForShortcut:(SRShortcut *)aShortcut
+                                                  keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(enabledActions(forShortcut:keyEvent:));
 
 /*!
  Add an action to the monitor for a key event.
 
- @note Adding the same action twice for the same key event makes it the most recent.
+ @discussion
+ Adding the same action for the same event type again only changes its order by making it the most recent.
  */
 - (void)addAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(addAction(_:forKeyEvent:));
 
@@ -271,24 +267,9 @@ NS_SWIFT_NAME(ShortcutMonitor)
 - (void)removeAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAction(_:forKeyEvent:));
 
 /*!
- Remove an action from the monitor.
+ Remove an action, if present, from the monitor.
  */
 - (void)removeAction:(SRShortcutAction *)anAction NS_SWIFT_NAME(removeAction(_:));
-
-/*!
- Remove all actions for a given shortcut and key event.
- */
-- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAllActions(forShortcut:keyEvent:));
-
-/*!
- Remove all actions for a given key event.
- */
-- (void)removeAllActionsForKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAllActions(forKeyEvent:));
-
-/*!
- Remove all actions for a given shortcut.
- */
-- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(removeAllActions(forShortcut:));
 
 /*!
  Remove all actions from the monitor.
@@ -296,12 +277,30 @@ NS_SWIFT_NAME(ShortcutMonitor)
 - (void)removeAllActions;
 
 /*!
- Called after the shortcut gets its first associated action.
+ Called before the shortcut gets its first associated enabled action.
+
+ @note Do not mutate actions within the callback.
+ */
+- (void)willAddShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(willAddShortcut(_:));
+
+/*!
+ Called after the shortcut gets its first associated enabled action.
+
+ @note Do not mutate actions within the callback.
  */
 - (void)didAddShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(didAddShortcut(_:));
 
 /*!
- Called after the shortcut loses its last associated action.
+ Called before the shortcuts loses its last associated enabled action.
+
+ @note Do not mutate actions within the callback.
+ */
+- (void)willRemoveShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(willRemoveShortcut(_:));
+
+/*!
+ Called after the shortcut loses its last associated enabled action.
+
+ @note Do not mutate actions within the callback.
  */
 - (void)didRemoveShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(didRemoveShortcut(_:));
 

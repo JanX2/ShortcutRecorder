@@ -8,8 +8,10 @@ import XCTest
 import ShortcutRecorder
 
 
+/// Utility class to test Target-Action.
 fileprivate class Target: NSObject, ShortcutActionTarget, NSUserInterfaceValidations {
-    let expectation = XCTestExpectation()
+    let expectation = XCTestExpectation(description: "Target-Action", assertForOverFulfill: true)
+
     func perform(shortcutAction anAction: ShortcutAction) -> Bool {
         expectation.fulfill()
         return true
@@ -332,49 +334,137 @@ class SRShortcutActionTests: XCTestCase {
 
 class SRShortcutMonitorTests: XCTestCase {
     /**
-     A subclass of ShortcutMonitor that tracks addition and removal of shortcuts
-     as well as verifies invariants in the hooks.
+     A subclass of ShortcutMonitor that tracks changes and verifies invariants.
      */
     class TrackingMonitor: ShortcutMonitor {
         enum Change: Equatable {
-            case add(Shortcut)
-            case remove(Shortcut)
+            case willChangeActions(Set<ShortcutAction>)
+            case didChangeActions(Set<ShortcutAction>, Set<ShortcutAction>)
+            case willChangeShortcuts(Set<Shortcut>)
+            case didChangeShortcuts(Set<Shortcut>, Set<Shortcut>)
+            case willAddShortcut(Shortcut)
+            case didAddShortcut(Shortcut)
+            case willRemoveShortcut(Shortcut)
+            case didRemoveShortcut(Shortcut)
         }
 
         var changes: [Change] = []
 
+        var actionsObserver: NSKeyValueObservation!
+        var shortcutsObserver: NSKeyValueObservation!
+
+        override init() {
+            super.init()
+
+            actionsObserver = self.observe(\.actions, options: [.new, .old, .prior]) { monitor, change in
+                let oldActions = Set(change.oldValue!)
+                let allActions = Set(self.actions)
+
+                if change.isPrior {
+                    self.changes.append(.willChangeActions(Set(change.oldValue ?? [])))
+                    XCTAssertEqual(oldActions, allActions)
+                }
+                else {
+                    self.changes.append(.didChangeActions(Set(change.oldValue ?? []), Set(change.newValue ?? [])))
+                    let newActions = Set(change.newValue!)
+                    XCTAssertEqual(newActions, allActions)
+                }
+            }
+
+            shortcutsObserver = self.observe(\.shortcuts, options: [.new, .old, .prior]) { monitor, change in
+                let oldShortcuts = Set(change.oldValue!)
+                let allShortcuts = Set(self.shortcuts)
+
+                if change.isPrior {
+                    self.changes.append(.willChangeShortcuts(Set(change.oldValue ?? [])))
+                    XCTAssertEqual(oldShortcuts, allShortcuts)
+                }
+                else {
+                    self.changes.append(.didChangeShortcuts(Set(change.oldValue ?? []), Set(change.newValue ?? [])))
+                    let newShortcuts = Set(change.newValue!)
+                    XCTAssertEqual(newShortcuts, allShortcuts)
+                }
+            }
+        }
+
+        override func willAddShortcut(_ aShortcut: Shortcut) {
+            changes.append(.willAddShortcut(aShortcut))
+
+            let allShortcuts = Set(shortcuts)
+
+            let allActions = Set(actions)
+            let allKeyDownActions = Set(actions(forKeyEvent: .down))
+            let allKeyUpActions = Set(actions(forKeyEvent: .up))
+
+            let enabledKeyDownActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .down))
+            let enabledKeyUpActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .up))
+            let enabledActionsForShortcut = enabledKeyDownActionsForShortcut.union(enabledKeyUpActionsForShortcut)
+
+            XCTAssertEqual(allActions, allKeyDownActions.union(allKeyUpActions))
+            XCTAssertFalse(allShortcuts.contains(aShortcut))
+            XCTAssertTrue(enabledActionsForShortcut.isEmpty)
+            XCTAssertTrue(allKeyDownActions.isSuperset(of: enabledKeyDownActionsForShortcut))
+            XCTAssertTrue(allKeyUpActions.isSuperset(of: enabledKeyUpActionsForShortcut))
+        }
+
         override func didAddShortcut(_ aShortcut: Shortcut) {
-            changes.append(Change.add(aShortcut))
+            changes.append(.didAddShortcut(aShortcut))
 
-            let allActions = actions.filter { (action) in action.shortcut == aShortcut }
-            let keyDownActions = actions(forKeyEvent: .down).filter { (action) in action.shortcut == aShortcut }
-            let keyUpActions = actions(forKeyEvent: .up).filter { (action) in action.shortcut == aShortcut }
-            let shortcutKeyDownActions = actions(forShortcut: aShortcut, keyEvent: .down)
-            let shortcutKeyUpActions = actions(forShortcut: aShortcut, keyEvent: .up)
+            let allShortcuts = Set(shortcuts)
 
-            XCTAssertTrue(shortcuts.contains(aShortcut))
-            XCTAssertFalse(allActions.isEmpty)
-            XCTAssertEqual(Set(allActions), Set(keyDownActions).union(keyUpActions))
-            XCTAssertEqual(Set(allActions), Set(shortcutKeyDownActions).union(shortcutKeyUpActions))
-            XCTAssertEqual(action(for: aShortcut, keyEvent: .down), shortcutKeyDownActions.last as ShortcutAction?)
-            XCTAssertEqual(action(for: aShortcut, keyEvent: .up), shortcutKeyUpActions.last as ShortcutAction?)
+            let allActions = Set(actions)
+            let allKeyDownActions = Set(actions(forKeyEvent: .down))
+            let allKeyUpActions = Set(actions(forKeyEvent: .up))
+
+            let enabledKeyDownActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .down))
+            let enabledKeyUpActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .up))
+            let enabledActionsForShortcut = enabledKeyDownActionsForShortcut.union(enabledKeyUpActionsForShortcut)
+
+            XCTAssertEqual(allActions, allKeyDownActions.union(allKeyUpActions))
+            XCTAssertTrue(allShortcuts.contains(aShortcut))
+            XCTAssertFalse(enabledActionsForShortcut.isEmpty)
+            XCTAssertTrue(allKeyDownActions.isSuperset(of: enabledKeyDownActionsForShortcut))
+            XCTAssertTrue(allKeyUpActions.isSuperset(of: enabledKeyUpActionsForShortcut))
+        }
+
+        override func willRemoveShortcut(_ aShortcut: Shortcut) {
+            changes.append(.willRemoveShortcut(aShortcut))
+
+            let allShortcuts = Set(shortcuts)
+
+            let allActions = Set(actions)
+            let allKeyDownActions = Set(actions(forKeyEvent: .down))
+            let allKeyUpActions = Set(actions(forKeyEvent: .up))
+
+            let enabledKeyDownActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .down))
+            let enabledKeyUpActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .up))
+            let enabledActionsForShortcut = enabledKeyDownActionsForShortcut.union(enabledKeyUpActionsForShortcut)
+
+            XCTAssertEqual(allActions, allKeyDownActions.union(allKeyUpActions))
+            XCTAssertTrue(allShortcuts.contains(aShortcut))
+            XCTAssertFalse(enabledActionsForShortcut.isEmpty)
+            XCTAssertTrue(allKeyDownActions.isSuperset(of: enabledKeyDownActionsForShortcut))
+            XCTAssertTrue(allKeyUpActions.isSuperset(of: enabledKeyUpActionsForShortcut))
         }
 
         override func didRemoveShortcut(_ aShortcut: Shortcut) {
-            changes.append(Change.remove(aShortcut))
+            changes.append(.didRemoveShortcut(aShortcut))
 
-            let allActions = actions.filter { (action) in action.shortcut == aShortcut }
-            let keyDownActions = actions(forKeyEvent: .down).filter { (action) in action.shortcut == aShortcut }
-            let keyUpActions = actions(forKeyEvent: .up).filter { (action) in action.shortcut == aShortcut }
-            let shortcutKeyDownActions = actions(forShortcut: aShortcut, keyEvent: .down)
-            let shortcutKeyUpActions = actions(forShortcut: aShortcut, keyEvent: .up)
+            let allShortcuts = Set(shortcuts)
 
-            XCTAssertFalse(shortcuts.contains(aShortcut))
-            XCTAssertTrue(allActions.isEmpty)
-            XCTAssertEqual(Set(allActions), Set(keyDownActions).union(keyUpActions))
-            XCTAssertEqual(Set(allActions), Set(shortcutKeyDownActions).union(shortcutKeyUpActions))
-            XCTAssertEqual(action(for: aShortcut, keyEvent: .down), shortcutKeyDownActions.last as ShortcutAction?)
-            XCTAssertEqual(action(for: aShortcut, keyEvent: .up), shortcutKeyUpActions.last as ShortcutAction?)
+            let allActions = Set(actions)
+            let allKeyDownActions = Set(actions(forKeyEvent: .down))
+            let allKeyUpActions = Set(actions(forKeyEvent: .up))
+
+            let enabledKeyDownActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .down))
+            let enabledKeyUpActionsForShortcut = Set(enabledActions(forShortcut: aShortcut, keyEvent: .up))
+            let enabledActionsForShortcut = enabledKeyDownActionsForShortcut.union(enabledKeyUpActionsForShortcut)
+
+            XCTAssertEqual(allActions, allKeyDownActions.union(allKeyUpActions))
+            XCTAssertFalse(allShortcuts.contains(aShortcut))
+            XCTAssertTrue(enabledActionsForShortcut.isEmpty)
+            XCTAssertTrue(allKeyDownActions.isSuperset(of: enabledKeyDownActionsForShortcut))
+            XCTAssertTrue(allKeyUpActions.isSuperset(of: enabledKeyUpActionsForShortcut))
         }
     }
 
@@ -385,7 +475,20 @@ class SRShortcutMonitorTests: XCTestCase {
             let monitor = TrackingMonitor()
             monitor.addAction(action, forKeyEvent: .down)
             monitor.removeAction(action)
-            XCTAssertEqual(monitor.changes, [.add(.default), .remove(.default)])
+            XCTAssertEqual(monitor.changes, [
+                .willChangeActions(Set()),
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default])),
+                .didChangeActions(Set(), Set([action])),
+                .willChangeActions(Set([action])),
+                .willChangeShortcuts(Set([.default])),
+                .willRemoveShortcut(.default),
+                .didRemoveShortcut(.default),
+                .didChangeShortcuts(Set([.default]), Set()),
+                .didChangeActions(Set([action]), Set())
+            ])
         }
 
         XCTContext.runActivity(named: "down key event") { _ in test(.down) }
@@ -398,17 +501,43 @@ class SRShortcutMonitorTests: XCTestCase {
         let cmd_a = Shortcut(keyEquivalent: "⌘A")!
         let cmd_b = Shortcut(keyEquivalent: "⌘B")!
 
+        var changes: [TrackingMonitor.Change] = []
+
         monitor.addAction(action, forKeyEvent: .down)
-        XCTAssertEqual(monitor.changes, [])
+        changes.append(contentsOf: [
+            .willChangeActions(Set()),
+            .didChangeActions(Set(), Set([action]))
+        ])
+        XCTAssertEqual(monitor.changes, changes)
 
         action.shortcut = cmd_a
-        XCTAssertEqual(monitor.changes, [.add(cmd_a)])
+        changes.append(contentsOf: [
+            .willChangeShortcuts(Set()),
+            .willAddShortcut(cmd_a),
+            .didAddShortcut(cmd_a),
+            .didChangeShortcuts(Set(), Set([cmd_a]))
+        ])
+        XCTAssertEqual(monitor.changes, changes)
 
         action.shortcut = cmd_b
-        XCTAssertEqual(monitor.changes, [.add(cmd_a), .remove(cmd_a), .add(cmd_b)])
+        changes.append(contentsOf: [
+            .willChangeShortcuts(Set([cmd_a])),
+            .willRemoveShortcut(cmd_a),
+            .didRemoveShortcut(cmd_a),
+            .willAddShortcut(cmd_b),
+            .didAddShortcut(cmd_b),
+            .didChangeShortcuts(Set([cmd_a]), Set([cmd_b]))
+        ])
+        XCTAssertEqual(monitor.changes, changes)
 
         action.shortcut = nil
-        XCTAssertEqual(monitor.changes, [.add(cmd_a), .remove(cmd_a), .add(cmd_b), .remove(cmd_b)])
+        changes.append(contentsOf: [
+            .willChangeShortcuts(Set([cmd_b])),
+            .willRemoveShortcut(cmd_b),
+            .didRemoveShortcut(cmd_b),
+            .didChangeShortcuts(Set([cmd_b]), Set([]))
+        ])
+        XCTAssertEqual(monitor.changes, changes)
     }
 
     func testShortcutObservationOfMultipleActionsAdditionAndRemoval() {
@@ -421,9 +550,32 @@ class SRShortcutMonitorTests: XCTestCase {
             monitor.addAction(action1, forKeyEvent: keyEvent1)
             monitor.addAction(action2, forKeyEvent: keyEvent2)
             monitor.removeAction(action1)
-            XCTAssertEqual(monitor.changes, [.add(cmd_a)])
+            var changes: [TrackingMonitor.Change] = [
+                .willChangeActions(Set()),
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(cmd_a),
+                .didAddShortcut(cmd_a),
+                .didChangeShortcuts(Set(), Set([cmd_a])),
+                .didChangeActions(Set(), Set([action1])),
+
+                .willChangeActions(Set([action1])),
+                .didChangeActions(Set([action1]), Set([action1, action2])),
+
+                .willChangeActions(Set([action1, action2])),
+                .didChangeActions(Set([action1, action2]), Set([action2]))
+            ]
+            XCTAssertEqual(monitor.changes, changes)
+
             monitor.removeAction(action2)
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .remove(cmd_a)])
+            changes.append(contentsOf: [
+                .willChangeActions(Set([action2])),
+                .willChangeShortcuts(Set([cmd_a])),
+                .willRemoveShortcut(cmd_a),
+                .didRemoveShortcut(cmd_a),
+                .didChangeShortcuts(Set([cmd_a]), Set()),
+                .didChangeActions(Set([action2]), Set())
+            ])
+            XCTAssertEqual(monitor.changes, changes)
         }
 
         XCTContext.runActivity(named: "down key event") { _ in test(.down, .down) }
@@ -433,84 +585,88 @@ class SRShortcutMonitorTests: XCTestCase {
     }
 
     func testShortcutChangeObservationOfMultipleActions() {
-        let cmd_a = Shortcut(keyEquivalent: "⌘A")!
-        let cmd_b = Shortcut(keyEquivalent: "⌘B")!
-        let action1 = ShortcutAction()
-        let action2 = ShortcutAction()
-
         func test(_ keyEvent1: KeyEventType, _ keyEvent2: KeyEventType) {
+            let cmd_a = Shortcut(keyEquivalent: "⌘A")!
+            let cmd_b = Shortcut(keyEquivalent: "⌘B")!
+            let action1 = ShortcutAction()
+            let action2 = ShortcutAction()
             let monitor = TrackingMonitor()
 
             monitor.addAction(action1, forKeyEvent: keyEvent1)
             monitor.addAction(action2, forKeyEvent: keyEvent2)
-            XCTAssertEqual(monitor.changes, [])
+            var changes: [TrackingMonitor.Change] = [
+                .willChangeActions(Set()),
+                .didChangeActions(Set(), Set([action1])),
+                .willChangeActions(Set([action1])),
+                .didChangeActions(Set([action1]), Set([action1, action2]))
+            ]
+            XCTAssertEqual(monitor.changes, changes)
 
             action1.shortcut = cmd_a
-            XCTAssertEqual(monitor.changes, [.add(cmd_a)])
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(cmd_a),
+                .didAddShortcut(cmd_a),
+                .didChangeShortcuts(Set(), Set([cmd_a]))
+            ])
+            XCTAssertEqual(monitor.changes, changes)
 
             action2.shortcut = cmd_a
-            XCTAssertEqual(monitor.changes, [.add(cmd_a)])
+            XCTAssertEqual(monitor.changes, changes)
 
             action1.shortcut = cmd_b
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .add(cmd_b)])
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([cmd_a])),
+                .willAddShortcut(cmd_b),
+                .didAddShortcut(cmd_b),
+                .didChangeShortcuts(Set([cmd_a]), Set([cmd_a, cmd_b]))
+            ])
+            XCTAssertEqual(monitor.changes, changes)
 
             action2.shortcut = cmd_b
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .add(cmd_b), .remove(cmd_a)])
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([cmd_a, cmd_b])),
+                .willRemoveShortcut(cmd_a),
+                .didRemoveShortcut(cmd_a),
+                .didChangeShortcuts(Set([cmd_a, cmd_b]), Set([cmd_b]))
+            ])
+            XCTAssertEqual(monitor.changes, changes)
 
             action1.shortcut = cmd_a
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .add(cmd_b), .remove(cmd_a), .add(cmd_a)])
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([cmd_b])),
+                .willAddShortcut(cmd_a),
+                .didAddShortcut(cmd_a),
+                .didChangeShortcuts(Set([cmd_b]), Set([cmd_a, cmd_b]))
+            ])
+            XCTAssertEqual(monitor.changes, changes)
 
             action2.shortcut = cmd_a
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .add(cmd_b), .remove(cmd_a), .add(cmd_a), .remove(cmd_b)])
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([cmd_a, cmd_b])),
+                .willRemoveShortcut(cmd_b),
+                .didRemoveShortcut(cmd_b),
+                .didChangeShortcuts(Set([cmd_a, cmd_b]), Set([cmd_a]))
+            ])
+            XCTAssertEqual(monitor.changes, changes)
 
             action1.shortcut = nil
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .add(cmd_b), .remove(cmd_a), .add(cmd_a), .remove(cmd_b)])
+            XCTAssertEqual(monitor.changes, changes)
 
             action2.shortcut = nil
-            XCTAssertEqual(monitor.changes, [.add(cmd_a), .add(cmd_b), .remove(cmd_a), .add(cmd_a), .remove(cmd_b), .remove(cmd_a)])
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([cmd_a])),
+                .willRemoveShortcut(cmd_a),
+                .didRemoveShortcut(cmd_a),
+                .didChangeShortcuts(Set([cmd_a]), Set())
+            ])
+            XCTAssertEqual(monitor.changes, changes)
         }
 
         XCTContext.runActivity(named: "down key event") { _ in test(.down, .down) }
         XCTContext.runActivity(named: "up key event") { _ in test(.up, .up) }
         XCTContext.runActivity(named: "down & up key events") { _ in test(.down, .up) }
         XCTContext.runActivity(named: "up & down key events") { _ in test(.up, .down) }
-    }
-
-    func testRemovalOfAllActionsForShortcut() {
-        let action1 = ShortcutAction(shortcut: Shortcut(keyEquivalent: "⌘A")!) {_ in true}
-        let action2 = ShortcutAction(shortcut: Shortcut(keyEquivalent: "⌘B")!) {_ in true}
-
-        func test(_ keyEvent1: KeyEventType, _ keyEvent2: KeyEventType) {
-            let monitor = TrackingMonitor()
-            monitor.addAction(action1, forKeyEvent: keyEvent1)
-            monitor.addAction(action1, forKeyEvent: keyEvent2)
-            monitor.addAction(action2, forKeyEvent: keyEvent1)
-            monitor.addAction(action2, forKeyEvent: keyEvent2)
-            monitor.removeAllActions(forShortcut: action1.shortcut!)
-            XCTAssertEqual(monitor.changes, [.add(action1.shortcut!), .add(action2.shortcut!), .remove(action1.shortcut!)])
-            XCTAssertEqual(monitor.actions(forShortcut: action1.shortcut!, keyEvent: .down), [])
-            XCTAssertEqual(monitor.actions(forShortcut: action1.shortcut!, keyEvent: .up), [])
-        }
-
-        XCTContext.runActivity(named: "down key event") { _ in test(.down, .down) }
-        XCTContext.runActivity(named: "up key event") { _ in test(.up, .up) }
-        XCTContext.runActivity(named: "down & up key events") { _ in test(.down, .up) }
-        XCTContext.runActivity(named: "up & down key events") { _ in test(.up, .down) }
-    }
-
-    func testRemovalOfAllActionsForKeyEvent() {
-        let action1 = ShortcutAction(shortcut: Shortcut(keyEquivalent: "⌘A")!) {_ in true}
-        let action2 = ShortcutAction(shortcut: Shortcut(keyEquivalent: "⌘B")!) {_ in true}
-        let monitor = TrackingMonitor()
-        monitor.addAction(action1, forKeyEvent: .down)
-        monitor.addAction(action2, forKeyEvent: .up)
-        monitor.removeAllActions(forKeyEvent: .down)
-        XCTAssertEqual(monitor.changes, [.add(action1.shortcut!), .add(action2.shortcut!), .remove(action1.shortcut!)])
-        XCTAssertEqual(monitor.actions(forKeyEvent: .down), [])
-        monitor.removeAllActions(forKeyEvent: .up)
-        XCTAssertEqual(monitor.changes, [.add(action1.shortcut!), .add(action2.shortcut!), .remove(action1.shortcut!), .remove(action2.shortcut!)])
-        XCTAssertEqual(monitor.actions(forKeyEvent: .up), [])
-        XCTAssertEqual(monitor.actions, [])
     }
 
     func testRemovalOfAllActions() {
@@ -520,8 +676,48 @@ class SRShortcutMonitorTests: XCTestCase {
         monitor.addAction(action1, forKeyEvent: .down)
         monitor.addAction(action2, forKeyEvent: .up)
         monitor.removeAllActions()
-        XCTAssertEqual(monitor.changes[..<2], [.add(action1.shortcut!), .add(action2.shortcut!)])
-        XCTAssertTrue(monitor.changes[2...].allSatisfy([.remove(action1.shortcut!), .remove(action2.shortcut!)].contains))
+        XCTAssertEqual(monitor.changes[..<14], [
+            .willChangeActions(Set()),
+            .willChangeShortcuts(Set()),
+            .willAddShortcut(action1.shortcut!),
+            .didAddShortcut(action1.shortcut!),
+            .didChangeShortcuts(Set(), Set([action1.shortcut!])),
+            .didChangeActions(Set(), Set([action1])),
+
+            .willChangeActions(Set([action1])),
+            .willChangeShortcuts(Set([action1.shortcut!])),
+            .willAddShortcut(action2.shortcut!),
+            .didAddShortcut(action2.shortcut!),
+            .didChangeShortcuts(Set([action1.shortcut!]), Set([action1.shortcut!, action2.shortcut!])),
+            .didChangeActions(Set([action1]), Set([action1, action2])),
+
+            .willChangeActions(Set([action1, action2])),
+            .willChangeShortcuts(Set([action1.shortcut!, action2.shortcut!])),
+        ])
+
+        // shortcuts may be removed in any order
+        let action1RemovalChanges: [TrackingMonitor.Change] = [
+            .willRemoveShortcut(action1.shortcut!),
+            .willRemoveShortcut(action2.shortcut!),
+            .didRemoveShortcut(action2.shortcut!),
+            .didRemoveShortcut(action1.shortcut!)
+        ]
+        let action2RemovalChanges: [TrackingMonitor.Change] = [
+            .willRemoveShortcut(action2.shortcut!),
+            .willRemoveShortcut(action1.shortcut!),
+            .didRemoveShortcut(action1.shortcut!),
+            .didRemoveShortcut(action2.shortcut!)
+        ]
+        XCTAssertTrue(
+            (Array(monitor.changes[14...17]) == action1RemovalChanges) ||
+            (Array(monitor.changes[14...17]) == action2RemovalChanges)
+        )
+
+        XCTAssertEqual(monitor.changes[18...], [
+            .didChangeShortcuts(Set([action1.shortcut!, action2.shortcut!]), Set()),
+            .didChangeActions(Set([action1, action2]), Set())
+        ])
+
         XCTAssertEqual(monitor.actions(forKeyEvent: .down), [])
         XCTAssertEqual(monitor.actions(forKeyEvent: .up), [])
         XCTAssertEqual(monitor.actions, [])
@@ -535,12 +731,10 @@ class SRShortcutMonitorTests: XCTestCase {
             let monitor = TrackingMonitor()
             monitor.addAction(action1, forKeyEvent: keyEvent)
             monitor.addAction(action2, forKeyEvent: keyEvent)
-            XCTAssertEqual(monitor.action(for: .default, keyEvent: keyEvent), action2)
-            XCTAssertEqual(monitor.actions(forShortcut: .default, keyEvent: keyEvent), [action1, action2])
+            XCTAssertEqual(monitor.enabledActions(forShortcut: .default, keyEvent: keyEvent), [action1, action2])
 
             monitor.addAction(action1, forKeyEvent: keyEvent)
-            XCTAssertEqual(monitor.action(for: .default, keyEvent: keyEvent), action1)
-            XCTAssertEqual(monitor.actions(forShortcut: .default, keyEvent: keyEvent), [action2, action1])
+            XCTAssertEqual(monitor.enabledActions(forShortcut: .default, keyEvent: keyEvent), [action2, action1])
         }
 
         XCTContext.runActivity(named: "down key event") { _ in test(.down) }
@@ -553,12 +747,16 @@ class SRShortcutMonitorTests: XCTestCase {
             let removeObserverExpectation = XCTestExpectation(description: "remove observer", assertForOverFulfill: true)
 
             override func addObserver(_ observer: NSObject, forKeyPath keyPath: String, options: NSKeyValueObservingOptions = [], context: UnsafeMutableRawPointer?) {
-                addObserverExpectation.fulfill()
+                if keyPath == "enabled" {
+                    addObserverExpectation.fulfill()
+                }
                 super.addObserver(observer, forKeyPath: keyPath, options: options, context: context)
             }
 
             override func removeObserver(_ observer: NSObject, forKeyPath keyPath: String, context: UnsafeMutableRawPointer?) {
-                removeObserverExpectation.fulfill()
+                if keyPath == "enabled" {
+                    removeObserverExpectation.fulfill()
+                }
                 super.removeObserver(observer, forKeyPath: keyPath, context: context)
             }
         }
@@ -566,6 +764,7 @@ class SRShortcutMonitorTests: XCTestCase {
         func test(_ keyEvent1: KeyEventType, _ keyEvent2: KeyEventType) {
             let action = ObservedAction(shortcut: .default) { _ in true }
             let monitor = TrackingMonitor()
+
             monitor.addAction(action, forKeyEvent: keyEvent1)
             monitor.addAction(action, forKeyEvent: keyEvent2)
             monitor.removeAction(action, forKeyEvent: keyEvent1)
@@ -580,14 +779,28 @@ class SRShortcutMonitorTests: XCTestCase {
     }
 
     func testActionAddedTwiceForTheSameKeyEventNeedsToBeRemovedOnce() {
-        let action = ShortcutAction(shortcut: .default) { _ in true }
-
         func test(_ keyEvent: KeyEventType) {
+            let action = ShortcutAction(shortcut: .default) { _ in true }
             let monitor = TrackingMonitor()
+
             monitor.addAction(action, forKeyEvent: keyEvent)
             monitor.addAction(action, forKeyEvent: keyEvent)
             monitor.removeAction(action, forKeyEvent: keyEvent)
-            XCTAssertEqual(monitor.changes, [.add(action.shortcut!), .remove(action.shortcut!)])
+            XCTAssertEqual(monitor.changes, [
+                .willChangeActions(Set()),
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default])),
+                .didChangeActions(Set(), Set([action])),
+
+                .willChangeActions(Set([action])),
+                .willChangeShortcuts(Set([.default])),
+                .willRemoveShortcut(.default),
+                .didRemoveShortcut(.default),
+                .didChangeShortcuts(Set([.default]), Set()),
+                .didChangeActions(Set([action]), Set())
+            ])
         }
 
         XCTContext.runActivity(named: "down key event") { _ in test(.down) }
@@ -595,16 +808,33 @@ class SRShortcutMonitorTests: XCTestCase {
     }
 
     func testActionAddedTwiceForDifferentKeyEventsNeedsToBeRemovedTwice() {
-        let action = ShortcutAction(shortcut: .default) { _ in true }
-
         func test(_ keyEvent1: KeyEventType, _ keyEvent2: KeyEventType) {
+            let action = ShortcutAction(shortcut: .default) { _ in true }
             let monitor = TrackingMonitor()
+
             monitor.addAction(action, forKeyEvent: keyEvent1)
             monitor.addAction(action, forKeyEvent: keyEvent2)
             monitor.removeAction(action, forKeyEvent: keyEvent1)
-            XCTAssertEqual(monitor.changes, [.add(action.shortcut!)])
+            var changes: [TrackingMonitor.Change] = [
+                .willChangeActions(Set()),
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default])),
+                .didChangeActions(Set(), Set([action]))
+            ]
+            XCTAssertEqual(monitor.changes, changes)
+
             monitor.removeAction(action, forKeyEvent: keyEvent2)
-            XCTAssertEqual(monitor.changes, [.add(action.shortcut!), .remove(action.shortcut!)])
+            changes.append(contentsOf: [
+                .willChangeActions(Set([action])),
+                .willChangeShortcuts(Set([.default])),
+                .willRemoveShortcut(.default),
+                .didRemoveShortcut(.default),
+                .didChangeShortcuts(Set([.default]), Set()),
+                .didChangeActions(Set([action]), Set())
+            ])
+            XCTAssertEqual(monitor.changes, changes)
         }
 
         XCTContext.runActivity(named: "down & up key events") { _ in test(.down, .up) }
@@ -612,9 +842,8 @@ class SRShortcutMonitorTests: XCTestCase {
     }
 
     func testActionAddedTwiceForTheSameKeyEventInvariants() {
-        let action = ShortcutAction(shortcut: .default) { _ in true }
-
         func test(_ keyEvent: KeyEventType) {
+            let action = ShortcutAction(shortcut: .default) { _ in true }
             let monitor = TrackingMonitor()
             let oppositeKeyEvent: KeyEventType = keyEvent == .down ? .up : .down
 
@@ -635,9 +864,8 @@ class SRShortcutMonitorTests: XCTestCase {
     }
 
     func testActionAddedTwiceForDifferentKeyEventsInvariants() {
-        let action = ShortcutAction(shortcut: .default) { _ in true }
-
         func test(_ keyEvent1: KeyEventType, _ keyEvent2: KeyEventType) {
+            let action = ShortcutAction(shortcut: .default) { _ in true }
             let monitor = TrackingMonitor()
 
             monitor.addAction(action, forKeyEvent: keyEvent1)
@@ -659,6 +887,114 @@ class SRShortcutMonitorTests: XCTestCase {
 
         XCTContext.runActivity(named: "down & up key events") { _ in test(.down, .up) }
         XCTContext.runActivity(named: "up & down key events") { _ in test(.up, .down) }
+    }
+
+    func testAddingDisabledActionDoesNotChangeShortcuts() {
+        func test(_ keyEvent: KeyEventType) {
+            let action = ShortcutAction(shortcut: .default) { _ in true }
+            action.isEnabled = false
+            let monitor = TrackingMonitor()
+
+            monitor.addAction(action, forKeyEvent: keyEvent)
+            monitor.removeAction(action)
+            XCTAssertEqual(monitor.changes, [
+                .willChangeActions(Set()),
+                .didChangeActions(Set(), Set([action])),
+
+                .willChangeActions(Set([action])),
+                .didChangeActions(Set([action]), Set())
+            ])
+        }
+
+        XCTContext.runActivity(named: "down key event") { _ in test(.down) }
+        XCTContext.runActivity(named: "up key event") { _ in test(.up) }
+    }
+
+    func testMonitorTracksWhetherActionIsEnabled() {
+        func test(_ keyEvent: KeyEventType) {
+            let action = ShortcutAction(shortcut: .default) { _ in true }
+            let monitor = TrackingMonitor()
+
+            monitor.addAction(action, forKeyEvent: keyEvent)
+            var changes: [TrackingMonitor.Change] = [
+                .willChangeActions(Set()),
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default])),
+                .didChangeActions(Set(), Set([action])),
+            ]
+            XCTAssertEqual(monitor.changes, changes)
+
+            action.isEnabled = false
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([.default])),
+                .willRemoveShortcut(.default),
+                .didRemoveShortcut(.default),
+                .didChangeShortcuts(Set([.default]), Set())
+            ])
+            XCTAssertEqual(monitor.changes, changes)
+
+            action.isEnabled = true
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default]))
+            ])
+            XCTAssertEqual(monitor.changes, changes)
+        }
+
+        XCTContext.runActivity(named: "down key event") { _ in test(.down) }
+        XCTContext.runActivity(named: "up key event") { _ in test(.up) }
+    }
+
+    func testMonitorWhetherAllActionsForShortcutAreEnabled() {
+        func test(_ keyEvent1: KeyEventType, _ keyEvent2: KeyEventType) {
+            let action1 = ShortcutAction(shortcut: .default) { _ in true }
+            let action2 = ShortcutAction(shortcut: .default) { _ in true }
+            let monitor = TrackingMonitor()
+
+            monitor.addAction(action1, forKeyEvent: keyEvent1)
+            monitor.addAction(action2, forKeyEvent: keyEvent2)
+            var changes: [TrackingMonitor.Change] = [
+                .willChangeActions(Set()),
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default])),
+                .didChangeActions(Set(), Set([action1])),
+
+                .willChangeActions(Set([action1])),
+                .didChangeActions(Set([action1]), Set([action1, action2]))
+            ]
+            XCTAssertEqual(monitor.changes, changes)
+
+            action1.isEnabled = false
+            XCTAssertEqual(monitor.changes, changes)
+
+            action2.isEnabled = false
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set([.default])),
+                .willRemoveShortcut(.default),
+                .didRemoveShortcut(.default),
+                .didChangeShortcuts(Set([.default]), Set())
+            ])
+            XCTAssertEqual(monitor.changes, changes)
+
+            action1.isEnabled = true
+            changes.append(contentsOf: [
+                .willChangeShortcuts(Set()),
+                .willAddShortcut(.default),
+                .didAddShortcut(.default),
+                .didChangeShortcuts(Set(), Set([.default]))
+            ])
+        }
+
+        XCTContext.runActivity(named: "down & down key events") { _ in test(.down, .down) }
+        XCTContext.runActivity(named: "down & up key events") { _ in test(.down, .up) }
+        XCTContext.runActivity(named: "up & down key events") { _ in test(.up, .down) }
+        XCTContext.runActivity(named: "up & up key events") { _ in test(.down, .down) }
     }
 }
 
