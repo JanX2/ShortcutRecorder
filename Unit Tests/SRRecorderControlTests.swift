@@ -248,4 +248,12 @@ class SRRecorderControlTests: XCTestCase {
         control.userInterfaceLayoutDirection = .leftToRight
         wait(for: [expectation], timeout: 0)
     }
+
+    func testDisallowedEmptyModifierFlags() {
+        let control = RecorderControl()
+        control.set(allowedModifierFlags: CocoaModifierFlagsMask,
+                    requiredModifierFlags: [],
+                    allowsEmptyModifierFlags: false)
+        XCTAssertFalse(control.areModifierFlagsAllowed([], for: .ansiA))
+    }
 }

@@ -779,7 +779,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
             return [self.delegate shortcutRecorder:self shouldUnconditionallyAllowModifierFlags:aModifierFlags forKeyCode:aKeyCode];
         }
         else
-            return YES;
+            return NO;
     };
 #pragma clang diagnostic pop
 
