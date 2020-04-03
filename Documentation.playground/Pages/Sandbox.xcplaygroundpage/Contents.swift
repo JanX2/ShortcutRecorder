@@ -57,57 +57,57 @@ class Controller: NSObject {
 /*:
  Change can be communicated via Target-Action
  */
-extension Controller {
-    @objc func action(sender: RecorderControl) {
-        objectValue = sender.objectValue
-        print("action: \(sender.stringValue)")
-    }
-}
+//extension Controller {
+//    @objc func action(sender: RecorderControl) {
+//        objectValue = sender.objectValue
+//        print("action: \(sender.stringValue)")
+//    }
+//}
 //let target = Controller()
 //control.target = target
 //control.action = #selector(target.action(sender:))
 /*:
  As well as via Cocoa Bindings and NSEditorRegistration
  */
-extension Controller: NSEditorRegistration {
-    func objectDidBeginEditing(_ editor: NSEditor) {
-        print("editor: did begin editing")
-    }
-
-    func objectDidEndEditing(_ editor: NSEditor) {
-        print("editor: did end editing with \((editor as! RecorderControl).stringValue)")
-    }
-}
+//extension Controller: NSEditorRegistration {
+//    func objectDidBeginEditing(_ editor: NSEditor) {
+//        print("editor: did begin editing")
+//    }
+//
+//    func objectDidEndEditing(_ editor: NSEditor) {
+//        print("editor: did end editing with \((editor as! RecorderControl).stringValue)")
+//    }
+//}
 //let controller = Controller()
 //control.bind(.value, to: controller, withKeyPath: "objectValue", options: nil)
 /*:
  And via a delegate
  */
-extension Controller: RecorderControlDelegate {
-    func recorderControlShouldBeginRecording(_ aControl: RecorderControl) -> Bool {
-        print("delegate: should begin editing")
-        return true
-    }
-
-    func recorderControlDidBeginRecording(_ aControl: RecorderControl) {
-        print("delegate: did begin editing")
-    }
-
-    func recorderControl(_ aControl: RecorderControl, shouldUnconditionallyAllowModifierFlags aFlags: Bool, forKeyCode aKeyCode: KeyCode) -> Bool {
-        print("delegate: should unconditionally allow modifier flags")
-        return true
-    }
-
-    func recorderControl(_ aControl: RecorderControl, canRecord aShortcut: Shortcut) -> Bool {
-        print("delegate: can record shortcut")
-        return true
-    }
-
-    func recorderControlDidEndRecording(_ aControl: RecorderControl) {
-        objectValue = aControl.objectValue
-        print("delegate: did end editing with \(aControl.stringValue)")
-    }
-}
+//extension Controller: RecorderControlDelegate {
+//    func recorderControlShouldBeginRecording(_ aControl: RecorderControl) -> Bool {
+//        print("delegate: should begin editing")
+//        return true
+//    }
+//
+//    func recorderControlDidBeginRecording(_ aControl: RecorderControl) {
+//        print("delegate: did begin editing")
+//    }
+//
+//    func recorderControl(_ aControl: RecorderControl, shouldUnconditionallyAllowModifierFlags aFlags: Bool, forKeyCode aKeyCode: KeyCode) -> Bool {
+//        print("delegate: should unconditionally allow modifier flags")
+//        return true
+//    }
+//
+//    func recorderControl(_ aControl: RecorderControl, canRecord aShortcut: Shortcut) -> Bool {
+//        print("delegate: can record shortcut")
+//        return true
+//    }
+//
+//    func recorderControlDidEndRecording(_ aControl: RecorderControl) {
+//        objectValue = aControl.objectValue
+//        print("delegate: did end editing with \(aControl.stringValue)")
+//    }
+//}
 //let controller = Controller()
 //control.delegate = controller
 
@@ -200,6 +200,7 @@ extension Controller: RecorderControlDelegate {
 
  `GlobalShortcutMonitor` tries to register a system-wide hot key that can be triggered from any app.
 */
+//let shortcut = Shortcut(keyEquivalent: "⌘A")
 //let action = ShortcutAction(shortcut: Shortcut(keyEquivalent: "⌥⇧⌘A")!) { action in
 //    print("Handle global shortcut")
 //    return true
