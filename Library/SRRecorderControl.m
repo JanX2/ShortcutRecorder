@@ -14,6 +14,14 @@
 #import "SRModifierFlagsTransformer.h"
 
 
+#ifndef SR_DEBUG_DRAWING
+#define SR_DEBUG_DRAWING DEBUG && 0
+#endif // SR_DEBUG_DRAWING
+
+
+const NSLayoutPriority SRRecorderControlLabelWidthPriority = NSLayoutPriorityDefaultHigh + 1;
+
+
 typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 {
     _SRRecorderControlInvalidButtonTag = -1,
@@ -53,6 +61,9 @@ static NSInteger _SRStyleAppearanceObservingContext;
     NSEventModifierFlags _lastSeenModifierFlags;
 
     BOOL _isLazilyInitializingStyle;
+
+    // Controls intrinsic width of the label.
+    NSLayoutConstraint *_labelWidthConstraint;
 }
 
 - (instancetype)initWithFrame:(NSRect)aFrameRect
@@ -294,6 +305,10 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
     if ([_style respondsToSelector:@selector(prepareForRecorderControl:)])
         [_style prepareForRecorderControl:self];
+
+    _labelWidthConstraint = [_style.labelDrawingGuide.widthAnchor constraintEqualToConstant:0.0];
+    _labelWidthConstraint.priority = NSLayoutPriorityDefaultHigh + 1;
+    _labelWidthConstraint.active = YES;
 
     if ([_style respondsToSelector:@selector(preferredComponents)])
     {
@@ -609,6 +624,14 @@ static NSInteger _SRStyleAppearanceObservingContext;
         [NSLayoutConstraint deactivateConstraints:self.style.recordingWithValueConstraints];
         [NSLayoutConstraint activateConstraints:self.style.displayingConstraints];
     }
+
+    NSString *label = self.drawingLabel;
+    NSDictionary *labelAttributes = self.drawingLabelAttributes;
+    _labelWidthConstraint.constant = NSWidth([label boundingRectWithSize:self.style.alignmentGuide.frame.size
+                                                                 options:0
+                                                              attributes:labelAttributes
+                                                                 context:nil]);
+
 }
 
 - (void)drawBackground:(NSRect)aDirtyRect
@@ -689,13 +712,17 @@ static NSInteger _SRStyleAppearanceObservingContext;
 {
     NSRect labelFrame = self.style.labelDrawingGuide.frame;
 
+#if SR_DEBUG_DRAWING
+    [NSColor.systemRedColor set];
+    NSRectFill(labelFrame);
+#endif
+
     if (NSIsEmptyRect(labelFrame) || ![self needsToDrawRect:labelFrame])
         return;
 
     NSString *label = self.drawingLabel;
     NSDictionary *labelAttributes = self.drawingLabelAttributes;
 
-    [NSGraphicsContext saveGraphicsState];
     CGFloat baselineOffset = _SRIfRespondsGet(self.style, baselineLayoutOffsetFromBottom, self.style.baselineDrawingOffsetFromBottom);
     labelFrame.origin.y = NSMaxY(labelFrame) - baselineOffset;
     labelFrame = [self backingAlignedRect:labelFrame options:NSAlignRectFlipped |
@@ -703,6 +730,13 @@ static NSInteger _SRStyleAppearanceObservingContext;
                   NSAlignMinYOutward |
                   NSAlignMaxXInward |
                   NSAlignMaxYInward];
+
+    [NSGraphicsContext saveGraphicsState];
+
+#if SR_DEBUG_DRAWING
+    [[NSColor.systemRedColor highlightWithLevel:0.5] set];
+    NSRectFill(labelFrame);
+#endif
 
     CGFloat minWidth = [labelAttributes[SRMinimalDrawableWidthAttributeName] doubleValue];
     if (labelFrame.size.width >= minWidth)
@@ -720,6 +754,14 @@ static NSInteger _SRStyleAppearanceObservingContext;
 {
     NSRect cancelButtonFrame = [self centerScanRect:_SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect)];
 
+#if SR_DEBUG_DRAWING
+    [NSColor.systemBlueColor set];
+    NSRectFill([self centerScanRect:_SRIfRespondsGetProp(self.style, cancelButtonLayoutGuide, frame, NSZeroRect)]);
+
+    [[NSColor.systemBlueColor highlightWithLevel:0.5] set];
+    NSRectFill(cancelButtonFrame);
+#endif
+
     if (NSIsEmptyRect(cancelButtonFrame) || ![self needsToDrawRect:cancelButtonFrame])
         return;
 
@@ -735,6 +777,15 @@ static NSInteger _SRStyleAppearanceObservingContext;
 - (void)drawClearButton:(NSRect)aDirtyRect
 {
     NSRect clearButtonFrame = [self centerScanRect:_SRIfRespondsGetProp(self.style, clearButtonDrawingGuide, frame, NSZeroRect)];
+
+#if SR_DEBUG_DRAWING
+    [NSColor.systemGreenColor set];
+    NSRectFill([self centerScanRect:_SRIfRespondsGetProp(self.style, clearButtonLayoutGuide, frame, NSZeroRect)]);
+
+    [[NSColor.systemGreenColor highlightWithLevel:0.5] set];
+    NSRectFill(clearButtonFrame);
+#endif
+
     if (NSIsEmptyRect(clearButtonFrame) || ![self needsToDrawRect:clearButtonFrame])
         return;
 

@@ -1108,21 +1108,21 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         MakeConstraint(self.labelDrawingGuide.centerXAnchor,
                        self.alignmentGuide.centerXAnchor,
                        0.0,
-                       NSLayoutPriorityDefaultHigh,
+                       SRRecorderControlLabelWidthPriority - 1,
                        NSLayoutRelationEqual,
                        @"SR_labelDrawingGuide_centerXToAlignment")
     ];
 
     _displayingConstraints = @[
-        SetConstraint(&_labelToAlignmentConstraint, MakeEqConstraint(self.alignmentGuide.trailingAnchor,
-                                                                     self.labelDrawingGuide.trailingAnchor,
-                                                                     @"SR_labelDrawingGuide_trailingToAlignment")),
+        SetConstraint(&_labelToAlignmentConstraint, MakeGteConstraint(self.alignmentGuide.trailingAnchor,
+                                                                      self.labelDrawingGuide.trailingAnchor,
+                                                                      @"SR_labelDrawingGuide_trailingToAlignment")),
     ];
 
     _recordingWithNoValueConstraints = @[
-        SetConstraint(&_labelToCancelConstraint, MakeEqConstraint(self.cancelButtonDrawingGuide.leadingAnchor,
-                                                                  self.labelDrawingGuide.trailingAnchor,
-                                                                  @"SR_labelDrawingGuide_trailingToCancel")),
+        SetConstraint(&_labelToCancelConstraint, MakeGteConstraint(self.cancelButtonDrawingGuide.leadingAnchor,
+                                                                   self.labelDrawingGuide.trailingAnchor,
+                                                                   @"SR_labelDrawingGuide_trailingToCancel")),
 
         SetConstraint(&_cancelToAlignmentConstraint, MakeEqConstraint(self.alignmentGuide.trailingAnchor,
                                                                       self.cancelButtonDrawingGuide.trailingAnchor,
