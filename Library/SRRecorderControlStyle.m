@@ -684,7 +684,10 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingMiddle;
 
-        NSFont *font = [NSFont fontWithName:anObject[@"fontName"] size:[anObject[@"fontSize"] doubleValue]];
+        NSString *fontName = anObject[@"fontName"];
+        CGFloat fontSize = [anObject[@"fontSize"] doubleValue];
+        NSFont *font = [fontName isEqual:@".AppleSystemUIFont"] ? [NSFont systemFontOfSize:fontSize] : [NSFont fontWithName:fontName size:fontSize];
+
         NSColor *fontColor = [NSColor colorWithCatalogName:anObject[@"fontColorCatalogName"] colorName:anObject[@"fontColorName"]];
 
         NSMutableDictionary *attributes = @{
