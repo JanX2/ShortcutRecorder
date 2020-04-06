@@ -62,6 +62,7 @@ static void *_SRStyleGuideObservingContext = &_SRStyleGuideObservingContext;
     NSEventModifierFlags _lastSeenModifierFlags;
 
     BOOL _isLazilyInitializingStyle;
+    BOOL _didPauseGlobalShortcutMonitor;
 
     // Controls intrinsic width of the label.
     NSLayoutConstraint *_labelWidthConstraint;
@@ -572,7 +573,10 @@ static void *_SRStyleGuideObservingContext = &_SRStyleGuideObservingContext;
         self.toolTip = _SRIfRespondsGet(self.style, recordingTooltip, SRLoc(@"Type shortcut"));
 
         if (self.pausesGlobalShortcutMonitorWhileRecording)
+        {
+            _didPauseGlobalShortcutMonitor = YES;
             [SRGlobalShortcutMonitor.sharedMonitor pause];
+        }
 
         NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
         if (bindingInfo)
@@ -645,8 +649,11 @@ static void *_SRStyleGuideObservingContext = &_SRStyleGuideObservingContext;
         [self updateTrackingAreas];
         self.toolTip = _SRIfRespondsGet(self.style, normalTooltip, SRLoc(@"Click to record shortcut"));
 
-        if (self.pausesGlobalShortcutMonitorWhileRecording)
+        if (_didPauseGlobalShortcutMonitor)
+        {
+            _didPauseGlobalShortcutMonitor = NO;
             [SRGlobalShortcutMonitor.sharedMonitor resume];
+        }
 
         NSDictionary *bindingInfo = [self infoForBinding:NSValueBinding];
         if (bindingInfo)
