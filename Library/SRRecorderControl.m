@@ -31,8 +31,9 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
 };
 
 
-static NSInteger _SRStyleUserInterfaceLayoutDirectionObservingContext;
-static NSInteger _SRStyleAppearanceObservingContext;
+static void *_SRStyleUserInterfaceLayoutDirectionObservingContext = &_SRStyleUserInterfaceLayoutDirectionObservingContext;
+static void *_SRStyleAppearanceObservingContext = &_SRStyleAppearanceObservingContext;
+static void *_SRStyleGuideObservingContext = &_SRStyleGuideObservingContext;
 
 
 #define _SRIfRespondsGet(obj, sel, default) [obj respondsToSelector:@selector(sel)] ? [obj sel] : (default)
@@ -114,6 +115,27 @@ static NSInteger _SRStyleAppearanceObservingContext;
     [NSNotificationCenter.defaultCenter removeObserver:self];
     [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self];
     [NSObject cancelPreviousPerformRequestsWithTarget:_notifyStyle];
+
+    if ([_style respondsToSelector:@selector(preferredComponents)])
+    {
+        [_style removeObserver:self
+                    forKeyPath:@"preferredComponents.userInterfaceLayoutDirection"
+                       context:_SRStyleUserInterfaceLayoutDirectionObservingContext];
+        [_style removeObserver:self
+                    forKeyPath:@"preferredComponents.appearance"
+                       context:_SRStyleAppearanceObservingContext];
+    }
+
+    [_style removeObserver:self forKeyPath:@"labelDrawingGuide.frame" context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(backgroundDrawingGuide)])
+        [_style removeObserver:self forKeyPath:@"backgroundDrawingGuide.frame" context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(cancelButtonDrawingGuide)])
+        [_style removeObserver:self forKeyPath:@"cancelButtonDrawingGuide.frame" context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(clearButtonDrawingGuide)])
+        [_style removeObserver:self forKeyPath:@"clearButtonDrawingGuide.frame" context:_SRStyleGuideObservingContext];
 }
 
 #pragma mark Properties
@@ -238,6 +260,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
         NSAccessibilityPostNotification(self, NSAccessibilityTitleChangedNotification);
         NSAccessibilityPostNotification(self, NSAccessibilityValueChangedNotification);
         [self setNeedsDisplayInRect:self.style.labelDrawingGuide.frame];
+        [self updateLabelConstraints];
     }
 }
 
@@ -297,9 +320,24 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
     if ([_style respondsToSelector:@selector(preferredComponents)])
     {
-        [_style removeObserver:self forKeyPath:@"preferredComponents.userInterfaceLayoutDirection" context:&_SRStyleUserInterfaceLayoutDirectionObservingContext];
-        [_style removeObserver:self forKeyPath:@"preferredComponents.appearance" context:&_SRStyleAppearanceObservingContext];
+        [_style removeObserver:self
+                    forKeyPath:@"preferredComponents.userInterfaceLayoutDirection"
+                       context:_SRStyleUserInterfaceLayoutDirectionObservingContext];
+        [_style removeObserver:self
+                    forKeyPath:@"preferredComponents.appearance"
+                       context:_SRStyleAppearanceObservingContext];
     }
+
+    [_style removeObserver:self forKeyPath:@"labelDrawingGuide.frame" context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(backgroundDrawingGuide)])
+        [_style removeObserver:self forKeyPath:@"backgroundDrawingGuide.frame" context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(cancelButtonDrawingGuide)])
+        [_style removeObserver:self forKeyPath:@"cancelButtonDrawingGuide.frame" context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(clearButtonDrawingGuide)])
+        [_style removeObserver:self forKeyPath:@"clearButtonDrawingGuide.frame" context:_SRStyleGuideObservingContext];
 
     _style = newStyle;
 
@@ -315,11 +353,40 @@ static NSInteger _SRStyleAppearanceObservingContext;
         [_style addObserver:self
                  forKeyPath:@"preferredComponents.userInterfaceLayoutDirection"
                     options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionPrior
-                    context:&_SRStyleUserInterfaceLayoutDirectionObservingContext];
+                    context:_SRStyleUserInterfaceLayoutDirectionObservingContext];
         [_style addObserver:self
                  forKeyPath:@"preferredComponents.appearance"
                     options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
-                    context:&_SRStyleAppearanceObservingContext];
+                    context:_SRStyleAppearanceObservingContext];
+    }
+
+    [_style addObserver:self
+             forKeyPath:@"labelDrawingGuide.frame"
+                options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+                context:_SRStyleGuideObservingContext];
+
+    if ([_style respondsToSelector:@selector(backgroundDrawingGuide)])
+    {
+        [_style addObserver:self
+                 forKeyPath:@"backgroundDrawingGuide.frame"
+                    options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+                    context:_SRStyleGuideObservingContext];
+    }
+
+    if ([_style respondsToSelector:@selector(cancelButtonDrawingGuide)])
+    {
+        [_style addObserver:self
+                 forKeyPath:@"cancelButtonDrawingGuide.frame"
+                    options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+                    context:_SRStyleGuideObservingContext];
+    }
+
+    if ([_style respondsToSelector:@selector(clearButtonDrawingGuide)])
+    {
+        [_style addObserver:self
+                 forKeyPath:@"clearButtonDrawingGuide.frame"
+                    options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
+                    context:_SRStyleGuideObservingContext];
     }
 
     if (self.isRecording)
@@ -494,13 +561,13 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
         self->_lastSeenModifierFlags = NSEvent.modifierFlags & self.allowedModifierFlags;
 
-        self.needsDisplay = YES;
-
         [self willChangeValueForKey:@"isRecording"];
         self->_isRecording = YES;
         [self didChangeValueForKey:@"isRecording"];
 
+        self.needsDisplay = YES;
         [self updateActiveConstraints];
+        [self updateLabelConstraints];
         [self updateTrackingAreas];
         self.toolTip = _SRIfRespondsGet(self.style, recordingTooltip, SRLoc(@"Type shortcut"));
 
@@ -572,10 +639,11 @@ static NSInteger _SRStyleAppearanceObservingContext;
         self.objectValue = anObjectValue;
         self->_lastSeenModifierFlags = 0;
 
+        self.needsDisplay = YES;
         [self updateActiveConstraints];
+        [self updateLabelConstraints];
         [self updateTrackingAreas];
         self.toolTip = _SRIfRespondsGet(self.style, normalTooltip, SRLoc(@"Click to record shortcut"));
-        self.needsDisplay = YES;
 
         if (self.pausesGlobalShortcutMonitorWhileRecording)
             [SRGlobalShortcutMonitor.sharedMonitor resume];
@@ -624,14 +692,19 @@ static NSInteger _SRStyleAppearanceObservingContext;
         [NSLayoutConstraint deactivateConstraints:self.style.recordingWithValueConstraints];
         [NSLayoutConstraint activateConstraints:self.style.displayingConstraints];
     }
+}
 
+- (void)updateLabelConstraints
+{
     NSString *label = self.drawingLabel;
     NSDictionary *labelAttributes = self.drawingLabelAttributes;
-    _labelWidthConstraint.constant = NSWidth([label boundingRectWithSize:self.style.alignmentGuide.frame.size
-                                                                 options:0
-                                                              attributes:labelAttributes
-                                                                 context:nil]);
-
+    CGFloat labelWidth = NSWidth([label boundingRectWithSize:self.style.alignmentGuide.frame.size
+                                                     options:0
+                                                  attributes:labelAttributes
+                                                     context:nil]);
+    // Extra 2 points to avoid clipping of smoothing pixels.
+    _labelWidthConstraint.constant = ceil(MAX(labelWidth,
+                                              [labelAttributes[SRMinimalDrawableWidthAttributeName] doubleValue]) + 2.0);
 }
 
 - (void)drawBackground:(NSRect)aDirtyRect
@@ -1293,37 +1366,6 @@ static NSInteger _SRStyleAppearanceObservingContext;
     return super.userInterfaceLayoutDirection;
 }
 
-- (void)layout
-{
-    NSRect oldLabelFrame = self.style.labelDrawingGuide.frame;
-    NSRect oldCancelButtonFrame = _SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect);
-    NSRect oldClearButtonFrame = _SRIfRespondsGetProp(self.style, clearButtonDrawingGuide, frame, NSZeroRect);
-
-    [super layout];
-
-    NSRect newLabelFrame = self.style.labelDrawingGuide.frame;
-    NSRect newCancelButtonFrame = _SRIfRespondsGetProp(self.style, cancelButtonDrawingGuide, frame, NSZeroRect);
-    NSRect newClearButtonFrame = _SRIfRespondsGetProp(self.style, clearButtonDrawingGuide, frame, NSZeroRect);
-
-    if (!NSEqualRects(oldLabelFrame, newLabelFrame))
-    {
-        [self setNeedsDisplayInRect:oldLabelFrame];
-        [self setNeedsDisplayInRect:newLabelFrame];
-    }
-
-    if (!NSEqualRects(oldCancelButtonFrame, newCancelButtonFrame))
-    {
-        [self setNeedsDisplayInRect:oldCancelButtonFrame];
-        [self setNeedsDisplayInRect:newCancelButtonFrame];
-    }
-
-    if (!NSEqualRects(oldClearButtonFrame, newClearButtonFrame))
-    {
-        [self setNeedsDisplayInRect:oldClearButtonFrame];
-        [self setNeedsDisplayInRect:newClearButtonFrame];
-    }
-}
-
 - (void)drawRect:(NSRect)aDirtyRect
 {
     [self drawBackground:aDirtyRect];
@@ -1447,6 +1489,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
 - (void)updateConstraints
 {
     [self updateActiveConstraints];
+    [self updateLabelConstraints];
     [super updateConstraints];
 }
 
@@ -1575,7 +1618,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
     else if ([self mouse:locationInView inRect:self.bounds])
     {
         _mouseTrackingButtonTag = _SRRecorderControlMainButtonTag;
-        [self setNeedsDisplay:YES];
+        self.needsDisplay = YES;
     }
     else
         [super mouseDown:anEvent];
@@ -1610,7 +1653,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
         {
             // It's possible to receive this event after window resigned its key status
             // e.g. when shortcut brings new window and makes it key.
-            [self setNeedsDisplay:YES];
+            self.needsDisplay = YES;
         }
         else
         {
@@ -1641,17 +1684,14 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
 - (void)mouseEntered:(NSEvent *)anEvent
 {
-    if (!self.enabled)
+    if (self.enabled)
     {
-        [super mouseEntered:anEvent];
-        return;
-    }
-
-    if ((_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea) ||
-        (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag && anEvent.trackingArea == _cancelButtonTrackingArea) ||
-        (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea))
-    {
-        [self setNeedsDisplayInRect:anEvent.trackingArea.rect];
+        if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea)
+            [self setNeedsDisplayInRect:self.style.backgroundDrawingGuide.frame];
+        else if (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag && anEvent.trackingArea == _cancelButtonTrackingArea)
+            [self setNeedsDisplayInRect:self.style.cancelButtonDrawingGuide.frame];
+        else if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea)
+            [self setNeedsDisplayInRect:self.style.clearButtonDrawingGuide.frame];
     }
 
     [super mouseEntered:anEvent];
@@ -1659,17 +1699,14 @@ static NSInteger _SRStyleAppearanceObservingContext;
 
 - (void)mouseExited:(NSEvent *)anEvent
 {
-    if (!self.enabled)
+    if (self.enabled)
     {
-        [super mouseExited:anEvent];
-        return;
-    }
-
-    if ((_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea) ||
-        (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag && anEvent.trackingArea == _cancelButtonTrackingArea) ||
-        (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea))
-    {
-        [self setNeedsDisplayInRect:anEvent.trackingArea.rect];
+        if (_mouseTrackingButtonTag == _SRRecorderControlMainButtonTag && anEvent.trackingArea == _mainButtonTrackingArea)
+            [self setNeedsDisplayInRect:self.style.backgroundDrawingGuide.frame];
+        else if (_mouseTrackingButtonTag == _SRRecorderControlCancelButtonTag && anEvent.trackingArea == _cancelButtonTrackingArea)
+            [self setNeedsDisplayInRect:self.style.cancelButtonDrawingGuide.frame];
+        else if (_mouseTrackingButtonTag == _SRRecorderControlClearButtonTag && anEvent.trackingArea == _clearButtonTrackingArea)
+            [self setNeedsDisplayInRect:self.style.clearButtonDrawingGuide.frame];
     }
 
     [super mouseExited:anEvent];
@@ -1786,6 +1823,7 @@ static NSInteger _SRStyleAppearanceObservingContext;
         }
 
         [self setNeedsDisplayInRect:self.style.labelDrawingGuide.frame];
+        [self updateLabelConstraints];
     }
 
     [super flagsChanged:anEvent];
@@ -1830,16 +1868,19 @@ static NSInteger _SRStyleAppearanceObservingContext;
         return [super optionDescriptionsForBinding:aBinding];
 }
 
-- (void)observeValueForKeyPath:(NSString *)aKeyPath ofObject:(id)anObject change:(NSDictionary<NSKeyValueChangeKey, id> *)aChange context:(void *)aContext
+- (void)observeValueForKeyPath:(NSString *)aKeyPath
+                      ofObject:(id)anObject
+                        change:(NSDictionary<NSKeyValueChangeKey, id> *)aChange
+                       context:(void *)aContext
 {
-    if (aContext == &_SRStyleUserInterfaceLayoutDirectionObservingContext)
+    if (aContext == _SRStyleUserInterfaceLayoutDirectionObservingContext)
     {
         if ([aChange objectForKey:NSKeyValueChangeNotificationIsPriorKey])
             [self willChangeValueForKey:@"userInterfaceLayoutDirection"];
         else
             [self didChangeValueForKey:@"userInterfaceLayoutDirection"];
     }
-    else if (aContext == &_SRStyleAppearanceObservingContext)
+    else if (aContext == _SRStyleAppearanceObservingContext)
     {
         __auto_type appearance = [aChange[NSKeyValueChangeNewKey] unsignedIntegerValue];
 
@@ -1847,6 +1888,11 @@ static NSInteger _SRStyleAppearanceObservingContext;
             self.appearance = [NSAppearance appearanceNamed:SRRecorderControlStyleComponentsAppearanceToSystem(appearance)];
         else
             self.appearance = nil;
+    }
+    else if (aContext == _SRStyleGuideObservingContext)
+    {
+        [self setNeedsDisplayInRect:[aChange[NSKeyValueChangeOldKey] rectValue]];
+        [self setNeedsDisplayInRect:[aChange[NSKeyValueChangeNewKey] rectValue]];
     }
     else
         [super observeValueForKeyPath:aKeyPath ofObject:anObject change:aChange context:aContext];

@@ -389,6 +389,11 @@ IB_DESIGNABLE
 - (void)updateActiveConstraints;
 
 /*!
+ Called when control's state changes in a way that may affect label's constraints.
+ */
+- (void)updateLabelConstraints;
+
+/*!
  Schedules performSelector to notify style that view's appearance did change.
 
  @discussion
