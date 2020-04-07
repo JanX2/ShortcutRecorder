@@ -910,7 +910,6 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
     NSLayoutConstraint *_backgroundBottomConstraint;
     NSLayoutConstraint *_backgroundRightConstraint;
 
-    NSLayoutConstraint *_alignmentSuggestedWidthConstraint;
     NSLayoutConstraint *_alignmentWidthConstraint;
     NSLayoutConstraint *_alignmentHeightConstraint;
     NSLayoutConstraint *_alignmentToLabelConstraint;
@@ -1079,12 +1078,6 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         SetConstraint(&_alignmentWidthConstraint, MakeGteConstraint(self.alignmentGuide.widthAnchor,
                                                                     nil,
                                                                     @"SR_alignmentGuide_width")),
-        SetConstraint(&_alignmentSuggestedWidthConstraint, MakeConstraint(self.alignmentGuide.widthAnchor,
-                                                                          nil,
-                                                                          0.0,
-                                                                          NSLayoutPriorityDefaultLow,
-                                                                          NSLayoutRelationEqual,
-                                                                          @"SR_alignmentGuide_suggestedWidth")),
 
         SetConstraint(&_backgroundTopConstraint, MakeEqConstraint(self.alignmentGuide.topAnchor,
                                                                   self.backgroundDrawingGuide.topAnchor,
@@ -1435,9 +1428,8 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                                                      _clearButtonWidthConstraint.constant +
                                                      _clearToAlignmentConstraint.constant);
 
-        _alignmentSuggestedWidthConstraint.constant = maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset;
-
-        _intrinsicContentSize = NSMakeSize(_alignmentSuggestedWidthConstraint.constant, _alignmentHeightConstraint.constant);
+        _intrinsicContentSize = NSMakeSize(maxExpectedLeadingLabelOffset + maxExpectedLabelWidth + maxExpectedTrailingLabelOffset,
+                                           _alignmentHeightConstraint.constant);
 
         [strongRecorderControl noteFocusRingMaskChanged];
         [strongRecorderControl invalidateIntrinsicContentSize];
