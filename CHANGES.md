@@ -1,3 +1,19 @@
+3.2 (2020-04-xx)
+---
+
+Improvements:
+
+- Added support for modifier-only shortcuts
+- The `*ShortcutMonitor` family of classes considers the `isEnabled` property of its actions before installing any handlers
+- The `SRAXGlobalShortcutMonitor` uses Quartz Services to install an event tap via the `CGEvent*` family of functions.  
+Unlike `SRGlobalShortcutMonitor`, it can alter handled events but requires the user to grant the Accessibility permission
+
+Fixes:
+
+- The control now shifts the label off the center to avoid clipping if there is enough space
+- Better invalidation for re-draws
+- Handle and warn when AppKit throws exception because NSEvent's `characters*` properties are accessed from a non-main thread
+
 3.1 (2019-10-19)
 ---
 
