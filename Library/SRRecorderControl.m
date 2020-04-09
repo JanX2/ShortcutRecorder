@@ -705,7 +705,7 @@ static void *_SRStyleGuideObservingContext = &_SRStyleGuideObservingContext;
 {
     NSString *label = self.drawingLabel;
     NSDictionary *labelAttributes = self.drawingLabelAttributes;
-    CGFloat labelWidth = NSWidth([label boundingRectWithSize:self.style.alignmentGuide.frame.size
+    CGFloat labelWidth = NSWidth([label boundingRectWithSize:NSMakeSize(9999.0, self.intrinsicContentSize.height)
                                                      options:0
                                                   attributes:labelAttributes
                                                      context:nil]);
