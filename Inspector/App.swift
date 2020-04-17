@@ -16,7 +16,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ShortcutActionTarget {
     let purrSound = NSSound(named: "Purr")!
 
     override func awakeFromNib() {
-        let shortcut = Shortcut(code: 0, modifierFlags: [.shift, .control, .option, .command], characters: "A", charactersIgnoringModifiers: "a")
+
+        let shortcut = Shortcut(code: KeyCode.ansiA, modifierFlags: [.shift, .control, .option, .command], characters: "A", charactersIgnoringModifiers: "a")
         let shortcutData = NSKeyedArchiver.archivedData(withRootObject: shortcut)
 
         UserDefaults.standard.register(defaults: [

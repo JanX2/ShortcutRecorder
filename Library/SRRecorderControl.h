@@ -14,6 +14,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /*!
+ Priority assigned to the constraint that controls intrinsic label width.
+ */
+extern const NSLayoutPriority SRRecorderControlLabelWidthPriority NS_SWIFT_NAME(SRRecorderControl.LabelWidthPriority);
+
+/*!
  SRRecorderControl is a control that can record keyboard shortcuts.
 
  @discussion
@@ -39,9 +44,6 @@ NS_ASSUME_NONNULL_BEGIN
 NS_SWIFT_NAME(RecorderControl)
 IB_DESIGNABLE
 @interface SRRecorderControl : NSControl <NSAccessibilityButton, NSEditor, NSViewToolTipOwner> /* <NSNibLoading, NSKeyValueBindingCreation> */
-{
-    BOOL _isCompatibilityModeEnabled;
-}
 
 /*!
  Called by a designated initializer to set up internal state.
@@ -61,6 +63,8 @@ IB_DESIGNABLE
  Return an integer bit field indicating allowed modifier flags.
 
  @discussion Defaults to SRCocoaModifierFlagsMask.
+
+ @see -setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) IBInspectable NSEventModifierFlags allowedModifierFlags;
 
@@ -68,6 +72,8 @@ IB_DESIGNABLE
  Return an integer bit field indicating required modifier flags.
 
  @discussion Defaults to 0.
+
+ @see -setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) IBInspectable NSEventModifierFlags requiredModifierFlags;
 
@@ -75,6 +81,8 @@ IB_DESIGNABLE
  Whether shortcuts without modifier flags are allowed.
 
  @discussion Defaults to NO.
+
+ @see -setAllowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:
  */
 @property (readonly) IBInspectable BOOL allowsEmptyModifierFlags;
 
@@ -126,9 +134,23 @@ IB_DESIGNABLE
  The control fully supports right-to-left layouts but macOS is inconsistent. Parts of the system
  draw key equivalents fully right-to-left, that is flags in reverse order and properly
  altered directional keys such as Tab. Yet other parts either support it only partially or not at all.
+
  The most visible key equivalents, those that appear in NSMenuItem, do not respect right-to-left at all.
  */
 @property IBInspectable BOOL stringValueRespectsUserInterfaceLayoutDirection;
+
+/*!
+ Whether the control allows to record shortcuts without a key code.
+
+ @discussion
+ Defaults to NO.
+
+ When YES changes the control behavior to allow recording of a shortcut without a key code.
+ In this mode recording ends either when key code is pressed (as usual) or when all modifier flags are relased.
+ Instead of capturing only currently pressed modifier flags, the control XORs its internal value whenever
+ a modifier key is pressed. I.e. whenever a modifier key is pressed it either added or removed.
+ */
+@property IBInspectable BOOL allowsModifierFlagsOnlyShortcut;
 
 /*!
  Configure allowed and required modifier flags for user interaction.
@@ -149,36 +171,6 @@ IB_DESIGNABLE
 - (void)setAllowedModifierFlags:(NSEventModifierFlags)newAllowedModifierFlags
           requiredModifierFlags:(NSEventModifierFlags)newRequiredModifierFlags
        allowsEmptyModifierFlags:(BOOL)newAllowsEmptyModifierFlags NS_SWIFT_NAME(set(allowedModifierFlags:requiredModifierFlags:allowsEmptyModifierFlags:));
-
-/*!
- Check whether a given combination is valid.
-
- @param  aModifierFlags Proposed modifier flags.
-
- @param  aKeyCode Code of the pressed key.
-
- @seealso allowedModifierFlags
-
- @seealso allowsEmptyModifierFlags
-
- @seealso requiredModifierFlags
- */
-- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
-
-/*!
- Check whether a given combination is allowed.
-
- @param  aModifierFlags Proposed modifier flags.
-
- @param  aKeyCode Code of the pressed key.
-
- @seealso allowedModifierFlags
-
- @seealso allowsEmptyModifierFlags
-
- @seealso requiredModifierFlags
- */
-- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
 
 /*!
  Called whenever the control needs to inform a user about misuse, like pressing invalid modifier flags.
@@ -227,6 +219,59 @@ IB_DESIGNABLE
 @property (getter=isClearButtonHighlighted, readonly) BOOL clearButtonHighlighted;
 
 /*!
+ Check whether a given combination can be recorded.
+
+ @discussion
+ Subclasses may override to provide custom verfication logic for a proposed shortcut.
+
+ @param  aModifierFlags Proposed modifier flags.
+
+ @param  aKeyCode Code of the pressed key.
+
+ @seealso requiredModifierFlags
+
+ @seealso -areModifierFlagsAllowed:forKeyCode:
+ */
+- (BOOL)areModifierFlagsValid:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
+
+/*!
+ Check whether given modifier flags are allowed by control's configuration and delegate.
+
+ @discussion
+ Subclasses may override to provide custom verification logic for allowed modifier flags.
+
+ @param  aModifierFlags Proposed modifier flags.
+
+ @param  aKeyCode Code of the pressed key.
+
+ @seealso allowedModifierFlags
+
+ @seealso allowsEmptyModifierFlags
+
+ @seealso -[SRRecorderControlDelegate recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:];
+ */
+- (BOOL)areModifierFlagsAllowed:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
+
+/*!
+ Check whether the control is in a state to to capture key events.
+
+ @discussion
+ To avoid "stray" events the control must be:
+    1. Enabled
+    2. The first responder
+    3. Not tracking mouse events
+ */
+- (BOOL)canCaptureKeyEvent;
+
+/*!
+ Check if recording can be ended by capturing a given shortcut.
+
+ @discussion
+ Recording must be in progress and other criteria such as being a first responder must be satisfied too.
+ */
+- (BOOL)canEndRecordingWithObjectValue:(nullable SRShortcut *)aShortcut;
+
+/*!
  Called when a user begins recording.
  */
 - (BOOL)beginRecording;
@@ -255,6 +300,8 @@ IB_DESIGNABLE
  If the very first non-nil value is an instance of NSDictionary the control will
  enter compatibility mode where objectValue and NSValueBinding accessors will
  accept and return instances of NSDictionary.
+
+ To check whether the control has compatibility mode enabled use KVC with the "isCompatibilityModeEnabled" key.
 
  @seealso SRShortcutKey
  */
@@ -342,6 +389,11 @@ IB_DESIGNABLE
 - (void)updateActiveConstraints;
 
 /*!
+ Called when control's state changes in a way that may affect label's constraints.
+ */
+- (void)updateLabelConstraints;
+
+/*!
  Schedules performSelector to notify style that view's appearance did change.
 
  @discussion
@@ -387,13 +439,13 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
  @param aModifierFlags Proposed modifier flags.
 
- @param aKeyCode Code of the pressed key.
+ @param aKeyCode Code of the pressed key, if any.
 
  @return YES if the control should ignore the rules; otherwise, NO.
 
  @discussion
- Normally, you wouldn't allow a user to record a shourcut without modifier flags set: disallow 'a', but allow cmd-'a'.
- However, some keys are designed to be key shortcuts by itself, e.g. functional keys.
+ Normally, you wouldn't allow a user to record a shortcut without modifier flags set.
+ However, some keys, like functional keys, are designed to be key shortcuts by itself.
  By implementing this method the delegate can allow these special keys to be set without modifier flags
  even when the control is configured to disallow empty modifier flags.
 
@@ -403,7 +455,7 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
  @seealso requiredModifierFlags
  */
-- (BOOL)recorderControl:(SRRecorderControl *)aControl shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode;
+- (BOOL)recorderControl:(SRRecorderControl *)aControl shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode;
 
 /*!
  Ask the delegate if the shortcut can be set.
@@ -427,7 +479,7 @@ NS_SWIFT_NAME(RecorderControlDelegate)
 
 - (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder canRecordShortcut:(NSDictionary *)aShortcut __attribute__((deprecated("", "recorderControl:canRecordShortcut:")));
 
-- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(unsigned short)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
+- (BOOL)shortcutRecorder:(SRRecorderControl *)aRecorder shouldUnconditionallyAllowModifierFlags:(NSEventModifierFlags)aModifierFlags forKeyCode:(SRKeyCode)aKeyCode __attribute__((deprecated("", "recorderControl:shouldUnconditionallyAllowModifierFlags:forKeyCode:")));
 
 - (BOOL)shortcutRecorderShouldBeginRecording:(SRRecorderControl *)aRecorder __attribute__((deprecated("", "recorderControlShouldBeginRecording:")));
 

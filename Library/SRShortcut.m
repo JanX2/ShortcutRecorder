@@ -27,7 +27,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 @implementation SRShortcut
 
-+ (instancetype)shortcutWithCode:(unsigned short)aKeyCode
++ (instancetype)shortcutWithCode:(SRKeyCode)aKeyCode
                    modifierFlags:(NSEventModifierFlags)aModifierFlags
                       characters:(NSString *)aCharacters
      charactersIgnoringModifiers:(NSString *)aCharactersIgnoringModifiers
@@ -40,29 +40,60 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 + (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent
 {
-    if (((1 << aKeyboardEvent.type) & (NSEventMaskKeyDown | NSEventMaskKeyUp)) == 0)
+    __auto_type eventType = aKeyboardEvent.type;
+    if (((1 << eventType) & (NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged)) == 0)
     {
-        os_trace_error("aKeyboardEvent must be either NSEventTypeKeyUp or NSEventTypeKeyDown, but got %lu", aKeyboardEvent.type);
+        os_trace_error("#Error aKeyboardEvent must be either NSEventTypeKeyUp, NSEventTypeKeyDown or NSEventTypeFlagsChanged, but got %lu", aKeyboardEvent.type);
         return nil;
     }
 
-    return [self shortcutWithCode:aKeyboardEvent.keyCode
-                    modifierFlags:aKeyboardEvent.modifierFlags
-                       characters:aKeyboardEvent.characters
-      charactersIgnoringModifiers:aKeyboardEvent.charactersIgnoringModifiers];
+    __auto_type keyCode = aKeyboardEvent.keyCode;
+    __auto_type modifierFlags = aKeyboardEvent.modifierFlags;
+    if (eventType == NSEventTypeFlagsChanged)
+    {
+        if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
+            modifierFlags |= NSEventModifierFlagCommand;
+        else if (keyCode == kVK_Option || keyCode == kVK_RightOption)
+            modifierFlags |= NSEventModifierFlagOption;
+        else if (keyCode == kVK_Shift || keyCode == kVK_RightShift)
+            modifierFlags |= NSEventModifierFlagShift;
+        else if (keyCode == kVK_Control || keyCode == kVK_RightControl)
+            modifierFlags |= NSEventModifierFlagControl;
+
+        keyCode = SRKeyCodeNone;
+    }
+
+    NSString *characters = @"";
+    NSString *charactersIgnoringModifiers = @"";
+    if (eventType != NSEventTypeFlagsChanged)
+    {
+        @try
+        {
+            characters = aKeyboardEvent.characters;
+            charactersIgnoringModifiers = aKeyboardEvent.charactersIgnoringModifiers;
+        }
+        @catch (NSException *e)
+        {
+            if (!NSThread.isMainThread)
+            {
+                NSParameterAssert(NO);
+                os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in non-main thread");
+            }
+            else
+                @throw;
+        }
+    }
+
+    return [self shortcutWithCode:keyCode
+                    modifierFlags:modifierFlags
+                       characters:characters
+      charactersIgnoringModifiers:charactersIgnoringModifiers];
 }
 
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary
 {
     NSNumber *keyCode = aDictionary[SRShortcutKeyKeyCode];
-
-    if (![keyCode isKindOfClass:NSNumber.class])
-    {
-        os_trace_error("aDictionary must have a key code");
-        return nil;
-    }
-
-    unsigned short keyCodeValue = keyCode.unsignedShortValue;
+    SRKeyCode keyCodeValue = [keyCode isKindOfClass:NSNumber.class] ? keyCode.unsignedShortValue : SRKeyCodeNone;
     NSUInteger modifierFlagsValue = 0;
     NSString *charactersValue = nil;
     NSString *charactersIgnoringModifiersValue = nil;
@@ -104,8 +135,16 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     [parser scanCharactersFromSet:PossibleFlags intoString:&modifierFlagsString];
     NSString *keyCodeString = [aKeyEquivalent substringFromIndex:parser.scanLocation];
 
-    NSNumber *modifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer reverseTransformedValue:modifierFlagsString];
-    NSNumber *keyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer reverseTransformedValue:keyCodeString];
+    if (!modifierFlagsString.length && !keyCodeString.length)
+        return nil;
+
+    NSNumber *modifierFlags = @0;
+    if (modifierFlagsString.length)
+        modifierFlags = [SRSymbolicModifierFlagsTransformer.sharedTransformer reverseTransformedValue:modifierFlagsString];
+
+    NSNumber *keyCode = @(SRKeyCodeNone);
+    if (keyCodeString.length)
+        keyCode = [SRASCIILiteralKeyCodeTransformer.sharedTransformer reverseTransformedValue:keyCodeString];
 
     if (!modifierFlags || !keyCode)
         return nil;
@@ -129,7 +168,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     return [SRKeyBindingTransformer.sharedTransformer transformedValue:aKeyBinding];
 }
 
-- (instancetype)initWithCode:(unsigned short)aKeyCode
+- (instancetype)initWithCode:(SRKeyCode)aKeyCode
                modifierFlags:(NSEventModifierFlags)aModifierFlags
                   characters:(NSString *)aCharacters
  charactersIgnoringModifiers:(NSString *)aCharactersIgnoringModifiers
@@ -143,7 +182,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
         if (aCharacters)
             _characters = [aCharacters copy];
-        else
+        else if (aKeyCode != SRKeyCodeNone)
             _characters = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:@(aKeyCode)
                                                                       withImplicitModifierFlags:@(aModifierFlags)
                                                                           explicitModifierFlags:nil
@@ -151,7 +190,7 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
         if (aCharactersIgnoringModifiers)
             _charactersIgnoringModifiers = [aCharactersIgnoringModifiers copy];
-        else
+        else if (aKeyCode != SRKeyCodeNone)
             _charactersIgnoringModifiers = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:@(aKeyCode)
                                                                                        withImplicitModifierFlags:nil
                                                                                            explicitModifierFlags:@(aModifierFlags)
@@ -211,13 +250,15 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 {
     if ([aDictionary[SRShortcutKeyKeyCode] isKindOfClass:NSNumber.class])
         return [aDictionary[SRShortcutKeyKeyCode] unsignedShortValue] == self.keyCode && ([aDictionary[SRShortcutKeyModifierFlags] unsignedIntegerValue] & SRCocoaModifierFlagsMask) == self.modifierFlags;
+    else if (!aDictionary[SRShortcutKeyKeyCode] && self.keyCode == SRKeyCodeNone)
+        return ([aDictionary[SRShortcutKeyModifierFlags] unsignedIntegerValue] & SRCocoaModifierFlagsMask) == self.modifierFlags;
     else
         return NO;
 }
 
 - (BOOL)isEqualToKeyEquivalent:(nullable NSString *)aKeyEquivalent withModifierFlags:(NSEventModifierFlags)aModifierFlags
 {
-    if (!aKeyEquivalent.length)
+    if (!aKeyEquivalent.length || self.keyCode == SRKeyCodeNone)
         return NO;
 
     if ([self isEqualToKeyEquivalent:aKeyEquivalent
@@ -236,13 +277,13 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
              withModifierFlags:(NSEventModifierFlags)aModifierFlags
               usingTransformer:(SRKeyCodeTransformer *)aTransformer
 {
-    if (!aKeyEquivalent.length)
+    if (!aKeyEquivalent.length || self.keyCode == SRKeyCodeNone)
         return NO;
 
     aModifierFlags &= SRCocoaModifierFlagsMask;
 
-    // Special case: Both ⇤ and ⇥ key equivalents respond to kVK_Tab.
-    if (self.keyCode == kVK_Tab &&
+    // Special case: Both ⇤ and ⇥ key equivalents respond to SRKeyCodeTab.
+    if (self.keyCode == SRKeyCodeTab &&
         self.modifierFlags == aModifierFlags &&
         aKeyEquivalent.length == 1 &&
         ([aKeyEquivalent characterAtIndex:0] == NSTabCharacter ||
@@ -401,6 +442,9 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 - (UInt32)carbonKeyCode
 {
+    if (self.keyCode == SRKeyCodeNone)
+        os_trace_error("#Critical SRKeyCodeNone has no representation in Carbon");
+
     return self.keyCode;
 }
 
@@ -408,26 +452,26 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 {
     switch (self.carbonKeyCode)
     {
-        case kVK_F1:
-        case kVK_F2:
-        case kVK_F3:
-        case kVK_F4:
-        case kVK_F5:
-        case kVK_F6:
-        case kVK_F7:
-        case kVK_F8:
-        case kVK_F9:
-        case kVK_F10:
-        case kVK_F11:
-        case kVK_F12:
-        case kVK_F13:
-        case kVK_F14:
-        case kVK_F15:
-        case kVK_F16:
-        case kVK_F17:
-        case kVK_F18:
-        case kVK_F19:
-        case kVK_F20:
+        case SRKeyCodeF1:
+        case SRKeyCodeF2:
+        case SRKeyCodeF3:
+        case SRKeyCodeF4:
+        case SRKeyCodeF5:
+        case SRKeyCodeF6:
+        case SRKeyCodeF7:
+        case SRKeyCodeF8:
+        case SRKeyCodeF9:
+        case SRKeyCodeF10:
+        case SRKeyCodeF11:
+        case SRKeyCodeF12:
+        case SRKeyCodeF13:
+        case SRKeyCodeF14:
+        case SRKeyCodeF15:
+        case SRKeyCodeF16:
+        case SRKeyCodeF17:
+        case SRKeyCodeF18:
+        case SRKeyCodeF19:
+        case SRKeyCodeF20:
             return SRCocoaToCarbonFlags(self.modifierFlags) | NSFunctionKeyMask;
         default:
             return SRCocoaToCarbonFlags(self.modifierFlags);
@@ -437,10 +481,13 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 @end
 
 
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
+NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode)
 {
     SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedPlainTransformer];
     NSString *c = [t transformedValue:@(aKeyCode)];
+
+    if (!c)
+        c = [NSString stringWithFormat:@"<%hu>", aKeyCode];
 
     return [NSString stringWithFormat:@"%@%@%@%@%@",
                                       (aModifierFlags & NSEventModifierFlagCommand ? SRLoc(@"Command-") : @""),
@@ -451,10 +498,13 @@ NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags a
 }
 
 
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, unsigned short aKeyCode)
+NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode)
 {
     SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedPlainASCIITransformer];
     NSString *c = [t transformedValue:@(aKeyCode)];
+
+    if (!c)
+        c = [NSString stringWithFormat:@"<%hu>", aKeyCode];
 
     return [NSString stringWithFormat:@"%@%@%@%@%@",
             (aModifierFlags & NSEventModifierFlagCommand ? SRLoc(@"Command-") : @""),
@@ -465,7 +515,7 @@ NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFl
 }
 
 
-BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(unsigned short aKeyCode,
+BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(SRKeyCode aKeyCode,
                                                      NSEventModifierFlags aKeyCodeFlags,
                                                      NSString *aKeyEquivalent,
                                                      NSEventModifierFlags aKeyEquivalentModifierFlags)

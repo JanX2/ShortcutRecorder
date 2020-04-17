@@ -245,7 +245,9 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
 
 - (void)_updateRecorderControlValueBinding
 {
-    if (!_recorderControl)
+    __auto_type strongRecorderControl = _recorderControl;
+
+    if (!strongRecorderControl)
         return;
 
     NSDictionary *contentBindingInfo = [self infoForBinding:NSContentObjectBinding];
@@ -253,10 +255,10 @@ static void _onSelectedKeyboardInputSourceChange(CFNotificationCenterRef aCenter
         return;
 
     NSDictionary *bindingOptions = [contentBindingInfo[NSOptionsKey] dictionaryWithValuesForKeys:@[NSValueTransformerBindingOption, NSValueTransformerNameBindingOption]];
-    [_recorderControl bind:NSValueBinding
-                  toObject:contentBindingInfo[NSObservedObjectKey]
-               withKeyPath:contentBindingInfo[NSObservedKeyPathKey]
-                   options:bindingOptions];
+    [strongRecorderControl bind:NSValueBinding
+                       toObject:contentBindingInfo[NSObservedObjectKey]
+                    withKeyPath:contentBindingInfo[NSObservedKeyPathKey]
+                        options:bindingOptions];
 }
 
 

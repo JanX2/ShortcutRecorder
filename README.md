@@ -30,10 +30,11 @@ The framework comes with:
 - `SRRecorderControlStyle` for custom styling
 - `SRShortcut` that represents a shortcut model
 - `SRGlobalShortcutMonitor` to turn the shortcut into an action by registering a global hot key
+- `SRAXGlobalShortcutMonitor` to handle any kind of keyboard event via Accessibility
 - `SRLocalShortcutMonitor` for manual handling in the responder chain and `NSEvent` monitors
 - `SRShortcutController` for smooth Cocoa Bindings and seamless Interface Builder integration
 - `SRShortcutValidator` to check validity of the shortcut against Cocoa key equivalents and global hot keys
-- `NSValueTransformer` and `NSFormatter` subclasses for custom alternations
+- `NSValueTransformer` and `NSFormatter` subclasses for custom alterations
 
 ```swift
 import ShortcutRecorder
@@ -60,11 +61,11 @@ The framework supports [module maps](https://clang.llvm.org/docs/Modules.html), 
 
 ### CocoaPods
 
-     pod 'ShortcutRecorder', '~> 3.1'
+     pod 'ShortcutRecorder', '~> 3.2'
 
 ### Carthage
 
-    github "Kentzo/ShortcutRecorder" ~> 3.1
+    github "Kentzo/ShortcutRecorder" ~> 3.2
 
 Prebuilt frameworks are available.
 

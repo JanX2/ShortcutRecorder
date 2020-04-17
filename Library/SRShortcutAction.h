@@ -184,6 +184,29 @@ NS_SWIFT_NAME(ShortcutAction)
 
 
 /*!
+ Type of the keyboard event.
+
+ @const SRKeyEventTypeUp Keyboard key is released.
+ @const SRKeyEventTypeDown Keyboard key is pressed.
+ */
+typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
+{
+    SRKeyEventTypeUp = NSEventTypeKeyUp,
+    SRKeyEventTypeDown = NSEventTypeKeyDown
+} NS_SWIFT_NAME(KeyEventType);
+
+
+@interface NSEvent (SRShortcutAction)
+
+/*!
+ Keyboard event type as recognized by the shortcut recorder.
+ */
+@property (readonly) SRKeyEventType SR_keyEventType;
+
+@end
+
+
+/*!
  Base class for the SRGlobalShortcutMonitor and SRLocalShortcutMonitor.
 
  @discussion
@@ -205,14 +228,6 @@ NS_SWIFT_NAME(ShortcutAction)
 NS_SWIFT_NAME(ShortcutMonitor)
 @interface SRShortcutMonitor : NSObject
 
-
-typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
-{
-    SRKeyEventTypeUp = NSEventTypeKeyUp,
-    SRKeyEventTypeDown = NSEventTypeKeyDown
-} NS_SWIFT_NAME(KeyEventType);
-
-
 /*!
  All shortcut actions.
  */
@@ -229,24 +244,20 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 - (NSArray<SRShortcutAction *> *)actionsForKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(actions(forKeyEvent:));
 
 /*!
- All actions for a given shortcut and key event.
+ Enabled actions for a given shortcut and key event.
 
  @return
  Order is determined by the time of association such as that the last object is the most recently associated.
- If the shortcut has no associated actions, returns an empty set.
+ If the shortcut has no associated actions, returns an empty array.
  */
-- (NSArray<SRShortcutAction *> *)actionsForShortcut:(SRShortcut *)aShortcut
-                                           keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(actions(forShortcut:keyEvent:));
-
-/*!
- The most recent action associated with a given shortcut and key event.
- */
-- (nullable SRShortcutAction *)actionForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent;
+- (NSArray<SRShortcutAction *> *)enabledActionsForShortcut:(SRShortcut *)aShortcut
+                                                  keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(enabledActions(forShortcut:keyEvent:));
 
 /*!
  Add an action to the monitor for a key event.
 
- @note Adding the same action twice for the same key event makes it the most recent.
+ @discussion
+ Adding the same action for the same event type again only changes its order by making it the most recent.
  */
 - (void)addAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(addAction(_:forKeyEvent:));
 
@@ -256,24 +267,9 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 - (void)removeAction:(SRShortcutAction *)anAction forKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAction(_:forKeyEvent:));
 
 /*!
- Remove an action from the monitor.
+ Remove an action, if present, from the monitor.
  */
 - (void)removeAction:(SRShortcutAction *)anAction NS_SWIFT_NAME(removeAction(_:));
-
-/*!
- Remove all actions for a given shortcut and key event.
- */
-- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut keyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAllActions(forShortcut:keyEvent:));
-
-/*!
- Remove all actions for a given key event.
- */
-- (void)removeAllActionsForKeyEvent:(SRKeyEventType)aKeyEvent NS_SWIFT_NAME(removeAllActions(forKeyEvent:));
-
-/*!
- Remove all actions for a given shortcut.
- */
-- (void)removeAllActionsForShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(removeAllActions(forShortcut:));
 
 /*!
  Remove all actions from the monitor.
@@ -281,12 +277,30 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 - (void)removeAllActions;
 
 /*!
- Called after the shortcut gets its first associated action.
+ Called before the shortcut gets its first associated enabled action.
+
+ @note Do not mutate actions within the callback.
+ */
+- (void)willAddShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(willAddShortcut(_:));
+
+/*!
+ Called after the shortcut gets its first associated enabled action.
+
+ @note Do not mutate actions within the callback.
  */
 - (void)didAddShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(didAddShortcut(_:));
 
 /*!
- Called after the shortcut loses its last associated action.
+ Called before the shortcuts loses its last associated enabled action.
+
+ @note Do not mutate actions within the callback.
+ */
+- (void)willRemoveShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(willRemoveShortcut(_:));
+
+/*!
+ Called after the shortcut loses its last associated enabled action.
+
+ @note Do not mutate actions within the callback.
  */
 - (void)didRemoveShortcut:(SRShortcut *)aShortcut NS_SWIFT_NAME(didRemoveShortcut(_:));
 
@@ -303,28 +317,20 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 @end
 
 
-/*!
- Handle shortcuts regardless of the currently active application.
+extern const OSType SRShortcutActionSignature;
 
- @discussion
- Action that corresponds to the shortcut is performed asyncrhonoysly in the specified dispatch queue.
+
+/*!
+ Handle shortcuts regardless of the currently active application via Carbon Hot Key API.
+
+ @note Does not support shortcuts with the SRKeyCodeNone key code.
+
+ @see SRAXGlobalShortcutMonitor
  */
 NS_SWIFT_NAME(GlobalShortcutMonitor)
 @interface SRGlobalShortcutMonitor : SRShortcutMonitor
 
 @property (class, readonly) SRGlobalShortcutMonitor *sharedMonitor NS_SWIFT_NAME(shared);
-
-/*!
- Target dispatch queue for the action.
-
- @discussion:
- Defaults to the main queue.
-
- The action block is detached and submitted asynchronously to the given queue.
-
- @seealso DISPATCH_BLOCK_NO_QOS_CLASS
- */
-@property dispatch_queue_t dispatchQueue;
 
 /*!
  Enable system-wide shortcut monitoring.
@@ -355,7 +361,7 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  If there is more than one action associated with the event, they are performed one by one
  either until one of them returns YES or the iteration is exhausted.
  */
-- (OSStatus)handleEvent:(nullable EventRef)anEvent;
+- (OSStatus)handleEvent:(EventRef)anEvent;
 
 /*!
  Called after the carbon event handler is installed.
@@ -366,6 +372,75 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  Called after the carbon event handler is removed.
 */
 - (void)didRemoveEventHandler;
+
+@end
+
+
+/*!
+ Handle shortcuts regardless of the currently active application via Quartz Event Service API.
+
+ @discussion
+ Unlike SRGlobalShortcutMonitor it can handle shortcuts with the SRKeyCodeNone key code. But it has
+ security implications as this API requires the app to either run under the root user or been allowed
+ the Accessibility permission.
+
+ The monitor automatically enables and disables the tap when needed.
+
+ @see SRGlobalShortcutMonitor
+ @see AXIsProcessTrustedWithOptions
+ @see NSAppleEventsUsageDescription
+ */
+@interface SRAXGlobalShortcutMonitor : SRShortcutMonitor
+
+/*!
+ Mach port that corresponds to the event tap used under the hood.
+ */
+@property (readonly) CFMachPortRef eventTap;
+- (CFMachPortRef)eventTap NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
+
+/*!
+ Run loop source that corresponds to the eventTap.
+ */
+@property (readonly) CFRunLoopSourceRef eventTapSource;
+- (CFRunLoopSourceRef)eventTapSource NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
+
+/*!
+ Run loop that corresponds to the eventTap.
+ */
+@property (readonly) NSRunLoop *eventTapRunLoop;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnullability"
+/*!
+ Initialize the monitor by installing the event tap in the current run loop.
+ */
+- (nullable instancetype)init;
+#pragma clang diagnostic pop
+
+/*!
+ Initialize the monitor by installing the event tap in a given run loop.
+
+ @param aRunLoop Run loop for the event tap.
+
+ @discussion
+ Initialization may fail if it's impossible to create the event tap.
+
+ @see https://stackoverflow.com/q/52738506/188530
+ */
+- (nullable instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop NS_DESIGNATED_INITIALIZER;
+
+/*!
+ Perform the action associated with a given event.
+
+ @param anEvent A Quartz keyboard event.
+
+ @return nil if event is handled; unchanged anEvent otherwise.
+
+ @discussion
+ If there is more than one action associated with the event, they are performed one by one
+ either until one of them returns YES or the iteration is exhausted.
+ */
+- (nullable CGEventRef)handleEvent:(CGEventRef)anEvent;
 
 @end
 
@@ -386,12 +461,12 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
 
  @seealso NSStandardKeyBindingResponding
  */
-@property (class, readonly) SRLocalShortcutMonitor *standardShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *standardShortcuts;
 
 /*!
  Shortcuts that mimic default main menu for a new Cocoa Applications.
  */
-@property (class, readonly) SRLocalShortcutMonitor *mainMenuShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *mainMenuShortcuts;
 
 /*!
  Shortcuts associated with the clipboard.
@@ -403,7 +478,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - redo:
  - undo:
  */
-@property (class, readonly) SRLocalShortcutMonitor *clipboardShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *clipboardShortcuts;
 
 /*!
  Shortcuts associated with window management.
@@ -412,7 +487,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - performMiniaturize:
  - toggleFullScreen:
  */
-@property (class, readonly) SRLocalShortcutMonitor *windowShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *windowShortcuts;
 
 /*!
  Key bindings associated with document management.
@@ -425,7 +500,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - duplicateDocument:
  - openDocument:
  */
-@property (class, readonly) SRLocalShortcutMonitor *documentShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *documentShortcuts;
 
 /*!
  Key bindings associated with application management.
@@ -434,7 +509,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  - hideOtherApplications:
  - terminate:
  */
-@property (class, readonly) SRLocalShortcutMonitor *appShortcuts;
+@property (class, readonly, copy) SRLocalShortcutMonitor *appShortcuts;
 
 /*!
  Perform the action associated with the event, if any.
@@ -447,7 +522,7 @@ NS_SWIFT_NAME(LocalShortcutMonitor)
  If there are more than one action associated with the event, they are performed one by one
  either until one of them returns YES or the iteration is exhausted.
  */
-- (BOOL)handleEvent:(nullable NSEvent *)anEvent withTarget:(nullable id)aTarget;
+- (BOOL)handleEvent:(NSEvent *)anEvent withTarget:(nullable id)aTarget;
 
 /*!
  Update the monitor with system-wide and user-specific Cocoa Text System key bindings.

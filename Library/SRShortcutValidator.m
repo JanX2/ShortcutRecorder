@@ -38,19 +38,21 @@
 - (BOOL)validateShortcut:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     __block BOOL result = NO;
-    os_activity_initiate("validateShortcut:error:", OS_ACTIVITY_FLAG_DEFAULT, ^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcut:error:]", OS_ACTIVITY_FLAG_DEFAULT, ^{
+        __auto_type strongDelegate = self.delegate;
+
         if (![self validateShortcutAgainstDelegate:aShortcut error:outError])
         {
             result = NO;
         }
-        else if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckSystemShortcuts:)] ||
-                  [self.delegate shortcutValidatorShouldCheckSystemShortcuts:self]) &&
+        else if ((![strongDelegate respondsToSelector:@selector(shortcutValidatorShouldCheckSystemShortcuts:)] ||
+                  [strongDelegate shortcutValidatorShouldCheckSystemShortcuts:self]) &&
                  ![self validateShortcutAgainstSystemShortcuts:aShortcut error:outError])
         {
             result = NO;
         }
-        else if ((![self.delegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] ||
-                  [self.delegate shortcutValidatorShouldCheckMenu:self]) &&
+        else if ((![strongDelegate respondsToSelector:@selector(shortcutValidatorShouldCheckMenu:)] ||
+                  [strongDelegate shortcutValidatorShouldCheckMenu:self]) &&
                  NSApp.mainMenu &&
                  ![self validateShortcut:aShortcut againstMenu:NSApp.mainMenu error:outError])
         {
@@ -75,28 +77,37 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     __auto_type DelegateIsShortcutValid = ^(NSString * __autoreleasing * aReason) {
-        if ([self.delegate respondsToSelector:@selector(shortcutValidator:isShortcutValid:reason:)])
-            return [self.delegate shortcutValidator:self isShortcutValid:aShortcut reason:aReason];
-        else if ([self.delegate respondsToSelector:@selector(shortcutValidator:isKeyCode:andFlagsTaken:reason:)])
-            return (BOOL)![self.delegate shortcutValidator:self
-                                                 isKeyCode:aShortcut.keyCode
-                                             andFlagsTaken:aShortcut.modifierFlags
-                                                    reason:aReason];
+        __auto_type strongDelegate = self.delegate;
+
+        if ([strongDelegate respondsToSelector:@selector(shortcutValidator:isShortcutValid:reason:)])
+        {
+            return [strongDelegate shortcutValidator:self
+                                     isShortcutValid:aShortcut
+                                              reason:aReason];
+        }
+        else if ([strongDelegate respondsToSelector:@selector(shortcutValidator:isKeyCode:andFlagsTaken:reason:)])
+        {
+            return (BOOL)![strongDelegate shortcutValidator:self
+                                                  isKeyCode:aShortcut.keyCode
+                                              andFlagsTaken:aShortcut.modifierFlags
+                                                     reason:aReason];
+        }
         else
             return YES;
     };
 #pragma clang diagnostic pop
 
-    os_activity_initiate("validateShortcutAgainstDelegate:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcutAgainstDelegate:error:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         NSString *delegateReason = nil;
         if (!DelegateIsShortcutValid(&delegateReason))
         {
             if (outError)
             {
                 BOOL isASCIIOnly = YES;
+                __auto_type strongDelegate = self.delegate;
 
-                if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
-                    isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
+                if ([strongDelegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
+                    isASCIIOnly = [strongDelegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                 NSString *shortcut = [aShortcut readableStringRepresentation:isASCIIOnly];
                 NSString *failureReason = [NSString stringWithFormat:SRLoc(@"The \"%@\" shortcut can't be used!"), shortcut];
@@ -125,7 +136,7 @@
 - (BOOL)validateShortcutAgainstSystemShortcuts:(SRShortcut *)aShortcut error:(NSError * __autoreleasing *)outError
 {
     __block BOOL result = NO;
-    os_activity_initiate("validateShortcutAgainstSystemShortcuts:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcutAgainstSystemShortcuts:error:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         CFArrayRef s = NULL;
         OSStatus err = CopySymbolicHotKeys(&s);
 
@@ -155,9 +166,10 @@
                     if (outError)
                     {
                         BOOL isASCIIOnly = YES;
+                        __auto_type strongDelegate = self.delegate;
 
-                        if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
-                            isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
+                        if ([strongDelegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
+                            isASCIIOnly = [strongDelegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                         NSString *shortcut = [aShortcut readableStringRepresentation:isASCIIOnly];
                         NSString *failureReason = [NSString stringWithFormat:
@@ -189,7 +201,7 @@
 {
     __block BOOL result = NO;
 
-    os_activity_initiate("validateShortcut:againstMenu:error:", OS_ACTIVITY_FLAG_DEFAULT, (^{
+    os_activity_initiate("-[SRShortcutValidator validateShortcut:againstMenu:error:]", OS_ACTIVITY_FLAG_DEFAULT, (^{
         for (NSMenuItem *menuItem in aMenu.itemArray)
         {
             if (menuItem.hasSubmenu && ![self validateShortcut:aShortcut againstMenu:menuItem.submenu error:outError])
@@ -210,9 +222,10 @@
                 if (outError)
                 {
                     BOOL isASCIIOnly = YES;
+                    __auto_type strongDelegate = self.delegate;
 
-                    if ([self.delegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
-                        isASCIIOnly = [self.delegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
+                    if ([strongDelegate respondsToSelector:@selector(shortcutValidatorShouldUseASCIIStringForKeyCodes:)])
+                        isASCIIOnly = [strongDelegate shortcutValidatorShouldUseASCIIStringForKeyCodes:self];
 
                     NSString *shortcut = [aShortcut readableStringRepresentation:isASCIIOnly];
                     NSString *failureReason = [NSString stringWithFormat:SRLoc(@"The \"%@\" shortcut can't be used!"), shortcut];
@@ -266,22 +279,22 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError;
+- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError;
 {
     return ![self validateShortcut:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] error:outError];
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError
+- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError
 {
     return ![self validateShortcutAgainstDelegate:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] error:outError];
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError
+- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError * __autoreleasing *)outError
 {
     return ![self validateShortcutAgainstSystemShortcuts:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] error:outError];
 }
 
-- (BOOL)isKeyCode:(unsigned short)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError * __autoreleasing *)outError
+- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError * __autoreleasing *)outError
 {
     return ![self validateShortcut:[SRShortcut shortcutWithCode:aKeyCode modifierFlags:aFlags characters:nil charactersIgnoringModifiers:nil] againstMenu:aMenu error:outError];
 }

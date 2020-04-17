@@ -12,7 +12,7 @@ import ShortcutRecorder
 extension Shortcut {
     class var `default`: Shortcut
     {
-        return self.init(code: 0,
+        return self.init(code: KeyCode.ansiA,
                          modifierFlags: [.option, .command],
                          characters: "å",
                          charactersIgnoringModifiers: "a")
