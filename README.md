@@ -36,6 +36,8 @@ The framework comes with:
 - `SRShortcutValidator` to check validity of the shortcut against Cocoa key equivalents and global hot keys
 - `NSValueTransformer` and `NSFormatter` subclasses for custom alterations
 
+In Swift:
+
 ```swift
 import ShortcutRecorder
 
@@ -53,6 +55,29 @@ let recorder = RecorderControl()
 recorder.bind(.value, to: defaults, withKeyPath: keyPath, options: options)
 
 recorder.objectValue = Shortcut(keyEquivalent: "⇧⌘A")
+```
+
+In Objective-C:
+
+```objective-c
+#import <ShortcutRecorder/ShortcutRecorder.h>
+
+NSUserDefaultsController *defaults = NSUserDefaultsController.sharedUserDefaultsController;
+NSString *keyPath = @"values.shortcut";
+NSDictionary *options = @{NSValueTransformerNameBindingOption: NSKeyedUnarchiveFromDataTransformerName};
+
+SRShortcutAction *beepAction = [SRShortcutAction shortcutActionWithKeyPath:keyPath
+                                                                  ofObject:defaults
+                                                             actionHandler:^BOOL(SRShortcutAction *anAction) {
+    NSBeep();
+    return YES;
+}];
+[[SRGlobalShortcutMonitor sharedMonitor] addAction:beepAction forKeyEvent:SRKeyEventTypeDown];
+
+SRRecorderControl *recorder = [SRRecorderControl new];
+[recorder bind:NSValueBinding toObject:defaults withKeyPath:keyPath options:options];
+
+recorder.objectValue = [SRShortcut shortcutWithKeyEquivalent:@"⇧⌘A"];
 ```
 
 ## Integration
