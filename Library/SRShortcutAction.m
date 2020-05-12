@@ -1261,6 +1261,9 @@ static OSStatus _SRCarbonEventHandler(EventHandlerCallRef aHandler, EventRef anE
 
 
 @implementation SRAXGlobalShortcutMonitor
+{
+    BOOL _canActivelyFilterEvents;
+}
 
 CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType aType, CGEventRef anEvent, void * _Nullable aUserInfo)
 {
@@ -1288,12 +1291,17 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
 
 - (instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop
 {
+    return [self initWithRunLoop:aRunLoop tapOptions:kCGEventTapOptionListenOnly];
+}
+
+- (instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop tapOptions:(CGEventTapOptions)aTapOptions
+{
     static const CGEventMask Mask = (CGEventMaskBit(kCGEventKeyDown) |
                                      CGEventMaskBit(kCGEventKeyUp) |
                                      CGEventMaskBit(kCGEventFlagsChanged));
     __auto_type eventTap = CGEventTapCreate(kCGSessionEventTap,
                                             kCGHeadInsertEventTap,
-                                            kCGEventTapOptionDefault,
+                                            aTapOptions,
                                             Mask,
                                             _SRQuartzEventHandler,
                                             (__bridge void *)self);
@@ -1309,6 +1317,7 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
     {
         _eventTap = eventTap;
         _eventTapSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
+        _canActivelyFilterEvents = (aTapOptions & kCGEventTapOptionListenOnly) == 0;
         CFRunLoopAddSource(aRunLoop.getCFRunLoop, _eventTapSource, kCFRunLoopDefaultMode);
     }
 
@@ -1358,6 +1367,9 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
 
         result = isHandled ? nil : anEvent;
     });
+
+    if (!result && !_canActivelyFilterEvents)
+        os_trace_error("#Developer #Error The monitor is not configured to actively filter events");
 
     return result;
 }
