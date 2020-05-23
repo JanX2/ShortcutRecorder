@@ -1271,13 +1271,13 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
 
     if (aType == kCGEventTapDisabledByTimeout || aType == kCGEventTapDisabledByUserInput)
     {
-        os_trace("#Error #Developer The system disabled event tap due to %u", aType);
+        os_trace_error("#Error #Developer The system disabled event tap due to %u", aType);
         CGEventTapEnable(self.eventTap, true);
         return anEvent;
     }
     else if (aType != kCGEventKeyDown && aType != kCGEventKeyUp && aType != kCGEventFlagsChanged)
     {
-        os_trace("#Error #Developer Unexpected event of type %u", aType);
+        os_trace_error("#Error #Developer Unexpected event of type %u", aType);
         return anEvent;
     }
     else
