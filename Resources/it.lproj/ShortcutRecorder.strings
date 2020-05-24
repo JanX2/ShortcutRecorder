@@ -14,7 +14,7 @@
 "Cancel recording" = "Annulla la registrazione";
 
 /* Tooltip for the clear button */
-"Delete current shortcut" = "Elimina la abbreviazione corrente";
+"Delete current shortcut" = "Elimina l'abbreviazione corrente";
 
 /* Tooltip for the recording mode */
 "Type shortcut" = "Digita abbreviazione";
@@ -23,7 +23,7 @@
 "Record Shortcut" = "Registra abbreviazione";
 
 /* Tooltip for the normal mode */
-"Click to record shortcut" = "Clicca per registrare la abbreviazione";
+"Click to record shortcut" = "Clicca per registrare l'abbreviazione";
 
 /* Value for the NSLocalizedFailureReasonErrorKey key of validator's error */
 "The \"%@\" shortcut can't be used!" = "La combinazione di tasti “%@“ non può essere usata!";
@@ -35,7 +35,7 @@
 "The \"%@\" shortcut is already in use." = "La combinazione di tasti “%@“ è già in uso.";
 
 /* Value for the NSLocalizedDescriptionKey key of validator's system shortcuts error */
-"The \"%@\" shortcut can't be used because it's already used by a system-wide keyboard shortcut. If you really want to use this shortcut, most shortcuts can be changed in the Keyboard panel in System Preferences." = "La combinazione di tasti “%@“ non può essere usata perché è già usata come scorciatoia di sistema. Se vuoi veramente usare questa combinazione, molte scorciatoie possono essere cambiate dal pannello Tastiera o Mouse nelle Preferenze di Sistema.";
+"The \"%@\" shortcut can't be used because it's already used by a system-wide keyboard shortcut. If you really want to use this shortcut, most shortcuts can be changed in the Keyboard panel in System Preferences." = "La combinazione di tasti “%@“ non può essere usata perché già usata come abbreviazione di sistema. Se vuoi davvero usare questa combinazione di tasti, puoi modificare la maggior parte delle abbreviazioni nei pannelli Tastiera e Mouse delle Preferenze di Sistema.";
 
 /* Value for the NSLocalizedDescriptionKey key of validator's menu error */
 "The \"%@\" shortcut can't be used because it's already used by the \"%@\" menu item." = "La combinazione di tasti “%@“ non può essere usata perché è già usata dall'elemento del menu “%@“.";
@@ -47,7 +47,7 @@
 "Option" = "Opzione";
 
 /* VoiceOver name of the Shift modifier key */
-"Shift" = "Maiuscole";
+"Shift" = "Maiuscolo";
 
 /* VoiceOver name of the Control modifier key */
 "Control" = "Control";
