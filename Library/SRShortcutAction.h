@@ -110,7 +110,7 @@ NS_SWIFT_NAME(ShortcutAction)
 
  @seealso SRShortcutActionTarget
  */
-@property (null_resettable, weak) id target;
+@property (nullable, weak) id target;
 
 /*!
  The selector associated with the action.
