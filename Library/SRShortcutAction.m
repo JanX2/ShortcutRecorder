@@ -249,7 +249,7 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
             }
 
             SEL action = self.action;
-            
+
             BOOL canPerformAction = NO;
             BOOL canPerformProtocol = NO;
             if (!(canPerformAction = action && [target respondsToSelector:action]) && !(canPerformProtocol = [target respondsToSelector:@selector(performShortcutAction:)]))
