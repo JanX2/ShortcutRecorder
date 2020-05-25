@@ -161,8 +161,8 @@ NS_SWIFT_NAME(ShortcutAction)
 
  If there is an associated action handler, it is performed and aTarget is ignored.
  Otherwise, the associated action is performed if:
- 1. aTarget either implements the action or adopts the SRShortcutActionTarget protocol
- 2. aTarget's -validateUserInterfaceItem:, if implemented, returns YES
+    - aTarget either implements the action or adopts the SRShortcutActionTarget protocol, and
+    - aTarget's -validateUserInterfaceItem:, if implemented, returns YES
 
  @return YES if the action was performed; NO otherwise.
  */
@@ -386,6 +386,11 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
 
  The monitor automatically enables and disables the tap when needed.
 
+ @note
+ Installed CGEventTap paticipates in system event handling synchronously. If it's too slow
+ the OS may disable it. It's best to _immeditately_ offload the actual work to a custom dispatch
+ queue in the action handler _immediately_ and return from the thus as soon as possible.
+
  @see SRGlobalShortcutMonitor
  @see AXIsProcessTrustedWithOptions
  @see IOHIDCheckAccess
@@ -396,6 +401,10 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
 
 /*!
  Mach port that corresponds to the event tap used under the hood.
+
+ @note
+ Do not retain monitor's tap such that it outlives it. It's best to keep a strong reference
+ to the monitor itself and use this property.
  */
 @property (readonly) CFMachPortRef eventTap;
 - (CFMachPortRef)eventTap NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
