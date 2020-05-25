@@ -1329,7 +1329,8 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
     if (_eventTap)
         CFRelease(_eventTap);
 
-    CFRelease(_eventTapSource);
+    if (_eventTapSource)
+        CFRelease(_eventTapSource);
 }
 
 #pragma mark Methods
