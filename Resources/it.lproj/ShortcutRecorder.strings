@@ -47,7 +47,7 @@
 "Option" = "Opzione";
 
 /* VoiceOver name of the Shift modifier key */
-"Shift" = "Maiuscolo";
+"Shift" = "Maiuscole";
 
 /* VoiceOver name of the Control modifier key */
 "Control" = "Control";
