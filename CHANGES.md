@@ -1,3 +1,13 @@
+3.3 (2020-06-01)
+---
+
+Improvements:
+
+- Better German localization by @J-rg
+- Better Italian localization by @ildede
+- `SRAXGlobalShortcutMonitor` defaults to listening only; new initializer allows to alter that
+- Layout guide constraints for `SRRecorderControl` size are replaced with custom `intrinsicContentSize` 
+
 3.2 (2020-04-17)
 ---
 

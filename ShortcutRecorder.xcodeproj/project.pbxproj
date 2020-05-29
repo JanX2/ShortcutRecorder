@@ -149,6 +149,7 @@
 		BA8CFE0C22A2F08D00C96F79 /* SRShortcutFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutFormatter.m; path = Library/SRShortcutFormatter.m; sourceTree = "<group>"; };
 		BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ATTRIBUTION.md; sourceTree = SOURCE_ROOT; };
 		BA8CFE1122A2F92000C96F79 /* SRShortcutFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutFormatterTests.swift; sourceTree = "<group>"; };
+		BAB730A92481521200FF3C0B /* CHANGES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGES.md; sourceTree = SOURCE_ROOT; };
 		BABD41AD230CA7E800A6461A /* SRShortcutActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRShortcutActionTests.swift; sourceTree = "<group>"; };
 		BABD41AF230DE8E900A6461A /* SRShortcutAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SRShortcutAction.h; path = Library/SRShortcutAction.h; sourceTree = "<group>"; };
 		BABD41B0230DE8E900A6461A /* SRShortcutAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SRShortcutAction.m; path = Library/SRShortcutAction.m; sourceTree = "<group>"; };
@@ -294,8 +295,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */,
 				BA8CFDF422A26DAA00C96F79 /* README.md */,
+				BAB730A92481521200FF3C0B /* CHANGES.md */,
+				BA8CFE0F22A2F17A00C96F79 /* ATTRIBUTION.md */,
 				BA8CFDF222A2645800C96F79 /* LICENSE.txt */,
 				BA6FADC022A0308900B63E4B /* ShorcutRecorder.sketch */,
 				BAE3063A1F80955700904E9A /* Images.xcassets */,
@@ -715,7 +717,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 3.1;
-				DYLIB_CURRENT_VERSION = 3.2;
+				DYLIB_CURRENT_VERSION = 3.3;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Library/Info.plist;
 				INSTALL_PATH = "@rpath";
@@ -742,7 +744,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 3.1;
-				DYLIB_CURRENT_VERSION = 3.2;
+				DYLIB_CURRENT_VERSION = 3.3;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Library/Info.plist;
 				INSTALL_PATH = "@rpath";
