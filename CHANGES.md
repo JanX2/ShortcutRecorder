@@ -3,8 +3,8 @@
 
 Improvements:
 
-- Better German localization by @J-rg
-- Better Italian localization by @ildede
+- Better German localization by [@J-rg](https://github.com/J-rg)
+- Better Italian localization by [@ildede](https://github.com/ildede)
 - `SRAXGlobalShortcutMonitor` defaults to listening only; new initializer allows to alter that
 - Layout guide constraints for `SRRecorderControl` size are replaced with custom `intrinsicContentSize` 
 
