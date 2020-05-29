@@ -472,9 +472,11 @@ NS_SWIFT_NAME(AXGlobalShortcutMonitor)
  Handle AppKit's keyboard events.
 
  @discussion
- The monitor does not intercept any events. Instead they must be passed directly. Override NSView/NSWindow
- or NSViewController/NSWindowController or use NSEvent's monitoring API to pass keyboard events
- via the -handleEvent:withTarget: method.
+ The monitor does not intercept any events automatically, instead they must be passed directly.
+
+ Common approach is to override at least one of -keyDown: / -keyUp: / -performKeyEquivalent:
+ in an NSResponder object in the responder chain (such as NSViewController) to call
+ -[SRLocalShortcutMonitor handleEvent:withTarget:].
  */
 NS_SWIFT_NAME(LocalShortcutMonitor)
 @interface SRLocalShortcutMonitor : SRShortcutMonitor
