@@ -397,6 +397,7 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  @see NSAppleEventsUsageDescription
  @see https://developer.apple.com/videos/play/wwdc2019/701/
  */
+NS_SWIFT_NAME(AXGlobalShortcutMonitor)
 @interface SRAXGlobalShortcutMonitor : SRShortcutMonitor
 
 /*!
