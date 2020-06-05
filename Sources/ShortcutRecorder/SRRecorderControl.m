@@ -8,18 +8,16 @@
 #import <os/trace.h>
 #import <os/activity.h>
 
-#import "SRRecorderControl.h"
-#import "SRShortcutAction.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRModifierFlagsTransformer.h"
+#import "ShortcutRecorder/SRShortcutAction.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRModifierFlagsTransformer.h"
+
+#import "ShortcutRecorder/SRRecorderControl.h"
 
 
 #ifndef SR_DEBUG_DRAWING
 #define SR_DEBUG_DRAWING DEBUG && 0
 #endif // SR_DEBUG_DRAWING
-
-
-const NSLayoutPriority SRRecorderControlLabelWidthPriority = NSLayoutPriorityDefaultHigh + 1;
 
 
 typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
@@ -100,14 +98,14 @@ static void *_SRStyleGuideObservingContext = &_SRStyleGuideObservingContext;
 
     self.translatesAutoresizingMaskIntoConstraints = NO;
 
-    [self setContentHuggingPriority:NSLayoutPriorityDefaultLow
+    [self setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1
                      forOrientation:NSLayoutConstraintOrientationHorizontal];
-    [self setContentHuggingPriority:NSLayoutPriorityRequired
+    [self setContentHuggingPriority:NSLayoutPriorityDefaultHigh
                      forOrientation:NSLayoutConstraintOrientationVertical];
 
-    [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+    [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh
                                    forOrientation:NSLayoutConstraintOrientationHorizontal];
-    [self setContentCompressionResistancePriority:NSLayoutPriorityRequired
+    [self setContentCompressionResistancePriority:NSLayoutPriorityDefaultHigh
                                    forOrientation:NSLayoutConstraintOrientationVertical];
 }
 

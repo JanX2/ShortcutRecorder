@@ -5,8 +5,9 @@
 
 #import <os/trace.h>
 
-#import "SRKeyBindingTransformer.h"
-#import "SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+
+#import "ShortcutRecorder/SRKeyBindingTransformer.h"
 
 
 @implementation SRKeyBindingTransformer

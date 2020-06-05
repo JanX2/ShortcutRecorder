@@ -5,7 +5,7 @@
 
 #import <objc/runtime.h>
 
-#import "SRCommon.h"
+#import "ShortcutRecorder/SRCommon.h"
 
 
 SRKeyCodeString const SRKeyCodeStringTabRight = @"⇥";
@@ -38,6 +38,9 @@ SRModifierFlagString const SRModifierFlagStringControl = @"⌃";
 
 NSBundle *SRBundle()
 {
+#ifdef SWIFTPM_MODULE_BUNDLE
+    return SWIFTPM_MODULE_BUNDLE
+#else
     static dispatch_once_t onceToken;
     static NSBundle *Bundle = nil;
     dispatch_once(&onceToken, ^{
@@ -52,6 +55,7 @@ NSBundle *SRBundle()
                                        reason:@"Unable to find bundle with resources."
                                      userInfo:nil];
     }
+#endif // SWIFTPM_MODULE_BUNDLE
 }
 
 

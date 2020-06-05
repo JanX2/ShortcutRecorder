@@ -6,8 +6,8 @@
 #import <os/trace.h>
 #import <os/activity.h>
 
-#import "SRRecorderControl.h"
-#import "SRRecorderControlStyle.h"
+#import "ShortcutRecorder/SRRecorderControl.h"
+#import "ShortcutRecorder/SRRecorderControlStyle.h"
 
 
 NSAttributedStringKey const SRMinimalDrawableWidthAttributeName = @"SRMinimalDrawableWidthAttributeName";
@@ -1096,7 +1096,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
         MakeConstraint(self.labelDrawingGuide.centerXAnchor,
                        self.alignmentGuide.centerXAnchor,
                        0.0,
-                       SRRecorderControlLabelWidthPriority - 1,
+                       NSLayoutPriorityDefaultHigh - 1,
                        NSLayoutRelationEqual,
                        @"SR_labelDrawingGuide_centerXToAlignment")
     ];

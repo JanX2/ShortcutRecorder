@@ -1,2 +1,4 @@
 ignore:
-  - "Unit Tests"
+  - "Documentation.playground"
+  - "Sources/Inspector"
+  - "Tests"

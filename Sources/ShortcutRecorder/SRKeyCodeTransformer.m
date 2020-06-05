@@ -6,9 +6,10 @@
 #import <os/trace.h>
 #import <os/activity.h>
 
-#import "SRCommon.h"
-#import "SRShortcut.h"
-#import "SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRCommon.h"
+#import "ShortcutRecorder/SRShortcut.h"
+
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
 
 
 /*!
@@ -212,9 +213,8 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 
         CFDataRef layoutData = TISGetInputSourceProperty(inputSource, kTISPropertyUnicodeKeyLayoutData);
         const UCKeyboardLayout *keyLayout = (const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
-        static const UniCharCount MaxLength = 255;
         UniCharCount actualLength = 0;
-        UniChar chars[MaxLength] = {0};
+        UniChar chars[255] = {0};
         UInt32 deadKeyState = 0;
         OSStatus error = UCKeyTranslate(keyLayout,
                                         aKeyCode,

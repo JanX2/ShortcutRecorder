@@ -5,13 +5,13 @@
 
 #import <os/trace.h>
 
-#import "SRCommon.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRShortcutFormatter.h"
-#import "SRModifierFlagsTransformer.h"
-#import "SRKeyBindingTransformer.h"
+#import "ShortcutRecorder/SRCommon.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRShortcutFormatter.h"
+#import "ShortcutRecorder/SRModifierFlagsTransformer.h"
+#import "ShortcutRecorder/SRKeyBindingTransformer.h"
 
-#import "SRShortcut.h"
+#import "ShortcutRecorder/SRShortcut.h"
 
 
 SRShortcutKey const SRShortcutKeyKeyCode = @"keyCode";

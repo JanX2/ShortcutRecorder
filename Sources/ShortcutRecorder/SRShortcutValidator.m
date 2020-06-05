@@ -6,11 +6,11 @@
 #import <os/trace.h>
 #import <os/activity.h>
 
-#import "SRCommon.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRShortcut.h"
+#import "ShortcutRecorder/SRCommon.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRShortcut.h"
 
-#import "SRShortcutValidator.h"
+#import "ShortcutRecorder/SRShortcutValidator.h"
 
 
 @implementation SRShortcutValidator
