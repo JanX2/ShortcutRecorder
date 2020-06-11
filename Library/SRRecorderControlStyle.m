@@ -733,7 +733,7 @@ NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionTo
                 NSData *data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
 
                 if (!data)
-                    data = [[NSDataAsset alloc] initWithName:resourceName bundle:SRBundle()].data;
+                    data = [[NSDataAsset alloc] initWithName:resourceName].data;
 
                 if (!data)
                     [NSException raise:NSInternalInconsistencyException format:@"Missing %@", resourceName];
