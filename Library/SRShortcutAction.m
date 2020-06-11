@@ -1349,7 +1349,7 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
             return;
         }
 
-        __auto_type shortcut = [SRShortcut shortcutWithEvent:nsEvent];
+        __auto_type shortcut = [SRShortcut shortcutWithEvent:nsEvent ignoringCharacters:YES];
         if (!shortcut)
         {
             os_trace_error("#Error Not a keyboard event");
@@ -1570,7 +1570,7 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
 
 - (BOOL)handleEvent:(NSEvent *)anEvent withTarget:(nullable id)aTarget
 {
-    SRShortcut *shortcut = [SRShortcut shortcutWithEvent:anEvent];
+    SRShortcut *shortcut = [SRShortcut shortcutWithEvent:anEvent ignoringCharacters:YES];
     if (!shortcut)
     {
         os_trace_error("#Error Not a keyboard event");

@@ -40,6 +40,11 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 + (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent
 {
+    return [self shortcutWithEvent:aKeyboardEvent ignoringCharacters:NO];
+}
+
++ (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent ignoringCharacters:(BOOL)aShouldIgnoreCharacters
+{
     __auto_type eventType = aKeyboardEvent.type;
     if (((1 << eventType) & (NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged)) == 0)
     {
@@ -65,22 +70,26 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
     NSString *characters = @"";
     NSString *charactersIgnoringModifiers = @"";
-    if (eventType != NSEventTypeFlagsChanged)
+
+    if (!aShouldIgnoreCharacters)
     {
-        @try
+        if (eventType != NSEventTypeFlagsChanged)
         {
-            characters = aKeyboardEvent.characters;
-            charactersIgnoringModifiers = aKeyboardEvent.charactersIgnoringModifiers;
-        }
-        @catch (NSException *e)
-        {
-            if (!NSThread.isMainThread)
+            @try
             {
-                NSParameterAssert(NO);
-                os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in non-main thread");
+                characters = aKeyboardEvent.characters;
+                charactersIgnoringModifiers = aKeyboardEvent.charactersIgnoringModifiers;
             }
-            else
-                @throw;
+            @catch (NSException *e)
+            {
+                if (!NSThread.isMainThread)
+                {
+                    NSParameterAssert(NO);
+                    os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in a non-main thread, see SRShortcut/shortcutWithEvent:ignoringCharacters:");
+                }
+                else
+                    @throw;
+            }
         }
     }
 

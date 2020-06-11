@@ -62,8 +62,22 @@ NS_SWIFT_NAME(Shortcut)
 
 /*!
  Initialize the shortcut with a keyboard event.
+
+ @seealso SRShortcut/shortcutWithEvent:ignoringCharacters:
  */
 + (nullable instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent;
+
+/*!
+ Initialize the shortcut with a keyboard event without wasting resources to generate characters.
+
+ @discussion
+ AppKit generates characters upon first request which is a waste of resources
+ when you know exactly that they are not needed, e.g. when used together with SRShortcutAction.
+
+ In addition, AppKit currently throws an exception if the characters property is accessed
+ outside of the main thread.
+ */
++ (nullable instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent ignoringCharacters:(BOOL)aShouldIgnoreCharacters;
 
 /*!
  Initialize the shortcut with a dictionary.
