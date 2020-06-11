@@ -138,8 +138,17 @@ NS_SWIFT_NAME(Shortcut)
  Representation of the key code with modifier flags.
 
  @discussion
- Depends on system's locale and the active input source at the time when shortcut was taken.
- Does not participate in the equality test.
+ Returned value depends on system's locale and the active input source
+ at the time when the shortcut was initialized:
+
+ - A non-empty string that was either specified by the user or recovered from keyCode and modifierFlags
+
+ - An empty string that was either specified by the user or if keyCode equals SRKeyCodeNone
+
+ - nil if it was impossible to recover charaters for keyCode and modifierFlags with system's locale
+   and active input source
+
+ @note Does not participate in the equality test.
  */
 @property (nullable, readonly) NSString *characters;
 
@@ -147,8 +156,17 @@ NS_SWIFT_NAME(Shortcut)
  Representation of the key code without modifier flags.
 
  @discussion
- Depends on system's locale and the active input source at the time when shortcut was taken.
- Does not participate in the equality test.
+ Returned value depends on system's locale and the active input source
+ at the time when the shortcut was initialized:
+
+ - A non-empty string that was either specified by the user or recovered from the keyCode and modifierFlags
+
+ - An empty string that was either specified by the user or if keyCode equals SRKeyCodeNone
+
+ - nil if it was impossible to recover charaters for keyCode and modifierFlags with system's locale
+   and active input source
+
+ @note Does not participate in the equality test.
  */
 @property (nullable, readonly) NSString *charactersIgnoringModifiers;
 

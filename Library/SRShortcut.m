@@ -68,11 +68,11 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
         keyCode = SRKeyCodeNone;
     }
 
-    NSString *characters = @"";
-    NSString *charactersIgnoringModifiers = @"";
-
     if (!aShouldIgnoreCharacters)
     {
+        NSString *characters = nil;
+        NSString *charactersIgnoringModifiers = nil;
+
         if (eventType != NSEventTypeFlagsChanged)
         {
             @try
@@ -91,12 +91,19 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
                     @throw;
             }
         }
-    }
 
-    return [self shortcutWithCode:keyCode
-                    modifierFlags:modifierFlags
-                       characters:characters
-      charactersIgnoringModifiers:charactersIgnoringModifiers];
+        return [self shortcutWithCode:keyCode
+                        modifierFlags:modifierFlags
+                           characters:characters
+          charactersIgnoringModifiers:charactersIgnoringModifiers];
+    }
+    else
+    {
+        return [self shortcutWithCode:keyCode
+                        modifierFlags:modifierFlags
+                           characters:@""
+          charactersIgnoringModifiers:@""];
+    }
 }
 
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary
@@ -158,18 +165,10 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     if (!modifierFlags || !keyCode)
         return nil;
 
-    NSString *characters = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
-                                                                       withImplicitModifierFlags:modifierFlags
-                                                                           explicitModifierFlags:nil
-                                                                                 layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
-    NSString *charactersIgnoringModifiers = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
-                                                                                        withImplicitModifierFlags:nil
-                                                                                            explicitModifierFlags:modifierFlags
-                                                                                                  layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
     return [self shortcutWithCode:keyCode.unsignedShortValue
                     modifierFlags:modifierFlags.unsignedIntegerValue
-                       characters:characters
-      charactersIgnoringModifiers:charactersIgnoringModifiers];
+                       characters:nil
+      charactersIgnoringModifiers:nil];
 }
 
 + (nullable instancetype)shortcutWithKeyBinding:(NSString *)aKeyBinding
