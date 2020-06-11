@@ -370,7 +370,7 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 - (SRKeyEventType)SR_keyEventType
 {
-    SRKeyEventType eventType = 0;
+    SRKeyEventType eventType = SRKeyEventTypeDown;
 
     switch (self.type)
     {
@@ -383,20 +383,22 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
         case NSEventTypeFlagsChanged:
         {
             __auto_type keyCode = self.keyCode;
+            __auto_type modifierFlags = self.modifierFlags;
+
             if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
-                eventType = self.modifierFlags & NSEventModifierFlagCommand ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+                eventType = modifierFlags & NSEventModifierFlagCommand ? SRKeyEventTypeDown : SRKeyEventTypeUp;
             else if (keyCode == kVK_Option || keyCode == kVK_RightOption)
-                eventType = self.modifierFlags & NSEventModifierFlagOption ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+                eventType = modifierFlags & NSEventModifierFlagOption ? SRKeyEventTypeDown : SRKeyEventTypeUp;
             else if (keyCode == kVK_Shift || keyCode == kVK_RightShift)
-                eventType = self.modifierFlags & NSEventModifierFlagShift ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+                eventType = modifierFlags & NSEventModifierFlagShift ? SRKeyEventTypeDown : SRKeyEventTypeUp;
             else if (keyCode == kVK_Control || keyCode == kVK_RightControl)
-                eventType = self.modifierFlags & NSEventModifierFlagControl ? SRKeyEventTypeDown : SRKeyEventTypeUp;
+                eventType = modifierFlags & NSEventModifierFlagControl ? SRKeyEventTypeDown : SRKeyEventTypeUp;
             else
                 os_trace("#Error Unexpected key code %hu for the FlagsChanged event", keyCode);
             break;
         }
         default:
-            os_trace("#Error Unexpected key event of type %lu", self.type);
+            [NSException raise:NSInternalInconsistencyException format:@"Expected a key event, got %lu", self.type];
             break;
     }
 

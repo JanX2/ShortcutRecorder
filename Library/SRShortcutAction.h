@@ -200,6 +200,8 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 
 /*!
  Keyboard event type as recognized by the shortcut recorder.
+
+ @throw NSInternalInconsistencyException if the receiver is not a keyboard event.
  */
 @property (readonly) SRKeyEventType SR_keyEventType;
 
