@@ -418,6 +418,18 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 #pragma mark NSObject
 
++ (instancetype)new
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (instancetype)init
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (BOOL)isEqual:(NSObject *)anObject
 {
     return [self SR_isEqual:anObject usingSelector:@selector(isEqualToShortcut:) ofCommonAncestor:SRShortcut.class];
