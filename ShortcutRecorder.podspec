@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.cocoapods_version = '>= 1.8'
   s.name = 'ShortcutRecorder'
-  s.version = '3.3'
+  s.version = '3.3.0'
   s.summary = 'The best control to record shortcuts on macOS'
   s.homepage = 'https://github.com/Kentzo/ShortcutRecorder'
   s.license = { :type => 'CC BY 4.0', :file => 'LICENSE.txt' }
