@@ -382,7 +382,7 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  Handle shortcuts regardless of the currently active application via Quartz Event Service API.
 
  @discussion
- Unlike SRGlobalShortcutMonitor it can handle modifier-falgs-only shortcuts with the SRKeyCodeNone key code.
+ Unlike SRGlobalShortcutMonitor it can handle modifier-flags-only shortcuts with the SRKeyCodeNone key code.
  But it has security implications as this API requires the app to either run under the root user or been allowed
  the Accessibility permission.
 
