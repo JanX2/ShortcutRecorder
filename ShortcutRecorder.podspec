@@ -14,8 +14,14 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.11"
   s.frameworks = 'Carbon', 'Cocoa'
 
-  s.source_files = 'Library/*.{h,m}'
-  s.resources = ['Resources/*.lproj', 'Resources/Images.xcassets']
+  s.source_files = 'Sources/ShortcutRecorder/**/*.{h,m}'
+  s.public_header_files = 'Sources/ShortcutRecorder/include/ShortcutRecorder/*.h'
+  s.resources = [
+    'Sources/ShortcutRecorder/Resources/*.lproj',
+    'Sources/ShortcutRecorder/Resources/Images.xcassets',
+    'ATTRIBUTION.md',
+    'LICENSE.txt'
+  ]
   s.requires_arc = true
   s.compiler_flags = ['-fstack-protector', '-mssse3']
   s.info_plist = {
@@ -24,4 +30,10 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {
     'PRODUCT_BUNDLE_IDENTIFIER': 'com.kulakov.ShortcutRecorder'
   }
+
+  s.test_spec 'Tests' do |t|
+    t.osx.deployment_target = '10.14'
+    t.source_files = 'Tests/ShortcutRecorderTests/*.swift'
+    t.exclude_files = 'Tests/ShortcutRecorderTests/XCTestManifests.swift'
+  end
 end
