@@ -27,9 +27,6 @@ let package = Package(
             publicHeadersPath: "include/ShortcutRecorder",
             cSettings: [
                 .headerSearchPath("include")
-            ],
-            linkerSettings: [
-                .linkedLibrary("c++abi"),
             ]
         ),
         .testTarget(
