@@ -3,9 +3,10 @@
 //  CC BY 4.0
 //
 
-#import "SRKeyEquivalentModifierMaskTransformer.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRRecorderControl.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRRecorderControl.h"
+
+#import "ShortcutRecorder/SRKeyEquivalentModifierMaskTransformer.h"
 
 
 @implementation SRKeyEquivalentModifierMaskTransformer

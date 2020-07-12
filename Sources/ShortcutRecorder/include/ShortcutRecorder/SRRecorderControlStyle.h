@@ -3,7 +3,7 @@
 //  CC BY 4.0
 //
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
 
 @class SRRecorderControl;

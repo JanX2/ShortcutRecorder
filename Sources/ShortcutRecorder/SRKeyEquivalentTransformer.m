@@ -3,9 +3,10 @@
 //  CC BY 4.0
 //
 
-#import "SRKeyEquivalentTransformer.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRRecorderControl.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRRecorderControl.h"
+
+#import "ShortcutRecorder/SRKeyEquivalentTransformer.h"
 
 
 @implementation SRKeyEquivalentTransformer

@@ -19,7 +19,7 @@ def find_sketchtool():
 
 
 def iter_slices(sketchtool):
-    sketch = os.path.join(os.path.dirname(__file__), 'ShorcutRecorder.sketch')
+    sketch = os.path.join(os.path.dirname(__file__), 'ShortcutRecorder.sketch')
     tmpdir = tempfile.mkdtemp()
 
     try:

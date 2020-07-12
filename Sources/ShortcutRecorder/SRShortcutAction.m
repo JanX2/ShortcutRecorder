@@ -7,8 +7,9 @@
 #import <os/trace.h>
 #import <os/activity.h>
 
-#import "SRShortcutAction.h"
-#import "SRCommon.h"
+#import "ShortcutRecorder/SRCommon.h"
+
+#import "ShortcutRecorder/SRShortcutAction.h"
 
 
 static void *_SRShortcutActionContext = &_SRShortcutActionContext;
