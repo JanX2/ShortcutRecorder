@@ -41,7 +41,7 @@ NS_SWIFT_NAME(SRRecorderControlStyleComponentsAppearance.init(fromSystem:));
  @throws NSInvalidArgumentException If given value does not have system's counterpart.
  */
 NSAppearanceName SRRecorderControlStyleComponentsAppearanceToSystem(SRRecorderControlStyleComponentsAppearance anAppearance)
-NS_SWIFT_NAME(SRRecorderControlStyleComponentsAppearance(toSystem:));
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsAppearance.systemRepresentation(self:));
 
 
 /*!
@@ -74,7 +74,7 @@ NS_SWIFT_NAME(SRRecorderControlStyleComponentsTint.init(fromSystem:));
  @throws NSInvalidArgumentException If given value does not have system's counterpart.
  */
 NSControlTint SRRecorderControlStyleComponentsTintToSystem(SRRecorderControlStyleComponentsTint aTint)
-NS_SWIFT_NAME(SRRecorderControlStyleComponentsTint(toSystem:));
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsTint.systemRepresentation(self:));
 
 
 /*!
@@ -107,7 +107,7 @@ NS_SWIFT_NAME(SRRecorderControlStyleComponentsLayoutDirection.init(fromSystem:))
  @throws NSInvalidArgumentException If given value does not have system's counterpart.
  */
 NSUserInterfaceLayoutDirection SRRecorderControlStyleComponentsLayoutDirectionToSystem(SRRecorderControlStyleComponentsLayoutDirection aLayoutDirection)
-NS_SWIFT_NAME(SRRecorderControlStyleComponentsLayoutDirection(toSystem:));
+NS_SWIFT_NAME(SRRecorderControlStyleComponentsLayoutDirection.systemRepresentation(self:));
 
 
 /*!
