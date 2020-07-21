@@ -369,11 +369,13 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
 
 @implementation NSEvent (SRShortcutAction)
 
-- (SRKeyEventType)SR_keyEventType
++ (SRKeyEventType)SR_keyEventTypeForEventType:(NSEventType)anEventType
+                                      keyCode:(unsigned short)aKeyCode
+                                modifierFlags:(NSEventModifierFlags)aModifierFlags
 {
     SRKeyEventType eventType = SRKeyEventTypeDown;
 
-    switch (self.type)
+    switch (anEventType)
     {
         case NSEventTypeKeyDown:
             eventType = SRKeyEventTypeDown;
@@ -383,8 +385,8 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
             break;
         case NSEventTypeFlagsChanged:
         {
-            __auto_type keyCode = self.keyCode;
-            __auto_type modifierFlags = self.modifierFlags;
+            __auto_type keyCode = aKeyCode;
+            __auto_type modifierFlags = aModifierFlags;
 
             if (keyCode == kVK_Command || keyCode == kVK_RightCommand)
                 eventType = modifierFlags & NSEventModifierFlagCommand ? SRKeyEventTypeDown : SRKeyEventTypeUp;
@@ -399,11 +401,16 @@ static void *_SRShortcutActionContext = &_SRShortcutActionContext;
             break;
         }
         default:
-            [NSException raise:NSInternalInconsistencyException format:@"Expected a key event, got %lu", self.type];
+            [NSException raise:NSInternalInconsistencyException format:@"Expected a key event, got %lu", anEventType];
             break;
     }
 
     return eventType;
+}
+
+- (SRKeyEventType)SR_keyEventType
+{
+    return [self.class SR_keyEventTypeForEventType:self.type keyCode:self.keyCode modifierFlags:self.modifierFlags];
 }
 
 @end
@@ -1343,25 +1350,34 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
     __block __auto_type result = anEvent;
 
     os_activity_initiate("-[SRAXGlobalShortcutMonitor handleEvent:]", OS_ACTIVITY_FLAG_DETACHED, ^{
-        __auto_type nsEvent = [NSEvent eventWithCGEvent:anEvent];
-        if (!nsEvent)
+        __auto_type eventKeyCode = CGEventGetIntegerValueField(anEvent, kCGKeyboardEventKeycode);
+        __auto_type eventType = CGEventGetType(anEvent);
+        __auto_type cocoaModifierFlags = SRCoreGraphicsToCocoaFlags(CGEventGetFlags(anEvent));
+        NSEventType cocoaEventType;
+        switch (eventType)
         {
-            os_trace_error("#Error Unexpected event");
-            return;
+            case kCGEventKeyDown:
+                cocoaEventType = NSEventTypeKeyDown;
+                break;
+            case kCGEventKeyUp:
+                cocoaEventType = NSEventTypeKeyUp;
+                break;
+            case kCGEventFlagsChanged:
+                cocoaEventType = NSEventTypeFlagsChanged;
+                break;
+            default:
+                cocoaEventType = 0;
+                break;
         }
 
-        __auto_type shortcut = [SRShortcut shortcutWithEvent:nsEvent ignoringCharacters:YES];
-        if (!shortcut)
-        {
-            os_trace_error("#Error Not a keyboard event");
-            return;
-        }
-
-        SRKeyEventType eventType = nsEvent.SR_keyEventType;
-        if (eventType == 0)
-            return;
-
-        __auto_type actions = [self enabledActionsForShortcut:shortcut keyEvent:eventType];
+        __auto_type shortcut = [SRShortcut shortcutWithCode:eventType != kCGEventFlagsChanged ? (SRKeyCode)eventKeyCode : SRKeyCodeNone
+                                              modifierFlags:cocoaModifierFlags
+                                                 characters:nil
+                                charactersIgnoringModifiers:nil];
+        __auto_type keyEventType = [NSEvent SR_keyEventTypeForEventType:cocoaEventType
+                                                                keyCode:(unsigned short)eventKeyCode
+                                                          modifierFlags:cocoaModifierFlags];
+        __auto_type actions = [self enabledActionsForShortcut:shortcut keyEvent:keyEventType];
         __block BOOL isHandled = NO;
         [actions enumerateObjectsWithOptions:NSEnumerationReverse
                                   usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)
@@ -1578,11 +1594,7 @@ CGEventRef _Nullable _SRQuartzEventHandler(CGEventTapProxy aProxy, CGEventType a
         return NO;
     }
 
-    SRKeyEventType eventType = anEvent.SR_keyEventType;
-    if (eventType == 0)
-        return NO;
-
-    __auto_type actions = [self enabledActionsForShortcut:shortcut keyEvent:eventType];
+    __auto_type actions = [self enabledActionsForShortcut:shortcut keyEvent:anEvent.SR_keyEventType];
     __block BOOL isHandled = NO;
     [actions enumerateObjectsWithOptions:NSEnumerationReverse
                               usingBlock:^(SRShortcutAction *obj, NSUInteger idx, BOOL *stop)

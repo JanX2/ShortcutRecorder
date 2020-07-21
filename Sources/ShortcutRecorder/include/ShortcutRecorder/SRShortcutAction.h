@@ -198,6 +198,10 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 
 @interface NSEvent (SRShortcutAction)
 
++ (SRKeyEventType)SR_keyEventTypeForEventType:(NSEventType)anEventType
+                                      keyCode:(unsigned short)aKeyCode
+                                modifierFlags:(NSEventModifierFlags)aModifierFlags;
+
 /*!
  Keyboard event type as recognized by the shortcut recorder.
 
