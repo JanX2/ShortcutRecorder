@@ -39,7 +39,7 @@ SRModifierFlagString const SRModifierFlagStringControl = @"⌃";
 NSBundle *SRBundle()
 {
 #ifdef SWIFTPM_MODULE_BUNDLE
-    return SWIFTPM_MODULE_BUNDLE
+    return SWIFTPM_MODULE_BUNDLE;
 #else
     static dispatch_once_t onceToken;
     static NSBundle *Bundle = nil;
