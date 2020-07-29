@@ -24,10 +24,7 @@ let package = Package(
                 .copy("../../LICENSE.txt"),
                 .copy("../../ATTRIBUTION.md"),
             ],
-            publicHeadersPath: "include/ShortcutRecorder",
-            cSettings: [
-                .headerSearchPath("include")
-            ]
+            publicHeadersPath: "include"
         ),
         .testTarget(
             name: "ShortcutRecorderTests",
