@@ -6,6 +6,7 @@ Improvements:
 - Better German localization by [@J-rg](https://github.com/J-rg)
 - Better Italian localization by [@ildede](https://github.com/ildede)
 - `SRAXGlobalShortcutMonitor` defaults to listening only; new initializer allows to alter that
+- `SRAXGlobalShortcutMonitor` does not uses CGEvent instead of NSEvent API as the latter is not thread safe
 - Layout guide constraints for `SRRecorderControl` size are replaced with custom `intrinsicContentSize` 
 
 3.2 (2020-04-17)
