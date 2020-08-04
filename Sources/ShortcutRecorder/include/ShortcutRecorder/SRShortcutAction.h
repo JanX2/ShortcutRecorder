@@ -161,8 +161,8 @@ NS_SWIFT_NAME(ShortcutAction)
 
  If there is an associated action handler, it is performed and aTarget is ignored.
  Otherwise, the associated action is performed if:
- 1. aTarget either implements the action or adopts the SRShortcutActionTarget protocol
- 2. aTarget's -validateUserInterfaceItem:, if implemented, returns YES
+    - aTarget either implements the action or adopts the SRShortcutActionTarget protocol, and
+    - aTarget's -validateUserInterfaceItem:, if implemented, returns YES
 
  @return YES if the action was performed; NO otherwise.
  */
@@ -198,8 +198,14 @@ typedef NS_CLOSED_ENUM(NSUInteger, SRKeyEventType)
 
 @interface NSEvent (SRShortcutAction)
 
++ (SRKeyEventType)SR_keyEventTypeForEventType:(NSEventType)anEventType
+                                      keyCode:(unsigned short)aKeyCode
+                                modifierFlags:(NSEventModifierFlags)aModifierFlags;
+
 /*!
  Keyboard event type as recognized by the shortcut recorder.
+
+ @throw NSInternalInconsistencyException if the receiver is not a keyboard event.
  */
 @property (readonly) SRKeyEventType SR_keyEventType;
 
@@ -380,20 +386,32 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  Handle shortcuts regardless of the currently active application via Quartz Event Service API.
 
  @discussion
- Unlike SRGlobalShortcutMonitor it can handle shortcuts with the SRKeyCodeNone key code. But it has
- security implications as this API requires the app to either run under the root user or been allowed
+ Unlike SRGlobalShortcutMonitor it can handle modifier-flags-only shortcuts with the SRKeyCodeNone key code.
+ But it has security implications as this API requires the app to either run under the root user or been allowed
  the Accessibility permission.
 
  The monitor automatically enables and disables the tap when needed.
 
+ @note
+ Installed CGEventTap paticipates in system event handling synchronously. If it's too slow
+ the OS may disable it. It's best to _immeditately_ offload the actual work to a custom dispatch
+ queue in the action handler _immediately_ and return from the thus as soon as possible.
+
  @see SRGlobalShortcutMonitor
  @see AXIsProcessTrustedWithOptions
+ @see IOHIDCheckAccess
  @see NSAppleEventsUsageDescription
+ @see https://developer.apple.com/videos/play/wwdc2019/701/
  */
+NS_SWIFT_NAME(AXGlobalShortcutMonitor)
 @interface SRAXGlobalShortcutMonitor : SRShortcutMonitor
 
 /*!
  Mach port that corresponds to the event tap used under the hood.
+
+ @note
+ Do not retain monitor's tap such that it outlives it. It's best to keep a strong reference
+ to the monitor itself and use this property.
  */
 @property (readonly) CFMachPortRef eventTap;
 - (CFMachPortRef)eventTap NS_RETURNS_INNER_POINTER CF_RETURNS_NOT_RETAINED;
@@ -412,22 +430,31 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnullability"
 /*!
- Initialize the monitor by installing the event tap in the current run loop.
+ Initialize the monitor by installing the event tap in the current run loop for listening only.
  */
 - (nullable instancetype)init;
 #pragma clang diagnostic pop
+
+/*!
+ Initialize the monitor by installing the event tap in a given loop for listening only.
+ */
+- (nullable instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop;
 
 /*!
  Initialize the monitor by installing the event tap in a given run loop.
 
  @param aRunLoop Run loop for the event tap.
 
+ @param aTapOptions Tap options determine whether the monitor is an active filter or a passive listener.
+
  @discussion
  Initialization may fail if it's impossible to create the event tap.
 
+ Tap options control whether the event handler can actively filter and modify the events
+
  @see https://stackoverflow.com/q/52738506/188530
  */
-- (nullable instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithRunLoop:(NSRunLoop *)aRunLoop tapOptions:(CGEventTapOptions)aTapOptions NS_DESIGNATED_INITIALIZER;
 
 /*!
  Perform the action associated with a given event.
@@ -439,6 +466,8 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  @discussion
  If there is more than one action associated with the event, they are performed one by one
  either until one of them returns YES or the iteration is exhausted.
+
+ @note In order to filter (by returning nil) and modify events, the monitor must be initialized with kCGEventTapOptionDefault.
  */
 - (nullable CGEventRef)handleEvent:(CGEventRef)anEvent;
 
@@ -449,9 +478,11 @@ NS_SWIFT_NAME(GlobalShortcutMonitor)
  Handle AppKit's keyboard events.
 
  @discussion
- The monitor does not intercept any events. Instead they must be passed directly. Override NSView/NSWindow
- or NSViewController/NSWindowController or use NSEvent's monitoring API to pass keyboard events
- via the -handleEvent:withTarget: method.
+ The monitor does not intercept any events automatically, instead they must be passed directly.
+
+ Common approach is to override at least one of -keyDown: / -keyUp: / -performKeyEquivalent:
+ in an NSResponder object in the responder chain (such as NSViewController) to call
+ -[SRLocalShortcutMonitor handleEvent:withTarget:].
  */
 NS_SWIFT_NAME(LocalShortcutMonitor)
 @interface SRLocalShortcutMonitor : SRShortcutMonitor

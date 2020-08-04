@@ -24,6 +24,9 @@ NS_SWIFT_NAME(CarbonModifierFlagsMask)
 static const UInt32 SRCarbonModifierFlagsMask = cmdKey | optionKey | shiftKey | controlKey;
 
 
+NS_SWIFT_NAME(CoreGraphicsModifierFlagsMask)
+static const CGEventFlags SRCoreGraphicsModifierFlagsMask = kCGEventFlagMaskCommand | kCGEventFlagMaskAlternate | kCGEventFlagMaskShift | kCGEventFlagMaskControl;
+
 /*!
  Dawable unicode characters for key codes that do not have appropriate constants in Carbon and Cocoa.
 
@@ -299,6 +302,26 @@ NS_INLINE UInt32 SRCocoaToCarbonFlags(NSEventModifierFlags aCocoaFlags)
         carbonFlags |= shiftKey;
 
     return carbonFlags;
+}
+
+NS_SWIFT_NAME(coreGraphicsToCocoaFlags(_:))
+NS_INLINE NSEventModifierFlags SRCoreGraphicsToCocoaFlags(CGEventFlags aCoreGraphicsFlags)
+{
+    NSEventModifierFlags cocoaFlags = 0;
+
+    if (aCoreGraphicsFlags & kCGEventFlagMaskCommand)
+        cocoaFlags |= NSEventModifierFlagCommand;
+
+    if (aCoreGraphicsFlags & kCGEventFlagMaskAlternate)
+        cocoaFlags |= NSEventModifierFlagOption;
+
+    if (aCoreGraphicsFlags & kCGEventFlagMaskControl)
+        cocoaFlags |= NSEventModifierFlagControl;
+
+    if (aCoreGraphicsFlags & kCGEventFlagMaskShift)
+        cocoaFlags |= NSEventModifierFlagShift;
+
+    return cocoaFlags;
 }
 
 

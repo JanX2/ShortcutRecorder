@@ -3,10 +3,11 @@
 //  CC BY 4.0
 //
 
-#import "SRShortcutFormatter.h"
-#import "SRShortcut.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRModifierFlagsTransformer.h"
+#import "ShortcutRecorder/SRShortcut.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRModifierFlagsTransformer.h"
+
+#import "ShortcutRecorder/SRShortcutFormatter.h"
 
 
 @implementation SRShortcutFormatter

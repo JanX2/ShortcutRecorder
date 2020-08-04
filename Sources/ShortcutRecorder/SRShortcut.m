@@ -5,13 +5,13 @@
 
 #import <os/trace.h>
 
-#import "SRCommon.h"
-#import "SRKeyCodeTransformer.h"
-#import "SRShortcutFormatter.h"
-#import "SRModifierFlagsTransformer.h"
-#import "SRKeyBindingTransformer.h"
+#import "ShortcutRecorder/SRCommon.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRShortcutFormatter.h"
+#import "ShortcutRecorder/SRModifierFlagsTransformer.h"
+#import "ShortcutRecorder/SRKeyBindingTransformer.h"
 
-#import "SRShortcut.h"
+#import "ShortcutRecorder/SRShortcut.h"
 
 
 SRShortcutKey const SRShortcutKeyKeyCode = @"keyCode";
@@ -40,6 +40,11 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 + (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent
 {
+    return [self shortcutWithEvent:aKeyboardEvent ignoringCharacters:NO];
+}
+
++ (instancetype)shortcutWithEvent:(NSEvent *)aKeyboardEvent ignoringCharacters:(BOOL)aShouldIgnoreCharacters
+{
     __auto_type eventType = aKeyboardEvent.type;
     if (((1 << eventType) & (NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged)) == 0)
     {
@@ -63,31 +68,42 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
         keyCode = SRKeyCodeNone;
     }
 
-    NSString *characters = @"";
-    NSString *charactersIgnoringModifiers = @"";
-    if (eventType != NSEventTypeFlagsChanged)
+    if (!aShouldIgnoreCharacters)
     {
-        @try
-        {
-            characters = aKeyboardEvent.characters;
-            charactersIgnoringModifiers = aKeyboardEvent.charactersIgnoringModifiers;
-        }
-        @catch (NSException *e)
-        {
-            if (!NSThread.isMainThread)
-            {
-                NSParameterAssert(NO);
-                os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in non-main thread");
-            }
-            else
-                @throw;
-        }
-    }
+        NSString *characters = nil;
+        NSString *charactersIgnoringModifiers = nil;
 
-    return [self shortcutWithCode:keyCode
-                    modifierFlags:modifierFlags
-                       characters:characters
-      charactersIgnoringModifiers:charactersIgnoringModifiers];
+        if (eventType != NSEventTypeFlagsChanged)
+        {
+            @try
+            {
+                characters = aKeyboardEvent.characters;
+                charactersIgnoringModifiers = aKeyboardEvent.charactersIgnoringModifiers;
+            }
+            @catch (NSException *e)
+            {
+                if (!NSThread.isMainThread)
+                {
+                    NSParameterAssert(NO);
+                    os_trace_error("#Error #Developer AppKit failed to extract characters because it is used in a non-main thread, see SRShortcut/shortcutWithEvent:ignoringCharacters:");
+                }
+                else
+                    @throw;
+            }
+        }
+
+        return [self shortcutWithCode:keyCode
+                        modifierFlags:modifierFlags
+                           characters:characters
+          charactersIgnoringModifiers:charactersIgnoringModifiers];
+    }
+    else
+    {
+        return [self shortcutWithCode:keyCode
+                        modifierFlags:modifierFlags
+                           characters:@""
+          charactersIgnoringModifiers:@""];
+    }
 }
 
 + (instancetype)shortcutWithDictionary:(NSDictionary *)aDictionary
@@ -149,18 +165,10 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
     if (!modifierFlags || !keyCode)
         return nil;
 
-    NSString *characters = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
-                                                                       withImplicitModifierFlags:modifierFlags
-                                                                           explicitModifierFlags:nil
-                                                                                 layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
-    NSString *charactersIgnoringModifiers = [SRASCIISymbolicKeyCodeTransformer.sharedTransformer transformedValue:keyCode
-                                                                                        withImplicitModifierFlags:nil
-                                                                                            explicitModifierFlags:modifierFlags
-                                                                                                  layoutDirection:NSUserInterfaceLayoutDirectionLeftToRight];
     return [self shortcutWithCode:keyCode.unsignedShortValue
                     modifierFlags:modifierFlags.unsignedIntegerValue
-                       characters:characters
-      charactersIgnoringModifiers:charactersIgnoringModifiers];
+                       characters:nil
+      charactersIgnoringModifiers:nil];
 }
 
 + (nullable instancetype)shortcutWithKeyBinding:(NSString *)aKeyBinding
@@ -409,6 +417,18 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 
 #pragma mark NSObject
+
++ (instancetype)new
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (instancetype)init
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
 
 - (BOOL)isEqual:(NSObject *)anObject
 {

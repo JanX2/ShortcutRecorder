@@ -4,19 +4,16 @@
 //
 
 #import <Cocoa/Cocoa.h>
+
 #import <ShortcutRecorder/SRCommon.h>
 #import <ShortcutRecorder/SRShortcut.h>
 #import <ShortcutRecorder/SRRecorderControlStyle.h>
+
 
 @protocol SRRecorderControlDelegate;
 
 
 NS_ASSUME_NONNULL_BEGIN
-
-/*!
- Priority assigned to the constraint that controls intrinsic label width.
- */
-extern const NSLayoutPriority SRRecorderControlLabelWidthPriority NS_SWIFT_NAME(SRRecorderControl.LabelWidthPriority);
 
 /*!
  SRRecorderControl is a control that can record keyboard shortcuts.

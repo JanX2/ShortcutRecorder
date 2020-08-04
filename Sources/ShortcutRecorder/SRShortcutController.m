@@ -7,12 +7,12 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <objc/objc-runtime.h>
 
-#import "SRKeyCodeTransformer.h"
-#import "SRKeyEquivalentTransformer.h"
-#import "SRKeyEquivalentModifierMaskTransformer.h"
-#import "SRModifierFlagsTransformer.h"
+#import "ShortcutRecorder/SRKeyCodeTransformer.h"
+#import "ShortcutRecorder/SRKeyEquivalentTransformer.h"
+#import "ShortcutRecorder/SRKeyEquivalentModifierMaskTransformer.h"
+#import "ShortcutRecorder/SRModifierFlagsTransformer.h"
 
-#import "SRShortcutController.h"
+#import "ShortcutRecorder/SRShortcutController.h"
 
 
 SRShortcutControllerSelectionKey const SRShortcutControllerSelectionKeyKeyEquivalent = @"keyEquivalent";

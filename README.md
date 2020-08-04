@@ -84,19 +84,21 @@ recorder.objectValue = [SRShortcut shortcutWithKeyEquivalent:@"⇧⌘A"];
 
 The framework supports [module maps](https://clang.llvm.org/docs/Modules.html), explicit linking is not required: simply `import ShortcutRecorder` /  `#import <ShortcutRecorder/ShortcutRecorder.h>`
 
+### Swift Package Manager
+
+	.package(url: "git://github.com/Kentzo/ShortcutRecorder.git", from: "3.3.0")
+
 ### CocoaPods
 
-     pod 'ShortcutRecorder', '~> 3.2'
+    pod 'ShortcutRecorder', '~> 3.3.0'
 
 ### Carthage
 
-    github "Kentzo/ShortcutRecorder" ~> 3.2
+    github "Kentzo/ShortcutRecorder" ~> 3.3.0
 
-Prebuilt frameworks are available.
+Prebuilt frameworks are available via GitHub releases.
 
 ### Git Submodule
-
-Add the submodule:
 
     git submodule add git://github.com/Kentzo/ShortcutRecorder.git
 
@@ -114,4 +116,4 @@ Still have questions? [Create an issue](https://github.com/Kentzo/ShortcutRecord
 
 ## Paid Support
 
-Paid support is available for custom alterations, help with integration and general advice regarding Cocoa development.
+Paid support is available for custom alterations, help with integration and general advice regarding development for Apple's platforms.

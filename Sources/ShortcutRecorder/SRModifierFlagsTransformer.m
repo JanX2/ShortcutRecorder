@@ -5,8 +5,9 @@
 
 #import <os/trace.h>
 
-#import "SRModifierFlagsTransformer.h"
-#import "SRCommon.h"
+#import "ShortcutRecorder/SRCommon.h"
+
+#import "ShortcutRecorder/SRModifierFlagsTransformer.h"
 
 
 @implementation SRModifierFlagsTransformer
