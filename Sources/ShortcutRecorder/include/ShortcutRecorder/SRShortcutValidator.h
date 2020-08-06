@@ -68,16 +68,6 @@ NS_SWIFT_NAME(ShortcutValidator)
 @end
 
 
-@interface SRShortcutValidator(Deprecated)
-
-- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlagsTaken:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcut:error:"))) NS_SWIFT_UNAVAILABLE("validateShortcut(_:)");
-- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlagTakenInDelegate:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcutAgainstDelegate:error:"))) NS_SWIFT_UNAVAILABLE("validateShortcutAgainstDelegate(_:)");
-- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlagsTakenInSystemShortcuts:(NSEventModifierFlags)aFlags error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcutAgainstSystemShortcuts:error:"))) NS_SWIFT_UNAVAILABLE("Use validateShortcutAgainstSystemShortcuts(_:)");
-- (BOOL)isKeyCode:(SRKeyCode)aKeyCode andFlags:(NSEventModifierFlags)aFlags takenInMenu:(NSMenu *)aMenu error:(NSError * _Nullable *)outError __attribute__((deprecated("", "validateShortcut:againstMenu:error:"))) NS_SWIFT_UNAVAILABLE("Use validateShortcut(_:againstMenu:)");
-
-@end
-
-
 @protocol SRShortcutValidatorDelegate
 
 @optional

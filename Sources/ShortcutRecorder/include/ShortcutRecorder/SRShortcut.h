@@ -36,10 +36,6 @@ extern SRShortcutKey const SRShortcutKeyCharacters;
  */
 extern SRShortcutKey const SRShortcutKeyCharactersIgnoringModifiers;
 
-extern NSString *const SRShortcutKeyCode __attribute__((deprecated("Deprecated in 3.0", "SRShortcutKeyKeyCode")));
-extern NSString *const SRShortcutModifierFlagsKey __attribute__((deprecated("Deprecated in 3.0", "SRShortcutKeyModifierFlags")));
-extern NSString *const SRShortcutCharacters __attribute__((deprecated("Deprecated in 3.0", "SRShortcutKeyCharacters")));
-extern NSString *const SRShortcutCharactersIgnoringModifiers __attribute__((deprecated("", "SRShortcutKeyCharactersIgnoringModifiers")));
 
 /*!
  Combination of a key code, modifier flags and optionally their characters
@@ -234,58 +230,5 @@ NS_SWIFT_NAME(Shortcut)
 @property (readonly) UInt32 carbonModifierFlags;
 
 @end
-
-
-/*!
- Check whether dictionary representations of shortcuts are equal (ShortcutRecorder 2).
- */
-NS_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b) __attribute__((deprecated("Deprecated in 3.0", "SRShortcut/isEqual:")));
-NS_INLINE BOOL SRShortcutEqualToShortcut(NSDictionary *a, NSDictionary *b)
-{
-    if (a == b)
-        return YES;
-    else if (a && !b)
-        return NO;
-    else if (!a && b)
-        return NO;
-    else
-        return ([a[SRShortcutKeyKeyCode] isEqual:b[SRShortcutKeyKeyCode]] && [a[SRShortcutKeyModifierFlags] isEqual:b[SRShortcutKeyModifierFlags]]);
-}
-
-/*!
- Create ShortcutRecorder 2 shortcut.
- */
-NS_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode) __attribute__((deprecated("Deprecated in 3.0", "SRShortcut")));
-NS_INLINE NSDictionary *SRShortcutWithCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode)
-{
-    return @{SRShortcutKeyKeyCode: @(aKeyCode), SRShortcutKeyModifierFlags: @(aModifierFlags)};
-}
-
-
-/*!
- Return string representation of a shortcut with modifier flags replaced with their
- localized readable equivalents (e.g. ⌥ -> Option).
- */
-NSString * _Nonnull SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode) __attribute__((deprecated("Deprecated in 3.0", "SRShortcut/readableStringRepresentation:")));
-
-
-/*!
- Return string representation of a shortcut with modifier flags replaced with their
- localized readable equivalents (e.g. ⌥ -> Option) and ASCII character with a key code.
- */
-NSString * _Nonnull SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode) __attribute__((deprecated("Deprecated in 3.0", "SRShortcut/readableStringRepresentation:")));
-
-
-/*!
- Check whether a given key code with modifier flags is equal to a key equivalent and key equivalent modifier flags
- (e.g. from NSButton or NSMenuItem).
-
- @discussion
- On macOS some key combinations can have "alternates". E.g. option-A can be represented both as "option-A" and "å".
- */
-BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(SRKeyCode aKeyCode,
-                                                     NSEventModifierFlags aKeyCodeFlags,
-                                                     NSString * _Nullable aKeyEquivalent,
-                                                     NSEventModifierFlags aKeyEquivalentModifierFlags) __attribute__((deprecated("Deprecated in 3.0", "SRShortcut/isEqualToKeyEquivalent:withModifierFlags:")));
 
 NS_ASSUME_NONNULL_END

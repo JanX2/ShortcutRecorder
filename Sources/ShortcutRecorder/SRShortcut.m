@@ -19,11 +19,6 @@ SRShortcutKey const SRShortcutKeyModifierFlags = @"modifierFlags";
 SRShortcutKey const SRShortcutKeyCharacters = @"characters";
 SRShortcutKey const SRShortcutKeyCharactersIgnoringModifiers = @"charactersIgnoringModifiers";
 
-NSString *const SRShortcutKeyCode = SRShortcutKeyKeyCode;
-NSString *const SRShortcutModifierFlagsKey = SRShortcutKeyModifierFlags;
-NSString *const SRShortcutCharacters = SRShortcutKeyCharacters;
-NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersIgnoringModifiers;
-
 
 @implementation SRShortcut
 
@@ -232,13 +227,25 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 
 - (NSString *)readableStringRepresentation:(BOOL)isASCII
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    SRKeyCodeTransformer *t = nil;
     if (isASCII)
-        return SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(self.modifierFlags, self.keyCode);
+        t = SRASCIILiteralKeyCodeTransformer.sharedTransformer;
     else
-        return SRReadableStringForCocoaModifierFlagsAndKeyCode(self.modifierFlags, self.keyCode);
-#pragma clang diagnostic pop
+        t = SRLiteralKeyCodeTransformer.sharedTransformer;
+
+    __auto_type keyCode = self.keyCode;
+    __auto_type modifierFlags = self.modifierFlags;
+    NSString *c = [t transformedValue:@(keyCode)];
+
+    if (!c)
+        c = [NSString stringWithFormat:@"<%hu>", keyCode];
+
+    return [NSString stringWithFormat:@"%@%@%@%@%@",
+            (modifierFlags & NSEventModifierFlagCommand ? SRLoc(@"Command-") : @""),
+            (modifierFlags & NSEventModifierFlagOption ? SRLoc(@"Option-") : @""),
+            (modifierFlags & NSEventModifierFlagControl ? SRLoc(@"Control-") : @""),
+            (modifierFlags & NSEventModifierFlagShift ? SRLoc(@"Shift-") : @""),
+            c];
 }
 
 
@@ -499,50 +506,3 @@ NSString *const SRShortcutCharactersIgnoringModifiers = SRShortcutKeyCharactersI
 }
 
 @end
-
-
-NSString *SRReadableStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode)
-{
-    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedPlainTransformer];
-    NSString *c = [t transformedValue:@(aKeyCode)];
-
-    if (!c)
-        c = [NSString stringWithFormat:@"<%hu>", aKeyCode];
-
-    return [NSString stringWithFormat:@"%@%@%@%@%@",
-                                      (aModifierFlags & NSEventModifierFlagCommand ? SRLoc(@"Command-") : @""),
-                                      (aModifierFlags & NSEventModifierFlagOption ? SRLoc(@"Option-") : @""),
-                                      (aModifierFlags & NSEventModifierFlagControl ? SRLoc(@"Control-") : @""),
-                                      (aModifierFlags & NSEventModifierFlagShift ? SRLoc(@"Shift-") : @""),
-                                      c];
-}
-
-
-NSString *SRReadableASCIIStringForCocoaModifierFlagsAndKeyCode(NSEventModifierFlags aModifierFlags, SRKeyCode aKeyCode)
-{
-    SRKeyCodeTransformer *t = [SRKeyCodeTransformer sharedPlainASCIITransformer];
-    NSString *c = [t transformedValue:@(aKeyCode)];
-
-    if (!c)
-        c = [NSString stringWithFormat:@"<%hu>", aKeyCode];
-
-    return [NSString stringWithFormat:@"%@%@%@%@%@",
-            (aModifierFlags & NSEventModifierFlagCommand ? SRLoc(@"Command-") : @""),
-            (aModifierFlags & NSEventModifierFlagOption ? SRLoc(@"Option-") : @""),
-            (aModifierFlags & NSEventModifierFlagControl ? SRLoc(@"Control-") : @""),
-            (aModifierFlags & NSEventModifierFlagShift ? SRLoc(@"Shift-") : @""),
-            c];
-}
-
-
-BOOL SRKeyCodeWithFlagsEqualToKeyEquivalentWithFlags(SRKeyCode aKeyCode,
-                                                     NSEventModifierFlags aKeyCodeFlags,
-                                                     NSString *aKeyEquivalent,
-                                                     NSEventModifierFlags aKeyEquivalentModifierFlags)
-{
-    SRShortcut *s = [[SRShortcut alloc] initWithCode:aKeyCode
-                                       modifierFlags:aKeyCodeFlags
-                                          characters:nil
-                         charactersIgnoringModifiers:nil];
-    return [s isEqualToKeyEquivalent:aKeyEquivalent withModifierFlags:aKeyEquivalentModifierFlags];
-}

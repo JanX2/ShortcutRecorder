@@ -32,13 +32,6 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralModifierFlagsTransformer / SRSymbolicModifier
 @end
 
 
-@interface SRModifierFlagsTransformer (Deprecated)
-+ (SRLiteralModifierFlagsTransformer *)sharedPlainTransformer __attribute__((deprecated("", "SRLiteralModifierFlagsTransformer.shared")));
-- (instancetype)initWithPlainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
-@property (readonly) BOOL usesPlainStrings __attribute__((deprecated));
-@end
-
-
 /*!
  Transform modifier flags into a univesal symbolic string such as ⌘⌥.
 

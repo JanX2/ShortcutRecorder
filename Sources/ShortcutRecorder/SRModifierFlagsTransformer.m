@@ -25,29 +25,6 @@
     return SRSymbolicModifierFlagsTransformer.sharedTransformer;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-
-+ (id)sharedPlainTransformer
-{
-    return SRLiteralModifierFlagsTransformer.sharedTransformer;
-}
-
-- (id)initWithPlainStrings:(BOOL)aUsesPlainStrings
-{
-    if (aUsesPlainStrings)
-        return (id)SRLiteralModifierFlagsTransformer.sharedTransformer;
-    else
-        return (id)SRSymbolicModifierFlagsTransformer.sharedTransformer;
-}
-
-- (BOOL)usesPlainStrings
-{
-    return [self isKindOfClass:SRSymbolicModifierFlagsTransformer.class];
-}
-
-#pragma clang diagnostic pop
-
 + (Class)transformedValueClass
 {
     return NSString.class;

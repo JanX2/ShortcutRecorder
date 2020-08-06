@@ -401,13 +401,6 @@ IB_DESIGNABLE
 @end
 
 
-@interface SRRecorderControl (Deprecated)
-
-@property (readonly, getter=isCancelButtonHighlighted) BOOL isSnapBackButtonHighlighted __attribute__((deprecated("", "isCancelButtonHighlighted")));
-
-@end
-
-
 NS_SWIFT_NAME(RecorderControlDelegate)
 @protocol SRRecorderControlDelegate <NSObject, NSControlTextEditingDelegate>
 

@@ -115,25 +115,4 @@ NS_SWIFT_NAME(ASCIISymbolicKeyCodeTransformer)
 @interface SRASCIISymbolicKeyCodeTransformer : SRKeyCodeTransformer
 @end
 
-
-@interface SRKeyCodeTransformer (Deprecated)
-@property (class, readonly) NSDictionary<NSNumber *, NSString *> *specialKeyCodeToSymbolMapping;
-@property (class, readonly) NSDictionary<NSNumber *, NSString *> *specialKeyCodeToLiteralMapping;
-@property (readonly) BOOL usesPlainStrings __attribute__((deprecated));
-@property (readonly) BOOL usesASCIICapableKeyboardInputSource __attribute__((deprecated));
-+ (instancetype)sharedASCIITransformer __attribute__((deprecated("", "SRASCIISymbolicKeyCodeTransformer/sharedTransformer")));
-+ (SRKeyCodeTransformer *)sharedPlainTransformer __attribute__((deprecated("", "SRLiteralKeyCodeTransformer/sharedTransformer")));
-+ (SRKeyCodeTransformer *)sharedPlainASCIITransformer __attribute__((deprecated("", "SRASCIILiteralKeyCodeTransformer/sharedTransformer")));
-- (instancetype)initWithASCIICapableKeyboardInputSource:(BOOL)aUsesASCII
-                                           plainStrings:(BOOL)aUsesPlainStrings __attribute__((deprecated));
-- (BOOL)isKeyCodeSpecial:(SRKeyCode)aKeyCode __attribute__((deprecated));
-- (NSString *)transformedValue:(NSNumber *)aValue
-             withModifierFlags:(NSNumber *)aModifierFlags __attribute__((deprecated));
-- (NSString *)transformedSpecialKeyCode:(NSNumber *)aKeyCode
-              withExplicitModifierFlags:(NSNumber *)aModifierFlags __attribute__((deprecated));
-- (NSString *)transformedValue:(NSNumber *)aValue
-     withImplicitModifierFlags:(NSNumber *)anImplicitModifierFlags
-         explicitModifierFlags:(NSNumber *)anExplicitModifierFlags __attribute__((deprecated));
-@end
-
 NS_ASSUME_NONNULL_END
