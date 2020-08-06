@@ -347,7 +347,10 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 - (instancetype)init
 {
     if (self.class == SRKeyCodeTransformer.class)
+    {
+        os_trace_error("#Developer #Error Use SRSymbolicKeyCodeTransformer instead");
         return SRSymbolicKeyCodeTransformer.sharedTransformer;
+    }
     else
         return [super init];
 }
@@ -355,7 +358,10 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
 - (instancetype)initWithInputSource:(id)anInputSource
 {
     if (self.class == SRKeyCodeTransformer.class)
+    {
+        os_trace_error("#Developer #Error Use SRSymbolicKeyCodeTransformer instead");
         return [[SRSymbolicKeyCodeTransformer alloc] initWithInputSource:anInputSource];
+    }
     else
     {
         self = [super init];
