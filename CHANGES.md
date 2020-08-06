@@ -1,3 +1,11 @@
+3.x.x (2020-xx-xx)
+---
+
+Improvements:
+
+- Remove most of the deprecated methods with exception of delegates
+- Fix missing NS_DESIGNATED_INITIALIZER
+
 3.3.0 (2020-07-12)
 ---
 
