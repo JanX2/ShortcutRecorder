@@ -36,11 +36,13 @@ NS_SWIFT_UNAVAILABLE("use SRLiteralKeyCodeTransformer / SRSymbolicKeyCodeTransfo
  @discussion
  The underlying type is TISInputSourceRef.
 
- @note Shared transformers autoupdate their input sources to the current.
+ @note Shared transformers autoupdate their input sources to the current, thus returned value may not be persistent.
  */
 @property (readonly) id inputSource;
 
-- (instancetype)initWithInputSource:(id)anInputSource;
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithInputSource:(id)anInputSource NS_DESIGNATED_INITIALIZER;
 
 /*!
  Return literal string for the given key code, modifier flags and layout direction.

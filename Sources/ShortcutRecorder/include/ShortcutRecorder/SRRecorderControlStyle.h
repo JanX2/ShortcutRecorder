@@ -175,7 +175,7 @@ NS_SWIFT_NAME(RecorderControlStyle.Components)
 - (instancetype)initWithAppearance:(SRRecorderControlStyleComponentsAppearance)anAppearance
                      accessibility:(SRRecorderControlStyleComponentsAccessibility)anAccessibility
                    layoutDirection:(SRRecorderControlStyleComponentsLayoutDirection)aDirection
-                              tint:(SRRecorderControlStyleComponentsTint)aTintNS_DESIGNATED_INITIALIZER;
+                              tint:(SRRecorderControlStyleComponentsTint)aTint NS_DESIGNATED_INITIALIZER;
 
 - (BOOL)isEqualToComponents:(SRRecorderControlStyleComponents *)anObject;
 
