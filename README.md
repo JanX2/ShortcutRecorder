@@ -4,6 +4,7 @@
 
 [![CocoaPods Compatible](https://img.shields.io/badge/CocoaPods-Compatible%201.8+-success.svg)](https://cocoapods.org/pods/ShortcutRecorder)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-Compatible-success.svg)](https://github.com/Carthage/Carthage)
+[![SPM Compatible](https://img.shields.io/badge/SPM-Compatible-success.svg)](https://swiftpackageindex.com/Kentzo/ShortcutRecorder)
 
 [![Coverage](https://codecov.io/gh/Kentzo/ShortcutRecorder/branch/master/graph/badge.svg)](https://codecov.io/gh/Kentzo/ShortcutRecorder)
 [![Build Status](https://travis-ci.org/Kentzo/ShortcutRecorder.svg?branch=master)](https://travis-ci.org/Kentzo/ShortcutRecorder)
