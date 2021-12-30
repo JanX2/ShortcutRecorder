@@ -87,7 +87,7 @@ The framework supports [module maps](https://clang.llvm.org/docs/Modules.html), 
 
 ### Swift Package Manager
 
-	.package(url: "git://github.com/Kentzo/ShortcutRecorder.git", from: "3.3.0")
+    .package(url: "git://github.com/Kentzo/ShortcutRecorder.git", from: "3.3.0")
 
 ### CocoaPods
 
