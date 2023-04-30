@@ -461,7 +461,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     static NSDictionary *NormalAttributes = nil;
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
-        p.alignment = NSCenterTextAlignment;
+        p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         NormalAttributes = @{
@@ -479,7 +479,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     static NSDictionary *SmallNormalAttributes = nil;
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
-        p.alignment = NSCenterTextAlignment;
+        p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         SmallNormalAttributes = @{
@@ -497,7 +497,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     static NSDictionary *RecordingAttributes = nil;
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
-        p.alignment = NSCenterTextAlignment;
+        p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         RecordingAttributes = @{
@@ -515,7 +515,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     static NSDictionary *SmallRecordingAttributes = nil;
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
-        p.alignment = NSCenterTextAlignment;
+        p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         SmallRecordingAttributes = @{
@@ -533,7 +533,7 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     static NSDictionary *DisabledAttributes = nil;
     dispatch_once(&OnceToken, ^{
         NSMutableParagraphStyle *p = [[NSMutableParagraphStyle alloc] init];
-        p.alignment = NSCenterTextAlignment;
+        p.alignment = NSTextAlignmentCenter;
         p.lineBreakMode = NSLineBreakByTruncatingTail;
         p.baseWritingDirection = NSWritingDirectionLeftToRight;
         DisabledAttributes = @{
@@ -558,11 +558,11 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     [NSGraphicsContext saveGraphicsState];
 
     if (self.isRecording) {
-        NSDrawThreePartImage(frame,_SRImages[3],_SRImages[4],_SRImages[5],NO,NSCompositeSourceOver,1.0,self.isFlipped);
+        NSDrawThreePartImage(frame,_SRImages[3],_SRImages[4],_SRImages[5],NO,NSCompositingOperationSourceOver,1.0,self.isFlipped);
     } else if (self.enabled) {
-        NSDrawThreePartImage(frame,_SRImages[0],_SRImages[1],_SRImages[2],NO,NSCompositeSourceOver,1.0,self.isFlipped);
+        NSDrawThreePartImage(frame,_SRImages[0],_SRImages[1],_SRImages[2],NO,NSCompositingOperationSourceOver,1.0,self.isFlipped);
     } else {
-        NSDrawThreePartImage(frame,_SRImages[6],_SRImages[7],_SRImages[8],NO,NSCompositeSourceOver,1.0,self.isFlipped);
+        NSDrawThreePartImage(frame,_SRImages[6],_SRImages[7],_SRImages[8],NO,NSCompositingOperationSourceOver,1.0,self.isFlipped);
     }
 
     [NSGraphicsContext restoreGraphicsState];
@@ -666,14 +666,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         [_SRImages[9] drawInRect:imageRect
                          fromRect:NSZeroRect
-                        operation:NSCompositeSourceOver
+                        operation:NSCompositingOperationSourceOver
                          fraction:1.0];
     }
     else
     {
         [_SRImages[10] drawInRect:imageRect
                          fromRect:NSZeroRect
-                        operation:NSCompositeSourceOver
+                        operation:NSCompositingOperationSourceOver
                          fraction:1.0];
     }
 
@@ -703,14 +703,14 @@ typedef NS_ENUM(NSUInteger, _SRRecorderControlButtonTag)
     {
         [_SRImages[11] drawInRect:imageRect
                          fromRect:NSZeroRect
-                        operation:NSCompositeSourceOver
+                        operation:NSCompositingOperationSourceOver
                          fraction:1.0];
     }
     else
     {
         [_SRImages[12] drawInRect:imageRect
                          fromRect:NSZeroRect
-                        operation:NSCompositeSourceOver
+                        operation:NSCompositingOperationSourceOver
                          fraction:1.0];
     }
 
